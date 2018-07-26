@@ -34,5 +34,31 @@
         <version>2.3.0</version>
     </dependency>
   </dependencies>
-	
+
+  <build>
+    <plugins>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <version>3.0.1</version>
+          <configuration>
+              <debug>false</debug>
+              <goals>
+                  <goal>install</goal>
+              </goals>
+              <projectsDirectory>src/it</projectsDirectory>
+              <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+          </configuration>
+          <executions>
+              <execution>
+                  <id>integration-test</id>
+                  <goals>
+                      <goal>install</goal>
+                      <goal>run</goal>
+                  </goals>
+              </execution>
+          </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
