@@ -1,5 +1,7 @@
 # Boost Maven Plugin Prototype
 
+#### NOTE: Do not try these instructions yet since they require not-yet-merged personal branches of the [ci.maven](https://github.com/WASdev/ci.maven) plugin
+
 This is a prototype Maven plugin to package a Spring Boot application with Liberty
 
 When added to your pom.xml, the plugin will
