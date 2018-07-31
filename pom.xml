@@ -2,13 +2,6 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
-  <!-- enable parent below to use with new "thin" functionality in liberty maven plugin-->
-  <parent>
-  	<groupId>net.wasdev.wlp.maven.parent</groupId>
-  	<artifactId>liberty-spring-boot-parent</artifactId>
-  	<version>1.5.14.RELEASE</version>
-  </parent>
-  
   <groupId>boost.project</groupId>
   <artifactId>boost-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
