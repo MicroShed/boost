@@ -213,7 +213,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     		),
     		goal("package-server"),
     		configuration(
-    		    element(name("include"), "runnable"),
+    		    element(name("include"), "minify,runnable"),
     		    element(name("serverName"), libertyServerName)
     		),
     		executionEnvironment(
