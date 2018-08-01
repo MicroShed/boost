@@ -13,7 +13,9 @@ package boost.project;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -259,13 +261,18 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
 	*/
 	private String findSpringBootVersion(MavenProject project) {
         	String version = null;
-        	List<Dependency> dependencies = project.getDependencies();
-        	for(Dependency dep: dependencies) {
-            		if("org.springframework.boot".equals(dep.getGroupId())){
-                		version = dep.getVersion();
-                		break;
-            		}
-        	}
+
+		DependencyManagement dm = project.getDependencyManagement();
+		if (dm != null) {
+     	  		List<Dependency> dependencies = dm.getDependencies();
+     			for(Dependency dep: dependencies) {
+            			if("org.springframework.boot".equals(dep.getGroupId()) && "spring-boot".equals(dep.getArtifactId())){
+                			version = dep.getVersion();
+                			break;
+            			}
+        		}
+		}
+
         	return version;
     	}
 }
