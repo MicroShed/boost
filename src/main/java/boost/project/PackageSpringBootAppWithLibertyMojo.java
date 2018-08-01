@@ -76,9 +76,11 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
 			getLog().error("No supporting feature available in Open Liberty for org.springframework.boot dependency with version " + springBootVersion);
 		}
 
-		LibertyFeatureConfigGenerator featureConfig = new LibertyFeatureConfigGenerator();
-		featureConfig.addFeature(springBootFeature);
-		featureConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
+		if (springBootFeature != null) {
+			LibertyFeatureConfigGenerator featureConfig = new LibertyFeatureConfigGenerator();
+			featureConfig.addFeature(springBootFeature);
+			featureConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
+		}
 
 	}
 
