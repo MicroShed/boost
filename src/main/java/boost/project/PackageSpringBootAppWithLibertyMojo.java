@@ -10,16 +10,12 @@
  *******************************************************************************/
 package boost.project;
  
-import java.io.File;
-import java.net.URL;
-import java.util.List;
 import java.util.Set;
 
-import org.apache.maven.model.DependencyManagement;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -31,7 +27,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  * Package a Spring Boot application with Liberty
  *
  */
-@Mojo( name = "package-app", defaultPhase = LifecyclePhase.PACKAGE )
+@Mojo( name = "package-app", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
 {
 
@@ -78,10 +74,13 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
 
 		if (springBootFeature != null) {
 			LibertyFeatureConfigGenerator featureConfig = new LibertyFeatureConfigGenerator();
+			getLog().info("Adding the "+springBootFeature+" to the Open Liberty server configuration.");
 			featureConfig.addFeature(springBootFeature);
 			featureConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
 		}
 
+	} else {
+		getLog().info("The springBoot feature was not added to the Open Liberty server because no spring-boot-starter dependencies were found.");
 	}
 
 		
@@ -264,16 +263,13 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
 	private String findSpringBootVersion(MavenProject project) {
         	String version = null;
 
-		DependencyManagement dm = project.getDependencyManagement();
-		if (dm != null) {
-     	  		List<Dependency> dependencies = dm.getDependencies();
-     			for(Dependency dep: dependencies) {
-            			if("org.springframework.boot".equals(dep.getGroupId()) && "spring-boot".equals(dep.getArtifactId())){
-                			version = dep.getVersion();
-                			break;
-            			}
+        	Set<Artifact> artifacts = project.getArtifacts();
+        	for(Artifact art: artifacts) {
+        		if("org.springframework.boot".equals(art.getGroupId())  && "spring-boot".equals(art.getArtifactId())) {
+        			version = art.getVersion();
+        			break;
         		}
-		}
+        	}
 
         	return version;
     	}

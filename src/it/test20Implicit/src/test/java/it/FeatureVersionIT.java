@@ -12,14 +12,16 @@ package it;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 
 import org.junit.Test;
 import org.codehaus.plexus.util.FileUtils;
 
 public class FeatureVersionIT {
 	
-	private static String SOURCE_FEATURE_LIST_XML = "src/test/resources/featureList.xml";
+	private static final String SPRING_BOOT_20_FEATURE = "<feature>springBoot-2.0</feature>";
 	private static String TARGET_FEATURE_LIST_XML = "target/liberty/wlp/usr/servers/BoostServer/configDropins/overrides/featureList.xml";
     
     @Test
@@ -28,9 +30,16 @@ public class FeatureVersionIT {
     	assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
     	
     	// Check contents of file for springBoot-15 feature
-    	File sourceFile = new File(SOURCE_FEATURE_LIST_XML);
+    	boolean found = false;
+    	BufferedReader br = new BufferedReader(new FileReader(TARGET_FEATURE_LIST_XML));
+    	String line;
+    	while ((line = br.readLine()) != null) {
+    	    if (line.contains(SPRING_BOOT_20_FEATURE)) {
+    	    	found = true;
+    	    	break;
+    	    }
+    	}
     	
-    	assertEquals("verify target server featureList.xml", FileUtils.fileRead(sourceFile),
-                FileUtils.fileRead(targetFile));
+    	assertTrue("The "+SPRING_BOOT_20_FEATURE+" feature was not found in the server configuration", found);    
     }
 }
