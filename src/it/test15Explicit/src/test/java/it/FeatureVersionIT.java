@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileReader;
 
 import org.junit.Test;
-import org.codehaus.plexus.util.FileUtils;
 
 public class FeatureVersionIT {
 	
