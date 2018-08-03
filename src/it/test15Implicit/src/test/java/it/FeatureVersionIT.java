@@ -30,13 +30,20 @@ public class FeatureVersionIT {
     	
     	// Check contents of file for springBoot-15 feature
     	boolean found = false;
-    	BufferedReader br = new BufferedReader(new FileReader(TARGET_FEATURE_LIST_XML));
-    	String line;
-    	while ((line = br.readLine()) != null) {
-    	    if (line.contains(SPRING_BOOT_15_FEATURE)) {
-    	    	found = true;
-    	    	break;
-    	    }
+        BufferedReader br = null;
+        try {
+        	br = new BufferedReader(new FileReader(TARGET_FEATURE_LIST_XML));
+        	String line;
+        	while ((line = br.readLine()) != null) {
+        	    if (line.contains(SPRING_BOOT_15_FEATURE)) {
+        	    	found = true;
+        	    	break;
+        	    }
+        	}
+    	} finally {
+    		if (br != null) {
+    			br.close();
+    		}
     	}
     	
     	assertTrue("The "+SPRING_BOOT_15_FEATURE+" feature was not found in the server configuration", found);    
