@@ -108,7 +108,6 @@
 				<version>1.0-SNAPSHOT</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
 						<goals>
 							<goal>package-app</goal>
 						</goals>
