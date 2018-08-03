@@ -21,16 +21,16 @@ import org.junit.Test;
 public class FeatureVersionIT {
 	
 	private static final String SPRING_BOOT_20_FEATURE = "<feature>springBoot-2.0</feature>";
-	private static String TARGET_FEATURE_LIST_XML = "target/liberty/wlp/usr/servers/BoostServer/configDropins/overrides/featureList.xml";
+	private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";
     
     @Test
     public void testFeatureVersion() throws Exception {
-    	File targetFile = new File(TARGET_FEATURE_LIST_XML);
+    	File targetFile = new File(SERVER_XML);
     	assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
     	
     	// Check contents of file for springBoot-20 feature
     	boolean found = false;
-    	BufferedReader br = new BufferedReader(new FileReader(TARGET_FEATURE_LIST_XML));
+    	BufferedReader br = new BufferedReader(new FileReader(SERVER_XML));
     	String line;
     	while ((line = br.readLine()) != null) {
     	    if (line.contains(SPRING_BOOT_20_FEATURE)) {
