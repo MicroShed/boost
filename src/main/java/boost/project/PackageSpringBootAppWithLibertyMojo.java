@@ -147,7 +147,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
                 element(name("serverName"), libertyServerName),
                 element(name("assemblyArtifact"),
                     element(name("groupId"), "io.openliberty"),
-                    element(name("artifactId"), "openliberty-runtime"),
+                    element(name("artifactId"), "openliberty-kernel"),
                     element(name("version"), "RELEASE"),
                     element(name("type"), "zip")
                 )
@@ -177,7 +177,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
                 element(name("serverName"), libertyServerName),
                 element(name("assemblyArtifact"),
                     element(name("groupId"), "io.openliberty"),
-                    element(name("artifactId"), "openliberty-runtime"),
+                    element(name("artifactId"), "openliberty-kernel"),
                     element(name("version"), "RELEASE"),
                     element(name("type"), "zip")
                 )
