@@ -16,7 +16,7 @@ When added to your pom.xml, the plugin will
 2. Create an Open Liberty server
 3. Thin the Spring Boot project application
 4. Install the application to the server
-5. Install and add the springBoot-1.5 feature to the server configuration
+5. Install and add appropriate Liberty feature to the server configuration
 6. Package the server and application into a runnable jar
 
 
@@ -25,7 +25,7 @@ When added to your pom.xml, the plugin will
 
 1. git clone git@github.com:OpenLiberty/boost.git
 2. cd boost
-3. mvn clean install
+3. mvn clean install  (To run integration tests, add the -Pit parameter)
 
 ### Use the Liberty Boost plugin in your Spring Boot Maven project 
 
@@ -47,4 +47,4 @@ When added to your pom.xml, the plugin will
       		</plugin>
 
 2. Run mvn clean package
-2. Run the produced jar file: java -jar <application_name>.jar"
+2. Run the produced jar file: java -jar <application_name>.jar
