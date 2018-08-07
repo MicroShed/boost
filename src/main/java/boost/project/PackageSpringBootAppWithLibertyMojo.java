@@ -41,6 +41,10 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     String springBoot20 = "springBoot-2.0";
     String servlet = "servlet-4.0";
 
+    String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
+    String libertyMavenPluginArtifactId = "liberty-maven-plugin";
+    String libertyMavenPluginVersion = "2.5.1-SNAPSHOT";
+    
     @Parameter(defaultValue = "${project.build.directory}")
     private String projectBuildDir;
     
@@ -138,9 +142,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("install-server"),
             configuration(
@@ -168,9 +172,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("create-server"),
             configuration(
@@ -197,9 +201,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     private void thinSpringBootApp() throws MojoExecutionException { 
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("thin"),
             configuration(
@@ -221,9 +225,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("install-apps"),
             configuration(
@@ -255,9 +259,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("install-feature"),
             configuration(
@@ -280,9 +284,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
         // Package server into runnable jar
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("package-server"),
             configuration(
