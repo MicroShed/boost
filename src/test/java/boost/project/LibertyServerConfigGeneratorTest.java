@@ -10,13 +10,13 @@
  *******************************************************************************/
 package boost.project;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static util.ConfigFileUtils.findStringInServerXml;
+import static util.DOMUtils.getDirectChildrenByTag;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -24,13 +24,12 @@ import javax.xml.transform.TransformerException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.w3c.dom.Element;
 
-public class LibertyServerConfigGeneratorTest {
+public class LibertyServerConfigGeneratorTest implements ConfigConstants{
 
     @Rule
     public TemporaryFolder outputDir = new TemporaryFolder();
-
-    private static final String SPRING_BOOT_15_FEATURE = "springBoot-1.5";
 
     /**
      * Test adding feature
@@ -43,40 +42,28 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddSpringFeature() throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator();
-        serverConfig.addFeature(SPRING_BOOT_15_FEATURE);
+        serverConfig.addFeature(SPRING_BOOT_15);
         serverConfig.writeToServer(outputDir.getRoot().getAbsolutePath());
-
-        boolean featureFound = findStringInServerXml("<feature>" + SPRING_BOOT_15_FEATURE + "</feature>");
-
-        assertTrue("The " + SPRING_BOOT_15_FEATURE + " feature was not found in the server configuration",
-                featureFound);
-
-    }
-
-    private boolean findStringInServerXml(String stringToFind) throws IOException {
 
         String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
 
-        boolean found = false;
+        boolean featureFound = findStringInServerXml(serverXML, "<feature>" + SPRING_BOOT_15 + "</feature>");
 
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(serverXML));
-            String line;
-            while ((line = br.readLine()) != null && !found) {
-                if (line.contains(stringToFind)) {
-                    found = true;
-                }
-            }
+        assertTrue("The " + SPRING_BOOT_15 + " feature was not found in the server configuration",
+                featureFound);
 
-        } catch (FileNotFoundException e) {
-            fail("The file " + serverXML + " does not exist");
-        } finally {
-            if (br != null) {
-                br.close();
-            }
-        }
-
-        return found;
     }
+    
+    @Test
+    public void testZeroFeaturesInDefaultServerConfig() throws ParserConfigurationException, TransformerException, IOException {
+        LibertyServerConfigGenerator g = new LibertyServerConfigGenerator();
+        Element serverRoot = g.doc.getDocumentElement();
+        List<Element> featureMgrList = getDirectChildrenByTag(serverRoot, LibertyServerConfigGenerator.FEATURE_MANAGER);
+        assertEquals("Didn't find one and only one featureMgr", 1, featureMgrList.size());
+        Element featureMgr = featureMgrList.get(0);
+        List<Element> featureList = getDirectChildrenByTag(featureMgr, LibertyServerConfigGenerator.FEATURE);
+        assertEquals("Didn't find empty list of features", 0, featureList.size());
+    }
+
+
 }

@@ -20,7 +20,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -28,16 +27,14 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 
 /**
  * Create a Liberty server.xml
  *
  */
-public class LibertyServerConfigGenerator {
-
+public class LibertyServerConfigGenerator implements ConfigConstants {
+    
 	Document doc;
 	Element featureManager;
 	Element serverRoot;
@@ -45,9 +42,11 @@ public class LibertyServerConfigGenerator {
 	Set<String> featuresAdded;
 	
 	public LibertyServerConfigGenerator() throws ParserConfigurationException {
+		generateDocument();
+	}
 	
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+	private void generateDocument() throws ParserConfigurationException {
+		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
 		// Create top level server config element
 		doc = docBuilder.newDocument();
@@ -56,11 +55,10 @@ public class LibertyServerConfigGenerator {
 		doc.appendChild(serverRoot);
 		
 		// Create featureManager config element
-		featureManager = doc.createElement("featureManager");
+		featureManager = doc.createElement(FEATURE_MANAGER);
 		serverRoot.appendChild(featureManager);
 		
 		featuresAdded = new HashSet<String>();
-			
 	}
 	
 	/**
@@ -72,8 +70,8 @@ public class LibertyServerConfigGenerator {
 	 */
 	public void addHttpEndpoint(String host, String httpPort, String httpsPort) {
 
-	    Element httpEndpoint = doc.createElement("httpEndpoint");
-	    httpEndpoint.setAttribute("id", "defaultHttpEndpoint");   
+	    Element httpEndpoint = doc.createElement(HTTP_ENDPOINT);
+	    httpEndpoint.setAttribute("id", DEFAULT_HTTP_ENDPOINT);   
 
 	    if (host != null) {
 	        httpEndpoint.setAttribute("host", host);
@@ -96,7 +94,7 @@ public class LibertyServerConfigGenerator {
 	public void addFeature(String featureName) {
 		
 		if (!featuresAdded.contains(featureName)) {
-			Element feature = doc.createElement("feature");
+			Element feature = doc.createElement(FEATURE);
 			feature.appendChild(doc.createTextNode(featureName));
 			featureManager.appendChild(feature);
 			featuresAdded.add(featureName);
