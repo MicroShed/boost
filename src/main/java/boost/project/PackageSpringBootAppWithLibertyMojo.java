@@ -179,6 +179,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
             goal("create-server"),
             configuration(
                 element(name("serverName"), libertyServerName),
+                element(name("bootstrapProperties"),
+                        element(name("server.liberty.use-default-host"), "false")
+                ),
                 element(name("assemblyArtifact"),
                     element(name("groupId"), "io.openliberty"),
                     element(name("artifactId"), "openliberty-runtime"),
@@ -330,7 +333,6 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
         
         Set<Artifact> artifacts = project.getArtifacts();
         for(Artifact art: artifacts) {
-            getLog().info("ARTIFACT: " + art.getArtifactId());
             if(art.getArtifactId().contains("spring-boot-starter")) {
                 springBootStarters.add(art.getArtifactId());
             }

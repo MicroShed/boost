@@ -22,7 +22,7 @@ public class EndpointIT {
     
     @BeforeClass
     public static void init() {
-        URL = "http://localhost:9080/";
+        URL = "http://localhost:8080/";
     }
     
     @Test
