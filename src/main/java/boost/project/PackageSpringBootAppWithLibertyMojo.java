@@ -33,13 +33,9 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  *
  */
 @Mojo( name = "package-app", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
+public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements ConfigConstants
 {
-
     String libertyServerName = "BoostServer";
-    String springBoot15 = "springBoot-1.5";
-    String springBoot20 = "springBoot-2.0";
-    String servlet = "servlet-4.0";
 
     String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
     String libertyMavenPluginArtifactId = "liberty-maven-plugin";
@@ -99,9 +95,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
             String springBootFeature = null;
             
             if (springBootVersion.startsWith("1.")) {
-                springBootFeature = springBoot15;
+                springBootFeature = SPRING_BOOT_15;
             } else if (springBootVersion.startsWith("2.")) {
-                springBootFeature = springBoot20;
+                springBootFeature = SPRING_BOOT_20;
             } else {
                 // log error for unsupported version
                 getLog().error("No supporting feature available in Open Liberty for org.springframework.boot dependency with version " + springBootVersion);
@@ -123,7 +119,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
             
             if (springBootStarter.equals("spring-boot-starter-web")) {
                 // Add the servlet-4.0 feature
-                serverConfig.addFeature(servlet);
+                serverConfig.addFeature(SERVLET_40);
             }
             
             // TODO: Add more dependency mappings if needed. 
