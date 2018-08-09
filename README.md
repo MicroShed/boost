@@ -1,11 +1,5 @@
 # Boost Maven Plugin Prototype
 
-### NOTE: Dependency on unreleased snapshots
-
-Do not try these instructions yet since they require not-yet-merged personal branches of the [ci.maven](https://github.com/WASdev/ci.maven) plugin.
-
-The current **master** depends on [this branch](https://github.com/anjumfatima90/ci.maven/tree/spring-boot-thin-plugin-ext) at commit [a24b04c](https://github.com/anjumfatima90/ci.maven/commit/a24b04cd668f2d2e31fc6c1762028ae938e66ac9) of the ci.maven plugin, which you must install somehow (e.g. clone and build/install with a local Maven build).
-
 ### What is Boost?
 
 This is a prototype Maven plugin to package a Spring Boot application with Liberty
