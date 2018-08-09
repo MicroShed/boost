@@ -31,20 +31,25 @@ When added to your pom.xml, the plugin will
 
 
 1. Add the following to your project pom.xml
-
-          <plugin>
-        		<groupId>boost.project</groupId>
-        		<artifactId>boost-maven-plugin</artifactId>
-        		<version>1.0-SNAPSHOT</version>
-        		<executions>
-          			<execution>
-            			<phase>package</phase>
-            			<goals>
-              				<goal>package-app</goal>
-            			</goals>
-          			</execution>
-       			</executions>
-      		</plugin>
+```xml
+  <plugin>
+        <groupId>boost.project</groupId>
+        <artifactId>boost-maven-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+                <phase>package</phase>
+                <goals>
+                      <goal>package-app</goal>
+                </goals>
+          </execution>
+       </executions>
+  </plugin>
+```
 
 2. Run mvn clean package
 2. Run the produced jar file: java -jar <application_name>.jar
+
+### Building and Developing Boost
+
+See [here](https://github.com/OpenLiberty/boost/wiki/Home) 
