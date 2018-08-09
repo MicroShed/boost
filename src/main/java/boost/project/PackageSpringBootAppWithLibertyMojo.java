@@ -22,9 +22,12 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugins.annotations.*;
+
+import org.codehaus.mojo.pluginsupport.util.ArtifactItem;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
@@ -52,10 +55,14 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
 
     @Component
     private BuildPluginManager pluginManager;
+    
+    @Parameter
+    private ArtifactItem runtimeArtifact;
 
     public void execute() throws MojoExecutionException
-    {
-    
+    {                
+        createDefaultRuntimeArtifactIfNeeded();
+        
         installOpenLiberty();
         
         createServer();
@@ -76,6 +83,19 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
     
         createUberJar();
         
+    }
+    
+    /**
+     * Create default runtime artifact, if one has not been provided by the user
+     */
+    private void createDefaultRuntimeArtifactIfNeeded() {
+        if(runtimeArtifact == null) {
+            runtimeArtifact = new ArtifactItem();
+            runtimeArtifact.setGroupId("io.openliberty");
+            runtimeArtifact.setArtifactId("openliberty-runtime");
+            runtimeArtifact.setVersion("RELEASE");
+            runtimeArtifact.setType("zip");
+        }
     }
     
     /**
@@ -104,7 +124,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
             }
 
             if (springBootFeature != null) {
-                getLog().info("Adding the "+springBootFeature+" to the Open Liberty server configuration.");
+                getLog().info("Adding the "+springBootFeature+" feature to the Open Liberty server configuration.");
                 serverConfig.addFeature(springBootFeature);
             }
             
@@ -130,6 +150,31 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
         
     }
     
+    private Plugin getPlugin() throws MojoExecutionException {
+        return plugin(
+            groupId(libertyMavenPluginGroupId),
+            artifactId(libertyMavenPluginArtifactId),
+            version(libertyMavenPluginVersion)
+        );
+    }
+    
+    private Element getRuntimeArtifactElement() {
+        return element(name("assemblyArtifact"),
+            element(name("groupId"), runtimeArtifact.getGroupId()),
+            element(name("artifactId"), runtimeArtifact.getArtifactId()),
+            element(name("version"), runtimeArtifact.getVersion()),
+            element(name("type"), runtimeArtifact.getType())
+        );
+    }
+    
+    private ExecutionEnvironment getExecutionEnvironment() {
+        return executionEnvironment(
+            mavenProject,
+            mavenSession,
+            pluginManager
+        );
+    }
+    
     /**
      * Invoke the liberty-maven-plugin to run the install-server goal
      *
@@ -137,26 +182,13 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
     private void installOpenLiberty() throws MojoExecutionException {
     
         executeMojo(
-            plugin(
-                groupId(libertyMavenPluginGroupId),
-                artifactId(libertyMavenPluginArtifactId),
-                version(libertyMavenPluginVersion)
-            ),
+            getPlugin(),
             goal("install-server"),
             configuration(
                 element(name("serverName"), libertyServerName),
-                element(name("assemblyArtifact"),
-                    element(name("groupId"), "io.openliberty"),
-                    element(name("artifactId"), "openliberty-runtime"),
-                    element(name("version"), "RELEASE"),
-                    element(name("type"), "zip")
-                )
+                getRuntimeArtifactElement()
             ),
-            executionEnvironment(
-                mavenProject,
-                mavenSession,
-                pluginManager
-            )
+            getExecutionEnvironment()
         );
     }
     
@@ -167,29 +199,16 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
     private void createServer() throws MojoExecutionException {
     
         executeMojo(
-            plugin(
-                groupId(libertyMavenPluginGroupId),
-                artifactId(libertyMavenPluginArtifactId),
-                version(libertyMavenPluginVersion)
-            ),
+            getPlugin(),
             goal("create-server"),
             configuration(
                 element(name("serverName"), libertyServerName),
                 element(name("bootstrapProperties"),
                         element(name("server.liberty.use-default-host"), "false")
                 ),
-                element(name("assemblyArtifact"),
-                    element(name("groupId"), "io.openliberty"),
-                    element(name("artifactId"), "openliberty-runtime"),
-                    element(name("version"), "RELEASE"),
-                    element(name("type"), "zip")
-                )
+                getRuntimeArtifactElement()
             ),
-            executionEnvironment(
-                mavenProject,
-                mavenSession,
-                pluginManager
-            )
+            getExecutionEnvironment()
         );
     }
     
@@ -199,19 +218,11 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
      */
     private void thinSpringBootApp() throws MojoExecutionException { 
         executeMojo(
-            plugin(
-                groupId(libertyMavenPluginGroupId),
-                artifactId(libertyMavenPluginArtifactId),
-                version(libertyMavenPluginVersion)
-            ),
+            getPlugin(),
             goal("thin"),
             configuration(
             ),
-            executionEnvironment(
-                mavenProject,
-                mavenSession,
-                pluginManager
-            )
+            getExecutionEnvironment()
         );
     }
     
@@ -223,27 +234,14 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
     private void installApp() throws MojoExecutionException {
     
         executeMojo(
-            plugin(
-                groupId(libertyMavenPluginGroupId),
-                artifactId(libertyMavenPluginArtifactId),
-                version(libertyMavenPluginVersion)
-            ),
+            getPlugin(),
             goal("install-apps"),
             configuration(
                 element(name("installAppPackages"), "thin-project"),
                 element(name("serverName"), libertyServerName),
-                element(name("assemblyArtifact"),
-                    element(name("groupId"), "io.openliberty"),
-                    element(name("artifactId"), "openliberty-runtime"),
-                    element(name("version"), "RELEASE"),
-                    element(name("type"), "zip")
-                )
+                getRuntimeArtifactElement()
             ),
-            executionEnvironment(
-                mavenProject,
-                mavenSession,
-                pluginManager
-            )
+            getExecutionEnvironment()
         );
     }
     
@@ -257,20 +255,16 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
     private void installMissingFeatures() throws MojoExecutionException {
     
         executeMojo(
-            plugin(
-                groupId(libertyMavenPluginGroupId),
-                artifactId(libertyMavenPluginArtifactId),
-                version(libertyMavenPluginVersion)
-            ),
+            getPlugin(),
             goal("install-feature"),
             configuration(
-                element(name("serverName"), libertyServerName)
+                element(name("serverName"), libertyServerName),
+                element(name("features"),
+                    element(name("acceptLicense"), "true")
+
+                )
             ),
-            executionEnvironment(
-                mavenProject,
-                mavenSession,
-                pluginManager
-            )
+            getExecutionEnvironment()
         );
     }
     
@@ -282,21 +276,13 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
     
         // Package server into runnable jar
         executeMojo(
-            plugin(
-                groupId(libertyMavenPluginGroupId),
-                artifactId(libertyMavenPluginArtifactId),
-                version(libertyMavenPluginVersion)
-            ),
+            getPlugin(),
             goal("package-server"),
             configuration(
                 element(name("include"), "minify,runnable"),
                 element(name("serverName"), libertyServerName)
             ),
-            executionEnvironment(
-                mavenProject,
-                mavenSession,
-                pluginManager
-            )
+            getExecutionEnvironment()
         );
     }
 
