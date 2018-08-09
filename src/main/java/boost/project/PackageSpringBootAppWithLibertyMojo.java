@@ -33,14 +33,14 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  *
  */
 @Mojo( name = "package-app", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
+public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements ConfigConstants
 {
-
     String libertyServerName = "BoostServer";
-    String springBoot15 = "springBoot-1.5";
-    String springBoot20 = "springBoot-2.0";
-    String servlet = "servlet-4.0";
 
+    String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
+    String libertyMavenPluginArtifactId = "liberty-maven-plugin";
+    String libertyMavenPluginVersion = "2.5.1-SNAPSHOT";
+    
     @Parameter(defaultValue = "${project.build.directory}")
     private String projectBuildDir;
     
@@ -95,9 +95,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
             String springBootFeature = null;
             
             if (springBootVersion.startsWith("1.")) {
-                springBootFeature = springBoot15;
+                springBootFeature = SPRING_BOOT_15;
             } else if (springBootVersion.startsWith("2.")) {
-                springBootFeature = springBoot20;
+                springBootFeature = SPRING_BOOT_20;
             } else {
                 // log error for unsupported version
                 getLog().error("No supporting feature available in Open Liberty for org.springframework.boot dependency with version " + springBootVersion);
@@ -119,7 +119,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
             
             if (springBootStarter.equals("spring-boot-starter-web")) {
                 // Add the servlet-4.0 feature
-                serverConfig.addFeature(servlet);
+                serverConfig.addFeature(SERVLET_40);
             }
             
             // TODO: Add more dependency mappings if needed. 
@@ -138,9 +138,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("install-server"),
             configuration(
@@ -168,13 +168,16 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("create-server"),
             configuration(
                 element(name("serverName"), libertyServerName),
+                element(name("bootstrapProperties"),
+                        element(name("server.liberty.use-default-host"), "false")
+                ),
                 element(name("assemblyArtifact"),
                     element(name("groupId"), "io.openliberty"),
                     element(name("artifactId"), "openliberty-kernel"),
@@ -197,9 +200,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     private void thinSpringBootApp() throws MojoExecutionException { 
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("thin"),
             configuration(
@@ -221,9 +224,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("install-apps"),
             configuration(
@@ -255,9 +258,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
     
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("install-feature"),
             configuration(
@@ -280,9 +283,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
         // Package server into runnable jar
         executeMojo(
             plugin(
-                groupId("net.wasdev.wlp.maven.plugins"),
-                artifactId("liberty-maven-plugin"),
-                version("2.6-SNAPSHOT")
+                groupId(libertyMavenPluginGroupId),
+                artifactId(libertyMavenPluginArtifactId),
+                version(libertyMavenPluginVersion)
             ),
             goal("package-server"),
             configuration(
@@ -326,7 +329,6 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo
         
         Set<Artifact> artifacts = project.getArtifacts();
         for(Artifact art: artifacts) {
-            getLog().info("ARTIFACT: " + art.getArtifactId());
             if(art.getArtifactId().contains("spring-boot-starter")) {
                 springBootStarters.add(art.getArtifactId());
             }
