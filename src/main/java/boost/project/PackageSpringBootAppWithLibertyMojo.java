@@ -63,8 +63,6 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
     {                
         createDefaultRuntimeArtifactIfNeeded();
         
-        installOpenLiberty();
-        
         createServer();
         
         thinSpringBootApp();
@@ -176,23 +174,6 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
     }
     
     /**
-     * Invoke the liberty-maven-plugin to run the install-server goal
-     *
-     */
-    private void installOpenLiberty() throws MojoExecutionException {
-    
-        executeMojo(
-            getPlugin(),
-            goal("install-server"),
-            configuration(
-                element(name("serverName"), libertyServerName),
-                getRuntimeArtifactElement()
-            ),
-            getExecutionEnvironment()
-        );
-    }
-    
-    /**
      * Invoke the liberty-maven-plugin to run the create-server goal
      *
      */
@@ -279,6 +260,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
             getPlugin(),
             goal("package-server"),
             configuration(
+                element(name("isInstall"), "false"),
                 element(name("include"), "minify,runnable"),
                 element(name("serverName"), libertyServerName)
             ),
