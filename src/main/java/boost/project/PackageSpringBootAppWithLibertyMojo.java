@@ -42,7 +42,10 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
 
     String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
     String libertyMavenPluginArtifactId = "liberty-maven-plugin";
-    String libertyMavenPluginVersion = "2.5.1-SNAPSHOT";
+    
+    @Parameter( defaultValue = "2.5.1-SNAPSHOT")
+    String libertyMavenPluginVersion;
+    
     
     @Parameter(defaultValue = "${project.build.directory}")
     private String projectBuildDir;
@@ -186,7 +189,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
             goal("install-server"),
             configuration(
                 element(name("serverName"), libertyServerName),
+
                 getRuntimeArtifactElement()
+
             ),
             getExecutionEnvironment()
         );
@@ -206,7 +211,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
                 element(name("bootstrapProperties"),
                         element(name("server.liberty.use-default-host"), "false")
                 ),
+
                 getRuntimeArtifactElement()
+
             ),
             getExecutionEnvironment()
         );
