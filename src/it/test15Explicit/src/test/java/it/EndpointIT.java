@@ -22,7 +22,8 @@ public class EndpointIT {
     
     @BeforeClass
     public static void init() {
-        URL = "http://localhost:9080/";
+        // Port should be explicitly set to 8081 for testing purposes
+        URL = "http://localhost:8081/";
     }
     
     @Test
