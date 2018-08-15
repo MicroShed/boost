@@ -188,7 +188,9 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
             goal("install-server"),
             configuration(
                 element(name("serverName"), libertyServerName),
+
                 getRuntimeArtifactElement()
+
             ),
             getExecutionEnvironment()
         );
@@ -205,10 +207,12 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
             goal("create-server"),
             configuration(
                 element(name("serverName"), libertyServerName),
+
                 element(name("bootstrapProperties"),
                         element(name("server.liberty.use-default-host"), "false")
                 ),
                 getRuntimeArtifactElement()
+
             ),
             getExecutionEnvironment()
         );
