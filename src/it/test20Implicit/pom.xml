@@ -112,6 +112,15 @@
 				<groupId>boost.project</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>1.0-SNAPSHOT</version>
+                <!-- Workaround https://github.com/WASdev/ci.maven/issues/355 -->
+                <configuration>
+                    <runtimeArtifact>
+                        <groupId>com.ibm.websphere.appserver.runtime</groupId>
+                        <artifactId>wlp-kernel</artifactId>
+                        <version>18.0.0.2</version>
+                        <type>zip</type>
+                    </runtimeArtifact>
+                </configuration>
 				<executions>
 					<execution>
 						<goals>
