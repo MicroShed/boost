@@ -43,7 +43,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
     String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
     String libertyMavenPluginArtifactId = "liberty-maven-plugin";
     
-    @Parameter(defaultValue = "2.5.1-SNAPSHOT")
+    @Parameter(defaultValue = "2.6-SNAPSHOT")
     String libertyMavenPluginVersion;
     
     @Parameter(defaultValue = "${project.build.directory}")
@@ -69,22 +69,17 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
         
         createServer();
         
-        thinSpringBootApp();
-               
-        installApp();
-        
         try {
             generateServerXML();
-        } catch ( TransformerException e) {
+        } catch ( TransformerException | ParserConfigurationException e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server", e);
-        } catch ( ParserConfigurationException e) {
-            throw new MojoExecutionException("Unable to generate server configuration for the Liberty server", e);
-        }        
+        }
         
         installMissingFeatures();
+        
+        installApp();
     
         createUberJar();
-        
     }
     
     /**
@@ -215,20 +210,6 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
     }
     
     /**
-     * Invoke the liberty-maven-plugin to run the thin goal
-     *
-     */
-    private void thinSpringBootApp() throws MojoExecutionException { 
-        executeMojo(
-            getPlugin(),
-            goal("thin"),
-            configuration(
-            ),
-            getExecutionEnvironment()
-        );
-    }
-    
-    /**
      * Invoke the liberty-maven-plugin to run the install-app goal.
      *
      *
@@ -239,7 +220,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo implements
             getPlugin(),
             goal("install-apps"),
             configuration(
-                element(name("installAppPackages"), "thin-project"),
+                element(name("installAppPackages"), "spring-boot-project"),
                 element(name("serverName"), libertyServerName),
                 getRuntimeArtifactElement()
             ),
