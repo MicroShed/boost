@@ -126,6 +126,7 @@
                         <version>18.0.0.2</version>
                         <type>zip</type>
                     </runtimeArtifact>
+                    <libertyMavenPluginVersion>2.5.1-SNAPSHOT</libertyMavenPluginVersion>
                 </configuration>
                 <executions>
                     <execution>
