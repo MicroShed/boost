@@ -1,0 +1,9 @@
+sudo: required
+dist: trusty
+language: java
+jdk:
+    - openjdk8
+    - oraclejdk8
+env:
+script:
+  - travis_wait mvn verify -Pit -Dinvoker.streamLogs=true
