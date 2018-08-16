@@ -1,0 +1,8 @@
+target/
+bin/
+.project
+.settings
+.classpath
+.factorypath
+.idea/
+.DS_Store
