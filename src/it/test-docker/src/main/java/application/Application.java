@@ -24,7 +24,7 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
     
-    @RequestMapping("/")
+    @RequestMapping("/spring")
     public String hello() {
         return "Greetings from Spring Boot!";
     }
