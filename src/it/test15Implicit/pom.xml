@@ -47,11 +47,6 @@
                 <artifactId>commons-httpclient</artifactId>
                 <version>3.1</version>
             </dependency>
-            <dependency>
-                <groupId>net.wasdev.wlp.maven.plugins</groupId>
-                <artifactId>liberty-maven-plugin</artifactId>
-                <version>2.5</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -60,20 +55,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!-- tag::actuator[] -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!-- end::actuator[] -->
-        <!-- tag::tests[] -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- end::tests[] -->
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -82,12 +72,6 @@
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>net.wasdev.wlp.maven.plugins</groupId>
-            <artifactId>liberty-maven-plugin</artifactId>
-        </dependency>
-
     </dependencies>
 
     <properties>
@@ -96,7 +80,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -116,15 +99,6 @@
                 <groupId>boost.project</groupId>
                 <artifactId>boost-maven-plugin</artifactId>
                 <version>1.0-SNAPSHOT</version>
-                <!-- Workaround https://github.com/WASdev/ci.maven/issues/355 -->
-                <configuration>
-                    <runtimeArtifact>
-                        <groupId>com.ibm.websphere.appserver.runtime</groupId>
-                        <artifactId>wlp-kernel</artifactId>
-                        <version>18.0.0.2</version>
-                        <type>zip</type>
-                    </runtimeArtifact>
-                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -136,6 +110,7 @@
             <plugin>
                 <groupId>net.wasdev.wlp.maven.plugins</groupId>
                 <artifactId>liberty-maven-plugin</artifactId>
+                <version>2.6-SNAPSHOT</version>
                 <configuration>
                     <installDirectory>${project.build.directory}/liberty/wlp</installDirectory>
                     <!-- hard-coded -->
@@ -160,6 +135,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
-
