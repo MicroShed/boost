@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package boost.project;
+package boost.project.utils;
 
 import java.io.File;
 import java.util.HashSet;
@@ -28,12 +28,14 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import static boost.project.utils.ConfigConstants.*;
+
 
 /**
  * Create a Liberty server.xml
  *
  */
-public class LibertyServerConfigGenerator implements ConfigConstants {
+public class LibertyServerConfigGenerator {
     
 	Document doc;
 	Element featureManager;
