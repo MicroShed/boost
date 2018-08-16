@@ -90,8 +90,8 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>boost.project</groupId>
+	       <plugin>
+            	<groupId>boost.project</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>1.0-SNAPSHOT</version>
 				<executions>

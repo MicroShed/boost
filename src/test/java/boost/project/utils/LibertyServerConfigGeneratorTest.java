@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package boost.project;
+package boost.project.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +26,10 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Element;
 
-public class LibertyServerConfigGeneratorTest implements ConfigConstants{
+import static boost.project.utils.ConfigConstants.*;
+import boost.project.utils.LibertyServerConfigGenerator;
+
+public class LibertyServerConfigGeneratorTest {
 
     @Rule
     public TemporaryFolder outputDir = new TemporaryFolder();
@@ -58,10 +61,10 @@ public class LibertyServerConfigGeneratorTest implements ConfigConstants{
     public void testZeroFeaturesInDefaultServerConfig() throws ParserConfigurationException, TransformerException, IOException {
         LibertyServerConfigGenerator g = new LibertyServerConfigGenerator();
         Element serverRoot = g.doc.getDocumentElement();
-        List<Element> featureMgrList = getDirectChildrenByTag(serverRoot, LibertyServerConfigGenerator.FEATURE_MANAGER);
+        List<Element> featureMgrList = getDirectChildrenByTag(serverRoot, FEATURE_MANAGER);
         assertEquals("Didn't find one and only one featureMgr", 1, featureMgrList.size());
         Element featureMgr = featureMgrList.get(0);
-        List<Element> featureList = getDirectChildrenByTag(featureMgr, LibertyServerConfigGenerator.FEATURE);
+        List<Element> featureList = getDirectChildrenByTag(featureMgr, FEATURE);
         assertEquals("Didn't find empty list of features", 0, featureList.size());
     }
 
