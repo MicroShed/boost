@@ -1,4 +1,4 @@
-package boost.project.common;
+package boost.project.utils;
 
 public interface ConfigConstants {
 	public String FEATURE = "feature";
