@@ -4,6 +4,9 @@ language: java
 jdk:
     - openjdk8
     - oraclejdk8
+
+services:
+    - docker
 env:
 script:
   - travis_wait mvn verify -Pit -Dinvoker.streamLogs=true
