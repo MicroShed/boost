@@ -207,8 +207,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
 
         executeMojo(getPlugin(), goal("install-feature"), configuration(element(name("serverName"), libertyServerName),
                 element(name("features"), element(name("acceptLicense"), "true")
-
-                )), getExecutionEnvironment());
+        )), getExecutionEnvironment());
     }
 
     /**
@@ -220,7 +219,11 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
         // Package server into runnable jar
         executeMojo(getPlugin(),
                 goal("package-server"), configuration(element(name("isInstall"), "false"),
-                        element(name("include"), "minify,runnable"), element(name("serverName"), libertyServerName)),
+                        element(name("include"), "minify,runnable"),
+                        element(name("packageFile"), "${project.build.directory}/LibertyThinPackage.jar"),
+                        element(name("attach"), "true"),
+                        element(name("serverName"), libertyServerName)
+                ),
                 getExecutionEnvironment());
     }
 
