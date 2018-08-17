@@ -56,8 +56,8 @@ public abstract class AbstractBoostMojo extends AbstractMojo{
     protected String finalName;
     
     /**
-     * Classifier to add to the artifact generated. If given, the artifact will be
-     * attached with that classifier and the main artifact will be deployed as the
+     * Classifier to add to the artifact generated. If given, the classifier will be
+     * suffixed to the artifact and the main artifact will be deployed as the
      * main artifact. If this is not given (default), it will replace the main
      * artifact and only the repackaged artifact will be deployed. Attaching the
      * artifact allows to deploy it alongside to the original one, see <a href=
@@ -83,16 +83,14 @@ public abstract class AbstractBoostMojo extends AbstractMojo{
     }
     
     protected String findSpringBootVersion() {
-        String version = null;
         Set<Artifact> artifacts = mavenProject.getArtifacts();
         if(artifacts != null) {           
             for(Artifact artifact : artifacts) {
                 if("org.springframework.boot".equals(artifact.getGroupId()) && "spring-boot".equals(artifact.getArtifactId())){
-                    version = artifact.getVersion();
-                    break;
+                    return  artifact.getVersion();
                 }
             }
         }
-        return version;
+        return null;
     }
 }
