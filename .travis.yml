@@ -5,5 +5,12 @@ jdk:
     - openjdk8
     - oraclejdk8
 env:
+before_install:
+     - rm -rf ./boost-common
+     - echo 'cloning boost-common lib ....'
+     - git clone https://github.com/OpenLiberty/boost-common.git ./boost-common
+     - cd ./boost-common
+     - mvn clean install
+     - cd ..
 script:
   - travis_wait mvn verify -Pit -Dinvoker.streamLogs=true
