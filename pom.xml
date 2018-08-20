@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>boost.project</groupId>
-  <artifactId>boost-maven-common</artifactId>
+  <artifactId>boost-common</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>boost-maven-common</name>
+  <name>boost-common</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
