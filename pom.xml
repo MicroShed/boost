@@ -8,11 +8,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>boost.project</groupId>
-    <artifactId>boost-maven-plugin</artifactId>
-    <packaging>maven-plugin</packaging>
+    <artifactId>boost-maven-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>boost-maven-plugin Maven Mojo</name>
-
+	<packaging>pom</packaging>
+    
+	<name>boost-maven-plugin Parent</name>
+	
+	<modules>
+		<module>boost-maven-plugin</module>
+		<module>boost-booster-packs</module>
+	</modules>
+	
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -68,37 +74,4 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>it</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-invoker-plugin</artifactId>
-                        <version>3.0.1</version>
-                        <configuration>
-                            <debug>false</debug>
-                            <goals>
-                                <goal>install</goal>
-                            </goals>
-                            <projectsDirectory>src/it</projectsDirectory>
-                            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-                            <streamLogs>true</streamLogs>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>integration-test</id>
-                                <goals>
-                                    <goal>install</goal>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
