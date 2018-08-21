@@ -13,6 +13,7 @@ package boost.project;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -22,6 +23,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
@@ -41,7 +43,11 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  *
  */
 @Mojo(name = "package-app", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
+public class LibertyBoostMojo extends AbstractMojo {
+
+	BoosterPacksParent boosterParent;
+	List<BoosterPackConfigurator> boosterFeatures = null;
+
     String libertyServerName = "BoostServer";
 
     String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
@@ -55,7 +61,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}")
     private MavenProject mavenProject;
-
+		
     @Parameter(defaultValue = "${session}")
     private MavenSession mavenSession;
 
@@ -66,21 +72,33 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
     private ArtifactItem runtimeArtifact;
 
     public void execute() throws MojoExecutionException {
+
+    	List<String> deps = null;
+    	boosterParent = new BoosterPacksParent();
+    
         createDefaultRuntimeArtifactIfNeeded();
 
         createServer();
-
-        try {
-            generateServerXML();
-        } catch (TransformerException | ParserConfigurationException e) {
+    	
+        String springBootVersion = SpringBootProjectUtils.findSpringBootVersion(mavenProject);
+        
+		try {
+			if (springBootVersion != null) {
+				// dealing with a spring boot app
+				installApp("spring-boot-project");
+				generateServerXML();
+				generateBootstrapProps();
+			} else {
+				// dealing with an EE based app
+				installApp("project");
+				boosterFeatures = getBoosterConfigsFromDependencies(mavenProject);
+				generateServerXMLJ2EE(boosterFeatures);
+			}
+        } catch ( TransformerException | ParserConfigurationException e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server", e);
         }
 
-        generateBootstrapProps();
-
         installMissingFeatures();
-
-        installApp();
 
         createUberJar();
     }
@@ -150,13 +168,48 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
         serverConfig.addFeatures(featuresNeededForSpringBootApp);
 
         serverConfig.addHttpEndpoint(null, "${server.port}", null);
-
+        
         // Write server.xml to Liberty server config directory
         serverConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
 
     }
 
-    private Plugin getPlugin() throws MojoExecutionException {
+	private List<BoosterPackConfigurator> getBoosterConfigsFromDependencies(MavenProject proj) {
+		
+    	List<String> listOfDependencies = new ArrayList<String>();
+		getLog().debug("getBoostCfg: first lets see what dependencies we find");
+		
+		for (Artifact artifact : mavenProject.getArtifacts()) {
+			getLog().debug("getBoostCfg: found this, adding as a string -> " + artifact.getArtifactId());
+			listOfDependencies.add(artifact.getArtifactId());
+		}
+		
+		return boosterParent.mapDependenciesToFeatureList(listOfDependencies);
+	}
+	    
+	/**
+	 * Generate a server.xml based on the found EE dependencies
+	 * 
+	 * @throws TransformerException
+	 * @throws ParserConfigurationException
+	 */
+	private void generateServerXMLJ2EE(List<BoosterPackConfigurator> boosterConfigurators)
+			throws TransformerException, ParserConfigurationException {
+
+		LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator();
+
+		// Add any other Liberty features needed depending on the spring boot
+		// starters defined
+		List<String> boosterFeatureNames = getBoosterFeatureNames(boosterConfigurators);
+		serverConfig.addFeatures(boosterFeatureNames);
+		serverConfig.addConfigForFeatures(boosterConfigurators);
+
+		// Write server.xml to Liberty server config directory
+		serverConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
+
+	}    
+    
+	private Plugin getPlugin() throws MojoExecutionException {
         return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
                 version(libertyMavenPluginVersion));
     }
@@ -173,6 +226,32 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
     }
 
     /**
+     * 
+     * @param boosterConfigurators
+     * @return
+     */
+    private List<String> getBoosterFeatureNames(List<BoosterPackConfigurator> boosterConfigurators) {
+			List<String> featureStrings = new ArrayList<String>();
+			for (BoosterPackConfigurator bpconfig : boosterConfigurators){
+				featureStrings.add(bpconfig.getFeatureString());
+			}
+			
+			return featureStrings;
+		}
+
+	private List<String> findJ2EEAppFeatureDependencies(MavenProject project) {
+		
+    	List<String> listOfDependencies = new ArrayList<String>();
+		getLog().debug("first lets see what dependencies we find");
+		for (Artifact artifact : mavenProject.getArtifacts()) {
+			getLog().debug("found this dependency, adding as a string -> " + artifact.getArtifactId());
+			listOfDependencies.add(artifact.getArtifactId());
+		}
+    	
+    	return listOfDependencies;
+	}
+    
+    /**
      * Invoke the liberty-maven-plugin to run the create-server goal
      *
      */
@@ -188,12 +267,18 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
      *
      *
      */
-    private void installApp() throws MojoExecutionException {
-
-        executeMojo(getPlugin(), goal("install-apps"),
-                configuration(element(name("installAppPackages"), "spring-boot-project"),
-                        element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
-                getExecutionEnvironment());
+    private void installApp(String installAppPackagesVal) throws MojoExecutionException {
+    
+        executeMojo(
+            getPlugin(),
+            goal("install-apps"),
+            configuration(
+                element(name("installAppPackages"), installAppPackagesVal),
+                element(name("serverName"), libertyServerName),
+                getRuntimeArtifactElement()
+            ),
+            getExecutionEnvironment()
+        );
     }
 
     /**

@@ -21,7 +21,7 @@ public class SpringBootProjectUtils {
     private static final String DEFAULT_SERVER_PORT = "8080";
 
     private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
-
+    
     public static Properties getSpringBootServerProperties(String buildDir) throws IOException {
 
         Properties serverProperties = new Properties();
@@ -57,7 +57,7 @@ public class SpringBootProjectUtils {
         String springBootVersion = findSpringBootVersion(mavenProject);
 
         if (springBootVersion != null) {
-
+        	
             String springBootFeature = null;
 
             if (springBootVersion.startsWith("1.")) {
@@ -102,7 +102,7 @@ public class SpringBootProjectUtils {
     /**
      * Detect spring boot version dependency
      */
-    private static String findSpringBootVersion(MavenProject project) {
+    public static String findSpringBootVersion(MavenProject project) {
         String version = null;
 
         Set<Artifact> artifacts = project.getArtifacts();
