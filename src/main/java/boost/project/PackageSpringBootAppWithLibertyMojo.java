@@ -10,6 +10,7 @@
  *******************************************************************************/
 package boost.project;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,6 +23,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
@@ -33,6 +35,7 @@ import org.codehaus.mojo.pluginsupport.util.ArtifactItem;
 import boost.project.utils.LibertyServerConfigGenerator;
 
 import boost.project.utils.SpringBootProjectUtils;
+import boost.project.utils.SpringBootUtil;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
@@ -54,20 +57,28 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
     private String projectBuildDir;
 
     @Parameter(defaultValue = "${project}")
-    private MavenProject mavenProject;
+    private MavenProject project;
 
     @Parameter(defaultValue = "${session}")
-    private MavenSession mavenSession;
+    private MavenSession session;
 
     @Component
     private BuildPluginManager pluginManager;
 
     @Parameter
     private ArtifactItem runtimeArtifact;
+    
+    SpringBootUtil springBootUtil = new SpringBootUtil();
 
-    public void execute() throws MojoExecutionException {
+    public void execute() throws MojoExecutionException { 
         createDefaultRuntimeArtifactIfNeeded();
 
+        try {
+            springBootUtil.copySpringBootUberJar(project.getArtifact().getFile());
+        } catch (BoostException e1) {
+            throw new MojoExecutionException(e1.getMessage(), e1);
+        }
+        
         createServer();
 
         try {
@@ -79,10 +90,27 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
         generateBootstrapProps();
 
         installMissingFeatures();
+        
+        // Copy the Spring Boot uber JAR back as the project artifact
+        try {
+            File springJar = new File(springBootUtil.getSpringBootUberJarPath(project.getArtifact().getFile()));
+            if(springJar.exists()) {
+                FileUtils.copyFile(springJar, project.getArtifact().getFile());
+            }
+        } catch (BoostException | IOException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
 
         installApp();
 
         createUberJar();
+        
+        // Add the manifest to prevent Spring Boot from repackaging again
+        try {
+            springBootUtil.addSpringBootVersionToManifest(project.getArtifact().getFile());
+        } catch (BoostException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -113,7 +141,6 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
         OutputStream output = null;
 
         try {
-
             output = new FileOutputStream(
                     projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName + "/bootstrap.properties");
             springBootProps.store(output, null);
@@ -129,9 +156,7 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
                             io_finally);
                 }
             }
-
         }
-
     }
 
     /**
@@ -145,20 +170,17 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator();
 
         // Find and add appropriate springBoot features
-        List<String> featuresNeededForSpringBootApp = SpringBootProjectUtils.getLibertyFeaturesNeeded(mavenProject,
-                getLog());
+        List<String> featuresNeededForSpringBootApp = SpringBootProjectUtils.getLibertyFeaturesNeeded(project, getLog());
         serverConfig.addFeatures(featuresNeededForSpringBootApp);
 
         serverConfig.addHttpEndpoint(null, "${server.port}", null);
 
         // Write server.xml to Liberty server config directory
         serverConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
-
     }
 
     private Plugin getPlugin() throws MojoExecutionException {
-        return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
-                version(libertyMavenPluginVersion));
+        return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId), version(libertyMavenPluginVersion));
     }
 
     private Element getRuntimeArtifactElement() {
@@ -169,12 +191,11 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
     }
 
     private ExecutionEnvironment getExecutionEnvironment() {
-        return executionEnvironment(mavenProject, mavenSession, pluginManager);
+        return executionEnvironment(project, session, pluginManager);
     }
 
     /**
      * Invoke the liberty-maven-plugin to run the create-server goal
-     *
      */
     private void createServer() throws MojoExecutionException {
 
@@ -185,17 +206,14 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
 
     /**
      * Invoke the liberty-maven-plugin to run the install-app goal.
-     *
-     *
      */
     private void installApp() throws MojoExecutionException {
-
         executeMojo(getPlugin(), goal("install-apps"),
                 configuration(element(name("installAppPackages"), "spring-boot-project"),
                         element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
                 getExecutionEnvironment());
     }
-
+    
     /**
      * Invoke the liberty-maven-plugin to run the install-feature goal.
      *
@@ -215,16 +233,14 @@ public class PackageSpringBootAppWithLibertyMojo extends AbstractMojo {
      *
      */
     private void createUberJar() throws MojoExecutionException {
-
         // Package server into runnable jar
         executeMojo(getPlugin(),
-                goal("package-server"), configuration(element(name("isInstall"), "false"),
-                        element(name("include"), "minify,runnable"),
-                        element(name("packageFile"), "${project.build.directory}/LibertyThinPackage.jar"),
-                        element(name("attach"), "true"),
-                        element(name("serverName"), libertyServerName)
-                ),
-                getExecutionEnvironment());
+            goal("package-server"), configuration(element(name("isInstall"), "false"),
+                    element(name("include"), "minify,runnable"),
+                    element(name("attach"), "true"),
+                    element(name("serverName"), libertyServerName)
+            ),
+        getExecutionEnvironment());
     }
 
 }

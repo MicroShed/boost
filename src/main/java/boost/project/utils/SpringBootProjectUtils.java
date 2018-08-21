@@ -102,7 +102,7 @@ public class SpringBootProjectUtils {
     /**
      * Detect spring boot version dependency
      */
-    private static String findSpringBootVersion(MavenProject project) {
+    public static String findSpringBootVersion(MavenProject project) {
         String version = null;
 
         Set<Artifact> artifacts = project.getArtifacts();

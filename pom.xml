@@ -63,9 +63,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-           <groupId>boost.project</groupId>
-           <artifactId>boost-common</artifactId>
-           <version>1.0-SNAPSHOT</version>
+            <groupId>boost.project</groupId>
+            <artifactId>boost-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
