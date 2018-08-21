@@ -28,6 +28,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import boost.project.BoosterPackConfigurator;
 import static boost.project.utils.ConfigConstants.*;
 
 
@@ -134,6 +135,13 @@ public class LibertyServerConfigGenerator {
 		DOMSource source = new DOMSource(doc);
 		StreamResult result = new StreamResult(new File(serverPath + "/server.xml"));
 		transformer.transform(source, result);
+		
+	}
+	
+	public void addConfigForFeatures(List<BoosterPackConfigurator> boosterConfigurators) {
+		for (BoosterPackConfigurator booster : boosterConfigurators) {
+			booster.writeConfigToServerXML(doc);
+		}
 		
 	}
 }
