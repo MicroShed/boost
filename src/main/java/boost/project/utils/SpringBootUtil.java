@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package boost.project.utils;
 
 import static boost.project.utils.ConfigConstants.BOOT_VERSION_ATTRIBUTE;
@@ -12,8 +23,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -43,11 +52,6 @@ public class SpringBootUtil {
     public void copySpringBootUberJar(File artifact) throws BoostException {
         try {
             File springJar = new File(getSpringBootUberJarPath(artifact));
-            // Delete the old Spring Boot uber JAR
-            /*if(springJar.exists()) {
-                springJar.delete();
-            }
-            */
             
             // We are sure the artifact is a Spring Boot uber JAR if it has Spring-Boot-Version in the manifest, but not a wlp directory
             if(isSpringBootUberJar(artifact) && !BoostUtil.isLibertyJar(artifact)) {
@@ -59,14 +63,9 @@ public class SpringBootUtil {
     }
     
     public void addSpringBootVersionToManifest(File artifact) throws BoostException {
-        Map<String, String> env = new HashMap<>(); 
-        env.put("create", "true");
-        // locate file system by using the syntax 
-        // defined in java.net.JarURLConnection
         Path path = artifact.toPath();
 
        try (FileSystem zipfs = FileSystems.newFileSystem(path, getClass().getClassLoader())) {
-            //Path externalTxtFile = Paths.get("/codeSamples/zipfs/SomeTextFile.txt");
             Path zipPath = zipfs.getPath("/META-INF/MANIFEST.MF");
             
             InputStream is = Files.newInputStream(zipPath);
