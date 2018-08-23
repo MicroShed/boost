@@ -28,11 +28,30 @@
         </pluginRepository>
     </pluginRepositories>
     
-    <dependencies>
+    <dependencyManagement>    
+		<dependencies>
+			<dependency>
+				<groupId>io.openliberty.boost</groupId>
+				<artifactId>liberty-boost-bom</artifactId>
+				<version>0.1-SNAPSHOT</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>  
+	</dependencyManagement>
+    
+    <dependencies> 
+		<!-- Java EE 7 dependency, as picked on the starter page -->
 		<dependency>
-			<groupId>io.openliberty.boost</groupId>
-			<artifactId>liberty-booster-jaxrs</artifactId>
-			<version>0.1-SNAPSHOT</version>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.openliberty.features</groupId>
+			<artifactId>jaxrs-2.0</artifactId>
+			<type>esa</type>
+       		<scope>provided</scope>
 		</dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -40,6 +59,12 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+			<scope>test</scope>
+		</dependency>
     </dependencies>
     
     <build>

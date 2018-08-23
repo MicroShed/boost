@@ -11,14 +11,26 @@
     </parent>
 	
     <groupId>io.openliberty.boost</groupId>
-    <artifactId>liberty-boost-booster-packs</artifactId>
+    <artifactId>liberty-boost-bom</artifactId>
     <version>0.1-SNAPSHOT</version>
 	
     <packaging>pom</packaging>
 
-    <modules>
-        <module>liberty-boost-data-jpa</module>
-        <module>liberty-boost-data-jdbc</module>
-        <module>liberty-boost-jaxrs</module>       
-    </modules>
+    <description>Liberty Boost EE Feature Bom</description>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.openliberty.features</groupId>
+                <artifactId>jaxrs-2.0</artifactId>
+                <version>18.0.0.2</version>
+                <type>esa</type>
+            </dependency>
+            <dependency>
+                <groupId>io.openliberty.features</groupId>
+                <artifactId>jaxrs-2.1</artifactId>
+                <version>18.0.0.2</version>
+                <type>esa</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
