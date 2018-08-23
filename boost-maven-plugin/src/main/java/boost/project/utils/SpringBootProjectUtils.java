@@ -91,9 +91,11 @@ public class SpringBootProjectUtils {
             if (springBootStarter.equals("spring-boot-starter-web")) {
                 // Add the servlet-4.0 feature
                 featuresToAdd.add(SERVLET_40);
+            } else if (springBootStarter.equals("spring-boot-starter-websocket")) {
+            	// Add the websocket-1.1 feature
+            	featuresToAdd.add(WEBSOCKET_11);
             }
 
-            // TODO: Add more dependency mappings if needed.
         }
 
         return featuresToAdd;

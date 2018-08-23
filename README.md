@@ -34,7 +34,7 @@ When added to your pom.xml, the plugin will
           <execution>
                 <phase>package</phase>
                 <goals>
-                      <goal>package-app</goal>
+                      <goal>package</goal>
                 </goals>
           </execution>
        </executions>

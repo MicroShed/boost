@@ -42,7 +42,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  * Package a Spring Boot application with Liberty
  *
  */
-@Mojo(name = "package-app", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class LibertyBoostMojo extends AbstractMojo {
 
 	BoosterPacksParent boosterParent;
