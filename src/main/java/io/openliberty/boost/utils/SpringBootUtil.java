@@ -9,9 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package boost.project.utils;
+package io.openliberty.boost.utils;
 
-import static boost.project.utils.ConfigConstants.BOOT_VERSION_ATTRIBUTE;
+import static io.openliberty.boost.utils.ConfigConstants.BOOT_VERSION_ATTRIBUTE;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,7 +29,7 @@ import java.util.jar.Manifest;
 
 import org.apache.commons.io.FileUtils;
 
-import boost.project.BoostException;
+import io.openliberty.boost.BoostException;
 
 public class SpringBootUtil {
     

@@ -9,19 +9,22 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package boost.project.utils;
+package io.openliberty.boost;
 
-public interface ConfigConstants {
-	public String FEATURE = "feature";
-	public String FEATURE_MANAGER = "featureManager";
-	public String HTTP_ENDPOINT = "httpEndpoint";
-	public String DEFAULT_HTTP_ENDPOINT = "defaultHttpEndpoint";
+public class BoostException extends Exception {
 
-    public String SPRING_BOOT_15 = "springBoot-1.5";
-    public String SPRING_BOOT_20 = "springBoot-2.0";
-    public String SERVLET_40 = "servlet-4.0";
+    private static final long serialVersionUID = 1L;
+
+    public BoostException(String message) {
+        super(message);
+    }
     
-    public String WEBSOCKET_11 = "websocket-1.1";
+    public BoostException(String message, Throwable e) {
+        super(message, e);
+    }
     
-    public String BOOT_VERSION_ATTRIBUTE = "Spring-Boot-Version";
+    public BoostException(Throwable e) {
+        super(e);
+}
+    
 }

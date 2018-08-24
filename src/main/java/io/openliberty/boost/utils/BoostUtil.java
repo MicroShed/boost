@@ -9,13 +9,13 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package boost.project.utils;
+package io.openliberty.boost.utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.jar.JarFile;
 
-import boost.project.BoostException;
+import io.openliberty.boost.BoostException;
 
 public class BoostUtil {
 

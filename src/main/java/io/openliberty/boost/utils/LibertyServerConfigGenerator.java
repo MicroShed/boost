@@ -8,7 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package boost.project.utils;
+package io.openliberty.boost.utils;
+
+import static io.openliberty.boost.utils.ConfigConstants.*;
 
 import java.io.File;
 import java.util.HashSet;
@@ -28,8 +30,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import boost.project.BoosterPackConfigurator;
-import static boost.project.utils.ConfigConstants.*;
+import io.openliberty.boost.BoosterPackConfigurator;
 
 
 /**

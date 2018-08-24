@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package util;
+package io.openliberty.boost.utils;
 
 import static org.junit.Assert.fail;
 
