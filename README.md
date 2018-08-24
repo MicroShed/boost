@@ -27,9 +27,9 @@ When added to your pom.xml, the plugin will
 1. Add the following to your project pom.xml
 ```xml
   <plugin>
-        <groupId>boost.project</groupId>
+        <groupId>io.openliberty.boost</groupId>
         <artifactId>boost-maven-plugin</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.1-SNAPSHOT</version>
         <executions>
           <execution>
                 <phase>package</phase>

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package boost.project;
+package io.openliberty.boost;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,10 +34,10 @@ import org.apache.maven.plugins.annotations.*;
 
 import org.codehaus.mojo.pluginsupport.util.ArtifactItem;
 
-import boost.project.utils.LibertyServerConfigGenerator;
-
-import boost.project.utils.SpringBootProjectUtils;
-import boost.project.utils.SpringBootUtil;
+import io.openliberty.boost.BoosterPackConfigurator;
+import io.openliberty.boost.utils.LibertyServerConfigGenerator;
+import io.openliberty.boost.utils.SpringBootProjectUtils;
+import io.openliberty.boost.utils.SpringBootUtil;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
@@ -78,8 +78,7 @@ public class LibertyBoostMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
 
-        	List<String> deps = null;
-        	boosterParent = new BoosterPacksParent();
+        boosterParent = new BoosterPacksParent();
     
         createDefaultRuntimeArtifactIfNeeded();
 
@@ -254,26 +253,14 @@ public class LibertyBoostMojo extends AbstractMojo {
      * @return
      */
     private List<String> getBoosterFeatureNames(List<BoosterPackConfigurator> boosterConfigurators) {
-			List<String> featureStrings = new ArrayList<String>();
-			for (BoosterPackConfigurator bpconfig : boosterConfigurators){
-				featureStrings.add(bpconfig.getFeatureString());
-			}
-			
-			return featureStrings;
+		List<String> featureStrings = new ArrayList<String>();
+		for (BoosterPackConfigurator bpconfig : boosterConfigurators){
+			featureStrings.add(bpconfig.getFeatureString());
 		}
-
-	private List<String> findJ2EEAppFeatureDependencies(MavenProject project) {
 		
-    	List<String> listOfDependencies = new ArrayList<String>();
-		getLog().debug("first lets see what dependencies we find");
-		for (Artifact artifact : project.getArtifacts()) {
-			getLog().debug("found this dependency, adding as a string -> " + artifact.getArtifactId());
-			listOfDependencies.add(artifact.getArtifactId());
-		}
-    	
-    	return listOfDependencies;
+		return featureStrings;
 	}
-    
+
     /**
      * Invoke the liberty-maven-plugin to run the create-server goal
      */

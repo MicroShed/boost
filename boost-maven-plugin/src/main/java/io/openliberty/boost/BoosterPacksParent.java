@@ -1,9 +1,9 @@
-package boost.project;
+package io.openliberty.boost;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.model.Dependency;
+import io.openliberty.boost.BoosterPackConfigurator;
 
 public class BoosterPacksParent {
 

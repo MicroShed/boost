@@ -1,4 +1,4 @@
-package boost.project.utils;
+package io.openliberty.boost.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import static boost.project.utils.ConfigConstants.*;
+import static io.openliberty.boost.utils.ConfigConstants.*;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.logging.Log;

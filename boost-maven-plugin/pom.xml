@@ -8,14 +8,13 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-        <groupId>boost.project</groupId>
+        <groupId>io.openliberty.boost</groupId>
 		<artifactId>boost-maven-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>0.1-SNAPSHOT</version>
     </parent>
-	
+    
     <artifactId>boost-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>boost-maven-plugin Maven Mojo</name>	
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,12 +24,6 @@
     </properties>
 
     <dependencies>
-		<dependency>
-			<groupId>boost.project</groupId>
-			<artifactId>boost-common</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>	
-		
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
@@ -46,12 +39,7 @@
             <groupId>org.twdata.maven</groupId>
             <artifactId>mojo-executor</artifactId>
             <version>2.3.0</version>
-        </dependency>
-		<!--<dependency>
-			<groupId>boost.project</groupId>
-			<artifactId>boost-maven-parent</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency> -->	
+        </dependency>	
     </dependencies>
 
     <profiles>
