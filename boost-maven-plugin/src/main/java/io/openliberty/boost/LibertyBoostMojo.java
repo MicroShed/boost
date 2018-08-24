@@ -82,8 +82,9 @@ public class LibertyBoostMojo extends AbstractMojo {
     
         createDefaultRuntimeArtifactIfNeeded();
 
+        boolean didCopySpringBootUberJar;
         try {
-            springBootUtil.copySpringBootUberJar(project.getArtifact().getFile());
+            didCopySpringBootUberJar = springBootUtil.copySpringBootUberJar(project.getArtifact().getFile());
         } catch (BoostException e1) {
             throw new MojoExecutionException(e1.getMessage(), e1);
         }
@@ -110,16 +111,18 @@ public class LibertyBoostMojo extends AbstractMojo {
 
         installMissingFeatures();
         
-        // Copy the Spring Boot uber JAR back as the project artifact
-        try {
-            File springJar = new File(springBootUtil.getSpringBootUberJarPath(project.getArtifact().getFile()));
-            if(springJar.exists()) {
-                FileUtils.copyFile(springJar, project.getArtifact().getFile());
+        // Copy the Spring Boot uber JAR back as the project artifact, only if Spring Boot didn't create it already
+        if(!didCopySpringBootUberJar) {
+            try {
+                File springJar = new File(springBootUtil.getSpringBootUberJarPath(project.getArtifact().getFile()));
+                if(springJar.exists()) {
+                    FileUtils.copyFile(springJar, project.getArtifact().getFile());
+                }
+            } catch (BoostException | IOException e) {
+                throw new MojoExecutionException(e.getMessage(), e);
             }
-        } catch (BoostException | IOException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
         }
-
+        
         createUberJar();
         
         // Add the manifest to prevent Spring Boot from repackaging again
