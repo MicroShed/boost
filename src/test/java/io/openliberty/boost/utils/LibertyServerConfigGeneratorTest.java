@@ -8,12 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package boost.project.utils;
+package io.openliberty.boost.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static util.ConfigFileUtils.findStringInServerXml;
-import static util.DOMUtils.getDirectChildrenByTag;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,8 +24,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Element;
 
-import static boost.project.utils.ConfigConstants.*;
-import boost.project.utils.LibertyServerConfigGenerator;
+import io.openliberty.boost.utils.LibertyServerConfigGenerator;
+
+import static io.openliberty.boost.utils.ConfigConstants.*;
+import static io.openliberty.boost.utils.ConfigFileUtils.findStringInServerXml;
+import static io.openliberty.boost.utils.DOMUtils.getDirectChildrenByTag;
 
 public class LibertyServerConfigGeneratorTest {
 

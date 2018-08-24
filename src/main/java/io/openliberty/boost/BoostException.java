@@ -8,26 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- 
-package boost.project;
 
-import org.w3c.dom.Document;
+package io.openliberty.boost;
 
-/**
- * Interface to describe common function across all technology Booster Pack Config Objects
- *
- */
-public interface BoosterPackConfigurator {
-	
-	/**
-	 * method to return the string feature name - will be written to the feature manager stanza of server.xml
-	 * @return
-	 */
-	public String getFeatureString();
-	
-	/**
-	 * method to write out the default config for a particular feature into server.xml
-	 * @param doc
-	 */
-	public void writeConfigToServerXML(Document doc);
+public class BoostException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+    public BoostException(String message) {
+        super(message);
+    }
+    
+    public BoostException(String message, Throwable e) {
+        super(message, e);
+    }
+    
+    public BoostException(Throwable e) {
+        super(e);
+}
+    
 }
