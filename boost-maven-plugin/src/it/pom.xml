@@ -19,6 +19,7 @@
         <module>test15Explicit</module>
         <module>test15Implicit</module>
         <module>test20Implicit</module>
+        <module>testWebsocket</module>
     </modules>
     
 </project>
