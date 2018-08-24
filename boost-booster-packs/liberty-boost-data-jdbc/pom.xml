@@ -5,15 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>boost.project</groupId>
+        <groupId>io.openliberty.boost</groupId>
 		<artifactId>liberty-boost-booster-packs</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>0.1-SNAPSHOT</version>
     </parent>
 
-    <!-- <groupId>boost.project</groupId> -->
+    <groupId>io.openliberty.boost</groupId>
     <artifactId>liberty-booster-jdbc</artifactId>
-	<name>Liberty Boost JDBC Booster Pack</name>
-    <!-- <version>1.0-SNAPSHOT</version> -->
-
+    <version>0.1-SNAPSHOT</version>
+    <name>Liberty Boost JDBC Booster Pack</name>
     
 </project>

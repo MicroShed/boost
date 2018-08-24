@@ -1,17 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>boost</groupId>
-    <artifactId>jaxrstest</artifactId>
+    <groupId>io.openliberty.boost</groupId>
+    <artifactId>test-jaxrs-2.0</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
- 
-	<!--
-    <parent>
-        <groupId>net.wasdev.wlp.maven.parent</groupId>
-        <artifactId>liberty-maven-app-parent</artifactId>
-        <version>2.1.2</version>
-    </parent>
-    -->
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,9 +14,9 @@
     
     <dependencies>
 		<dependency>
-			<groupId>boost.project</groupId>
+			<groupId>io.openliberty.boost</groupId>
 			<artifactId>liberty-booster-jaxrs</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>0.1-SNAPSHOT</version>
 		</dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -35,7 +27,6 @@
     </dependencies>
     
     <build>
-        <!-- <finalName>${project.artifactId}</finalName> -->
         <plugins>
 			<plugin>
 				<groupId>net.wasdev.wlp.maven.plugins</groupId>
@@ -64,9 +55,9 @@
 				</executions>
 			</plugin>
 			<plugin>
-            	<groupId>boost.project</groupId>
+            	<groupId>io.openliberty.boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
-				<version>1.0-SNAPSHOT</version>
+				<version>0.1-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<goals>
