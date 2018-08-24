@@ -49,17 +49,19 @@ public class SpringBootUtil {
         }
     }
 
-    public void copySpringBootUberJar(File artifact) throws BoostException {
+    public boolean copySpringBootUberJar(File artifact) throws BoostException {
         try {
             File springJar = new File(getSpringBootUberJarPath(artifact));
             
             // We are sure the artifact is a Spring Boot uber JAR if it has Spring-Boot-Version in the manifest, but not a wlp directory
             if(isSpringBootUberJar(artifact) && !BoostUtil.isLibertyJar(artifact)) {
                 FileUtils.copyFile(artifact, springJar);
+                return true;
             }
         } catch (IOException e) {
             throw new BoostException("Error copying Spring Boot uber JAR.", e);
         }
+        return false;
     }
     
     public void addSpringBootVersionToManifest(File artifact) throws BoostException {
