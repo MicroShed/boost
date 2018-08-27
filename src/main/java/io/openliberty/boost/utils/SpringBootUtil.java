@@ -64,7 +64,7 @@ public class SpringBootUtil {
         return false;
     }
     
-    public void addSpringBootVersionToManifest(File artifact) throws BoostException {
+    public void addSpringBootVersionToManifest(File artifact, String springBootVersion) throws BoostException {
         Path path = artifact.toPath();
 
        try (FileSystem zipfs = FileSystems.newFileSystem(path, getClass().getClassLoader())) {
@@ -73,7 +73,7 @@ public class SpringBootUtil {
             InputStream is = Files.newInputStream(zipPath);
             
             Manifest manifest = new Manifest(is);
-            manifest.getMainAttributes().put(new Attributes.Name(BOOT_VERSION_ATTRIBUTE), "1"); // Just put something here
+            manifest.getMainAttributes().put(new Attributes.Name(BOOT_VERSION_ATTRIBUTE), springBootVersion);
             
             ByteArrayOutputStream manifestOs = new ByteArrayOutputStream();
             manifest.write(manifestOs);
