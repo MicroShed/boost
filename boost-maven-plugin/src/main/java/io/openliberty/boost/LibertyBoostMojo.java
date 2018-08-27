@@ -77,21 +77,27 @@ public class LibertyBoostMojo extends AbstractMojo {
     SpringBootUtil springBootUtil = new SpringBootUtil();
 
     public void execute() throws MojoExecutionException {
+        
+        String springBootVersion = SpringBootProjectUtils.findSpringBootVersion(project);
 
         boosterParent = new BoosterPacksParent();
     
         createDefaultRuntimeArtifactIfNeeded();
 
-        boolean didCopySpringBootUberJar;
         try {
-            didCopySpringBootUberJar = springBootUtil.copySpringBootUberJar(project.getArtifact().getFile());
-        } catch (BoostException e1) {
+            // Copy the Spring Boot uber JAR back as the project artifact, only if Spring Boot didn't create it already
+            if(!springBootUtil.copySpringBootUberJar(project.getArtifact().getFile())) {
+                File springJar = new File(springBootUtil.getSpringBootUberJarPath(project.getArtifact().getFile()));
+                if(springJar.exists()) {
+                    getLog().debug("Copying back Spring Boot Uber JAR as project artifact.");
+                    FileUtils.copyFile(springJar, project.getArtifact().getFile());
+                }
+            }
+        } catch (BoostException | IOException e1) {
             throw new MojoExecutionException(e1.getMessage(), e1);
         }
-        
+
         createServer();
-    	
-        String springBootVersion = SpringBootProjectUtils.findSpringBootVersion(project);
         
 		try {
 			if (springBootVersion != null) {
@@ -111,23 +117,11 @@ public class LibertyBoostMojo extends AbstractMojo {
 
         installMissingFeatures();
         
-        // Copy the Spring Boot uber JAR back as the project artifact, only if Spring Boot didn't create it already
-        if(!didCopySpringBootUberJar) {
-            try {
-                File springJar = new File(springBootUtil.getSpringBootUberJarPath(project.getArtifact().getFile()));
-                if(springJar.exists()) {
-                    FileUtils.copyFile(springJar, project.getArtifact().getFile());
-                }
-            } catch (BoostException | IOException e) {
-                throw new MojoExecutionException(e.getMessage(), e);
-            }
-        }
-        
         createUberJar();
         
         // Add the manifest to prevent Spring Boot from repackaging again
         try {
-            springBootUtil.addSpringBootVersionToManifest(project.getArtifact().getFile());
+            springBootUtil.addSpringBootVersionToManifest(project.getArtifact().getFile(), springBootVersion);
         } catch (BoostException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
