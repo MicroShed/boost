@@ -1,11 +1,10 @@
-package boost.project;
-
-import java.util.ArrayList;
-import java.util.List;
+package io.openliberty.boost;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import io.openliberty.boost.BoosterPackConfigurator;
 
 public class JDBCBoosterPackConfigurator implements BoosterPackConfigurator {
 

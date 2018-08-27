@@ -8,8 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package boost.project;
+package io.openliberty.boost;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,6 +24,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
@@ -32,9 +34,10 @@ import org.apache.maven.plugins.annotations.*;
 
 import org.codehaus.mojo.pluginsupport.util.ArtifactItem;
 
-import boost.project.utils.LibertyServerConfigGenerator;
-
-import boost.project.utils.SpringBootProjectUtils;
+import io.openliberty.boost.BoosterPackConfigurator;
+import io.openliberty.boost.utils.LibertyServerConfigGenerator;
+import io.openliberty.boost.utils.SpringBootProjectUtils;
+import io.openliberty.boost.utils.SpringBootUtil;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
@@ -60,27 +63,41 @@ public class LibertyBoostMojo extends AbstractMojo {
     private String projectBuildDir;
 
     @Parameter(defaultValue = "${project}")
-    private MavenProject mavenProject;
-		
+    private MavenProject project;
+
     @Parameter(defaultValue = "${session}")
-    private MavenSession mavenSession;
+    private MavenSession session;
 
     @Component
     private BuildPluginManager pluginManager;
 
     @Parameter
     private ArtifactItem runtimeArtifact;
+    
+    SpringBootUtil springBootUtil = new SpringBootUtil();
 
     public void execute() throws MojoExecutionException {
+        
+        String springBootVersion = SpringBootProjectUtils.findSpringBootVersion(project);
 
-    	List<String> deps = null;
-    	boosterParent = new BoosterPacksParent();
+        boosterParent = new BoosterPacksParent();
     
         createDefaultRuntimeArtifactIfNeeded();
 
+        try {
+            // Copy the Spring Boot uber JAR back as the project artifact, only if Spring Boot didn't create it already
+            if(!springBootUtil.copySpringBootUberJar(project.getArtifact().getFile())) {
+                File springJar = new File(springBootUtil.getSpringBootUberJarPath(project.getArtifact().getFile()));
+                if(springJar.exists()) {
+                    getLog().debug("Copying back Spring Boot Uber JAR as project artifact.");
+                    FileUtils.copyFile(springJar, project.getArtifact().getFile());
+                }
+            }
+        } catch (BoostException | IOException e1) {
+            throw new MojoExecutionException(e1.getMessage(), e1);
+        }
+
         createServer();
-    	
-        String springBootVersion = SpringBootProjectUtils.findSpringBootVersion(mavenProject);
         
 		try {
 			if (springBootVersion != null) {
@@ -91,7 +108,7 @@ public class LibertyBoostMojo extends AbstractMojo {
 			} else {
 				// dealing with an EE based app
 				installApp("project");
-				boosterFeatures = getBoosterConfigsFromDependencies(mavenProject);
+				boosterFeatures = getBoosterConfigsFromDependencies(project);
 				generateServerXMLJ2EE(boosterFeatures);
 			}
         } catch ( TransformerException | ParserConfigurationException e) {
@@ -99,8 +116,15 @@ public class LibertyBoostMojo extends AbstractMojo {
         }
 
         installMissingFeatures();
-
+        
         createUberJar();
+        
+        // Add the manifest to prevent Spring Boot from repackaging again
+        try {
+            springBootUtil.addSpringBootVersionToManifest(project.getArtifact().getFile(), springBootVersion);
+        } catch (BoostException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -131,7 +155,6 @@ public class LibertyBoostMojo extends AbstractMojo {
         OutputStream output = null;
 
         try {
-
             output = new FileOutputStream(
                     projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName + "/bootstrap.properties");
             springBootProps.store(output, null);
@@ -147,9 +170,7 @@ public class LibertyBoostMojo extends AbstractMojo {
                             io_finally);
                 }
             }
-
         }
-
     }
 
     /**
@@ -163,15 +184,13 @@ public class LibertyBoostMojo extends AbstractMojo {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator();
 
         // Find and add appropriate springBoot features
-        List<String> featuresNeededForSpringBootApp = SpringBootProjectUtils.getLibertyFeaturesNeeded(mavenProject,
-                getLog());
+        List<String> featuresNeededForSpringBootApp = SpringBootProjectUtils.getLibertyFeaturesNeeded(project, getLog());
         serverConfig.addFeatures(featuresNeededForSpringBootApp);
 
         serverConfig.addHttpEndpoint(null, "${server.port}", null);
         
         // Write server.xml to Liberty server config directory
         serverConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
-
     }
 
 	private List<BoosterPackConfigurator> getBoosterConfigsFromDependencies(MavenProject proj) {
@@ -179,7 +198,7 @@ public class LibertyBoostMojo extends AbstractMojo {
     	List<String> listOfDependencies = new ArrayList<String>();
 		getLog().debug("getBoostCfg: first lets see what dependencies we find");
 		
-		for (Artifact artifact : mavenProject.getArtifacts()) {
+		for (Artifact artifact : project.getArtifacts()) {
 			getLog().debug("getBoostCfg: found this, adding as a string -> " + artifact.getArtifactId());
 			listOfDependencies.add(artifact.getArtifactId());
 		}
@@ -222,7 +241,7 @@ public class LibertyBoostMojo extends AbstractMojo {
     }
 
     private ExecutionEnvironment getExecutionEnvironment() {
-        return executionEnvironment(mavenProject, mavenSession, pluginManager);
+        return executionEnvironment(project, session, pluginManager);
     }
 
     /**
@@ -231,29 +250,16 @@ public class LibertyBoostMojo extends AbstractMojo {
      * @return
      */
     private List<String> getBoosterFeatureNames(List<BoosterPackConfigurator> boosterConfigurators) {
-			List<String> featureStrings = new ArrayList<String>();
-			for (BoosterPackConfigurator bpconfig : boosterConfigurators){
-				featureStrings.add(bpconfig.getFeatureString());
-			}
-			
-			return featureStrings;
+		List<String> featureStrings = new ArrayList<String>();
+		for (BoosterPackConfigurator bpconfig : boosterConfigurators){
+			featureStrings.add(bpconfig.getFeatureString());
 		}
-
-	private List<String> findJ2EEAppFeatureDependencies(MavenProject project) {
 		
-    	List<String> listOfDependencies = new ArrayList<String>();
-		getLog().debug("first lets see what dependencies we find");
-		for (Artifact artifact : mavenProject.getArtifacts()) {
-			getLog().debug("found this dependency, adding as a string -> " + artifact.getArtifactId());
-			listOfDependencies.add(artifact.getArtifactId());
-		}
-    	
-    	return listOfDependencies;
+		return featureStrings;
 	}
-    
+
     /**
      * Invoke the liberty-maven-plugin to run the create-server goal
-     *
      */
     private void createServer() throws MojoExecutionException {
 
@@ -264,8 +270,6 @@ public class LibertyBoostMojo extends AbstractMojo {
 
     /**
      * Invoke the liberty-maven-plugin to run the install-app goal.
-     *
-     *
      */
     private void installApp(String installAppPackagesVal) throws MojoExecutionException {
     
@@ -280,7 +284,7 @@ public class LibertyBoostMojo extends AbstractMojo {
             getExecutionEnvironment()
         );
     }
-
+    
     /**
      * Invoke the liberty-maven-plugin to run the install-feature goal.
      *
@@ -292,8 +296,7 @@ public class LibertyBoostMojo extends AbstractMojo {
 
         executeMojo(getPlugin(), goal("install-feature"), configuration(element(name("serverName"), libertyServerName),
                 element(name("features"), element(name("acceptLicense"), "true")
-
-                )), getExecutionEnvironment());
+        )), getExecutionEnvironment());
     }
 
     /**
@@ -301,12 +304,14 @@ public class LibertyBoostMojo extends AbstractMojo {
      *
      */
     private void createUberJar() throws MojoExecutionException {
-
         // Package server into runnable jar
         executeMojo(getPlugin(),
-                goal("package-server"), configuration(element(name("isInstall"), "false"),
-                        element(name("include"), "minify,runnable"), element(name("serverName"), libertyServerName)),
-                getExecutionEnvironment());
+            goal("package-server"), configuration(element(name("isInstall"), "false"),
+                    element(name("include"), "minify,runnable"),
+                    element(name("attach"), "true"),
+                    element(name("serverName"), libertyServerName)
+            ),
+        getExecutionEnvironment());
     }
 
 }
