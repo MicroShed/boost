@@ -5,6 +5,8 @@ import java.util.List;
 
 import io.openliberty.boost.BoosterPackConfigurator;
 
+import io.openliberty.boost.BoosterPackConfigurator;
+
 public class BoosterPacksParent {
 
 	/**
@@ -15,7 +17,7 @@ public class BoosterPacksParent {
 	
 	JDBCBoosterPackConfigurator jdbcConfig = null;
 	private String JDBC_BOOSTER_PACK_STRING = "liberty-booster-data-jdbc";
-	private String JAXRS_BOOSTER_PACK_STRING = "liberty-booster-jaxrs";
+	private String JAXRS_BOOSTER_PACK_STRING = "io.openliberty.features:jaxrs-2.0";
 	private List<BoosterPackConfigurator> boosterPackConfigList = new ArrayList<BoosterPackConfigurator>();
 
 	/**

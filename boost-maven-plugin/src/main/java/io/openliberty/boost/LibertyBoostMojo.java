@@ -76,12 +76,11 @@ public class LibertyBoostMojo extends AbstractMojo {
     
     SpringBootUtil springBootUtil = new SpringBootUtil();
 
-    public void execute() throws MojoExecutionException {
-        
+    public void execute() throws MojoExecutionException {        
         String springBootVersion = SpringBootProjectUtils.findSpringBootVersion(project);
 
-        boosterParent = new BoosterPacksParent();
-    
+        boosterParent = new BoosterPacksParent();    	
+        
         createDefaultRuntimeArtifactIfNeeded();
 
         try {
@@ -197,10 +196,10 @@ public class LibertyBoostMojo extends AbstractMojo {
 		
     	List<String> listOfDependencies = new ArrayList<String>();
 		getLog().debug("getBoostCfg: first lets see what dependencies we find");
-		
+
 		for (Artifact artifact : project.getArtifacts()) {
-			getLog().debug("getBoostCfg: found this, adding as a string -> " + artifact.getArtifactId());
-			listOfDependencies.add(artifact.getArtifactId());
+			getLog().debug("getBoostCfg: found this, adding as a string -> " + artifact.getGroupId() + ":" + artifact.getArtifactId());
+			listOfDependencies.add(artifact.getGroupId() + ":" + artifact.getArtifactId());
 		}
 		
 		return boosterParent.mapDependenciesToFeatureList(listOfDependencies);
