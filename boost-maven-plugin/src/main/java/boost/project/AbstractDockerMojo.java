@@ -11,8 +11,7 @@
 package boost.project;
 
 import java.io.File;
-import java.util.Set;
-import org.apache.maven.artifact.Artifact;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -164,19 +163,6 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
         }
         return new File(this.outputDirectory,
                 this.finalName + classifier + "." + this.project.getArtifact().getArtifactHandler().getExtension());
-    }
-
-    protected String findSpringBootVersion() {
-        Set<Artifact> artifacts = this.project.getArtifacts();
-        if (artifacts != null) {
-            for (Artifact artifact : artifacts) {
-                if ("org.springframework.boot".equals(artifact.getGroupId())
-                        && "spring-boot".equals(artifact.getArtifactId())) {
-                    return artifact.getVersion();
-                }
-            }
-        }
-        return null;
     }
 
     protected final String getImageName() {
