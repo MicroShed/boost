@@ -6,18 +6,22 @@ import java.nio.charset.Charset;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Dockerize {
-
+    
+    private final MavenProject project;
     private final File projectDirectory;
     private final File outputDirectory;
     private final File appArchive;
-    private final Log log;
 
     private static final String LIBERTY_IMAGE_1 = "open-liberty:springBoot1";
     private static final String LIBERTY_IMAGE_2 = "open-liberty:springBoot2";
@@ -28,12 +32,36 @@ public class Dockerize {
     private static final String FROM = "FROM ";
     private static final String COPY = "COPY ";
     private static final String RUN = "RUN ";
+    
+    private static final Logger log = LoggerFactory.getLogger(Dockerize.class);
 
-    public Dockerize(File projectDirectory, File outputDirectory, File appArchive, Log log) {
-        this.projectDirectory = projectDirectory;
+    public Dockerize(MavenProject project, File outputDirectory, File appArchive) {
+        this.project = project;
+        this.projectDirectory = project.getBasedir();
         this.outputDirectory = outputDirectory;
         this.appArchive = appArchive;
-        this.log = log;
+    }
+    
+    public void createDockerFile() throws Exception {
+        String springBootVersion = findSpringBootVersion();
+        if (springBootVersion != null) {
+            createSpringBootDockerFile(springBootVersion);
+        } else {
+            throw new MojoExecutionException("Unable to create a Dockerfile because Application type is not supported");
+        }
+    }
+    
+    private String findSpringBootVersion() {
+        Set<Artifact> artifacts = this.project.getArtifacts();
+        if (artifacts != null) {
+            for (Artifact artifact : artifacts) {
+                if ("org.springframework.boot".equals(artifact.getGroupId())
+                        && "spring-boot".equals(artifact.getArtifactId())) {
+                    return artifact.getVersion();
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -44,10 +72,11 @@ public class Dockerize {
      * @throws MojoExecutionException
      * @throws IOException
      */
-    public void createSpringBootDockerFile(String springBootVersion) throws MojoExecutionException, IOException {
+    private void createSpringBootDockerFile(String springBootVersion) throws MojoExecutionException, IOException {
+        
         if (isFileExecutable(appArchive)) {
             try {
-                File dockerFile = createDockerFile();
+                File dockerFile = createNewDockerFile(projectDirectory);
                 String libertySBImage = getLibertySpringBootBaseImage(springBootVersion);
                 writeSpringBootDockerFile(dockerFile, libertySBImage);
 
@@ -59,14 +88,7 @@ public class Dockerize {
                     + "The repackage goal of the spring-boot-maven-plugin must be configured to run first in order to create the required executable archive.");
         }
     }
-
-    private File createDockerFile() throws IOException {
-        File dockerFile = new File(projectDirectory, "Dockerfile");
-        Files.createFile(dockerFile.toPath());
-        log.info("Creating Dockerfile: " + dockerFile.getAbsolutePath());
-        return dockerFile;
-    }
-
+    
     @SuppressWarnings("resource")
     private boolean isFileExecutable(File file) throws IOException {
         if (file.exists()) {
@@ -79,6 +101,13 @@ public class Dockerize {
             }
         }
         return false;
+    }
+   
+    private File createNewDockerFile(File dockerfileDirectory) throws IOException {
+        File dockerFile = new File(dockerfileDirectory, "Dockerfile");
+        Files.createFile(dockerFile.toPath());
+        log.info("Creating Dockerfile: " + dockerFile.getAbsolutePath());
+        return dockerFile;
     }
 
     private String getLibertySpringBootBaseImage(String springBootVersion) throws MojoExecutionException {

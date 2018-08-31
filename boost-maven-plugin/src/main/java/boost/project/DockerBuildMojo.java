@@ -50,12 +50,10 @@ public class DockerBuildMojo extends AbstractDockerMojo {
     protected void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException {
         try {
             File appArchive = getAppArchive();
-            // Create a Dockerfile for Spring Boot application
-            Dockerize dockerize = new Dockerize(projectDirectory, outputDirectory, appArchive, log);
-            String springBootVersion = findSpringBootVersion();
-            if (springBootVersion != null) {
-                dockerize.createSpringBootDockerFile(springBootVersion);
-            }
+            // Create a Dockerfile for the application
+            Dockerize dockerize = new Dockerize(project, outputDirectory, appArchive);
+            dockerize.createDockerFile();
+            
             buildDockerImage(dockerClient, appArchive);
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
