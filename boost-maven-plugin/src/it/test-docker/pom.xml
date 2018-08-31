@@ -18,9 +18,9 @@
 	<pluginRepositories>
 		<!-- Configure Sonatype OSS Maven snapshots repository -->
 		<pluginRepository>
-			<id>sonatype-nexus-snapshots</id>
-			<name>Sonatype Nexus Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		    <id>sonatype-nexus-snapshots</id>
+		    <name>Sonatype Nexus Snapshots</name>
+		    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -69,8 +69,8 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+			    <groupId>org.springframework.boot</groupId>
+			    <artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 
 			<plugin>
@@ -78,14 +78,14 @@
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>1.0-SNAPSHOT</version>
 				<configuration>
-					<repository>localhost:5000/${project.artifactId}</repository>
+				    <repository>localhost:5000/${project.artifactId}</repository>
 				</configuration>
 				<executions>
 					<execution>
 						<phase>package</phase>
 						<goals>
-							<goal>docker-build</goal>
-							<goal>docker-push</goal>
+						    <goal>docker-build</goal>
+						    <goal>docker-push</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -97,8 +97,8 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
+						    <goal>integration-test</goal>
+						    <goal>verify</goal>
 						</goals>
 					</execution>
 				</executions>
