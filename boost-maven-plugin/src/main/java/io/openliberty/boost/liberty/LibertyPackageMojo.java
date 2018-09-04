@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost;
+package io.openliberty.boost.liberty;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,20 +21,18 @@ import java.util.Properties;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugins.annotations.*;
 
 import org.codehaus.mojo.pluginsupport.util.ArtifactItem;
 
+import io.openliberty.boost.BoostException;
 import io.openliberty.boost.BoosterPackConfigurator;
+import io.openliberty.boost.BoosterPacksParent;
 import io.openliberty.boost.utils.LibertyServerConfigGenerator;
 import io.openliberty.boost.utils.SpringBootProjectUtils;
 import io.openliberty.boost.utils.SpringBootUtil;
@@ -46,33 +44,10 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  *
  */
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class LibertyBoostMojo extends AbstractMojo {
+public class LibertyPackageMojo extends AbstractLibertyMojo {
 
 	BoosterPacksParent boosterParent;
 	List<BoosterPackConfigurator> boosterFeatures = null;
-
-    String libertyServerName = "BoostServer";
-
-    String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
-    String libertyMavenPluginArtifactId = "liberty-maven-plugin";
-
-    @Parameter(defaultValue = "2.6-SNAPSHOT")
-    String libertyMavenPluginVersion;
-
-    @Parameter(defaultValue = "${project.build.directory}")
-    private String projectBuildDir;
-
-    @Parameter(defaultValue = "${project}")
-    private MavenProject project;
-
-    @Parameter(defaultValue = "${session}")
-    private MavenSession session;
-
-    @Component
-    private BuildPluginManager pluginManager;
-
-    @Parameter
-    private ArtifactItem runtimeArtifact;
     
     SpringBootUtil springBootUtil = new SpringBootUtil();
 
@@ -225,23 +200,7 @@ public class LibertyBoostMojo extends AbstractMojo {
 		// Write server.xml to Liberty server config directory
 		serverConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
 
-	}    
-    
-	private Plugin getPlugin() throws MojoExecutionException {
-        return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
-                version(libertyMavenPluginVersion));
-    }
-
-    private Element getRuntimeArtifactElement() {
-        return element(name("assemblyArtifact"), element(name("groupId"), runtimeArtifact.getGroupId()),
-                element(name("artifactId"), runtimeArtifact.getArtifactId()),
-                element(name("version"), runtimeArtifact.getVersion()),
-                element(name("type"), runtimeArtifact.getType()));
-    }
-
-    private ExecutionEnvironment getExecutionEnvironment() {
-        return executionEnvironment(project, session, pluginManager);
-    }
+	}
 
     /**
      * 

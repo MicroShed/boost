@@ -1,4 +1,4 @@
-package boost.project;
+package io.openliberty.boost.docker;
 
 import java.util.HashMap;
 import java.util.Map;

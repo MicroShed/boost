@@ -1,4 +1,4 @@
-package boost.project;
+package io.openliberty.boost.docker;
 
 import java.io.File;
 import java.io.IOException;
