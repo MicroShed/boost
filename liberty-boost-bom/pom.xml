@@ -12,11 +12,11 @@
 	
     <groupId>io.openliberty.boost</groupId>
     <artifactId>liberty-boost-bom</artifactId>
-    <version>0.1-SNAPSHOT</version>
-	
+    <version>0.1-SNAPSHOT</version>	
     <packaging>pom</packaging>
 
     <description>Liberty Boost EE Feature Bom</description>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

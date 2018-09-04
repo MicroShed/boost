@@ -15,8 +15,8 @@
 	<name>boost-maven-plugin Parent</name>
 	
 	<modules>
-		<module>boost-maven-plugin</module>
-		<module>boost-booster-packs</module>
+		<module>liberty-boost-bom</module>
+        <module>boost-maven-plugin</module>
 	</modules>
 	
     <properties>
