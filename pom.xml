@@ -16,7 +16,7 @@
 	
 	<modules>
 		<module>liberty-boost-bom</module>
-        <module>boost-maven-plugin</module>
+		<module>boost-maven-plugin</module>
 	</modules>
 	
     <properties>
