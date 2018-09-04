@@ -4,6 +4,9 @@ language: java
 jdk:
     - openjdk8
     - oraclejdk8
+
+services:
+    - docker
 env:
 before_install:
      - rm -rf ./boost-common
@@ -12,5 +15,7 @@ before_install:
      - cd ./boost-common
      - mvn clean install
      - cd ..
+     - docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
 script:
   - travis_wait mvn verify -Pit -Dinvoker.streamLogs=true
