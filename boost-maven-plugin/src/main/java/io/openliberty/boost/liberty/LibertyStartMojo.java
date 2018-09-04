@@ -7,8 +7,10 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+@Mojo(name = "start")
 public class LibertyStartMojo extends AbstractLibertyMojo {
 
     /**
@@ -33,6 +35,7 @@ public class LibertyStartMojo extends AbstractLibertyMojo {
     public void execute() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("start"),
                 configuration(
+                        element(name("serverName"), libertyServerName),
                         element(name("verifyTimeout"), String.valueOf(verifyTimeout)),
                         element(name("serverStartTimeout"), String.valueOf(serverStartTimeout)),
                         element(name("clean"), String.valueOf(clean))

@@ -7,8 +7,10 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+@Mojo(name = "debug")
 public class LibertyDebugMojo extends AbstractLibertyMojo {
 
     /**
@@ -20,7 +22,9 @@ public class LibertyDebugMojo extends AbstractLibertyMojo {
     @Override
     public void execute() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("debug"),
-                configuration(element(name("clean"), String.valueOf(clean))),
+                configuration(
+                        element(name("serverName"), libertyServerName),
+                        element(name("clean"), String.valueOf(clean))),
                 getExecutionEnvironment());
     }
 
