@@ -1,4 +1,14 @@
-package boost.project;
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package io.openliberty.boost.docker;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,15 +16,15 @@ import java.nio.charset.Charset;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.openliberty.boost.utils.SpringBootProjectUtils;
 
 public class Dockerize {
     
@@ -43,25 +53,12 @@ public class Dockerize {
     }
     
     public void createDockerFile() throws Exception {
-        String springBootVersion = findSpringBootVersion();
+        String springBootVersion = SpringBootProjectUtils.findSpringBootVersion(project);
         if (springBootVersion != null) {
             createSpringBootDockerFile(springBootVersion);
         } else {
             throw new MojoExecutionException("Unable to create a Dockerfile because Application type is not supported");
         }
-    }
-    
-    private String findSpringBootVersion() {
-        Set<Artifact> artifacts = this.project.getArtifacts();
-        if (artifacts != null) {
-            for (Artifact artifact : artifacts) {
-                if ("org.springframework.boot".equals(artifact.getGroupId())
-                        && "spring-boot".equals(artifact.getArtifactId())) {
-                    return artifact.getVersion();
-                }
-            }
-        }
-        return null;
     }
 
     /**

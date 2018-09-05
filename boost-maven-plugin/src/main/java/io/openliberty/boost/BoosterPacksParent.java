@@ -5,8 +5,6 @@ import java.util.List;
 
 import io.openliberty.boost.BoosterPackConfigurator;
 
-import io.openliberty.boost.BoosterPackConfigurator;
-
 public class BoosterPacksParent {
 
 	/**

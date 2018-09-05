@@ -3,8 +3,6 @@ package io.openliberty.boost;
 import org.w3c.dom.Document;
 import io.openliberty.boost.BoosterPackConfigurator;
 
-import io.openliberty.boost.BoosterPackConfigurator;
-
 public class JAXRSBoosterPackConfigurator implements BoosterPackConfigurator {
 
 	@Override
