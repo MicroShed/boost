@@ -33,26 +33,29 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 public abstract class AbstractLibertyMojo extends MojoSupport {
     
     protected String libertyServerName = "BoostServer";
-    
+
     protected String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
     protected String libertyMavenPluginArtifactId = "liberty-maven-plugin";
 
+    /**
+     * Version of the Liberty-Maven-Plugin used by Boost
+     */
     @Parameter(defaultValue = "2.6-SNAPSHOT")
     protected String libertyMavenPluginVersion;
 
-    @Parameter(defaultValue = "${project.build.directory}")
+    @Parameter(defaultValue = "${project.build.directory}", readonly = true)
     protected String projectBuildDir;
 
-    @Parameter(defaultValue = "${project}")
+    @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
-    @Parameter(defaultValue = "${session}")
+    @Parameter(defaultValue = "${session}", readonly = true)
     protected MavenSession session;
 
     @Component
     protected BuildPluginManager pluginManager;
-    
-    @Parameter
+
+    @Parameter(readonly = true)
     protected ArtifactItem runtimeArtifact;
 
     protected Plugin getPlugin() throws MojoExecutionException {

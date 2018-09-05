@@ -33,10 +33,10 @@ import com.spotify.docker.client.auth.RegistryAuthSupplier;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 
 public abstract class AbstractDockerMojo extends AbstractMojo {
-    @Parameter(defaultValue = "${project}", required = true)
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
     protected MavenProject project;
 
-    @Parameter(defaultValue = "${session}")
+    @Parameter(defaultValue = "${session}", readonly = true)
     protected MavenSession session;
 
     /**
@@ -50,7 +50,7 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
      * 
      * @since 1.0
      */
-    @Parameter(defaultValue = "${project.basedir}", required = true)
+    @Parameter(defaultValue = "${project.basedir}", required = true, readonly = true)
     protected File projectDirectory;
 
     /**
@@ -58,7 +58,7 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
      * 
      * @since 1.0
      */
-    @Parameter(defaultValue = "${project.build.directory}", required = true)
+    @Parameter(defaultValue = "${project.build.directory}", required = true, readonly = true)
     protected File outputDirectory;
 
     /**
@@ -66,7 +66,7 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
      * 
      * @since 1.0
      */
-    @Parameter(defaultValue = "${project.build.finalName}", required = true)
+    @Parameter(defaultValue = "${project.build.finalName}", required = true, readonly = true)
     protected String finalName;
 
     /**

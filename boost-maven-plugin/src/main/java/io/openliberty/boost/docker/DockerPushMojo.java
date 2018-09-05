@@ -19,6 +19,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.exceptions.DockerException;
 
+/**
+ * Pushes a docker image to the docker repository.
+ *
+ */
 @Mojo(name = "docker-push", defaultPhase = LifecyclePhase.INSTALL)
 public class DockerPushMojo extends AbstractDockerMojo {
 
