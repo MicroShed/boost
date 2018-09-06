@@ -20,6 +20,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+/**
+ * Starts the executable archive application as a background process.
+ * 
+ */
 @Mojo(name = "start")
 public class LibertyStartMojo extends AbstractLibertyMojo {
 

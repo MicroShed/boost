@@ -40,7 +40,8 @@ import io.openliberty.boost.utils.SpringBootUtil;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
 /**
- * Package a Spring Boot application with Liberty
+ * Packages an existing application into a Liberty executable jar so that the
+ * application can be run from the command line using java -jar.
  *
  */
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)

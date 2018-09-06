@@ -20,6 +20,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+/**
+ * Starts the application in debug mode. 
+ *
+ */
 @Mojo(name = "debug")
 public class LibertyDebugMojo extends AbstractLibertyMojo {
 

@@ -20,6 +20,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+/**
+ * Runs the executable archive application.
+ * 
+ */
 @Mojo(name = "run")
 public class LibertyRunMojo extends AbstractLibertyMojo {
     
