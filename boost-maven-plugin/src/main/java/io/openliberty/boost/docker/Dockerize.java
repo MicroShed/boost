@@ -20,9 +20,8 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.openliberty.boost.utils.SpringBootProjectUtils;
 
@@ -32,6 +31,7 @@ public class Dockerize {
     private final File projectDirectory;
     private final File outputDirectory;
     private final File appArchive;
+    private final Log log;
 
     private static final String LIBERTY_IMAGE_1 = "open-liberty:springBoot1";
     private static final String LIBERTY_IMAGE_2 = "open-liberty:springBoot2";
@@ -42,14 +42,13 @@ public class Dockerize {
     private static final String FROM = "FROM ";
     private static final String COPY = "COPY ";
     private static final String RUN = "RUN ";
-    
-    private static final Logger log = LoggerFactory.getLogger(Dockerize.class);
 
-    public Dockerize(MavenProject project, File outputDirectory, File appArchive) {
+    public Dockerize(MavenProject project, File outputDirectory, File appArchive, Log log) {
         this.project = project;
         this.projectDirectory = project.getBasedir();
         this.outputDirectory = outputDirectory;
         this.appArchive = appArchive;
+        this.log = log;
     }
     
     public void createDockerFile() throws Exception {

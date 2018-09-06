@@ -24,6 +24,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import com.google.gson.Gson;
 import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.DockerClient.BuildParam;
 import com.spotify.docker.client.exceptions.DockerException;
 
 /**
@@ -55,7 +56,7 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         try {
             File appArchive = getAppArchive();
             // Create a Dockerfile for the application
-            Dockerize dockerize = new Dockerize(project, outputDirectory, appArchive);
+            Dockerize dockerize = new Dockerize(project, outputDirectory, appArchive, log);
             dockerize.createDockerFile();
             
             buildDockerImage(dockerClient, appArchive);
@@ -70,28 +71,28 @@ public class DockerBuildMojo extends AbstractDockerMojo {
      */
     private void buildDockerImage(DockerClient dockerClient, File appArchive)
             throws MojoExecutionException, IOException {
-        final ArrayList<DockerClient.BuildParam> buildParameters = new ArrayList<>();
-        final DockerClient.BuildParam[] buildParametersArray;
+        final ArrayList<BuildParam> buildParameters = new ArrayList<>();
+        final BuildParam[] buildParametersArray;
         final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
         final String imageName = getImageName();
 
         if (pullNewerImage) {
-            buildParameters.add(DockerClient.BuildParam.pullNewerImage());
+            buildParameters.add(BuildParam.pullNewerImage());
         }
         if (noCache) {
-            buildParameters.add(DockerClient.BuildParam.noCache());
+            buildParameters.add(BuildParam.noCache());
         }
 
         buildArgs.put("APP_FILE", appArchive.getName());
 
         try {
             final String encodedBuildArgs = URLEncoder.encode(new Gson().toJson(buildArgs), "utf-8");
-            buildParameters.add(new DockerClient.BuildParam("buildargs", encodedBuildArgs));
+            buildParameters.add(new BuildParam("buildargs", encodedBuildArgs));
         } catch (UnsupportedEncodingException e) {
             throw new MojoExecutionException("Could not build image", e);
         }
 
-        buildParametersArray = buildParameters.toArray(new DockerClient.BuildParam[buildParameters.size()]);
+        buildParametersArray = buildParameters.toArray(new BuildParam[buildParameters.size()]);
 
         log.info("Image will be built as " + imageName);
         log.info("");

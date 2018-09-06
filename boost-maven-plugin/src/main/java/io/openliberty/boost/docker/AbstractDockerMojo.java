@@ -132,7 +132,7 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
                     .connectTimeoutMillis(connectTimeoutMillis).registryAuthSupplier(authSupplier).useProxy(useProxy)
                     .build();
         } catch (DockerCertificateException e) {
-            throw new MojoExecutionException("Could not load Docker certificates", e);
+            throw new MojoExecutionException("Problem loading Docker certificates", e);
         }
     }
 
@@ -144,7 +144,7 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
 
         //Check for the registry credentials in maven settings.xml and in default config path
         if (server != null) {
-            supplier = new MavenSettingsAuthSupplier(server, settings, settingsDecrypter);
+            supplier = new MavenSettingsAuthSupplier(server, settings, settingsDecrypter, log);
         } else if (dockerConfigFile == null || "".equals(dockerConfigFile.getName())) {
             supplier = new ConfigFileRegistryAuthSupplier();
         } else {
