@@ -20,8 +20,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Stops the executable archive application started by the 'start' goal.
- * 
+ * Stops the executable archive application started by the 'start' or 'run' goals.
  */
 @Mojo(name = "stop")
 public class LibertyStopMojo extends AbstractLibertyMojo {

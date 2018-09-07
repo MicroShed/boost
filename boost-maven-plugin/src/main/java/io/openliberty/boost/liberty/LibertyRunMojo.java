@@ -21,8 +21,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Runs the executable archive application.
- * 
+ * Runs the executable archive application (in the console foreground).
  */
 @Mojo(name = "run")
 public class LibertyRunMojo extends AbstractLibertyMojo {
