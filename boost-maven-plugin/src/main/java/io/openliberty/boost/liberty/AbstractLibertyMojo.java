@@ -55,7 +55,7 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     @Component
     protected BuildPluginManager pluginManager;
 
-    @Parameter(readonly = true)
+    @Parameter
     protected ArtifactItem runtimeArtifact;
 
     protected Plugin getPlugin() throws MojoExecutionException {
