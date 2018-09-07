@@ -10,8 +10,31 @@
 
     <url>https://github.com/OpenLiberty/boost-common</url>
 
+    <parent>
+        <groupId>net.wasdev.maven.parent</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.4</version>
+        <relativePath />
+    </parent>
+
+    <licenses>
+        <license>
+            <name>Eclipse Public License 1.0 (EPL-1.0)</name>
+            <url>https://raw.github.com/OpenLiberty/boost-common/master/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:OpenLiberty/boost-common.git</connection>
+        <developerConnection>scm:git:git@github.com:OpenLiberty/boost-common.git</developerConnection>
+        <url>git@github.com:OpenLiberty/boost-common.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
