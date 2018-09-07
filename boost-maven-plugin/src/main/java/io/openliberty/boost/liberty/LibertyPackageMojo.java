@@ -41,7 +41,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
 /**
  * Packages an existing application into a Liberty executable jar so that the
- * application can be run from the command line using java -jar.
+ * application can be run from the command line using java -jar.  (This is for the 'jar' packaging type).
  *
  */
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)

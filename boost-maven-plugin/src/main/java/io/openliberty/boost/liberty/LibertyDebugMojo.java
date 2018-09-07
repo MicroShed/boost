@@ -21,7 +21,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Starts the application in debug mode. 
+ * Runs the executable archive application (in the console foreground) after a debugger
+ *  connects to debug port <b>7777</b>.
  *
  */
 @Mojo(name = "debug")
