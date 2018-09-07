@@ -4,15 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-	<parent>
+    <parent>
         <groupId>io.openliberty.boost</groupId>
-		<artifactId>boost-maven-parent</artifactId>
-		<version>0.1-SNAPSHOT</version>
+        <artifactId>boost-maven-parent</artifactId>
+        <version>0.1-SNAPSHOT</version>
     </parent>
-	
+    
     <groupId>io.openliberty.boost</groupId>
-    <artifactId>liberty-boost-bom</artifactId>
-    <version>0.1-SNAPSHOT</version>	
+    <artifactId>boost-bom</artifactId>
+    <version>0.1-SNAPSHOT</version>    
     <packaging>pom</packaging>
 
     <description>Liberty Boost EE Feature Bom</description>
