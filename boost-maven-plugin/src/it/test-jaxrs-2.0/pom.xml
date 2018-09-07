@@ -34,7 +34,7 @@
 			<dependency>
 				<groupId>io.openliberty.boost</groupId>
 				<artifactId>boost-bom</artifactId>
-				<version>0.1-SNAPSHOT</version>
+				<version>@pom.version@</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
@@ -67,7 +67,7 @@
 			<plugin>
 				<groupId>io.openliberty.boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
-				<version>0.1-SNAPSHOT</version>
+				<version>@pom.version@</version>
 				<executions>
 					<execution>
 						<goals>

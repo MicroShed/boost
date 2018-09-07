@@ -12,7 +12,6 @@
     
     <groupId>io.openliberty.boost</groupId>
     <artifactId>boost-bom</artifactId>
-    <version>0.1-SNAPSHOT</version>    
     <packaging>pom</packaging>
 
     <description>Liberty Boost EE Feature Bom</description>
