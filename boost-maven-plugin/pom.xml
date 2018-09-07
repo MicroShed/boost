@@ -30,7 +30,7 @@
         <dependency>
             <groupId>io.openliberty.boost</groupId>
             <artifactId>boost-common</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
         </dependency>    
 
         <!-- Other dependencies -->
