@@ -40,7 +40,7 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     /**
      * Version of the Liberty-Maven-Plugin used by Boost
      */
-    @Parameter(defaultValue = "2.6-SNAPSHOT", readonly = true)
+    @Parameter(defaultValue = "2.6", readonly = true)
     protected String libertyMavenPluginVersion;
 
     @Parameter(defaultValue = "${project.build.directory}", readonly = true)
