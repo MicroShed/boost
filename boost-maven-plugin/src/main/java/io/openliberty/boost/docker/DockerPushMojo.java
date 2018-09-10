@@ -64,7 +64,7 @@ public class DockerPushMojo extends AbstractDockerMojo {
                 dockerClient.push(currentImage, progressHandler);
             }
         } catch (DockerException | InterruptedException e) {
-            throw new MojoExecutionException("Could not push image", e);
+            throw new MojoExecutionException("Unable to push image", e);
         }
 
     }
