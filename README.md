@@ -12,7 +12,7 @@ When added to your pom.xml, the plugin will
 4. Install the application to the server
 5. Install and add appropriate Liberty feature to the server configuration
 6. Package the server and application into a runnable jar
-
+7. Create a Docker image if a Dockerfile is present
 
 
 ### Build Liberty Boost Plugin
@@ -23,15 +23,27 @@ When added to your pom.xml, the plugin will
 
 ### Use the Liberty Boost plugin in your Spring Boot Maven project 
 
+### Try it!
 
-#### Quick start
+Kick the tires of Boost with zero configuration:
+
+* Produce a Liberty uber jar for your Spring Boot app:
+    * `mvn clean package io.openliberty.boost:boost-maven-plugin:0.1:package`
+    * `java -jar target/<application name>.jar`
+
+* Create a Liberty based Docker image for your Spring Boot app:
+    * `mvn clean package io.openliberty.boost:boost-maven-plugin:0.1:docker-build`
+    * `docker run -p 9080:9080 <application name>`
+
+
+#### Quick start - uber jar
 
 1. Add the following to your project pom.xml
 ```xml
   <plugin>
         <groupId>io.openliberty.boost</groupId>
         <artifactId>boost-maven-plugin</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1</version>
         <executions>
           <execution>
                 <phase>package</phase>
@@ -43,12 +55,34 @@ When added to your pom.xml, the plugin will
   </plugin>
 ```
 
-2. Run `mvn clean package`
-2. Run the produced jar file: `java -jar <application_name>.jar`
+1. Run `mvn clean package`
+1. Run the produced jar file: `java -jar <application_name>.jar`
+
+#### Quick start - docker
+
+1. Add the following to your project pom.xml
+```xml
+  <plugin>
+        <groupId>io.openliberty.boost</groupId>
+        <artifactId>boost-maven-plugin</artifactId>
+        <version>0.1</version>
+        <executions>
+          <execution>
+                <goals>
+                      <goal>docker-build</goal>
+                </goals>
+          </execution>
+       </executions>
+  </plugin>
+```
+
+1. Run `mvn clean install`
+1. Run the produced Docker image: `docker run -p 9080:9080 <application_name>`
 
 #### Tutorial
 
 For a more detailed tutorial, see [here](Tutorial.md).
+
 ### Building and Developing Boost
 
 See [here](https://github.com/OpenLiberty/boost/wiki/Home) 
