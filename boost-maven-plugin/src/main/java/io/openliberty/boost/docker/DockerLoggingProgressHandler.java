@@ -45,7 +45,7 @@ public class DockerLoggingProgressHandler implements ProgressHandler {
 
     private void logProgress(String id, String status) {
         if (id != null) {
-            log.info(MessageFormat.format("Image {0}: {1}", id, status));
+            log.info(MessageFormat.format("{0}: {1}", id, status));
         }
     }
 
