@@ -86,7 +86,7 @@ public class Dockerize {
     }
     
     @SuppressWarnings("resource")
-    private boolean isFileExecutable(File file) throws IOException {
+    private boolean isFileExecutable(File file) throws IOException, MojoExecutionException {
         if (file.exists()) {
             Manifest manifest = new JarFile(file).getManifest();
             if (manifest != null) {
@@ -95,6 +95,8 @@ public class Dockerize {
                     return true;
                 }
             }
+        } else {
+            throw new MojoExecutionException(file.getCanonicalPath() + " does not exist.");
         }
         return false;
     }
