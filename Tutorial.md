@@ -77,8 +77,8 @@ Edit the Boost plugin definition in the pom.xml to the following:
 ```
 
 Now, run `mvn clean install` to build your docker image.
-
-######Note: 
+ 
+##### Note: 
 The `docker-build` goal creates a Liberty specific Dockerfile in the root folder of the Spring Boot project in the absence of a Dockerfile and builds the docker image.
  
 
