@@ -23,7 +23,7 @@ When added to your pom.xml, the plugin will
 
 ### Use the Liberty Boost plugin in your Spring Boot Maven project 
 
-### Try it!
+#### Try it!
 
 Kick the tires of Boost with zero configuration:
 
@@ -39,43 +39,41 @@ Kick the tires of Boost with zero configuration:
 #### Quick start - uber jar
 
 1. Add the following to your project pom.xml
-```xml
-  <plugin>
-        <groupId>io.openliberty.boost</groupId>
-        <artifactId>boost-maven-plugin</artifactId>
-        <version>0.1</version>
-        <executions>
-          <execution>
-                <phase>package</phase>
-                <goals>
-                      <goal>package</goal>
-                </goals>
-          </execution>
-       </executions>
-  </plugin>
-```
-
+    ```xml
+      <plugin>
+            <groupId>io.openliberty.boost</groupId>
+            <artifactId>boost-maven-plugin</artifactId>
+            <version>0.1</version>
+            <executions>
+              <execution>
+                    <phase>package</phase>
+                    <goals>
+                          <goal>package</goal>
+                    </goals>
+              </execution>
+           </executions>
+      </plugin>
+    ```
 1. Run `mvn clean package`
 1. Run the produced jar file: `java -jar <application_name>.jar`
 
 #### Quick start - docker
 
 1. Add the following to your project pom.xml
-```xml
-  <plugin>
-        <groupId>io.openliberty.boost</groupId>
-        <artifactId>boost-maven-plugin</artifactId>
-        <version>0.1</version>
-        <executions>
-          <execution>
-                <goals>
-                      <goal>docker-build</goal>
-                </goals>
-          </execution>
-       </executions>
-  </plugin>
-```
-
+    ```xml
+      <plugin>
+            <groupId>io.openliberty.boost</groupId>
+            <artifactId>boost-maven-plugin</artifactId>
+            <version>0.1</version>
+            <executions>
+              <execution>
+                    <goals>
+                          <goal>docker-build</goal>
+                    </goals>
+              </execution>
+           </executions>
+      </plugin>
+    ```
 1. Run `mvn clean install`
 1. Run the produced Docker image: `docker run -p 9080:9080 <application_name>`
 
