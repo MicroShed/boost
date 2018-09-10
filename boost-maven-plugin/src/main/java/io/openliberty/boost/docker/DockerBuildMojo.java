@@ -74,11 +74,9 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
         final String imageName = getImageName();
         BuildParam[] buidParams = getBuildParams(appArchive);
-
-        log.info("Image will be built as " + imageName);
-        log.info("");
+        log.info("Building image: " + imageName);
         try {
-            dockerClient.build(projectDirectory.toPath(), getImageName(), progressHandler, buidParams);
+            dockerClient.build(projectDirectory.toPath(), imageName, progressHandler, buidParams);
         } catch (DockerException | InterruptedException e) {
             throw new MojoExecutionException("Unable to build image", e);
         }

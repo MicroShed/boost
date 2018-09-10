@@ -58,7 +58,6 @@ public class DockerPushMojo extends AbstractDockerMojo {
             if (newImage != null) {
                 dockerClient.tag(currentImage, newImage);
                 log.info("Successfully tagged " + currentImage + " with " + newImage);
-                log.info("");
                 dockerClient.push(newImage, progressHandler);
             } else {
                 dockerClient.push(currentImage, progressHandler);
