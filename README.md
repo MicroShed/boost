@@ -24,6 +24,8 @@ When added to your pom.xml, the plugin will
 ### Use the Liberty Boost plugin in your Spring Boot Maven project 
 
 
+#### Quick start
+
 1. Add the following to your project pom.xml
 ```xml
   <plugin>
@@ -44,6 +46,9 @@ When added to your pom.xml, the plugin will
 2. Run `mvn clean package`
 2. Run the produced jar file: `java -jar <application_name>.jar`
 
+#### Tutorial
+
+For a more detailed tutorial, see [here](Tutorial.md).
 ### Building and Developing Boost
 
 See [here](https://github.com/OpenLiberty/boost/wiki/Home) 
