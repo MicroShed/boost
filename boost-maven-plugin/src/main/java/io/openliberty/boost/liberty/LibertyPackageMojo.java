@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -33,8 +34,9 @@ import org.codehaus.mojo.pluginsupport.util.ArtifactItem;
 import io.openliberty.boost.BoostException;
 import io.openliberty.boost.BoosterPackConfigurator;
 import io.openliberty.boost.BoosterPacksParent;
+import io.openliberty.boost.utils.BoostLogger;
 import io.openliberty.boost.utils.LibertyServerConfigGenerator;
-import io.openliberty.boost.utils.SpringBootProjectUtils;
+import io.openliberty.boost.utils.MavenProjectUtil;
 import io.openliberty.boost.utils.SpringBootUtil;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
@@ -48,13 +50,13 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class LibertyPackageMojo extends AbstractLibertyMojo {
 
+    String springBootVersion = null;
+    
     BoosterPacksParent boosterParent;
     List<BoosterPackConfigurator> boosterFeatures = null;
 
-    SpringBootUtil springBootUtil = new SpringBootUtil();
-
     public void execute() throws MojoExecutionException {
-        String springBootVersion = SpringBootProjectUtils.findSpringBootVersion(project);
+        springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
 
         boosterParent = new BoosterPacksParent();
 
@@ -63,7 +65,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         createServer();
 
         try {
-            if (springBootVersion != null) {
+            if (springBootVersion != null && !springBootVersion.isEmpty()) {
                 // dealing with a spring boot app
                 copySpringBootUberJar();
                 installApp("spring-boot-project");
@@ -86,7 +88,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         if (springBootVersion != null) {
             // Add the manifest to prevent Spring Boot from repackaging again
             try {
-                springBootUtil.addSpringBootVersionToManifest(project.getArtifact().getFile(), springBootVersion);
+                SpringBootUtil.addSpringBootVersionToManifest(project.getArtifact().getFile(), springBootVersion);
             } catch (BoostException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
@@ -101,15 +103,15 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      */
     private void copySpringBootUberJar() throws MojoExecutionException {
         try {
-            if (!springBootUtil.copySpringBootUberJar(project.getArtifact().getFile())) {
-                File springJar = new File(springBootUtil.getSpringBootUberJarPath(project.getArtifact().getFile()));
-                if (springJar.exists()) {
+            if (!SpringBootUtil.copySpringBootUberJar(project.getArtifact().getFile())) {
+                File springJar = new File(SpringBootUtil.getSpringBootUberJarPath(project.getArtifact().getFile()));
+                if (springJar.exists() && springJar.isFile()) {
                     getLog().debug("Copying back Spring Boot Uber JAR as project artifact.");
                     FileUtils.copyFile(springJar, project.getArtifact().getFile());
                 }
             }
-        } catch (BoostException | IOException e1) {
-            throw new MojoExecutionException(e1.getMessage(), e1);
+        } catch (BoostException | IOException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
@@ -131,7 +133,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         Properties springBootProps = new Properties();
 
         try {
-            springBootProps = SpringBootProjectUtils.getSpringBootServerProperties(projectBuildDir);
+            springBootProps = SpringBootUtil.getSpringBootServerProperties(projectBuildDir);
 
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to read properties from Spring Boot application", e);
@@ -170,8 +172,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator();
 
         // Find and add appropriate springBoot features
-        List<String> featuresNeededForSpringBootApp = SpringBootProjectUtils.getLibertyFeaturesNeeded(project,
-                getLog());
+        List<String> featuresNeededForSpringBootApp = SpringBootUtil.getLibertyFeaturesForSpringBoot(springBootVersion, getSpringBootStarters(), BoostLogger.getInstance());
         serverConfig.addFeatures(featuresNeededForSpringBootApp);
 
         serverConfig.addHttpEndpoint(null, "${server.port}", null);
@@ -274,6 +275,26 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                 configuration(element(name("isInstall"), "false"), element(name("include"), "minify,runnable"),
                         element(name("attach"), "true"), element(name("serverName"), libertyServerName)),
                 getExecutionEnvironment());
+    }
+    
+    /**
+     * Get all dependencies with "spring-boot-starter-*" as the artifactId.
+     * These dependencies will be used to determine which additional Liberty
+     * features need to be enabled.
+     * 
+     */
+    private List<String> getSpringBootStarters() {
+
+        List<String> springBootStarters = new ArrayList<String>();
+
+        Set<Artifact> artifacts = project.getArtifacts();
+        for (Artifact art : artifacts) {
+            if (art.getArtifactId().contains("spring-boot-starter")) {
+                springBootStarters.add(art.getArtifactId());
+            }
+        }
+
+        return springBootStarters;
     }
 
 }

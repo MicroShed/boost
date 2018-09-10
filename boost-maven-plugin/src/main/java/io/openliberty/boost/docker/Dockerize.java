@@ -23,7 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
-import io.openliberty.boost.utils.SpringBootProjectUtils;
+import io.openliberty.boost.utils.MavenProjectUtil;
 
 public class Dockerize {
     
@@ -52,7 +52,7 @@ public class Dockerize {
     }
     
     public void createDockerFile() throws Exception {
-        String springBootVersion = SpringBootProjectUtils.findSpringBootVersion(project);
+        String springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
         if (springBootVersion != null) {
             createSpringBootDockerFile(springBootVersion);
         } else {
