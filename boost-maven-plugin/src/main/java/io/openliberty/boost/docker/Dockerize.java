@@ -68,17 +68,11 @@ public class Dockerize {
      * @throws MojoExecutionException
      * @throws IOException
      */
-    private void createSpringBootDockerFile(String springBootVersion) throws MojoExecutionException, IOException {
-        
+    private void createSpringBootDockerFile(String springBootVersion) throws MojoExecutionException, IOException {     
         if (isFileExecutable(appArchive)) {
-            try {
-                File dockerFile = createNewDockerFile(projectDirectory);
-                String libertySBImage = getLibertySpringBootBaseImage(springBootVersion);
-                writeSpringBootDockerFile(dockerFile, libertySBImage);
-
-            } catch (FileAlreadyExistsException e) {
-                log.warn("Dockerfile already exists");
-            }
+            File dockerFile = createNewDockerFile(projectDirectory);
+            String libertySBImage = getLibertySpringBootBaseImage(springBootVersion);
+            writeSpringBootDockerFile(dockerFile, libertySBImage);
         } else {
             throw new MojoExecutionException(appArchive.getCanonicalPath() + " file is not an executable archive. "
                     + "The repackage goal of the spring-boot-maven-plugin must be configured to run first in order to create the required executable archive.");
@@ -86,8 +80,8 @@ public class Dockerize {
     }
     
     @SuppressWarnings("resource")
-    private boolean isFileExecutable(File file) throws IOException, MojoExecutionException {
-        if (file.exists()) {
+    private boolean isFileExecutable(File file) throws IOException, MojoExecutionException {       
+        if (file != null && file.exists()) {
             Manifest manifest = new JarFile(file).getManifest();
             if (manifest != null) {
                 String startClass = manifest.getMainAttributes().getValue("Start-Class");
@@ -103,7 +97,11 @@ public class Dockerize {
    
     private File createNewDockerFile(File dockerfileDirectory) throws IOException {
         File dockerFile = new File(dockerfileDirectory, "Dockerfile");
-        Files.createFile(dockerFile.toPath());
+        try {
+            Files.createFile(dockerFile.toPath());
+        } catch (FileAlreadyExistsException e) {
+            log.warn("Dockerfile already exists");
+        } 
         log.info("Creating Dockerfile: " + dockerFile.getAbsolutePath());
         return dockerFile;
     }
