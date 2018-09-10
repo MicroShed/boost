@@ -26,7 +26,6 @@ import org.apache.maven.settings.crypto.SettingsDecrypter;
 
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.DockerConfigReader;
 import com.spotify.docker.client.ImageRef;
 import com.spotify.docker.client.auth.ConfigFileRegistryAuthSupplier;
 import com.spotify.docker.client.auth.RegistryAuthSupplier;
@@ -98,22 +97,11 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
     protected String tag;
 
     /**
-     * Path to docker config file, if the default is not acceptable.
-     */
-    @Parameter(property = "dockerConfigFile")
-    protected File dockerConfigFile;
-
-    /**
      * Connect to Docker Daemon using HTTP proxy, if set.
      */
     @Parameter(defaultValue = "true", property = "useProxy")
     protected boolean useProxy;
 
-    @Parameter(defaultValue = "300000" /* 5 minutes */, property = "readTimeoutMillis", required = true)
-    protected long readTimeoutMillis;
-
-    @Parameter(defaultValue = "300000" /* 5 minutes */, property = "connectTimeoutMillis", required = true)
-    protected long connectTimeoutMillis;
 
     protected Log log;
 
@@ -128,8 +116,7 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
     private DockerClient getDockerClient() throws MojoExecutionException {
         final RegistryAuthSupplier authSupplier = createRegistryAuthSupplier();
         try {
-            return DefaultDockerClient.fromEnv().readTimeoutMillis(readTimeoutMillis)
-                    .connectTimeoutMillis(connectTimeoutMillis).registryAuthSupplier(authSupplier).useProxy(useProxy)
+            return DefaultDockerClient.fromEnv().registryAuthSupplier(authSupplier).useProxy(useProxy)
                     .build();
         } catch (DockerCertificateException e) {
             throw new MojoExecutionException("Problem loading Docker certificates", e);
@@ -137,7 +124,7 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
     }
 
     private RegistryAuthSupplier createRegistryAuthSupplier() {
-        final RegistryAuthSupplier supplier;
+        RegistryAuthSupplier supplier = null;
         final ImageRef ref = new ImageRef(getImageName());
         final Settings settings = session.getSettings();
         final Server server = settings.getServer(ref.getRegistryName());
@@ -145,11 +132,9 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
         //Check for the registry credentials in maven settings.xml and in default config path
         if (server != null) {
             supplier = new MavenSettingsAuthSupplier(server, settings, settingsDecrypter, log);
-        } else if (dockerConfigFile == null || "".equals(dockerConfigFile.getName())) {
-            supplier = new ConfigFileRegistryAuthSupplier();
         } else {
-            supplier = new ConfigFileRegistryAuthSupplier(new DockerConfigReader(), dockerConfigFile.toPath());
-        }
+            supplier = new ConfigFileRegistryAuthSupplier();
+        } 
         return supplier;
     }
 

@@ -71,36 +71,38 @@ public class DockerBuildMojo extends AbstractDockerMojo {
      */
     private void buildDockerImage(DockerClient dockerClient, File appArchive)
             throws MojoExecutionException, IOException {
-        final ArrayList<BuildParam> buildParameters = new ArrayList<>();
-        final BuildParam[] buildParametersArray;
         final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
         final String imageName = getImageName();
-
+        BuildParam[] buidParams = getBuildParams(appArchive);
+        log.info("Building image: " + imageName);
+        try {
+            dockerClient.build(projectDirectory.toPath(), imageName, progressHandler, buidParams);
+        } catch (DockerException | InterruptedException e) {
+            throw new MojoExecutionException("Unable to build image", e);
+        }
+    }
+    
+    private BuildParam[] getBuildParams(File appArchive) throws MojoExecutionException {
+        final ArrayList<BuildParam> buildParamsList = new ArrayList<>();
+        final BuildParam[] buildParams;
         if (pullNewerImage) {
-            buildParameters.add(BuildParam.pullNewerImage());
+            buildParamsList.add(BuildParam.pullNewerImage());
         }
         if (noCache) {
-            buildParameters.add(BuildParam.noCache());
+            buildParamsList.add(BuildParam.noCache());
         }
 
         buildArgs.put("APP_FILE", appArchive.getName());
 
         try {
             final String encodedBuildArgs = URLEncoder.encode(new Gson().toJson(buildArgs), "utf-8");
-            buildParameters.add(new BuildParam("buildargs", encodedBuildArgs));
+            buildParamsList.add(new BuildParam("buildargs", encodedBuildArgs));
         } catch (UnsupportedEncodingException e) {
-            throw new MojoExecutionException("Could not build image", e);
+            throw new MojoExecutionException("Unable to build image", e);
         }
 
-        buildParametersArray = buildParameters.toArray(new BuildParam[buildParameters.size()]);
-
-        log.info("Image will be built as " + imageName);
-        log.info("");
-        try {
-            dockerClient.build(projectDirectory.toPath(), getImageName(), progressHandler, buildParametersArray);
-        } catch (DockerException | InterruptedException e) {
-            throw new MojoExecutionException("Could not build image", e);
-        }
+        buildParams = buildParamsList.toArray(new BuildParam[buildParamsList.size()]);
+        return buildParams;
     }
 
 }
