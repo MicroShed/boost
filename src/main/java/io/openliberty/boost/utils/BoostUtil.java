@@ -12,28 +12,21 @@
 package io.openliberty.boost.utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.jar.JarFile;
 
 import io.openliberty.boost.BoostException;
 
 public class BoostUtil {
 
-    public static boolean isLibertyJar(File artifact) throws BoostException, IOException {
+    public static boolean isLibertyJar(File artifact) throws BoostException {
         boolean isLibertyJar;
-        JarFile artifactJar;
         
-        try {
-            artifactJar = new JarFile(artifact);
+        try(JarFile artifactJar = new JarFile(artifact)) {
             isLibertyJar =  artifactJar.getEntry("wlp") != null;
         } catch (Exception e) {
             throw new BoostException("Error checking Liberty artifact.", e);
         }
-        
-        if(artifactJar != null) {
-            artifactJar.close();
-        }
-        
+
         return isLibertyJar;
     }
     
