@@ -11,7 +11,9 @@
 
 package io.openliberty.boost;
 
-public class BoostException extends Exception {
+import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
+
+public class BoostException extends PluginExecutionException {
 
     private static final long serialVersionUID = 1L;
 

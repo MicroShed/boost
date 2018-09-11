@@ -22,6 +22,4 @@ public interface ConfigConstants {
     public String SERVLET_40 = "servlet-4.0";
     
     public String WEBSOCKET_11 = "websocket-1.1";
-    
-    public String BOOT_VERSION_ATTRIBUTE = "Spring-Boot-Version";
 }

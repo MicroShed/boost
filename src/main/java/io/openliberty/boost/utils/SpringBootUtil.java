@@ -11,11 +11,7 @@
 
 package io.openliberty.boost.utils;
 
-import static io.openliberty.boost.utils.ConfigConstants.BOOT_VERSION_ATTRIBUTE;
-import static io.openliberty.boost.utils.ConfigConstants.SERVLET_40;
-import static io.openliberty.boost.utils.ConfigConstants.SPRING_BOOT_15;
-import static io.openliberty.boost.utils.ConfigConstants.SPRING_BOOT_20;
-import static io.openliberty.boost.utils.ConfigConstants.WEBSOCKET_11;
+import static io.openliberty.boost.utils.ConfigConstants.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,13 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.Attributes;
-import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.apache.commons.io.FileUtils;
 
 import io.openliberty.boost.BoostException;
 import io.openliberty.boost.BoostLoggerI;
+import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
 
 public class SpringBootUtil {
 
@@ -47,23 +43,18 @@ public class SpringBootUtil {
 
     private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
 
-    private static boolean isSpringBootUberJar(File artifact) throws BoostException {
+    /**
+     * Get the expected path of the Spring Boot Uber JAR (with .spring extension)
+     * that was preserved during the Boost packaging process. No guarantee that the
+     * path exists or the artifact is indeed a Spring Boot Uber JAR.
+     * 
+     * @param artifact
+     * @return the canonical path
+     * @throws BoostException
+     */
+    public static String getBoostedSpringBootUberJarPath(File artifact) throws BoostException {
         if (artifact == null || !artifact.exists() || !artifact.isFile()) {
-            throw new BoostException("Artifact file does not exist.");
-        }
-
-        try (JarFile jarFile = new JarFile(artifact)) {
-            Manifest manifest = jarFile.getManifest();
-            return (manifest != null && manifest.getMainAttributes().getValue(BOOT_VERSION_ATTRIBUTE) != null);
-        } catch (IOException e) {
-            throw new BoostException("Could not open artifact file.", e);
-        }
-    }
-
-    public static String getSpringBootUberJarPath(File artifact) throws BoostException {
-        if (artifact == null || !artifact.exists() || !artifact.isFile()) {
-            throw new BoostException(
-                    "Spring Boot Uber JAR does not exist. Run spring-boot:repackage and try again.");
+            throw new BoostException("Could not find a project artifact.");
         }
 
         try {
@@ -73,17 +64,24 @@ public class SpringBootUtil {
         }
     }
 
-    public static boolean copySpringBootUberJar(File artifact) throws BoostException {
+    /**
+     * Copy the Spring Boot Uber JAR to a .spring extension to preserve it
+     * 
+     * @param artifact
+     * @return true if the operation was performed successfully, false otherwise
+     * @throws PluginExecutionException
+     */
+    public static boolean copySpringBootUberJar(File artifact) throws PluginExecutionException {
         if (artifact == null || !artifact.exists() || !artifact.isFile()) {
-            throw new BoostException(
-                    "Spring Boot Uber JAR does not exist. Run spring-boot:repackage and try again.");
+            throw new BoostException("Could not find a project artifact.");
         }
 
-        File springJar = new File(getSpringBootUberJarPath(artifact));
+        File springJar = new File(getBoostedSpringBootUberJarPath(artifact));
 
         // We are sure the artifact is a Spring Boot uber JAR if it has
         // Spring-Boot-Version in the manifest, but not a wlp directory
-        if (isSpringBootUberJar(artifact) && !BoostUtil.isLibertyJar(artifact)) {
+        if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(artifact)
+                && !BoostUtil.isLibertyJar(artifact)) {
             try {
                 FileUtils.copyFile(artifact, springJar);
                 return true;
@@ -94,14 +92,22 @@ public class SpringBootUtil {
         return false;
     }
 
+    /**
+     * Add the Spring Boot Version property to the Manifest file in the Liberty Uber
+     * JAR. This is to trick Spring Boot into not repackaging it.
+     * 
+     * @param artifact
+     * @param springBootVersion
+     * @throws BoostException
+     */
     public static void addSpringBootVersionToManifest(File artifact, String springBootVersion) throws BoostException {
         if (artifact == null || !artifact.exists() || !artifact.isFile()) {
-            throw new BoostException(
-                    "Liberty Uber JAR does not exist. Run spring-boot:repackage and try again.");
+            throw new BoostException("Could not find a project artifact.");
         }
 
         if (!BoostUtil.isLibertyJar(artifact)) {
-            throw new BoostException("Project artifact is not a Liberty JAR.");
+            throw new BoostException(
+                    "The project artifact is not a Liberty JAR. This should not happen.");
         }
 
         Path path = artifact.toPath();
@@ -112,7 +118,9 @@ public class SpringBootUtil {
             InputStream is = Files.newInputStream(zipPath);
 
             Manifest manifest = new Manifest(is);
-            manifest.getMainAttributes().put(new Attributes.Name(BOOT_VERSION_ATTRIBUTE), springBootVersion);
+            manifest.getMainAttributes().put(
+                    new Attributes.Name(net.wasdev.wlp.common.plugins.util.SpringBootUtil.BOOT_VERSION_ATTRIBUTE),
+                    springBootVersion);
 
             ByteArrayOutputStream manifestOs = new ByteArrayOutputStream();
             manifest.write(manifestOs);
@@ -178,7 +186,8 @@ public class SpringBootUtil {
                     "The springBoot feature was not added to the Open Liberty server because no spring-boot-starter dependencies were found.");
         }
 
-        // Add any other Liberty features needed depending on the spring boot starters defined
+        // Add any other Liberty features needed depending on the spring boot starters
+        // defined
         for (String springBootStarter : springBootStarters) {
             if (springBootStarter.equals("spring-boot-starter-web")) {
                 // Add the servlet-4.0 feature
