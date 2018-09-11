@@ -2,17 +2,17 @@
 
 ### What is Boost?
 
-This is a prototype Maven plugin to package a Spring Boot application with Liberty
+This is a prototype Maven plugin to package a Spring Boot application with Liberty.
 
 When added to your pom.xml, the plugin will
 
-1. Install Open Liberty
-2. Create an Open Liberty server
-3. Thin the Spring Boot project application
-4. Install the application to the server
-5. Install and add appropriate Liberty feature to the server configuration
-6. Package the server and application into a runnable jar
-7. Create a Docker image if a Dockerfile is present
+1. Install Open Liberty.
+2. Create an Open Liberty server.
+3. Thin the Spring Boot project application.
+4. Install the application to the server.
+5. Install and add appropriate Liberty features to the server configuration.
+6. Package the server and application into a runnable jar.
+7. Create a Spring Boot application Docker image that uses Liberty.
 
 
 ### Build Liberty Boost Plugin

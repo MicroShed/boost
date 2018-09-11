@@ -56,7 +56,7 @@ Go to `http://localhost:8080` and you should see the following displayed in the 
 
 ### Create a Docker image from your Spring Boot application
 
-With Boost, you can easily create a Docker image from your Spring Boot application. Note that
+With Boost, you can easily create a Spring Boot application Docker image that uses Liberty from your Spring Boot application. Note that
 you must first have Docker installed and running.
 
 Edit the Boost plugin definition in the pom.xml to the following:
@@ -77,6 +77,10 @@ Edit the Boost plugin definition in the pom.xml to the following:
 ```
 
 Now, run `mvn clean install` to build your docker image.
+ 
+##### Note: 
+The `docker-build` goal creates a Liberty specific Dockerfile in the root folder of the Spring Boot project in the absence of a Dockerfile and builds the docker image.
+ 
 
 ### Run the Docker image of your Spring Boot application
 
