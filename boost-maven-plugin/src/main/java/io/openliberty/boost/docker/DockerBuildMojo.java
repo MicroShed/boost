@@ -27,8 +27,11 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.BuildParam;
 import com.spotify.docker.client.exceptions.DockerException;
 
+import io.openliberty.boost.BoostException;
+import net.wasdev.wlp.maven.plugins.utils.SpringBootUtil;
+
 /**
- * Builds a docker image from a packaged application. 
+ * Builds a docker image from a packaged application.
  *
  */
 @Mojo(name = "docker-build", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
@@ -55,14 +58,48 @@ public class DockerBuildMojo extends AbstractDockerMojo {
     protected void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException {
         try {
             File appArchive = getAppArchive();
+
             // Create a Dockerfile for the application
-            Dockerize dockerize = new Dockerize(project, outputDirectory, appArchive, log);
+            Dockerize dockerize = new Dockerize(project, new File(project.getBuild().getDirectory()), appArchive, log);
             dockerize.createDockerFile();
-            
+
             buildDockerImage(dockerClient, appArchive);
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Find the location of the Spring Boot Uber JAR
+     * 
+     * @throws BoostException
+     */
+    private File getAppArchive() throws BoostException {
+        File appArchive;
+
+        // First try to get the Spring Boot Uber JAR as the project artifact as a result
+        // of the spring-boot-maven-plugin execution, handling classifier scenario if
+        // necessary.
+        appArchive = SpringBootUtil.getSpringBootUberJAR(project, getLog());
+        if (appArchive != null) {
+            return appArchive;
+        }
+
+        // If Boost replaced the project artifact, then the appArchive path will
+        // actually point to the Liberty Uber JAR. Check if this is the case and if so,
+        // use the .spring artifact that we preserved during the Boost packaging
+        // process.
+        appArchive = new File(io.openliberty.boost.utils.SpringBootUtil
+                .getBoostedSpringBootUberJarPath(project.getArtifact().getFile()));
+        if (appArchive != null && appArchive.exists() && appArchive.isFile()
+                && net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(appArchive)) {
+            getLog().info("Found Spring Boot Uber JAR with .spring extension.");
+            return appArchive;
+        }
+
+        // At this point we did not find the Spring Boot Uber JAR in any of its expected
+        // locations.
+        throw new BoostException("Could not find Spring Boot Uber JAR.");
     }
 
     /**
@@ -76,12 +113,12 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         BuildParam[] buidParams = getBuildParams(appArchive);
         log.info("Building image: " + imageName);
         try {
-            dockerClient.build(projectDirectory.toPath(), imageName, progressHandler, buidParams);
+            dockerClient.build(project.getBasedir().toPath(), imageName, progressHandler, buidParams);
         } catch (DockerException | InterruptedException e) {
             throw new MojoExecutionException("Unable to build image", e);
         }
     }
-    
+
     private BuildParam[] getBuildParams(File appArchive) throws MojoExecutionException {
         final ArrayList<BuildParam> buildParamsList = new ArrayList<>();
         final BuildParam[] buildParams;
