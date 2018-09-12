@@ -91,8 +91,7 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         // process.
         appArchive = new File(io.openliberty.boost.utils.SpringBootUtil
                 .getBoostedSpringBootUberJarPath(project.getArtifact().getFile()));
-        if (appArchive != null && appArchive.exists() && appArchive.isFile()
-                && net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(appArchive)) {
+        if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(appArchive)) {
             getLog().info("Found Spring Boot Uber JAR with .spring extension.");
             return appArchive;
         }

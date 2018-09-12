@@ -124,10 +124,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     private void copySpringBootUberJar() throws MojoExecutionException {
         try {
             if (!SpringBootUtil.copySpringBootUberJar(project.getArtifact().getFile(), BoostLogger.getInstance())) {
-                File springJar = new File(
-                        SpringBootUtil.getBoostedSpringBootUberJarPath(project.getArtifact().getFile()));
-                if (springJar.exists() && springJar.isFile()
-                        && net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(springJar)) {
+                File springJar = new File(SpringBootUtil.getBoostedSpringBootUberJarPath(project.getArtifact().getFile()));
+                if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(springJar)) {
                     getLog().debug("Copying back Spring Boot Uber JAR as project artifact.");
                     FileUtils.copyFile(springJar, project.getArtifact().getFile());
                 }
