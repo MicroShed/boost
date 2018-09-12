@@ -71,7 +71,7 @@ public class SpringBootUtil {
      * @return true if the operation was performed successfully, false otherwise
      * @throws PluginExecutionException
      */
-    public static boolean copySpringBootUberJar(File artifact) throws PluginExecutionException {
+    public static boolean copySpringBootUberJar(File artifact, BoostLoggerI logger) throws PluginExecutionException {
         if (artifact == null || !artifact.exists() || !artifact.isFile()) {
             throw new BoostException("Could not find a project artifact.");
         }
@@ -81,7 +81,7 @@ public class SpringBootUtil {
         // We are sure the artifact is a Spring Boot uber JAR if it has
         // Spring-Boot-Version in the manifest, but not a wlp directory
         if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(artifact)
-                && !BoostUtil.isLibertyJar(artifact)) {
+                && !BoostUtil.isLibertyJar(artifact, logger)) {
             try {
                 FileUtils.copyFile(artifact, springJar);
                 return true;
@@ -100,12 +100,12 @@ public class SpringBootUtil {
      * @param springBootVersion
      * @throws BoostException
      */
-    public static void addSpringBootVersionToManifest(File artifact, String springBootVersion) throws BoostException {
+    public static void addSpringBootVersionToManifest(File artifact, String springBootVersion, BoostLoggerI logger) throws BoostException {
         if (artifact == null || !artifact.exists() || !artifact.isFile()) {
             throw new BoostException("Could not find a project artifact.");
         }
 
-        if (!BoostUtil.isLibertyJar(artifact)) {
+        if (!BoostUtil.isLibertyJar(artifact, logger)) {
             throw new BoostException(
                     "The project artifact is not a Liberty JAR. This should not happen.");
         }
