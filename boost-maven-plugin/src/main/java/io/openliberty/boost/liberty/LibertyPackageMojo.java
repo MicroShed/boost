@@ -91,7 +91,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         if (springBootVersion != null) {
             // Add the manifest to prevent Spring Boot from repackaging again
             try {
-                SpringBootUtil.addSpringBootVersionToManifest(project.getArtifact().getFile(), springBootVersion);
+                SpringBootUtil.addSpringBootVersionToManifest(project.getArtifact().getFile(), springBootVersion, BoostLogger.getInstance());
             } catch (BoostException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
@@ -106,7 +106,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      * @throws MojoExecutionException
      */
     private void validateSpringBootUberJAR() throws MojoExecutionException {
-        if (!BoostUtil.isLibertyJar(project.getArtifact().getFile())
+        if (!BoostUtil.isLibertyJar(project.getArtifact().getFile(), BoostLogger.getInstance())
                 && !net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(
                         net.wasdev.wlp.maven.plugins.utils.SpringBootUtil.getSpringBootUberJAR(project, getLog()))) {
             throw new MojoExecutionException(
@@ -123,7 +123,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      */
     private void copySpringBootUberJar() throws MojoExecutionException {
         try {
-            if (!SpringBootUtil.copySpringBootUberJar(project.getArtifact().getFile())) {
+            if (!SpringBootUtil.copySpringBootUberJar(project.getArtifact().getFile(), BoostLogger.getInstance())) {
                 File springJar = new File(
                         SpringBootUtil.getBoostedSpringBootUberJarPath(project.getArtifact().getFile()));
                 if (springJar.exists() && springJar.isFile()
