@@ -14,17 +14,17 @@ package io.openliberty.boost.utils;
 import java.io.File;
 import java.util.jar.JarFile;
 
-import io.openliberty.boost.BoostException;
+import io.openliberty.boost.BoostLoggerI;
 
 public class BoostUtil {
 
-    public static boolean isLibertyJar(File artifact) throws BoostException {
-        boolean isLibertyJar;
+    public static boolean isLibertyJar(File artifact, BoostLoggerI logger) {
+        boolean isLibertyJar = false;
         
         try(JarFile artifactJar = new JarFile(artifact)) {
             isLibertyJar =  artifactJar.getEntry("wlp") != null;
         } catch (Exception e) {
-            throw new BoostException("Error checking Liberty artifact.", e);
+            logger.debug("Exception when checking Liberty JAR", e);
         }
 
         return isLibertyJar;
