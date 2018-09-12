@@ -97,7 +97,9 @@
                 <executions>
                     <execution>
                         <goals>
+                            <!-- Test packaging before docker-build to validate usage of correct artifact -->
                             <goal>package</goal>
+                            <goal>docker-build</goal>
                         </goals>
                     </execution>
                     <execution>

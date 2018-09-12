@@ -35,7 +35,7 @@ public class LibertyDebugMojo extends AbstractLibertyMojo {
     protected boolean clean;
     
     @Override
-    public void execute() throws MojoExecutionException {
+    public void execute() throws MojoExecutionException {        
         executeMojo(getPlugin(), goal("debug"),
                 configuration(
                         element(name("serverName"), libertyServerName),

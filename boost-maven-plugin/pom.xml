@@ -3,7 +3,8 @@
     terms of the Eclipse Public License v1.0 which accompanies this distribution, 
     and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: 
     IBM Corporation - initial API and implementation -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -11,7 +12,7 @@
         <artifactId>boost-maven-parent</artifactId>
         <version>0.2-SNAPSHOT</version>
     </parent>
-    
+
     <artifactId>boost-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
@@ -30,7 +31,12 @@
             <groupId>io.openliberty.boost</groupId>
             <artifactId>boost-common</artifactId>
             <version>0.2-SNAPSHOT</version>
-        </dependency>    
+        </dependency>
+        <dependency>
+            <groupId>net.wasdev.wlp.maven.plugins</groupId>
+            <artifactId>liberty-maven-plugin</artifactId>
+            <version>2.6.1-SNAPSHOT</version>
+        </dependency>
 
         <!-- Other dependencies -->
 
@@ -54,7 +60,7 @@
             <groupId>org.twdata.maven</groupId>
             <artifactId>mojo-executor</artifactId>
             <version>2.3.0</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>com.spotify</groupId>
             <artifactId>docker-client</artifactId>
@@ -67,25 +73,25 @@
         </dependency>
 
         <dependency>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>plugin-support</artifactId>
-                <version>1.0-alpha-1</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.maven</groupId>
-                        <artifactId>maven-project</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.maven</groupId>
-                        <artifactId>maven-artifact</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.maven</groupId>
-                        <artifactId>maven-plugin-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
- 
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>plugin-support</artifactId>
+            <version>1.0-alpha-1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.maven</groupId>
+                    <artifactId>maven-project</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.maven</groupId>
+                    <artifactId>maven-artifact</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.maven</groupId>
+                    <artifactId>maven-plugin-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
     </dependencies>
 
     <profiles>
@@ -120,7 +126,7 @@
             </build>
         </profile>
     </profiles>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -135,7 +141,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>    
+            </plugin>
         </plugins>
     </build>
 

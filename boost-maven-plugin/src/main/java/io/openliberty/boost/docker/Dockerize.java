@@ -16,17 +16,16 @@ import java.nio.charset.Charset;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
 import io.openliberty.boost.utils.MavenProjectUtil;
+import net.wasdev.wlp.common.plugins.util.SpringBootUtil;
 
 public class Dockerize {
-    
+
     private final MavenProject project;
     private final File projectDirectory;
     private final File outputDirectory;
@@ -50,7 +49,7 @@ public class Dockerize {
         this.appArchive = appArchive;
         this.log = log;
     }
-    
+
     public void createDockerFile() throws Exception {
         String springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
         if (springBootVersion != null) {
@@ -68,41 +67,26 @@ public class Dockerize {
      * @throws MojoExecutionException
      * @throws IOException
      */
-    private void createSpringBootDockerFile(String springBootVersion) throws MojoExecutionException, IOException {     
-        if (isFileExecutable(appArchive)) {
-            try {
+    private void createSpringBootDockerFile(String springBootVersion) throws MojoExecutionException, IOException {
+        try {
+            if (SpringBootUtil.isSpringBootUberJar(appArchive)) {
                 File dockerFile = createNewDockerFile(projectDirectory);
                 String libertySBImage = getLibertySpringBootBaseImage(springBootVersion);
-                writeSpringBootDockerFile(dockerFile, libertySBImage);            
-            } catch (FileAlreadyExistsException e) {
-                log.warn("Dockerfile already exists");
-            } 
-        } else {
-            throw new MojoExecutionException(appArchive.getCanonicalPath() + " file is not an executable archive. "
-                    + "The repackage goal of the spring-boot-maven-plugin must be configured to run first in order to create the required executable archive.");
-        }
-    }
-    
-    @SuppressWarnings("resource")
-    private boolean isFileExecutable(File file) throws IOException, MojoExecutionException {       
-        if (file != null && file.exists()) {
-            Manifest manifest = new JarFile(file).getManifest();
-            if (manifest != null) {
-                String startClass = manifest.getMainAttributes().getValue("Start-Class");
-                if (startClass != null) {
-                    return true;
-                }
+                writeSpringBootDockerFile(dockerFile, libertySBImage);           
             }
-        } else {
-            throw new MojoExecutionException(file.getCanonicalPath() + " does not exist.");
+            else {
+                throw new MojoExecutionException(appArchive.getAbsolutePath() + " file is not an executable archive. "
+                        + "The repackage goal of the spring-boot-maven-plugin must be configured to run first in order to create the required executable archive.");
+            }
+        } catch (FileAlreadyExistsException e1) {
+            log.warn("Dockerfile already exists");
         }
-        return false;
     }
-   
+
     private File createNewDockerFile(File dockerfileDirectory) throws IOException {
         File dockerFile = new File(dockerfileDirectory, "Dockerfile");
         Files.createFile(dockerFile.toPath());
-        log.info("Creating Dockerfile: " + dockerFile.getAbsolutePath());     
+        log.info("Creating Dockerfile: " + dockerFile.getAbsolutePath());
         return dockerFile;
     }
 

@@ -31,16 +31,13 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 public abstract class AbstractLibertyMojo extends MojoSupport {
-    
+
     protected String libertyServerName = "BoostServer";
 
     protected String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
     protected String libertyMavenPluginArtifactId = "liberty-maven-plugin";
-
-    /**
-     * Version of the Liberty-Maven-Plugin used by Boost
-     */
-    @Parameter(defaultValue = "2.6", readonly = true)
+    
+    @Parameter(defaultValue = "2.6.1-SNAPSHOT", readonly = true)
     protected String libertyMavenPluginVersion;
 
     @Parameter(defaultValue = "${project.build.directory}", readonly = true)
@@ -62,7 +59,7 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
         return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
                 version(libertyMavenPluginVersion));
     }
-    
+
     protected Element getRuntimeArtifactElement() {
         return element(name("assemblyArtifact"), element(name("groupId"), runtimeArtifact.getGroupId()),
                 element(name("artifactId"), runtimeArtifact.getArtifactId()),
@@ -73,5 +70,5 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     protected ExecutionEnvironment getExecutionEnvironment() {
         return executionEnvironment(project, session, pluginManager);
     }
-    
+
 }

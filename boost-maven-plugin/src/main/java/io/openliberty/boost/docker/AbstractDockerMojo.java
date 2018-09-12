@@ -10,8 +10,6 @@
  *******************************************************************************/
 package io.openliberty.boost.docker;
 
-import java.io.File;
-
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -32,41 +30,15 @@ import com.spotify.docker.client.auth.RegistryAuthSupplier;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 
 public abstract class AbstractDockerMojo extends AbstractMojo {
+    
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     protected MavenProject project;
 
     @Parameter(defaultValue = "${session}", readonly = true)
     protected MavenSession session;
 
-    /**
-     * The settings decrypter.
-     */
     @Component
     private SettingsDecrypter settingsDecrypter;
-
-    /**
-     * Directory containing the generated archive.
-     * 
-     * @since 1.0
-     */
-    @Parameter(defaultValue = "${project.basedir}", required = true, readonly = true)
-    protected File projectDirectory;
-
-    /**
-     * Directory containing the generated archive.
-     * 
-     * @since 1.0
-     */
-    @Parameter(defaultValue = "${project.build.directory}", required = true, readonly = true)
-    protected File outputDirectory;
-
-    /**
-     * Name of the generated archive.
-     * 
-     * @since 1.0
-     */
-    @Parameter(defaultValue = "${project.build.finalName}", required = true, readonly = true)
-    protected String finalName;
 
     /**
      * Classifier to add to the artifact generated. If given, the classifier will be
@@ -136,18 +108,6 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
             supplier = new ConfigFileRegistryAuthSupplier();
         } 
         return supplier;
-    }
-
-    protected File getAppArchive() {
-        String classifier = (this.classifier == null ? "" : this.classifier.trim());
-        if (!classifier.isEmpty() && !classifier.startsWith("-")) {
-            classifier = "-" + classifier;
-        }
-        if (!this.outputDirectory.exists()) {
-            this.outputDirectory.mkdirs();
-        }
-        return new File(this.outputDirectory,
-                this.finalName + classifier + "." + this.project.getArtifact().getArtifactHandler().getExtension());
     }
 
     protected final String getImageName() {
