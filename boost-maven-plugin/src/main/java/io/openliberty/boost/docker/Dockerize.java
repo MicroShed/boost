@@ -42,10 +42,10 @@ public class Dockerize {
     private static final String COPY = "COPY ";
     private static final String RUN = "RUN ";
 
-    public Dockerize(MavenProject project, File outputDirectory, File appArchive, Log log) {
+    public Dockerize(MavenProject project, File appArchive, Log log) {
         this.project = project;
         this.projectDirectory = project.getBasedir();
-        this.outputDirectory = outputDirectory;
+        this.outputDirectory = new File(project.getBuild().getDirectory());
         this.appArchive = appArchive;
         this.log = log;
     }

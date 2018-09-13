@@ -37,7 +37,8 @@ import net.wasdev.wlp.maven.plugins.utils.SpringBootUtil;
 @Mojo(name = "docker-build", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class DockerBuildMojo extends AbstractDockerMojo {
     /**
-     * Do not pull newer base image and use the cache instead.
+     * Pull newer version of the image, if set. Use the cache by default
+     * when building the image.
      */
     @Parameter(property = "pullNewerImage", defaultValue = "false")
     private boolean pullNewerImage;
@@ -49,7 +50,7 @@ public class DockerBuildMojo extends AbstractDockerMojo {
     private boolean noCache;
 
     /**
-     * Custom build arguments.
+     * Set build time variables.
      */
     @Parameter(property = "buildArgs")
     private Map<String, String> buildArgs;
@@ -60,7 +61,7 @@ public class DockerBuildMojo extends AbstractDockerMojo {
             File appArchive = getAppArchive();
 
             // Create a Dockerfile for the application
-            Dockerize dockerize = new Dockerize(project, new File(project.getBuild().getDirectory()), appArchive, log);
+            Dockerize dockerize = new Dockerize(project, appArchive, log);
             dockerize.createDockerFile();
 
             buildDockerImage(dockerClient, appArchive);
