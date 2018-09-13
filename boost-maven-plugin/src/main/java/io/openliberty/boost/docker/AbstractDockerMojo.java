@@ -31,9 +31,15 @@ import com.spotify.docker.client.exceptions.DockerCertificateException;
 
 public abstract class AbstractDockerMojo extends AbstractMojo {
     
+    /**
+     * Current Maven project.
+     */
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     protected MavenProject project;
-
+    
+    /**
+     * Current Maven session.
+     */
     @Parameter(defaultValue = "${session}", readonly = true)
     protected MavenSession session;
 
@@ -41,23 +47,8 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
     private SettingsDecrypter settingsDecrypter;
 
     /**
-     * Classifier to add to the artifact generated. If given, the classifier will be
-     * suffixed to the artifact and the main artifact will be deployed as the main
-     * artifact. If this is not given (default), it will replace the main artifact
-     * and only the repackaged artifact will be deployed. Attaching the artifact
-     * allows to deploy it alongside to the original one, see <a href=
-     * "http://maven.apache.org/plugins/maven-deploy-plugin/examples/deploying-with-classifiers.html"
-     * > the maven documentation for more details</a>.
-     * 
-     * @since 1.0
-     */
-    @Parameter
-    protected String classifier;
-
-    /**
      * The repository to put the built image into, <tt>${project.artifactId}</tt> is
-     * used by default. You should also set the <tt>tag</tt> parameter, otherwise
-     * the tag <tt>latest</tt> is used by default.
+     * used by default.
      */
     @Parameter(property = "repository", defaultValue = "${project.artifactId}")
     protected String repository;
@@ -71,7 +62,7 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
     /**
      * Connect to Docker Daemon using HTTP proxy, if set.
      */
-    @Parameter(defaultValue = "true", property = "useProxy")
+    @Parameter(property = "useProxy", defaultValue = "true")
     protected boolean useProxy;
 
 
