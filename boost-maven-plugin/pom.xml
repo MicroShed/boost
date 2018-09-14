@@ -128,6 +128,22 @@
     </profiles>
 
     <build>
+        <resources>
+            <resource>
+                <directory>../other-legal</directory> 
+                <targetPath>META-INF</targetPath>
+                <excludes>
+                    <exclude>README.md</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <!-- Parent root -->
+                <directory>..</directory> 
+                <includes>
+                    <include>LICENSE</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -144,5 +160,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
