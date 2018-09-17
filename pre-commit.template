@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# PreReq's
+#  - This requires that a current level of Eclipse is defined on your machine 
+#  - xmllint is available.
+
+# This hook will run the eclipse code formatter before any commit.
+# This will format Java code and XML files that are part of the commit.
+# The java code will be formatted based on the preferences defined
+# in the java.perfs file provided in the base directory of this project.
+# XML files will be formatted based on the default preferences of xmllint.
+#
+# Update the following items below then save this file in 
+# .git/hooks/pre-commit 
+# be sure you have execute authority for this file. 
+
+# set this to the location of your Eclipse installtion
+# Mac OSX Example: /Users/mac/EclipseInstalls/EclipseO2/EClipse.app/Contents/MacOS
+ECLIPSE_HOME=********* fully qualified Location of your Eclipse.exe ************
+
+# Style file is provided in the root directory of the project as java.perfs
+# The project location is the location of the boost-maven project on your
+# workstation. 
+# example: /Users/mac/OpenLiberty-boost-maven/boost-maven
+PROJECT_LOCATION=**** fully qualified path to the project location *********
+STYLE_FILE=$PROJECT_LOCATION/java.perfs
+
+echo "Running pre-commit hook: run-eclipse-formatter---------------------"
+echo "Will run eclipse formatter, using: $STYLE_FILE"
+echo "Listing folders to run formatter on… "
+
+fileCommand="git status --porcelain | cut -c 4- | sed -e 's|^|$PROJECT_LOCATION/|'"
+files=$(eval $fileCommand)
+
+#temp file for .xml file formatting
+tempFile=temp.$RANDOM
+
+# list files to be updated
+# format .xml files
+for f in $files; do            
+    echo $f;
+    if echo "$f" | grep -q ".xml"; then
+       echo "Formatting XML file $f"
+       xmllint --format $f > $tempFile
+       cat $tempFile > $f
+    fi
+done;
+
+#remove temp .xml file
+if [ -f $tempFile ]; then
+   rm $tempFile
+fi
+
+# Format Java Files     
+echo "Launching eclipse code formatter…    "
+exec $ECLIPSE_HOME/eclipse \
+                    -nosplash \
+                    -application org.eclipse.jdt.core.JavaCodeFormatter \
+                    -verbose \
+                    -config $STYLE_FILE \
+                    $files
+
+
+echo "done---------------------------------------------------------------"
