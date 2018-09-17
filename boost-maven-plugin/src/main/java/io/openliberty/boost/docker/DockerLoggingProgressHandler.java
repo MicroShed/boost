@@ -20,41 +20,41 @@ import com.spotify.docker.client.messages.ProgressMessage;
 
 public class DockerLoggingProgressHandler implements ProgressHandler {
 
-    private final Log log;
+	private final Log log;
 
-    public DockerLoggingProgressHandler(Log log) {
-        this.log = log;
-    }
+	public DockerLoggingProgressHandler(Log log) {
+		this.log = log;
+	}
 
-    @Override
-    public void progress(ProgressMessage message) throws DockerException {
-        String stream = message.stream();
-        String status = message.status();
-        String error = message.error();
+	@Override
+	public void progress(ProgressMessage message) throws DockerException {
+		String stream = message.stream();
+		String status = message.status();
+		String error = message.error();
 
-        if (error != null) {
-            throw new DockerException(error);
+		if (error != null) {
+			throw new DockerException(error);
 
-        } else if (message.progressDetail() != null) {
-            logProgress(message.id(), status);
+		} else if (message.progressDetail() != null) {
+			logProgress(message.id(), status);
 
-        } else if (status != null || stream != null) {
-            logStream(stream, status);
-        }
-    }
+		} else if (status != null || stream != null) {
+			logStream(stream, status);
+		}
+	}
 
-    private void logProgress(String id, String status) {
-        if (id != null) {
-            log.info(MessageFormat.format("{0}: {1}", id, status));
-        }
-    }
+	private void logProgress(String id, String status) {
+		if (id != null) {
+			log.info(MessageFormat.format("{0}: {1}", id, status));
+		}
+	}
 
-    private void logStream(String stream, String status) {
-        final String value = (stream != null) ? trimNewline(stream) : status;
-        log.info(value);
-    }
+	private void logStream(String stream, String status) {
+		final String value = (stream != null) ? trimNewline(stream) : status;
+		log.info(value);
+	}
 
-    private static String trimNewline(String string) {
-        return (string != null && string.endsWith("\n")) ? string.substring(0, string.length() - 1) : string;
-    }
+	private static String trimNewline(String string) {
+		return (string != null && string.endsWith("\n")) ? string.substring(0, string.length() - 1) : string;
+	}
 }

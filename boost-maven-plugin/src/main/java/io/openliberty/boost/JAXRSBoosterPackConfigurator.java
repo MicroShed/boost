@@ -13,7 +13,7 @@ public class JAXRSBoosterPackConfigurator implements BoosterPackConfigurator {
 	@Override
 	public void writeConfigToServerXML(Document doc) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

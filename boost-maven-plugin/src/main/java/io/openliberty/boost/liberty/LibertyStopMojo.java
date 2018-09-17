@@ -20,17 +20,16 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Stops the executable archive application started by the 'start' or 'run' goals.
+ * Stops the executable archive application started by the 'start' or 'run'
+ * goals.
  */
 @Mojo(name = "stop")
 public class LibertyStopMojo extends AbstractLibertyMojo {
 
-    @Override
-    public void execute() throws MojoExecutionException {
-        executeMojo(getPlugin(), goal("stop"), 
-                configuration(
-                        element(name("serverName"), libertyServerName)
-                ), getExecutionEnvironment());
-    }
+	@Override
+	public void execute() throws MojoExecutionException {
+		executeMojo(getPlugin(), goal("stop"), configuration(element(name("serverName"), libertyServerName)),
+				getExecutionEnvironment());
+	}
 
 }

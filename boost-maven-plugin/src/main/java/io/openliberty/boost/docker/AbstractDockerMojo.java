@@ -30,91 +30,81 @@ import com.spotify.docker.client.auth.RegistryAuthSupplier;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 
 public abstract class AbstractDockerMojo extends AbstractMojo {
-    
-    @Parameter(defaultValue = "${project}", required = true, readonly = true)
-    protected MavenProject project;
 
-    @Parameter(defaultValue = "${session}", readonly = true)
-    protected MavenSession session;
+	/**
+	 * Current Maven project.
+	 */
+	@Parameter(defaultValue = "${project}", required = true, readonly = true)
+	protected MavenProject project;
 
-    @Component
-    private SettingsDecrypter settingsDecrypter;
+	/**
+	 * Current Maven session.
+	 */
+	@Parameter(defaultValue = "${session}", readonly = true)
+	protected MavenSession session;
 
-    /**
-     * Classifier to add to the artifact generated. If given, the classifier will be
-     * suffixed to the artifact and the main artifact will be deployed as the main
-     * artifact. If this is not given (default), it will replace the main artifact
-     * and only the repackaged artifact will be deployed. Attaching the artifact
-     * allows to deploy it alongside to the original one, see <a href=
-     * "http://maven.apache.org/plugins/maven-deploy-plugin/examples/deploying-with-classifiers.html"
-     * > the maven documentation for more details</a>.
-     * 
-     * @since 1.0
-     */
-    @Parameter
-    protected String classifier;
+	@Component
+	private SettingsDecrypter settingsDecrypter;
 
-    /**
-     * The repository to put the built image into, <tt>${project.artifactId}</tt> is
-     * used by default. You should also set the <tt>tag</tt> parameter, otherwise
-     * the tag <tt>latest</tt> is used by default.
-     */
-    @Parameter(property = "repository", defaultValue = "${project.artifactId}")
-    protected String repository;
+	/**
+	 * The repository to put the built image into, <tt>${project.artifactId}</tt> is
+	 * used by default.
+	 */
+	@Parameter(property = "repository", defaultValue = "${project.artifactId}")
+	protected String repository;
 
-    /**
-     * The tag to apply to the built image. <tt>latest</tt> is used by default.
-     */
-    @Parameter(property = "tag", defaultValue = "latest")
-    protected String tag;
+	/**
+	 * The tag to apply to the built image. <tt>latest</tt> is used by default.
+	 */
+	@Parameter(property = "tag", defaultValue = "latest")
+	protected String tag;
 
-    /**
-     * Connect to Docker Daemon using HTTP proxy, if set.
-     */
-    @Parameter(defaultValue = "true", property = "useProxy")
-    protected boolean useProxy;
+	/**
+	 * Connect to Docker Daemon using HTTP proxy, if set.
+	 */
+	@Parameter(property = "useProxy", defaultValue = "true")
+	protected boolean useProxy;
 
+	protected Log log;
 
-    protected Log log;
+	protected abstract void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException;
 
-    protected abstract void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException;
+	@Override
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		log = getLog();
+		execute(getDockerClient());
+	}
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        log = getLog();
-        execute(getDockerClient());
-    }
+	private DockerClient getDockerClient() throws MojoExecutionException {
+		final RegistryAuthSupplier authSupplier = createRegistryAuthSupplier();
+		try {
+			return DefaultDockerClient.fromEnv().registryAuthSupplier(authSupplier).useProxy(useProxy).build();
+		} catch (DockerCertificateException e) {
+			throw new MojoExecutionException("Problem loading Docker certificates", e);
+		}
+	}
 
-    private DockerClient getDockerClient() throws MojoExecutionException {
-        final RegistryAuthSupplier authSupplier = createRegistryAuthSupplier();
-        try {
-            return DefaultDockerClient.fromEnv().registryAuthSupplier(authSupplier).useProxy(useProxy)
-                    .build();
-        } catch (DockerCertificateException e) {
-            throw new MojoExecutionException("Problem loading Docker certificates", e);
-        }
-    }
+	private RegistryAuthSupplier createRegistryAuthSupplier() {
+		RegistryAuthSupplier supplier = null;
+		final ImageRef ref = new ImageRef(getImageName());
+		final Settings settings = session.getSettings();
+		final Server server = settings.getServer(ref.getRegistryName());
 
-    private RegistryAuthSupplier createRegistryAuthSupplier() {
-        RegistryAuthSupplier supplier = null;
-        final ImageRef ref = new ImageRef(getImageName());
-        final Settings settings = session.getSettings();
-        final Server server = settings.getServer(ref.getRegistryName());
+		// Check for the registry credentials in maven settings.xml and in default
+		// config path
+		if (server != null) {
+			supplier = new MavenSettingsAuthSupplier(server, settings, settingsDecrypter, log);
+		} else {
+			supplier = new ConfigFileRegistryAuthSupplier();
+		}
+		return supplier;
+	}
 
-        //Check for the registry credentials in maven settings.xml and in default config path
-        if (server != null) {
-            supplier = new MavenSettingsAuthSupplier(server, settings, settingsDecrypter, log);
-        } else {
-            supplier = new ConfigFileRegistryAuthSupplier();
-        } 
-        return supplier;
-    }
+	protected final String getImageName() {
+		return this.repository + ":" + this.tag;
+	}
 
-    protected final String getImageName() {
-        return this.repository + ":" + this.tag;
-    }
-
-    protected String getImageName(String repository, String tag) {
-        return repository + ":" + tag;
-    }
+	protected String getImageName(String repository, String tag) {
+		return repository + ":" + tag;
+	}
 }

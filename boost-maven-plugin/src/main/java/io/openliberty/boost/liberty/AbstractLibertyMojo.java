@@ -32,43 +32,43 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 public abstract class AbstractLibertyMojo extends MojoSupport {
 
-    protected String libertyServerName = "BoostServer";
+	protected String libertyServerName = "BoostServer";
 
-    protected String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
-    protected String libertyMavenPluginArtifactId = "liberty-maven-plugin";
-    
-    @Parameter(defaultValue = "2.6.1-SNAPSHOT", readonly = true)
-    protected String libertyMavenPluginVersion;
+	protected String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
+	protected String libertyMavenPluginArtifactId = "liberty-maven-plugin";
 
-    @Parameter(defaultValue = "${project.build.directory}", readonly = true)
-    protected String projectBuildDir;
+	@Parameter(defaultValue = "2.6.1-SNAPSHOT", readonly = true)
+	protected String libertyMavenPluginVersion;
 
-    @Parameter(defaultValue = "${project}", readonly = true)
-    protected MavenProject project;
+	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
+	protected String projectBuildDir;
 
-    @Parameter(defaultValue = "${session}", readonly = true)
-    protected MavenSession session;
+	@Parameter(defaultValue = "${project}", readonly = true)
+	protected MavenProject project;
 
-    @Component
-    protected BuildPluginManager pluginManager;
+	@Parameter(defaultValue = "${session}", readonly = true)
+	protected MavenSession session;
 
-    @Parameter
-    protected ArtifactItem runtimeArtifact;
+	@Component
+	protected BuildPluginManager pluginManager;
 
-    protected Plugin getPlugin() throws MojoExecutionException {
-        return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
-                version(libertyMavenPluginVersion));
-    }
+	@Parameter
+	protected ArtifactItem runtimeArtifact;
 
-    protected Element getRuntimeArtifactElement() {
-        return element(name("assemblyArtifact"), element(name("groupId"), runtimeArtifact.getGroupId()),
-                element(name("artifactId"), runtimeArtifact.getArtifactId()),
-                element(name("version"), runtimeArtifact.getVersion()),
-                element(name("type"), runtimeArtifact.getType()));
-    }
+	protected Plugin getPlugin() throws MojoExecutionException {
+		return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
+				version(libertyMavenPluginVersion));
+	}
 
-    protected ExecutionEnvironment getExecutionEnvironment() {
-        return executionEnvironment(project, session, pluginManager);
-    }
+	protected Element getRuntimeArtifactElement() {
+		return element(name("assemblyArtifact"), element(name("groupId"), runtimeArtifact.getGroupId()),
+				element(name("artifactId"), runtimeArtifact.getArtifactId()),
+				element(name("version"), runtimeArtifact.getVersion()),
+				element(name("type"), runtimeArtifact.getType()));
+	}
+
+	protected ExecutionEnvironment getExecutionEnvironment() {
+		return executionEnvironment(project, session, pluginManager);
+	}
 
 }

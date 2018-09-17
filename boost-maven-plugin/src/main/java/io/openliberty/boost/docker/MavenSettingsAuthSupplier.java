@@ -30,61 +30,61 @@ import com.spotify.docker.client.messages.RegistryConfigs;
 
 public class MavenSettingsAuthSupplier implements RegistryAuthSupplier {
 
-    private final Settings settings;
-    private final SettingsDecrypter settingsDecrypter;
-    private final Server server;
-    private final Log log;
+	private final Settings settings;
+	private final SettingsDecrypter settingsDecrypter;
+	private final Server server;
+	private final Log log;
 
-    public MavenSettingsAuthSupplier(Server server, Settings settings, SettingsDecrypter settingsDecrypter, Log log) {
-        this.server = server;
-        this.settings = settings;
-        this.settingsDecrypter = settingsDecrypter;
-        this.log = log;
-    }
+	public MavenSettingsAuthSupplier(Server server, Settings settings, SettingsDecrypter settingsDecrypter, Log log) {
+		this.server = server;
+		this.settings = settings;
+		this.settingsDecrypter = settingsDecrypter;
+		this.log = log;
+	}
 
-    @Override
-    public RegistryAuth authFor(String imageName) throws DockerException {
-        if (server != null) {
-            return buildRegistryAuth(server);
-        }
-        return null;
-    }
+	@Override
+	public RegistryAuth authFor(String imageName) throws DockerException {
+		if (server != null) {
+			return buildRegistryAuth(server);
+		}
+		return null;
+	}
 
-    private RegistryAuth buildRegistryAuth(Server server) throws DockerException {
-        if (settingsDecrypter != null) {
-            SettingsDecryptionResult result = decrypt(server);
-            return RegistryAuth.builder().username(result.getServer().getUsername())
-                    .password(result.getServer().getPassword()).build();
-        }
-        return null;
-    }
+	private RegistryAuth buildRegistryAuth(Server server) throws DockerException {
+		if (settingsDecrypter != null) {
+			SettingsDecryptionResult result = decrypt(server);
+			return RegistryAuth.builder().username(result.getServer().getUsername())
+					.password(result.getServer().getPassword()).build();
+		}
+		return null;
+	}
 
-    private SettingsDecryptionResult decrypt(Server server) throws DockerException {
-        SettingsDecryptionRequest request = new DefaultSettingsDecryptionRequest(server);
-        SettingsDecryptionResult result = settingsDecrypter.decrypt(request);
-        List<SettingsProblem> problems = result.getProblems();
-        if (!problems.isEmpty()) {
-            for (SettingsProblem problem : problems) {
-                log.error("Problem occured while decrypting the server " + server.getId() + ":" + problem);
-            }
-            throw new DockerException("Unable to decrypt Maven Settings Server " + server.getId());
-        }
-        return result;
-    }
+	private SettingsDecryptionResult decrypt(Server server) throws DockerException {
+		SettingsDecryptionRequest request = new DefaultSettingsDecryptionRequest(server);
+		SettingsDecryptionResult result = settingsDecrypter.decrypt(request);
+		List<SettingsProblem> problems = result.getProblems();
+		if (!problems.isEmpty()) {
+			for (SettingsProblem problem : problems) {
+				log.error("Problem occured while decrypting the server " + server.getId() + ":" + problem);
+			}
+			throw new DockerException("Unable to decrypt Maven Settings Server " + server.getId());
+		}
+		return result;
+	}
 
-    @Override
-    public RegistryAuth authForSwarm() throws DockerException {
-        return null;
-    }
+	@Override
+	public RegistryAuth authForSwarm() throws DockerException {
+		return null;
+	}
 
-    @Override
-    public RegistryConfigs authForBuild() throws DockerException {
-        final List<Server> servers = settings.getServers();
-        final Map<String, RegistryAuth> settingServerConfigs = new HashMap<>();
-        for (Server server : servers) {
-            settingServerConfigs.put(server.getId(), buildRegistryAuth(server));
-        }
-        return RegistryConfigs.create(settingServerConfigs);
-    }
+	@Override
+	public RegistryConfigs authForBuild() throws DockerException {
+		final List<Server> servers = settings.getServers();
+		final Map<String, RegistryAuth> settingServerConfigs = new HashMap<>();
+		for (Server server : servers) {
+			settingServerConfigs.put(server.getId(), buildRegistryAuth(server));
+		}
+		return RegistryConfigs.create(settingServerConfigs);
+	}
 
 }
