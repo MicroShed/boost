@@ -26,46 +26,46 @@ import com.spotify.docker.client.exceptions.DockerException;
 @Mojo(name = "docker-push", defaultPhase = LifecyclePhase.INSTALL)
 public class DockerPushMojo extends AbstractDockerMojo {
 
-	@Override
-	protected void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException {
-		pushDockerImage(dockerClient);
+    @Override
+    protected void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException {
+        pushDockerImage(dockerClient);
 
-	}
+    }
 
-	/**
-	 * Use DockerClient to push the image
-	 * 
-	 */
-	private void pushDockerImage(DockerClient dockerClient) throws MojoExecutionException {
-		final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
-		final String currentImage = getImageName();
-		String newImage = null;
+    /**
+     * Use DockerClient to push the image
+     * 
+     */
+    private void pushDockerImage(DockerClient dockerClient) throws MojoExecutionException {
+        final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
+        final String currentImage = getImageName();
+        String newImage = null;
 
-		if (project.getArtifactId().equals(repository)) {
-			log.warn("Cannot push the image with the default repository name " + repository);
-			System.out.println("\nEnter the repository name in the format [REGISTRYHOST/][USERNAME/]NAME : ");
+        if (project.getArtifactId().equals(repository)) {
+            log.warn("Cannot push the image with the default repository name " + repository);
+            System.out.println("\nEnter the repository name in the format [REGISTRYHOST/][USERNAME/]NAME : ");
 
-			@SuppressWarnings("resource")
-			Scanner in = new Scanner(System.in);
-			String newRepository = in.next();
-			if (newRepository == null) {
-				throw new NullPointerException("Repository name cannot be null");
-			}
-			newImage = getImageName(newRepository, tag);
-		}
+            @SuppressWarnings("resource")
+            Scanner in = new Scanner(System.in);
+            String newRepository = in.next();
+            if (newRepository == null) {
+                throw new NullPointerException("Repository name cannot be null");
+            }
+            newImage = getImageName(newRepository, tag);
+        }
 
-		try {
-			if (newImage != null) {
-				dockerClient.tag(currentImage, newImage);
-				log.info("Successfully tagged " + currentImage + " with " + newImage);
-				dockerClient.push(newImage, progressHandler);
-			} else {
-				dockerClient.push(currentImage, progressHandler);
-			}
-		} catch (DockerException | InterruptedException e) {
-			throw new MojoExecutionException("Unable to push image", e);
-		}
+        try {
+            if (newImage != null) {
+                dockerClient.tag(currentImage, newImage);
+                log.info("Successfully tagged " + currentImage + " with " + newImage);
+                dockerClient.push(newImage, progressHandler);
+            } else {
+                dockerClient.push(currentImage, progressHandler);
+            }
+        } catch (DockerException | InterruptedException e) {
+            throw new MojoExecutionException("Unable to push image", e);
+        }
 
-	}
+    }
 
 }

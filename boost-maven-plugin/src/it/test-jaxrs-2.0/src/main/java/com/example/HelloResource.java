@@ -17,9 +17,9 @@ import javax.ws.rs.Produces;
 @Path("/hello")
 public class HelloResource {
 
-	@GET
-	@Produces("text/plain")
-	public String getInformation() throws Exception, IOException {
-		return "Hello World From Your Friends at Liberty Boost EE!";
-	}
+    @GET
+    @Produces("text/plain")
+    public String getInformation() throws Exception, IOException {
+        return "Hello World From Your Friends at Liberty Boost EE!";
+    }
 }

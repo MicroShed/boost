@@ -31,80 +31,80 @@ import com.spotify.docker.client.exceptions.DockerCertificateException;
 
 public abstract class AbstractDockerMojo extends AbstractMojo {
 
-	/**
-	 * Current Maven project.
-	 */
-	@Parameter(defaultValue = "${project}", required = true, readonly = true)
-	protected MavenProject project;
+    /**
+     * Current Maven project.
+     */
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
+    protected MavenProject project;
 
-	/**
-	 * Current Maven session.
-	 */
-	@Parameter(defaultValue = "${session}", readonly = true)
-	protected MavenSession session;
+    /**
+     * Current Maven session.
+     */
+    @Parameter(defaultValue = "${session}", readonly = true)
+    protected MavenSession session;
 
-	@Component
-	private SettingsDecrypter settingsDecrypter;
+    @Component
+    private SettingsDecrypter settingsDecrypter;
 
-	/**
-	 * The repository to put the built image into, <tt>${project.artifactId}</tt> is
-	 * used by default.
-	 */
-	@Parameter(property = "repository", defaultValue = "${project.artifactId}")
-	protected String repository;
+    /**
+     * The repository to put the built image into, <tt>${project.artifactId}</tt> is
+     * used by default.
+     */
+    @Parameter(property = "repository", defaultValue = "${project.artifactId}")
+    protected String repository;
 
-	/**
-	 * The tag to apply to the built image. <tt>latest</tt> is used by default.
-	 */
-	@Parameter(property = "tag", defaultValue = "latest")
-	protected String tag;
+    /**
+     * The tag to apply to the built image. <tt>latest</tt> is used by default.
+     */
+    @Parameter(property = "tag", defaultValue = "latest")
+    protected String tag;
 
-	/**
-	 * Connect to Docker Daemon using HTTP proxy, if set.
-	 */
-	@Parameter(property = "useProxy", defaultValue = "true")
-	protected boolean useProxy;
+    /**
+     * Connect to Docker Daemon using HTTP proxy, if set.
+     */
+    @Parameter(property = "useProxy", defaultValue = "true")
+    protected boolean useProxy;
 
-	protected Log log;
+    protected Log log;
 
-	protected abstract void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException;
+    protected abstract void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException;
 
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		log = getLog();
-		execute(getDockerClient());
-	}
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        log = getLog();
+        execute(getDockerClient());
+    }
 
-	private DockerClient getDockerClient() throws MojoExecutionException {
-		final RegistryAuthSupplier authSupplier = createRegistryAuthSupplier();
-		try {
-			return DefaultDockerClient.fromEnv().registryAuthSupplier(authSupplier).useProxy(useProxy).build();
-		} catch (DockerCertificateException e) {
-			throw new MojoExecutionException("Problem loading Docker certificates", e);
-		}
-	}
+    private DockerClient getDockerClient() throws MojoExecutionException {
+        final RegistryAuthSupplier authSupplier = createRegistryAuthSupplier();
+        try {
+            return DefaultDockerClient.fromEnv().registryAuthSupplier(authSupplier).useProxy(useProxy).build();
+        } catch (DockerCertificateException e) {
+            throw new MojoExecutionException("Problem loading Docker certificates", e);
+        }
+    }
 
-	private RegistryAuthSupplier createRegistryAuthSupplier() {
-		RegistryAuthSupplier supplier = null;
-		final ImageRef ref = new ImageRef(getImageName());
-		final Settings settings = session.getSettings();
-		final Server server = settings.getServer(ref.getRegistryName());
+    private RegistryAuthSupplier createRegistryAuthSupplier() {
+        RegistryAuthSupplier supplier = null;
+        final ImageRef ref = new ImageRef(getImageName());
+        final Settings settings = session.getSettings();
+        final Server server = settings.getServer(ref.getRegistryName());
 
-		// Check for the registry credentials in maven settings.xml and in default
-		// config path
-		if (server != null) {
-			supplier = new MavenSettingsAuthSupplier(server, settings, settingsDecrypter, log);
-		} else {
-			supplier = new ConfigFileRegistryAuthSupplier();
-		}
-		return supplier;
-	}
+        // Check for the registry credentials in maven settings.xml and in default
+        // config path
+        if (server != null) {
+            supplier = new MavenSettingsAuthSupplier(server, settings, settingsDecrypter, log);
+        } else {
+            supplier = new ConfigFileRegistryAuthSupplier();
+        }
+        return supplier;
+    }
 
-	protected final String getImageName() {
-		return this.repository + ":" + this.tag;
-	}
+    protected final String getImageName() {
+        return this.repository + ":" + this.tag;
+    }
 
-	protected String getImageName(String repository, String tag) {
-		return repository + ":" + tag;
-	}
+    protected String getImageName(String repository, String tag) {
+        return repository + ":" + tag;
+    }
 }

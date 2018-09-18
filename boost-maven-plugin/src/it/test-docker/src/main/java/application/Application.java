@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Application {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
-	@RequestMapping("/spring")
-	public String hello() {
-		return "Greetings from Spring Boot!";
-	}
+    @RequestMapping("/spring")
+    public String hello() {
+        return "Greetings from Spring Boot!";
+    }
 
 }

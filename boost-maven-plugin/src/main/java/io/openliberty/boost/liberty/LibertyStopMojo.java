@@ -26,10 +26,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 @Mojo(name = "stop")
 public class LibertyStopMojo extends AbstractLibertyMojo {
 
-	@Override
-	public void execute() throws MojoExecutionException {
-		executeMojo(getPlugin(), goal("stop"), configuration(element(name("serverName"), libertyServerName)),
-				getExecutionEnvironment());
-	}
+    @Override
+    public void execute() throws MojoExecutionException {
+        executeMojo(getPlugin(), goal("stop"), configuration(element(name("serverName"), libertyServerName)),
+                getExecutionEnvironment());
+    }
 
 }

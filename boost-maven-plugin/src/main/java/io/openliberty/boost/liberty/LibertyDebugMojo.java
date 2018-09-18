@@ -28,16 +28,16 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "debug")
 public class LibertyDebugMojo extends AbstractLibertyMojo {
 
-	/**
-	 * Clean all cached information on server start up.
-	 */
-	@Parameter(property = "clean", defaultValue = "false")
-	protected boolean clean;
+    /**
+     * Clean all cached information on server start up.
+     */
+    @Parameter(property = "clean", defaultValue = "false")
+    protected boolean clean;
 
-	@Override
-	public void execute() throws MojoExecutionException {
-		executeMojo(getPlugin(), goal("debug"), configuration(element(name("serverName"), libertyServerName),
-				element(name("clean"), String.valueOf(clean))), getExecutionEnvironment());
-	}
+    @Override
+    public void execute() throws MojoExecutionException {
+        executeMojo(getPlugin(), goal("debug"), configuration(element(name("serverName"), libertyServerName),
+                element(name("clean"), String.valueOf(clean))), getExecutionEnvironment());
+    }
 
 }

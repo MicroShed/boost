@@ -18,30 +18,30 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 
 public class EndpointIT {
-	private static String URL;
+    private static String URL;
 
-	@BeforeClass
-	public static void init() {
-		// Port should be explicitly set to 8081 for testing purposes
-		URL = "http://localhost:8081/";
-	}
+    @BeforeClass
+    public static void init() {
+        // Port should be explicitly set to 8081 for testing purposes
+        URL = "http://localhost:8081/";
+    }
 
-	@Test
-	public void testServlet() throws Exception {
-		HttpClient client = new HttpClient();
+    @Test
+    public void testServlet() throws Exception {
+        HttpClient client = new HttpClient();
 
-		GetMethod method = new GetMethod(URL);
+        GetMethod method = new GetMethod(URL);
 
-		try {
-			int statusCode = client.executeMethod(method);
+        try {
+            int statusCode = client.executeMethod(method);
 
-			assertEquals("HTTP GET failed", HttpStatus.SC_OK, statusCode);
+            assertEquals("HTTP GET failed", HttpStatus.SC_OK, statusCode);
 
-			String response = method.getResponseBodyAsString(1000);
+            String response = method.getResponseBodyAsString(1000);
 
-			assertTrue("Unexpected response body", response.contains("Greetings from Spring Boot!"));
-		} finally {
-			method.releaseConnection();
-		}
-	}
+            assertTrue("Unexpected response body", response.contains("Greetings from Spring Boot!"));
+        } finally {
+            method.releaseConnection();
+        }
+    }
 }
