@@ -68,10 +68,10 @@ public class SpringBootUtil {
      * Copy the Spring Boot Uber JAR to a .spring extension to preserve it
      * 
      * @param artifact
-     * @return true if the operation was performed successfully, false otherwise
+     * @return the destination file if the operation was performed successfully, null otherwise
      * @throws PluginExecutionException
      */
-    public static boolean copySpringBootUberJar(File artifact, BoostLoggerI logger) throws PluginExecutionException {
+    public static File copySpringBootUberJar(File artifact, BoostLoggerI logger) throws PluginExecutionException {
         if (artifact == null || !artifact.exists() || !artifact.isFile()) {
             throw new BoostException("Could not find a project artifact.");
         }
@@ -84,12 +84,12 @@ public class SpringBootUtil {
                 && !BoostUtil.isLibertyJar(artifact, logger)) {
             try {
                 FileUtils.copyFile(artifact, springJar);
-                return true;
+                return springJar;
             } catch (IOException e) {
                 throw new BoostException("Error copying Spring Boot Uber JAR.", e);
             }
         }
-        return false;
+        return null;
     }
 
     /**
