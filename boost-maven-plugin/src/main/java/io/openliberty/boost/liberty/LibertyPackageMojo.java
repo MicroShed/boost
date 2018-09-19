@@ -80,12 +80,12 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         String springBootClassifier = null;
 
         try {
-            if (MavenProjectUtil.isValid(springBootVersion)) { // Dealing with a spring boot app
+            if (MavenProjectUtil.isNotNullOrEmpty(springBootVersion)) { // Dealing with a spring boot app
                 springBootClassifier = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil
                         .getSpringBootMavenPluginClassifier(project, getLog());
 
                 // Check if we need to attach based on the classifier configuration
-                if (MavenProjectUtil.isValid(springBootClassifier)) {
+                if (MavenProjectUtil.isNotNullOrEmpty(springBootClassifier)) {
                     attach = false;
                 } else {
                     attach = true;
@@ -100,15 +100,17 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                 generateServerXML();
                 generateBootstrapProps();
                 installMissingFeatures();
-                
-                if(springBootUberJar != null) {
+
+                if (springBootUberJar != null) {
+                    // Create the Liberty Uber JAR from the Spring Boot Uber JAR in place
                     createUberJar(springBootUberJar.getAbsolutePath(), attach);
-                }
-                else {
+                } else {
+                    // The Spring Boot Uber JAR was already replaced with the Liberty Uber JAR (this
+                    // is a re-execution in the non-classifier scenario)
                     createUberJar(null, attach);
                 }
-                
-                if (!MavenProjectUtil.isValid(springBootClassifier)) {
+
+                if (!MavenProjectUtil.isNotNullOrEmpty(springBootClassifier)) {
                     // If necessary, add the manifest to prevent Spring Boot from repackaging again
                     addSpringBootVersionToManifest(springBootVersion);
                 }
@@ -140,6 +142,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             } catch (BoostException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
+            getLog().debug("Added Spring Boot Version to manifest to prevent repackaging of Liberty Uber JAR.");
         } else {
             throw new MojoExecutionException("Project artifact is not a Liberty Uber JAR. This should never happen.");
         }
@@ -169,13 +172,14 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     private void copySpringBootUberJar(File springBootUberJar, boolean attach) throws MojoExecutionException {
         try {
             File springBootUberJarCopy = null;
-            if (springBootUberJar != null) {
+            if (springBootUberJar != null) { // Only copy the Uber JAR if it is valid
                 springBootUberJarCopy = SpringBootUtil.copySpringBootUberJar(springBootUberJar,
                         BoostLogger.getInstance());
             }
 
             if (springBootUberJarCopy == null) { // Copy didn't happen
-                if (attach) {
+                if (attach) { // If we are replacing the project artifact, then copy back the Spring Boot Uber
+                              // JAR so we can thin and package it again
                     File springJar = new File(
                             SpringBootUtil.getBoostedSpringBootUberJarPath(project.getArtifact().getFile()));
                     if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(springJar)) {

@@ -35,7 +35,7 @@ public class MavenProjectUtil {
         return version;
     }
     
-    public static boolean isValid(String s) {
+    public static boolean isNotNullOrEmpty(String s) {
         return s != null && !s.isEmpty();
     }
 
