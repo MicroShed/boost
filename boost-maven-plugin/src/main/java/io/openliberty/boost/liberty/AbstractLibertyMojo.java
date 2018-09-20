@@ -70,5 +70,23 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     protected ExecutionEnvironment getExecutionEnvironment() {
         return executionEnvironment(project, session, pluginManager);
     }
+    
+    /**
+     * Create default runtime artifact, if one has not been provided by the user
+     */
+    private void createDefaultRuntimeArtifactIfNeeded() {
+        if (runtimeArtifact == null) {
+            runtimeArtifact = new ArtifactItem();
+            runtimeArtifact.setGroupId("io.openliberty");
+            runtimeArtifact.setArtifactId("openliberty-runtime");
+            runtimeArtifact.setVersion("RELEASE");
+            runtimeArtifact.setType("zip");
+        }
+    }
+    
+    @Override
+    public void execute() throws MojoExecutionException {
+        createDefaultRuntimeArtifactIfNeeded();
+    }
 
 }

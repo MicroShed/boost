@@ -29,8 +29,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.plugins.annotations.*;
 
-import org.codehaus.mojo.pluginsupport.util.ArtifactItem;
-
 import io.openliberty.boost.BoostException;
 import io.openliberty.boost.BoosterPackConfigurator;
 import io.openliberty.boost.BoosterPacksParent;
@@ -57,12 +55,13 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     BoosterPacksParent boosterParent;
     List<BoosterPackConfigurator> boosterFeatures = null;
 
+    @Override
     public void execute() throws MojoExecutionException {
+        super.execute();
+        
         springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
 
         boosterParent = new BoosterPacksParent();
-
-        createDefaultRuntimeArtifactIfNeeded();
 
         createServer();
 
@@ -192,19 +191,6 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             }
         } catch (PluginExecutionException | IOException e) {
             throw new MojoExecutionException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Create default runtime artifact, if one has not been provided by the user
-     */
-    private void createDefaultRuntimeArtifactIfNeeded() {
-        if (runtimeArtifact == null) {
-            runtimeArtifact = new ArtifactItem();
-            runtimeArtifact.setGroupId("io.openliberty");
-            runtimeArtifact.setArtifactId("openliberty-runtime");
-            runtimeArtifact.setVersion("RELEASE");
-            runtimeArtifact.setType("zip");
         }
     }
 
