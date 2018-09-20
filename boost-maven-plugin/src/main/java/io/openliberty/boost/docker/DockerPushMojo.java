@@ -52,7 +52,7 @@ public class DockerPushMojo extends AbstractDockerMojo {
                 throw new MojoExecutionException("The repository name cannot be null");
             }
             if (!isRepositoryValid(newRepository)){
-                throw new MojoExecutionException("The repository name is invalid.");         
+                throw new MojoExecutionException("The repository name is not valid.");         
             } 
             newImage = getImageName(newRepository, tag);
         }
