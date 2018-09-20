@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.boost.docker;
 
+import java.util.regex.Pattern;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -73,6 +75,22 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         log = getLog();
+        if(repository.equals(project.getArtifactId()) && !repository.equals(repository.toLowerCase())) {
+            this.repository = project.getArtifactId().toLowerCase();
+            log.debug("Applying all lower case letters to the default repository name to build the Docker image successfully");
+        }
+        
+        if (!isRepositoryValid(repository)){
+            if(repository.equals(project.getArtifactId())) {
+                throw new MojoExecutionException("The default repository name ${project.artifactId} cannot be used to build the image because it is not a valid repository name.");
+            } else {
+                throw new MojoExecutionException("The <repository> parameter is not configured with a valid name");     
+            }                
+        }         
+        if(!isTagValid(tag)) {
+            throw new MojoExecutionException("The <tag> parameter is not configured with a valid name");
+        }
+        
         execute(getDockerClient());
     }
 
@@ -86,7 +104,7 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
         }
     }
 
-    private RegistryAuthSupplier createRegistryAuthSupplier() {
+    private RegistryAuthSupplier createRegistryAuthSupplier() throws MojoExecutionException {
         RegistryAuthSupplier supplier = null;
         final ImageRef ref = new ImageRef(getImageName());
         final Settings settings = session.getSettings();
@@ -101,11 +119,25 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
         return supplier;
     }
 
-    protected final String getImageName() {
-        return this.repository + ":" + this.tag;
+    protected final String getImageName() { 
+        return this.repository + ":" + this.tag;        
     }
-
+    
     protected String getImageName(String repository, String tag) {
         return repository + ":" + tag;
+    }
+
+    protected static boolean isTagValid(String tag) {
+        return Pattern.matches("[\\w][\\w.-]{0,127}", tag);
+    }
+
+    protected static boolean isRepositoryValid(String repository) {
+        String nameRegExp = "[a-z0-9]+((?:[._]|__|[-]*)[a-z0-9]+)*?";
+        String domain = "(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])";
+        String domainRegExp = domain + "(\\." + domain  + ")*?" + "(:[0-9]+)?";
+        
+        String repositoryRegExp = "(" + domainRegExp + "\\/)?" + nameRegExp + "(\\/" + nameRegExp + ")*?";
+        
+        return Pattern.matches(repositoryRegExp, repository);
     }
 }
