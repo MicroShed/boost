@@ -327,9 +327,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      *
      */
     private void installMissingFeatures() throws MojoExecutionException {
-
-        executeMojo(getPlugin(), goal("install-feature"), configuration(element(name("serverName"), libertyServerName),
-                element(name("features"), element(name("acceptLicense"), "true"))), getExecutionEnvironment());
+        executeMojo(getPlugin(), goal("install-feature"), configuration(element(name("serverName"), libertyServerName)), getExecutionEnvironment());
     }
 
     /**
