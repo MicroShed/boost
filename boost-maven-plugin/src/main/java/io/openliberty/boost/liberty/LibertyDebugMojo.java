@@ -36,8 +36,12 @@ public class LibertyDebugMojo extends AbstractLibertyMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        executeMojo(getPlugin(), goal("debug"), configuration(element(name("serverName"), libertyServerName),
-                element(name("clean"), String.valueOf(clean))), getExecutionEnvironment());
+        super.execute();
+
+        executeMojo(getPlugin(), goal("debug"),
+                configuration(element(name("serverName"), libertyServerName),
+                        element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
+                getExecutionEnvironment());
     }
 
 }

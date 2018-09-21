@@ -28,7 +28,10 @@ public class LibertyStopMojo extends AbstractLibertyMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        executeMojo(getPlugin(), goal("stop"), configuration(element(name("serverName"), libertyServerName)),
+        super.execute();
+
+        executeMojo(getPlugin(), goal("stop"),
+                configuration(element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
                 getExecutionEnvironment());
     }
 

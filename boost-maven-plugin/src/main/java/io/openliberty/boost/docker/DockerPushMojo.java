@@ -49,7 +49,10 @@ public class DockerPushMojo extends AbstractDockerMojo {
             Scanner in = new Scanner(System.in);
             String newRepository = in.next();
             if (newRepository == null) {
-                throw new NullPointerException("Repository name cannot be null");
+                throw new MojoExecutionException("The repository name cannot be null");
+            }
+            if (!isRepositoryValid(newRepository)) {
+                throw new MojoExecutionException("The repository name is not valid.");
             }
             newImage = getImageName(newRepository, tag);
         }
