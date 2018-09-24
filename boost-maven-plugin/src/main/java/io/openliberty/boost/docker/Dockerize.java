@@ -72,9 +72,8 @@ public class Dockerize {
             if (SpringBootUtil.isSpringBootUberJar(appArchive)) {
                 File dockerFile = createNewDockerFile(projectDirectory);
                 String libertySBImage = getLibertySpringBootBaseImage(springBootVersion);
-                writeSpringBootDockerFile(dockerFile, libertySBImage);           
-            }
-            else {
+                writeSpringBootDockerFile(dockerFile, libertySBImage);
+            } else {
                 throw new MojoExecutionException(appArchive.getAbsolutePath() + " file is not an executable archive. "
                         + "The repackage goal of the spring-boot-maven-plugin must be configured to run first in order to create the required executable archive.");
             }

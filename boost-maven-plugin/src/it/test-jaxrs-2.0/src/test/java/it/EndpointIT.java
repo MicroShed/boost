@@ -19,26 +19,27 @@ import org.apache.commons.httpclient.methods.GetMethod;
 
 public class EndpointIT {
     private static String URL;
-    
+
     @BeforeClass
     public static void init() {
         URL = "http://localhost:9080/test-jaxrs-2.0-1.0-SNAPSHOT/api/hello";
     }
-    
+
     @Test
     public void testServlet() throws Exception {
         HttpClient client = new HttpClient();
-        
+
         GetMethod method = new GetMethod(URL);
-        
+
         try {
             int statusCode = client.executeMethod(method);
-            
+
             assertEquals("HTTP GET failed", HttpStatus.SC_OK, statusCode);
-            
+
             String response = method.getResponseBodyAsString(10000);
-            
-            assertTrue("Unexpected response body", response.contains("Hello World From Your Friends at Liberty Boost EE!"));
+
+            assertTrue("Unexpected response body",
+                    response.contains("Hello World From Your Friends at Liberty Boost EE!"));
         } finally {
             method.releaseConnection();
         }

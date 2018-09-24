@@ -23,33 +23,33 @@ import java.io.InputStreamReader;
 
 public class LibertyRunMojoIT {
     private static String URL;
-    
+
     private static Process process;
-    
-    @BeforeClass 
+
+    @BeforeClass
     public static void init() throws Exception {
         URL = "http://localhost:8080/";
-        
+
         process = Runtime.getRuntime().exec("mvn boost:run");
     }
-    
+
     @AfterClass
     public static void teardown() throws Exception {
         Runtime.getRuntime().exec("mvn boost:stop");
         process.destroyForcibly();
     }
-    
+
     @Test
     public void testLibertyRunMojo() throws Exception {
-        
+
         // Verify server started message in logs
         int timeout = 0;
         boolean serverStarted = false;
-        
-        while(timeout < 10 && !serverStarted) {
-            
+
+        while (timeout < 10 && !serverStarted) {
+
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            
+
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 // Check for startup message
@@ -58,31 +58,31 @@ public class LibertyRunMojoIT {
                     break;
                 }
             }
-            
+
             bufferedReader.close();
-            
+
             if (!serverStarted) {
-                
+
                 Thread.sleep(1000);
                 timeout++;
             }
-            
+
         }
-        
+
         assertTrue("The messages.log did not show that the server has started.", serverStarted);
-        
+
         // Verify that the application is reachable
         HttpClient client = new HttpClient();
-        
+
         GetMethod method = new GetMethod(URL);
-        
+
         try {
             int statusCode = client.executeMethod(method);
-            
+
             assertEquals("HTTP GET failed", HttpStatus.SC_OK, statusCode);
-            
+
             String response = method.getResponseBodyAsString(1000);
-            
+
             assertTrue("Unexpected response body", response.contains("Greetings from Spring Boot!"));
         } finally {
             method.releaseConnection();

@@ -32,13 +32,13 @@ import com.spotify.docker.client.auth.RegistryAuthSupplier;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 
 public abstract class AbstractDockerMojo extends AbstractMojo {
-    
+
     /**
      * Current Maven project.
      */
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     protected MavenProject project;
-    
+
     /**
      * Current Maven session.
      */
@@ -67,7 +67,6 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
     @Parameter(property = "useProxy", defaultValue = "true")
     protected boolean useProxy;
 
-
     protected Log log;
 
     protected abstract void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException;
@@ -75,30 +74,31 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         log = getLog();
-        if(repository.equals(project.getArtifactId()) && !repository.equals(repository.toLowerCase())) {
+        if (repository.equals(project.getArtifactId()) && !repository.equals(repository.toLowerCase())) {
             this.repository = project.getArtifactId().toLowerCase();
-            log.debug("Applying all lower case letters to the default repository name to build the Docker image successfully");
+            log.debug(
+                    "Applying all lower case letters to the default repository name to build the Docker image successfully");
         }
-        
-        if (!isRepositoryValid(repository)){
-            if(repository.equals(project.getArtifactId())) {
-                throw new MojoExecutionException("The default repository name ${project.artifactId} cannot be used to build the image because it is not a valid repository name.");
+
+        if (!isRepositoryValid(repository)) {
+            if (repository.equals(project.getArtifactId())) {
+                throw new MojoExecutionException(
+                        "The default repository name ${project.artifactId} cannot be used to build the image because it is not a valid repository name.");
             } else {
-                throw new MojoExecutionException("The <repository> parameter is not configured with a valid name");     
-            }                
-        }         
-        if(!isTagValid(tag)) {
+                throw new MojoExecutionException("The <repository> parameter is not configured with a valid name");
+            }
+        }
+        if (!isTagValid(tag)) {
             throw new MojoExecutionException("The <tag> parameter is not configured with a valid name");
         }
-        
+
         execute(getDockerClient());
     }
 
     private DockerClient getDockerClient() throws MojoExecutionException {
         final RegistryAuthSupplier authSupplier = createRegistryAuthSupplier();
         try {
-            return DefaultDockerClient.fromEnv().registryAuthSupplier(authSupplier).useProxy(useProxy)
-                    .build();
+            return DefaultDockerClient.fromEnv().registryAuthSupplier(authSupplier).useProxy(useProxy).build();
         } catch (DockerCertificateException e) {
             throw new MojoExecutionException("Problem loading Docker certificates", e);
         }
@@ -110,19 +110,20 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
         final Settings settings = session.getSettings();
         final Server server = settings.getServer(ref.getRegistryName());
 
-        //Check for the registry credentials in maven settings.xml and in default config path
+        // Check for the registry credentials in maven settings.xml and in default
+        // config path
         if (server != null) {
             supplier = new MavenSettingsAuthSupplier(server, settings, settingsDecrypter, log);
         } else {
             supplier = new ConfigFileRegistryAuthSupplier();
-        } 
+        }
         return supplier;
     }
 
-    protected final String getImageName() { 
-        return this.repository + ":" + this.tag;        
+    protected final String getImageName() {
+        return this.repository + ":" + this.tag;
     }
-    
+
     protected String getImageName(String repository, String tag) {
         return repository + ":" + tag;
     }
@@ -134,10 +135,10 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
     protected static boolean isRepositoryValid(String repository) {
         String nameRegExp = "[a-z0-9]+((?:[._]|__|[-]*)[a-z0-9]+)*?";
         String domain = "(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])";
-        String domainRegExp = domain + "(\\." + domain  + ")*?" + "(:[0-9]+)?";
-        
+        String domainRegExp = domain + "(\\." + domain + ")*?" + "(:[0-9]+)?";
+
         String repositoryRegExp = "(" + domainRegExp + "\\/)?" + nameRegExp + "(\\/" + nameRegExp + ")*?";
-        
+
         return Pattern.matches(repositoryRegExp, repository);
     }
 }

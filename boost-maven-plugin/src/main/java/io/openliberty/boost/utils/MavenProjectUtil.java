@@ -15,7 +15,6 @@ import java.util.Set;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 
-
 public class MavenProjectUtil {
 
     /**
@@ -34,7 +33,7 @@ public class MavenProjectUtil {
 
         return version;
     }
-    
+
     public static boolean isNotNullOrEmpty(String s) {
         return s != null && !s.isEmpty();
     }

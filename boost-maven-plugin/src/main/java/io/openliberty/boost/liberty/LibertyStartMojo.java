@@ -38,25 +38,22 @@ public class LibertyStartMojo extends AbstractLibertyMojo {
      */
     @Parameter(property = "serverStartTimeout", defaultValue = "30")
     private int serverStartTimeout = 30;
-    
+
     /**
      * Clean all cached information on server start up.
      */
     @Parameter(property = "clean", defaultValue = "false")
     private boolean clean;
-    
+
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
-        
+
         executeMojo(getPlugin(), goal("start"),
-                configuration(
-                        element(name("serverName"), libertyServerName),
+                configuration(element(name("serverName"), libertyServerName),
                         element(name("verifyTimeout"), String.valueOf(verifyTimeout)),
                         element(name("serverStartTimeout"), String.valueOf(serverStartTimeout)),
-                        element(name("clean"), String.valueOf(clean)),
-                        getRuntimeArtifactElement()
-                ),
+                        element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
                 getExecutionEnvironment());
     }
 

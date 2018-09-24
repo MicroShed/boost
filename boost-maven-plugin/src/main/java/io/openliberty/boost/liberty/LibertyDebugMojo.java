@@ -21,8 +21,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Runs the executable archive application (in the console foreground) after a debugger
- *  connects to debug port <b>7777</b>.
+ * Runs the executable archive application (in the console foreground) after a
+ * debugger connects to debug port <b>7777</b>.
  *
  */
 @Mojo(name = "debug")
@@ -33,17 +33,14 @@ public class LibertyDebugMojo extends AbstractLibertyMojo {
      */
     @Parameter(property = "clean", defaultValue = "false")
     protected boolean clean;
-    
+
     @Override
-    public void execute() throws MojoExecutionException {     
+    public void execute() throws MojoExecutionException {
         super.execute();
-        
+
         executeMojo(getPlugin(), goal("debug"),
-                configuration(
-                        element(name("serverName"), libertyServerName),
-                        element(name("clean"), String.valueOf(clean)),
-                        getRuntimeArtifactElement()
-                ),
+                configuration(element(name("serverName"), libertyServerName),
+                        element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
                 getExecutionEnvironment());
     }
 

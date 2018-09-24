@@ -36,7 +36,7 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
 
     protected String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
     protected String libertyMavenPluginArtifactId = "liberty-maven-plugin";
-    
+
     @Parameter(defaultValue = "2.6.1", readonly = true)
     protected String libertyMavenPluginVersion;
 
@@ -70,7 +70,7 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     protected ExecutionEnvironment getExecutionEnvironment() {
         return executionEnvironment(project, session, pluginManager);
     }
-    
+
     /**
      * Create default runtime artifact, if one has not been provided by the user
      */
@@ -83,7 +83,7 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
             runtimeArtifact.setType("zip");
         }
     }
-    
+
     @Override
     public void execute() throws MojoExecutionException {
         createDefaultRuntimeArtifactIfNeeded();

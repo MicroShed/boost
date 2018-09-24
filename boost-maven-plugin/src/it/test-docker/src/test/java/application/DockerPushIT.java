@@ -29,56 +29,57 @@ import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 
 public class DockerPushIT {
-    
+
     private static DockerClient dockerClient;
     private static String imageName;
-    
+
     @BeforeClass
     public static void setup() throws Exception {
         dockerClient = DockerClientBuilder.getInstance().build();
         imageName = "localhost:5000/test-docker:latest";
-    } 
-   
-    
+    }
+
     @Test
-    public void testPushDockerImageToLocalRegistry() throws Exception {       
+    public void testPushDockerImageToLocalRegistry() throws Exception {
         Image pushedImage = getImage(imageName);
         assertNotNull(imageName + " was not built.", pushedImage);
-  
+
         long sizeOfPushedImage = pushedImage.getSize();
         String idOfPushedImage = pushedImage.getId();
-        
-        //Remove the local image.
+
+        // Remove the local image.
         removeImage(imageName);
-        
-        //Pull the image from the local repository which got pushed by the plugin. This is possible if the plugin successfully pushed to the registry.
-        dockerClient.pullImageCmd("localhost:5000/test-docker").withTag("latest").exec(new PullImageResultCallback()).awaitCompletion(10, TimeUnit.SECONDS);
+
+        // Pull the image from the local repository which got pushed by the plugin. This
+        // is possible if the plugin successfully pushed to the registry.
+        dockerClient.pullImageCmd("localhost:5000/test-docker").withTag("latest").exec(new PullImageResultCallback())
+                .awaitCompletion(10, TimeUnit.SECONDS);
 
         Image pulledImage = getImage(imageName);
         assertNotNull(imageName + " was not pulled.", pulledImage);
-        
+
         long sizeOfPulledImage = pulledImage.getSize();
         String idOfPulledImage = pulledImage.getId();
-       
+
         assertEquals("Expected image was not pulled, size doesn't match.", sizeOfPushedImage, sizeOfPulledImage);
         assertEquals("Expected image was not pulled, id doesn't match.", idOfPushedImage, idOfPulledImage);
     }
-    
-    private Image getImage(String imageName) throws Exception{
+
+    private Image getImage(String imageName) throws Exception {
         List<Image> images = dockerClient.listImagesCmd().exec();
-        for(Image image : images) {
+        for (Image image : images) {
             String[] repoTags = image.getRepoTags();
-            if(repoTags != null) {
+            if (repoTags != null) {
                 String repoTag = repoTags[0];
-                if(repoTag != null && repoTag.equals(imageName)) {
+                if (repoTag != null && repoTag.equals(imageName)) {
                     return image;
                 }
-            }         
+            }
         }
         return null;
     }
-    
-    private void removeImage(String imageName) throws Exception{
+
+    private void removeImage(String imageName) throws Exception {
         dockerClient.removeImageCmd(imageName).exec();
         Image removedImage = getImage(imageName);
         assertNull(imageName + " was not removed.", removedImage);

@@ -30,7 +30,7 @@
  * -/-/-
  ******************************************************************************
  */
- 
+
 /*
  ******************************************************************************
  * We now include the copyright for our modification:
@@ -74,8 +74,8 @@ import net.wasdev.wlp.maven.plugins.utils.SpringBootUtil;
 @Mojo(name = "docker-build", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class DockerBuildMojo extends AbstractDockerMojo {
     /**
-     * Pull newer version of the image, if set. Use the cache by default
-     * when building the image.
+     * Pull newer version of the image, if set. Use the cache by default when
+     * building the image.
      */
     @Parameter(property = "pullNewerImage", defaultValue = "false")
     private boolean pullNewerImage;

@@ -95,8 +95,7 @@ public class WebSocketVerificationIT {
             if (failure.get() != null) {
                 throw new AssertionError("", failure.get());
             }
-        }
-        else {
+        } else {
             fail("Greeting not received");
         }
 
@@ -105,7 +104,6 @@ public class WebSocketVerificationIT {
     private class TestSessionHandler extends StompSessionHandlerAdapter {
 
         private final AtomicReference<Throwable> failure;
-
 
         public TestSessionHandler(AtomicReference<Throwable> failure) {
             this.failure = failure;

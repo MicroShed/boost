@@ -25,7 +25,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  */
 @Mojo(name = "run")
 public class LibertyRunMojo extends AbstractLibertyMojo {
-    
+
     /**
      * Clean all cached information on server start up.
      */
@@ -35,12 +35,10 @@ public class LibertyRunMojo extends AbstractLibertyMojo {
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
-        
+
         executeMojo(getPlugin(), goal("run"),
-                configuration(
-                        element(name("serverName"), libertyServerName),
-                        element(name("clean"), String.valueOf(clean)),
-                        getRuntimeArtifactElement()),
+                configuration(element(name("serverName"), libertyServerName),
+                        element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
                 getExecutionEnvironment());
     }
 

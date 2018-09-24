@@ -58,7 +58,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
-        
+
         springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
 
         boosterParent = new BoosterPacksParent();
@@ -326,7 +326,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      * configDropins.
      *
      */
-    private void installMissingFeatures() throws MojoExecutionException {        
+    private void installMissingFeatures() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("install-feature"), configuration(element(name("serverName"), libertyServerName),
                 element(name("features"), element(name("acceptLicense"), "false"))), getExecutionEnvironment());
     }
