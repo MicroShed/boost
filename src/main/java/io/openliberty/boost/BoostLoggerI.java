@@ -47,7 +47,7 @@ public interface BoostLoggerI {
      * @param msg
      */
     public abstract void info(String msg);
-    
+
     /**
      * Log error
      * 

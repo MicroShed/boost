@@ -53,13 +53,13 @@ public class LibertyServerConfigGeneratorTest {
 
         boolean featureFound = findStringInServerXml(serverXML, "<feature>" + SPRING_BOOT_15 + "</feature>");
 
-        assertTrue("The " + SPRING_BOOT_15 + " feature was not found in the server configuration",
-                featureFound);
+        assertTrue("The " + SPRING_BOOT_15 + " feature was not found in the server configuration", featureFound);
 
     }
-    
+
     @Test
-    public void testZeroFeaturesInDefaultServerConfig() throws ParserConfigurationException, TransformerException, IOException {
+    public void testZeroFeaturesInDefaultServerConfig()
+            throws ParserConfigurationException, TransformerException, IOException {
         LibertyServerConfigGenerator g = new LibertyServerConfigGenerator();
         Element serverRoot = g.doc.getDocumentElement();
         List<Element> featureMgrList = getDirectChildrenByTag(serverRoot, FEATURE_MANAGER);
@@ -68,6 +68,5 @@ public class LibertyServerConfigGeneratorTest {
         List<Element> featureList = getDirectChildrenByTag(featureMgr, FEATURE);
         assertEquals("Didn't find empty list of features", 0, featureList.size());
     }
-
 
 }
