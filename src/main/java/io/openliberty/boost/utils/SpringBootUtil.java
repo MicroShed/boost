@@ -70,7 +70,8 @@ public class SpringBootUtil {
      * Copy the Spring Boot Uber JAR to a .spring extension to preserve it
      * 
      * @param artifact
-     * @return the destination file if the operation was performed successfully, null otherwise
+     * @return the destination file if the operation was performed successfully,
+     *         null otherwise
      * @throws PluginExecutionException
      */
     public static File copySpringBootUberJar(File artifact, BoostLoggerI logger) throws PluginExecutionException {
@@ -102,14 +103,14 @@ public class SpringBootUtil {
      * @param springBootVersion
      * @throws BoostException
      */
-    public static void addSpringBootVersionToManifest(File artifact, String springBootVersion, BoostLoggerI logger) throws BoostException {
+    public static void addSpringBootVersionToManifest(File artifact, String springBootVersion, BoostLoggerI logger)
+            throws BoostException {
         if (artifact == null || !artifact.exists() || !artifact.isFile()) {
             throw new BoostException("Could not find a project artifact.");
         }
 
         if (!BoostUtil.isLibertyJar(artifact, logger)) {
-            throw new BoostException(
-                    "The project artifact is not a Liberty JAR. This should not happen.");
+            throw new BoostException("The project artifact is not a Liberty JAR. This should not happen.");
         }
 
         Path path = artifact.toPath();

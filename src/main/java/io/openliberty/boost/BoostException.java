@@ -20,13 +20,13 @@ public class BoostException extends PluginExecutionException {
     public BoostException(String message) {
         super(message);
     }
-    
+
     public BoostException(String message, Throwable e) {
         super(message, e);
     }
-    
+
     public BoostException(Throwable e) {
         super(e);
-}
-    
+    }
+
 }
