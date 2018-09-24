@@ -40,6 +40,8 @@ public class SpringBootUtil {
 
     private static final String SERVER_PORT = "server.port";
     private static final String DEFAULT_SERVER_PORT = "8080";
+    private static final String SERVER_ADDRESS = "server.address";
+    private static final String DEFAULT_SERVER_ADDRESS = "localhost";
 
     private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
 
@@ -153,7 +155,9 @@ public class SpringBootUtil {
         }
 
         String serverPort = (String) allProperties.getOrDefault(SERVER_PORT, DEFAULT_SERVER_PORT);
+        String serverAddress = (String) allProperties.getOrDefault(SERVER_ADDRESS, DEFAULT_SERVER_ADDRESS);
         serverProperties.setProperty(SERVER_PORT, serverPort);
+        serverProperties.setProperty(SERVER_ADDRESS, serverAddress);
 
         return serverProperties;
     }
