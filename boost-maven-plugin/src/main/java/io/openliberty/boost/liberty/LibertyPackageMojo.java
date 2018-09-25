@@ -242,7 +242,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                 getSpringBootStarters(), BoostLogger.getInstance());
         serverConfig.addFeatures(featuresNeededForSpringBootApp);
 
-        serverConfig.addHttpEndpoint(null, "${server.port}", null);
+        serverConfig.addHttpEndpoint("${server.address}", "${server.port}", null);
 
         // Write server.xml to Liberty server config directory
         serverConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
