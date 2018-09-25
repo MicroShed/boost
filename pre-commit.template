@@ -11,12 +11,16 @@
 # Note: this script requires a linux environment to run (linux/MacOSX/cygwin)
 # this will not execute in a native Windows environment.
 #
+# WINDOWS USERS NOTE: Update your eclipse.ini file and remove
+# the property -Dosgi.dataAreaRequiresExplicitInit=true
+#
 # Update the following items below then save this file in 
 # .git/hooks/pre-commit 
 # be sure you have execute authority for this file. 
 
 # set this to the location of your Eclipse installation
-# Example: /Users/mac/EclipseInstalls/EclipseO2/EClipse.app/Contents/MacOS
+# linux/Mac Example: ECLIPSE_HOME=/Users/mac/EclipseInstalls/EclipseO2/EClipse.app/Contents/MacOS
+# Windows/Cygwin Example: ECLIPSE_HOME="C:/EclJavaFrmtAdmin/eclipse"
 ECLIPSE_HOME=***** Fully qualified location of your Eclipse executable *****
 
 # Style file is provided in the root directory of the project as java.prefs
@@ -25,8 +29,6 @@ STYLE_FILE=$PROJECT_LOCATION/java.prefs
 
 echo "Running pre-commit hook: run-eclipse-formatter---------------------"
 echo "Will run eclipse formatter, using: $STYLE_FILE"
-echo "Listing folders to run formatter on… "
-echo "Current dir = $PWD"
 
 statusFile=status.$RANDOM
 
