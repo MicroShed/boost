@@ -19,9 +19,10 @@
         <module>test15Explicit</module>
         <module>test15Implicit</module>
         <module>test20Implicit</module>
-        <module>testWebsocket</module>
+        <module>test-spring-boot-websocket</module>
         <module>test-docker</module>
         <module>test-run-server</module>
+        <module>test-spring-boot-ssl</module>
     </modules>
     
 </project>

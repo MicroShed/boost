@@ -14,8 +14,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
 
@@ -37,6 +43,7 @@ import io.openliberty.boost.utils.BoostUtil;
 import io.openliberty.boost.utils.LibertyServerConfigGenerator;
 import io.openliberty.boost.utils.MavenProjectUtil;
 import io.openliberty.boost.utils.SpringBootUtil;
+import io.openliberty.boost.utils.ConfigConstants;
 import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
@@ -78,52 +85,47 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
          */
         String springBootClassifier = null;
 
-        try {
-            if (MavenProjectUtil.isNotNullOrEmpty(springBootVersion)) { // Dealing with a spring boot app
-                springBootClassifier = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil
-                        .getSpringBootMavenPluginClassifier(project, getLog());
+        if (MavenProjectUtil.isNotNullOrEmpty(springBootVersion)) { // Dealing with a spring boot app
+            springBootClassifier = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil
+                    .getSpringBootMavenPluginClassifier(project, getLog());
 
-                // Check if we need to attach based on the classifier configuration
-                if (MavenProjectUtil.isNotNullOrEmpty(springBootClassifier)) {
-                    attach = false;
-                } else {
-                    attach = true;
-                }
-
-                File springBootUberJar = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil.getSpringBootUberJAR(project,
-                        getLog());
-                validateSpringBootUberJAR(springBootUberJar);
-                copySpringBootUberJar(springBootUberJar, attach); // Only copy back if we need to overwrite the project
-                                                                  // artifact
-                generateServerXML();
-                generateBootstrapProps();
-                installMissingFeatures();
-                installApp("spring-boot-project");
-
-                if (springBootUberJar != null) {
-                    // Create the Liberty Uber JAR from the Spring Boot Uber JAR in place
-                    createUberJar(springBootUberJar.getAbsolutePath(), attach);
-                } else {
-                    // The Spring Boot Uber JAR was already replaced with the Liberty Uber JAR (this
-                    // is a re-execution in the non-classifier scenario)
-                    createUberJar(null, attach);
-                }
-
-                if (!MavenProjectUtil.isNotNullOrEmpty(springBootClassifier)) {
-                    // If necessary, add the manifest to prevent Spring Boot from repackaging again
-                    addSpringBootVersionToManifest(springBootVersion);
-                }
-            } else { // Dealing with an EE based app
+            // Check if we need to attach based on the classifier configuration
+            if (MavenProjectUtil.isNotNullOrEmpty(springBootClassifier)) {
                 attach = false;
-                boosterFeatures = getBoosterConfigsFromDependencies(project);
-                generateServerXMLJ2EE(boosterFeatures);
-                installMissingFeatures();
-                installApp("project");
+            } else {
+                attach = true;
+            }
 
+            File springBootUberJar = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil.getSpringBootUberJAR(project,
+                    getLog());
+            validateSpringBootUberJAR(springBootUberJar);
+            copySpringBootUberJar(springBootUberJar, attach); // Only copy back if we need to overwrite the project
+                                                              // artifact
+            generateServerConfigSpringBoot();
+            installMissingFeatures();
+            installApp("spring-boot-project");
+
+            if (springBootUberJar != null) {
+                // Create the Liberty Uber JAR from the Spring Boot Uber JAR in place
+                createUberJar(springBootUberJar.getAbsolutePath(), attach);
+            } else {
+                // The Spring Boot Uber JAR was already replaced with the Liberty Uber JAR (this
+                // is a re-execution in the non-classifier scenario)
                 createUberJar(null, attach);
             }
-        } catch (TransformerException | ParserConfigurationException e) {
-            throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
+
+            if (!MavenProjectUtil.isNotNullOrEmpty(springBootClassifier)) {
+                // If necessary, add the manifest to prevent Spring Boot from repackaging again
+                addSpringBootVersionToManifest(springBootVersion);
+            }
+        } else { // Dealing with an EE based app
+            attach = false;
+            boosterFeatures = getBoosterConfigsFromDependencies(project);
+            generateServerXMLJ2EE(boosterFeatures);
+            installMissingFeatures();
+            installApp("project");
+
+            createUberJar(null, attach);
         }
     }
 
@@ -195,58 +197,97 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         }
     }
 
-    private void generateBootstrapProps() throws MojoExecutionException {
-
-        Properties springBootProps = new Properties();
+    private void generateServerConfigSpringBoot() throws MojoExecutionException {
+        
+        // Get Spring Boot server properties
+        Properties springBootAppProps = new Properties();
 
         try {
-            springBootProps = SpringBootUtil.getSpringBootServerProperties(projectBuildDir);
+            springBootAppProps = SpringBootUtil.getSpringBootServerProperties(projectBuildDir);
 
         } catch (IOException e) {
+            
             throw new MojoExecutionException("Unable to read properties from Spring Boot application", e);
         }
-
-        // Write properties to bootstrap.properties
-        OutputStream output = null;
-
+        
         try {
-            output = new FileOutputStream(
-                    projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName + "/bootstrap.properties");
-            springBootProps.store(output, null);
-
-        } catch (IOException io) {
-            throw new MojoExecutionException("Unable to write properties to bootstrap.properties file", io);
-        } finally {
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (IOException io_finally) {
-                    throw new MojoExecutionException("Unable to write properties to bootstrap.properties file",
-                            io_finally);
+            // Generate Liberty configuration
+            LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
+        
+        
+            // Find and add appropriate springBoot features
+            List<String> featuresNeededForSpringBootApp = SpringBootUtil.getLibertyFeaturesForSpringBoot(springBootVersion,
+                    getSpringBootStarters(), BoostLogger.getInstance());
+            serverConfig.addFeatures(featuresNeededForSpringBootApp);
+    
+            // Configure SSL and endpoints
+            if (springBootAppProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE)) {
+                
+                Map<String, String> keystoreProperties = new HashMap<String, String>();
+                Map<String, String> keyProperties = new HashMap<String, String>();
+                
+                // For each Spring Boot keystore property, add an entry to the keystore map which maps our 
+                // Liberty keystore attribute to a bootstrap variable with the same name as the Spring Boot property.
+                // The Spring Boot properties will then be added to the server's bootstrap.properties file. 
+                keystoreProperties.put(ConfigConstants.KEYSTORE_LOCATION, "${" + SpringBootUtil.SERVER_SSL_KEYSTORE + "}");
+                
+                if (springBootAppProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD)) {
+                    keystoreProperties.put(ConfigConstants.KEYSTORE_PASSWORD, "${" + SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD + "}");
                 }
+                if (springBootAppProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE)) {
+                    keystoreProperties.put(ConfigConstants.KEYSTORE_TYPE, "${" + SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE + "}");
+                }
+                if (springBootAppProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER)) {
+                    keystoreProperties.put(ConfigConstants.KEYSTORE_PROVIDER, "${" + SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER + "}");
+                }
+                
+                // Add any key properties to the separate key map.
+                if (springBootAppProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_PASSWORD)) {
+                    keyProperties.put(ConfigConstants.KEY_PASSWORD, "${" + SpringBootUtil.SERVER_SSL_KEY_PASSWORD + "}");
+                } 
+                if (springBootAppProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_ALIAS)) {
+                    keyProperties.put(ConfigConstants.KEY_NAME, "${" + SpringBootUtil.SERVER_SSL_KEY_ALIAS + "}");
+                }
+               
+                // Create keystore element in server.xml and endpoint with http disabled. 
+                serverConfig.addKeystore(keystoreProperties, keyProperties);
+                serverConfig.addHttpEndpoint("${" + SpringBootUtil.SERVER_ADDRESS + "}", "-1", "${" + SpringBootUtil.SERVER_PORT + "}"); 
+                serverConfig.addFeature(ConfigConstants.TRANSPORT_SECURITY_10);
+                
+                // Since the keystore for the Spring Boot app is created manually and already exists, 
+                // if it is specified on the classpath, we need to copy it to the Liberty server. Otherwise, 
+                // we can just reference the external location without needing to copy the file.
+                String keystoreFile = springBootAppProps.getProperty(SpringBootUtil.SERVER_SSL_KEYSTORE);
+                      
+                if (keystoreFile.contains("classpath:")){
+                    
+                    // Keystore is in resources directory of spring boot application
+                    keystoreFile = keystoreFile.replace("classpath:", "");
+                    springBootAppProps.put(SpringBootUtil.SERVER_SSL_KEYSTORE, keystoreFile);
+                    
+                    // Copy keystore to Liberty
+                    Path springBootKeystorePath = Paths.get(projectBuildDir + "/classes/" + keystoreFile);
+                    Path libertyKeystorePath = Paths.get(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName + "/resources/security/" + keystoreFile);
+                    Path libertySecurityPath = Paths.get(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName + "/resources/security");
+                    
+                    Files.createDirectories(libertySecurityPath);
+                    Files.copy(springBootKeystorePath, libertyKeystorePath, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+                } 
+                
+            } else {
+                serverConfig.addHttpEndpoint("${" + SpringBootUtil.SERVER_ADDRESS + "}", "${" + SpringBootUtil.SERVER_PORT + "}", null);
+    
             }
+            
+            // Add properties to bootstrap properties
+            serverConfig.addBootstrapProperties(springBootAppProps);
+            
+            serverConfig.writeToServer();
+            
+        } catch (TransformerException | IOException | ParserConfigurationException e) {
+            
+            throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
         }
-    }
-
-    /**
-     * Generate a server.xml based on the Spring version and dependencies
-     * 
-     * @throws TransformerException
-     * @throws ParserConfigurationException
-     */
-    private void generateServerXML() throws TransformerException, ParserConfigurationException {
-
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator();
-
-        // Find and add appropriate springBoot features
-        List<String> featuresNeededForSpringBootApp = SpringBootUtil.getLibertyFeaturesForSpringBoot(springBootVersion,
-                getSpringBootStarters(), BoostLogger.getInstance());
-        serverConfig.addFeatures(featuresNeededForSpringBootApp);
-
-        serverConfig.addHttpEndpoint("${server.address}", "${server.port}", null);
-
-        // Write server.xml to Liberty server config directory
-        serverConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
     }
 
     private List<BoosterPackConfigurator> getBoosterConfigsFromDependencies(MavenProject proj) {
@@ -269,19 +310,23 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      * @throws TransformerException
      * @throws ParserConfigurationException
      */
-    private void generateServerXMLJ2EE(List<BoosterPackConfigurator> boosterConfigurators)
-            throws TransformerException, ParserConfigurationException {
+    private void generateServerXMLJ2EE(List<BoosterPackConfigurator> boosterConfigurators) throws MojoExecutionException {
 
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator();
+        try {
+            LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
 
-        // Add any other Liberty features needed depending on the spring boot
-        // starters defined
-        List<String> boosterFeatureNames = getBoosterFeatureNames(boosterConfigurators);
-        serverConfig.addFeatures(boosterFeatureNames);
-        serverConfig.addConfigForFeatures(boosterConfigurators);
-
-        // Write server.xml to Liberty server config directory
-        serverConfig.writeToServer(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
+            // Add any other Liberty features needed depending on the spring boot
+            // starters defined
+            List<String> boosterFeatureNames = getBoosterFeatureNames(boosterConfigurators);
+            serverConfig.addFeatures(boosterFeatureNames);
+            serverConfig.addConfigForFeatures(boosterConfigurators);
+        
+            // Write server.xml to Liberty server config directory
+            serverConfig.writeToServer();
+            
+        } catch (TransformerException | IOException | ParserConfigurationException e) {
+            throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
+        }
 
     }
 
