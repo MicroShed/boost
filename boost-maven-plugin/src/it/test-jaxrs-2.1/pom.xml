@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.openliberty.boost</groupId>
-	<artifactId>test-jaxrs-2.0</artifactId>
+	<artifactId>test-jaxrs-2.1</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
 
@@ -33,7 +33,7 @@
 		<dependencies>
 		<dependency>
 			<groupId>io.openliberty.boost</groupId>
-			<artifactId>boost-javaee7-bom</artifactId>
+			<artifactId>boost-javaee8-bom</artifactId>
 			<version>@pom.version@</version>
 			<scope>import</scope>
 			<type>pom</type>
@@ -66,14 +66,6 @@
 				<groupId>io.openliberty.boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>@pom.version@</version>
-				<configuration>
-					<runtimeArtifact>
-						<groupId>${runtimeGroupId}</groupId>
-						<artifactId>${runtimeArtifactId}</artifactId>
-						<version>${runtimeVersion}</version>
-						<type>zip</type>
-					</runtimeArtifact>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>

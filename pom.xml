@@ -36,7 +36,9 @@
     </scm>
 
     <modules>
-        <module>boost-bom</module>
+        <module>boost-javaee7-bom</module>
+		<module>boost-javaee8-bom</module>
+		<module>boost-boosters</module>
         <module>boost-maven-plugin</module>
     </modules>
 
