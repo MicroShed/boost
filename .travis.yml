@@ -37,6 +37,6 @@ before_install:
 install: true
 script:
     - cd boost-common
-    - travis_wait mvn verify -Dinvoker.streamLogs=true
+    - travis_wait mvn install -Dinvoker.streamLogs=true
     - cd ../boost-maven
-    - travis_wait mvn verify -Pit -Dinvoker.streamLogs=true -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION
+    - travis_wait mvn install -Pit -Dinvoker.streamLogs=true -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION

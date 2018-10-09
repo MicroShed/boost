@@ -252,12 +252,12 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     private List<BoosterPackConfigurator> getBoosterConfigsFromDependencies(MavenProject proj) {
 
         List<String> listOfDependencies = new ArrayList<String>();
-        getLog().debug("getBoostCfg: first lets see what dependencies we find");
+        getLog().debug("Processing project for dependencies.");
 
         for (Artifact artifact : project.getArtifacts()) {
-            getLog().debug("getBoostCfg: found this, adding as a string -> " + artifact.getGroupId() + ":"
-                    + artifact.getArtifactId());
-            listOfDependencies.add(artifact.getGroupId() + ":" + artifact.getArtifactId());
+            getLog().debug("Found dependency while processing project: " + artifact.getGroupId() + ":"
+                    + artifact.getArtifactId() + ":" + artifact.getVersion());
+            listOfDependencies.add(artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion());
         }
 
         return boosterParent.mapDependenciesToFeatureList(listOfDependencies);
