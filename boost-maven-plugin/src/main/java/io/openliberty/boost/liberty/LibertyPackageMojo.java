@@ -255,8 +255,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
         for (Artifact artifact : project.getArtifacts()) {
             getLog().debug("getBoostCfg: found this, adding as a string -> " + artifact.getGroupId() + ":"
-                    + artifact.getArtifactId());
-            listOfDependencies.add(artifact.getGroupId() + ":" + artifact.getArtifactId());
+                    + artifact.getArtifactId() + ":" + artifact.getVersion());
+            listOfDependencies.add(artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion());
         }
 
         return boosterParent.mapDependenciesToFeatureList(listOfDependencies);

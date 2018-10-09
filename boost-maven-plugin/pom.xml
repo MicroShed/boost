@@ -11,21 +11,22 @@
         <artifactId>boost-maven-parent</artifactId>
         <version>0.1.2-SNAPSHOT</version>
     </parent>
-
+	
     <artifactId>boost-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
     <dependencies>
 
         <!-- Boost dependencies -->
-
+<!--
         <dependency>
             <groupId>io.openliberty.boost</groupId>
-            <artifactId>boost-bom</artifactId>
+            <artifactId>boost-javaee7-bom</artifactId>
             <version>0.1.2-SNAPSHOT</version>
             <type>pom</type>
             <scope>test</scope>
         </dependency>
+-->		
         <dependency>
             <groupId>io.openliberty.boost</groupId>
             <artifactId>boost-common</artifactId>
