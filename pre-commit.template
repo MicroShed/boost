@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# PreReq's
+# PreReqs
 #  - This requires that a current level of Eclipse is defined on your machine 
 
 # This hook will run the eclipse code formatter before any commit.
@@ -29,6 +29,8 @@ STYLE_FILE=$PROJECT_LOCATION/java.prefs
 
 echo "Running pre-commit hook: run-eclipse-formatter---------------------"
 echo "Will run eclipse formatter, using: $STYLE_FILE"
+echo "Listing folders to run formatter on... "
+echo "Current dir = $PWD"
 
 statusFile=status.$RANDOM
 
@@ -36,13 +38,14 @@ fileCommand="git status --porcelain 2>&1 > $statusFile"
 $(eval $fileCommand)
 
 newlist=Y
-while read -r line
+while read -r
 do
+    line="$REPLY"
     #Check to see if this is a java file
     if echo "$line" | grep -q "\.java"; then
 
       actionCmd="echo \"$line\" | cut -c1-2"
-      action=$(eval $actionCmd)
+      action=$(eval "$actionCmd")
 
       # Is the file being renamed?
       if [ "$action" == "RM" ] || [ "$action" == "R " ] ; then
@@ -50,7 +53,7 @@ do
 
         # find the new file name
         newFileCmd="echo \"$line\" | sed 's/.*\=> //'"
-        newFile=$(eval $newFileCmd)
+        newFile=$(eval "$newFileCmd")
         if [ $newlist == "Y" ]] ; then
           # formatFiles are input to the eclipse formatter
           formatFiles=$PROJECT_LOCATION/$newFile  
@@ -63,7 +66,7 @@ do
         fi
       elif [ "$action" == "MD" ] || [ "$action" == "M " ] ; then
         newFileCmd="echo $line | cut -c 3- | sed -e 's|^|$PROJECT_LOCATION/|'"
-        newFile=$(eval $newFileCmd)
+        newFile=$(eval "$newFileCmd")
         if [ $newlist == "Y" ] ; then
           formatFiles="$newFile"
           checkIfFormatted=$newFile
@@ -74,7 +77,7 @@ do
         fi
       else
         newFileCmd="echo $line | cut -c 3- | sed -e 's|^|$PROJECT_LOCATION/|'"
-        newFile=$(eval $newFileCmd)
+        newFile=$(eval "$newFileCmd")
         echo "Will not check format of file $newFile"
       fi
     fi
@@ -87,13 +90,13 @@ filteredFileLen=${#formatFiles}
 
 if [ $filteredFileLen -gt 0 ]; then
     # Format Java Files     
-    echo "Launching eclipse code formatter…    "
+    echo "Launching eclipse code formatter...    "
     eclipseCMD="$ECLIPSE_HOME/eclipse -nosplash -application org.eclipse.jdt.core.JavaCodeFormatter -quiet -config $STYLE_FILE $formatFiles"
     formatResults=$(eval $eclipseCMD)
 
     # Check to see if any files have been formatted. 
     # If files were formatted cancel the commit and notify
-    # the developer that the fromatted files need to be staged
+    # the developer that the formatted files need to be staged
     # and the commit needs to be rerun.
 
     # list files that have been modified
