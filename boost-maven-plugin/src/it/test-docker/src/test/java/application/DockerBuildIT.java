@@ -18,9 +18,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 
 import org.junit.Test;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import java.util.List;
 
@@ -35,11 +37,23 @@ import org.springframework.boot.SpringBootVersion;
 public class DockerBuildIT {
     private static File dockerFile;
     private static DockerClient dockerClient;
+    private static CreateContainerResponse container;
 
     @BeforeClass
     public static void setup() throws Exception {
         dockerFile = new File("Dockerfile");
         dockerClient = DockerClientBuilder.getInstance().build();
+        container = dockerClient.createContainerCmd("localhost:5000/test-docker:latest")
+                .withPortBindings(PortBinding.parse("9080:9080")).exec();
+        Thread.sleep(3000);
+
+        dockerClient.startContainerCmd(container.getId()).exec();
+    }
+
+    @AfterClass
+    public static void cleanup() throws Exception {
+        dockerClient.stopContainerCmd(container.getId()).exec();
+        dockerClient.removeContainerCmd(container.getId()).exec();
     }
 
     @Test
@@ -65,11 +79,6 @@ public class DockerBuildIT {
 
     @Test
     public void runDockerContainerAndVerifyAppOnEndpoint() throws Exception {
-        CreateContainerResponse container = dockerClient.createContainerCmd("localhost:5000/test-docker:latest")
-                .withPortBindings(PortBinding.parse("9080:9080")).exec();
-        Thread.sleep(3000);
-
-        dockerClient.startContainerCmd(container.getId()).exec();
 
         Thread.sleep(3000);
         testDockerContainerRunning();
@@ -77,19 +86,17 @@ public class DockerBuildIT {
         Thread.sleep(10000);
         testAppRunningOnEndpoint();
 
-        dockerClient.stopContainerCmd(container.getId()).exec();
-
-        dockerClient.removeContainerCmd(container.getId()).exec();
     }
 
     public void testDockerContainerRunning() throws Exception {
         List<Container> containers = dockerClient.listContainersCmd().exec();
-        // docker local registry conatiner and image container
+        // docker local registry container and image container
         assertEquals("Expected number of running containers not found", 2, containers.size());
     }
 
     public void testAppRunningOnEndpoint() throws Exception {
-        URL requestUrl = new URL("http://localhost:9080/spring/");
+
+        URL requestUrl = new URL("http://" + getTestDockerHost() + ":9080/spring/");
         HttpURLConnection conn = (HttpURLConnection) requestUrl.openConnection();
 
         if (conn != null) {
@@ -106,4 +113,16 @@ public class DockerBuildIT {
         }
         assertEquals("Expected body not found.", "Greetings from Spring Boot!", response.toString());
     }
+
+    private static String getTestDockerHost() {
+
+        String dockerHostEnv = System.getenv("DOCKER_HOST");
+        if (dockerHostEnv == null || dockerHostEnv.isEmpty()) {
+            return "localhost";
+        } else {
+            URI dockerHostURI = URI.create(dockerHostEnv);
+            return dockerHostURI.getHost();
+        }
+    }
+
 }
