@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -18,9 +17,9 @@
 	<pluginRepositories>
 		<!-- Configure Sonatype OSS Maven snapshots repository -->
 		<pluginRepository>
-		    <id>sonatype-nexus-snapshots</id>
-		    <name>Sonatype Nexus Snapshots</name>
-		    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -43,20 +42,20 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>2.1</version>
 			<scope>test</scope>
 		</dependency>
-		
-		  <dependency>
+
+		<dependency>
 			<groupId>com.github.docker-java</groupId>
 			<artifactId>docker-java</artifactId>
 			<version>3.1.0-rc-4</version>
 			<scope>test</scope>
-		</dependency> 
+		</dependency>
 		<!-- end::tests[] -->
 	</dependencies>
 
@@ -71,8 +70,8 @@
 	<build>
 		<plugins>
 			<plugin>
-			    <groupId>org.springframework.boot</groupId>
-			    <artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 
 			<plugin>
@@ -80,14 +79,20 @@
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>@pom.version@</version>
 				<configuration>
-				    <repository>localhost:5000/${project.artifactId}</repository>
+					<repository>localhost:5000/${project.artifactId}</repository>
+					<runtimeArtifact>
+						<groupId>${runtimeGroupId}</groupId>
+						<artifactId>${runtimeArtifactId}</artifactId>
+						<version>${runtimeVersion}</version>
+						<type>zip</type>
+					</runtimeArtifact>
 				</configuration>
 				<executions>
 					<execution>
 						<phase>package</phase>
 						<goals>
-						    <goal>docker-build</goal>
-						    <goal>docker-push</goal>
+							<goal>docker-build</goal>
+							<goal>docker-push</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -99,8 +104,8 @@
 				<executions>
 					<execution>
 						<goals>
-						    <goal>integration-test</goal>
-						    <goal>verify</goal>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
 						</goals>
 					</execution>
 				</executions>

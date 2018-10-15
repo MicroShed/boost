@@ -105,6 +105,14 @@
 						<goals>
 							<goal>package</goal>
 						</goals>
+						<configuration>
+							<runtimeArtifact>
+								<groupId>${runtimeGroupId}</groupId>
+								<artifactId>${runtimeArtifactId}</artifactId>
+								<version>${runtimeVersion}</version>
+								<type>zip</type>
+							</runtimeArtifact>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
