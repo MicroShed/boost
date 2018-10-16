@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>io.openliberty.boost</groupId>
 			<artifactId>boost-javaee7-bom</artifactId>
-			<version>@pom.version@</version>
+			<version>0.1-SNAPSHOT</version>
 			<scope>import</scope>
 			<type>pom</type>
 		</dependency>
