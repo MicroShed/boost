@@ -22,7 +22,7 @@ public class EndpointIT {
 
     @BeforeClass
     public static void init() {
-        URL = "http://localhost:9080/test-jaxrs-2.0-1.0-SNAPSHOT/api/hello";
+        URL = "http://localhost:9080/test-jaxrs-2.1-1.0-SNAPSHOT/api/hello";
     }
 
     @Test
