@@ -95,10 +95,10 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                 validateSpringBootUberJAR(springBootUberJar);
                 copySpringBootUberJar(springBootUberJar, attach); // Only copy back if we need to overwrite the project
                                                                   // artifact
-                installApp("spring-boot-project");
                 generateServerXML();
                 generateBootstrapProps();
                 installMissingFeatures();
+                installApp("spring-boot-project");
 
                 if (springBootUberJar != null) {
                     // Create the Liberty Uber JAR from the Spring Boot Uber JAR in place
@@ -115,10 +115,11 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                 }
             } else { // Dealing with an EE based app
                 attach = false;
-                installApp("project");
                 boosterFeatures = getBoosterConfigsFromDependencies(project);
                 generateServerXMLJ2EE(boosterFeatures);
                 installMissingFeatures();
+                installApp("project");
+
                 createUberJar(null, attach);
             }
         } catch (TransformerException | ParserConfigurationException e) {
@@ -312,7 +313,6 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      * Invoke the liberty-maven-plugin to run the install-app goal.
      */
     private void installApp(String installAppPackagesVal) throws MojoExecutionException {
-
         executeMojo(getPlugin(), goal("install-apps"),
                 configuration(element(name("installAppPackages"), installAppPackagesVal),
                         element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
