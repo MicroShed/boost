@@ -19,23 +19,23 @@
 	<dependencies>
 
 		<!-- Boost dependencies -->
-        <dependency>
-            <groupId>io.openliberty.boost</groupId>
-            <artifactId>boost-bom</artifactId>
-            <version>0.1.2-SNAPSHOT</version>
-            <type>pom</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.openliberty.boost</groupId>
-            <artifactId>boost-common</artifactId>
-            <version>0.1.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.wasdev.wlp.maven.plugins</groupId>
-            <artifactId>liberty-maven-plugin</artifactId>
-            <version>2.6.2-SNAPSHOT</version>
-        </dependency>
+		<dependency>
+			<groupId>io.openliberty.boost</groupId>
+			<artifactId>boost-bom</artifactId>
+			<version>0.1.2-SNAPSHOT</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.openliberty.boost</groupId>
+			<artifactId>boost-common</artifactId>
+			<version>0.1.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.wasdev.wlp.maven.plugins</groupId>
+			<artifactId>liberty-maven-plugin</artifactId>
+			<version>2.6.2-SNAPSHOT</version>
+		</dependency>
 
 		<!-- Other dependencies -->
 
@@ -110,10 +110,10 @@
 							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
 							<streamLogs>true</streamLogs>
 							<properties>
-                                <runtimeGroupId>${runtimeGroupId}</runtimeGroupId>
-                                <runtimeArtifactId>${runtimeArtifactId}</runtimeArtifactId>
-                                <runtimeVersion>${runtimeVersion}</runtimeVersion>
-                            </properties>
+								<runtimeGroupId>${runtimeGroupId}</runtimeGroupId>
+								<runtimeArtifactId>${runtimeArtifactId}</runtimeArtifactId>
+								<runtimeVersion>${runtimeVersion}</runtimeVersion>
+							</properties>
 						</configuration>
 						<executions>
 							<execution>
@@ -156,6 +156,19 @@
 				<runtimeGroupId>io.openliberty</runtimeGroupId>
 				<runtimeArtifactId>openliberty-runtime</runtimeArtifactId>
 				<runtimeVersion>${runtimeVersion}</runtimeVersion>
+			</properties>
+		</profile>
+		<profile>
+			<id>default-its</id>
+			<activation>
+				<property>
+					<name>!runtime</name>
+				</property>
+			</activation>
+			<properties>
+				<runtimeGroupId>io.openliberty</runtimeGroupId>
+				<runtimeArtifactId>openliberty-runtime</runtimeArtifactId>
+				<runtimeVersion>[18.0.0.3,)</runtimeVersion>
 			</properties>
 		</profile>
 	</profiles>
