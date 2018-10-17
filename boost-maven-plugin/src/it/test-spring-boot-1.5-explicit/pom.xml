@@ -100,12 +100,11 @@
 				<groupId>io.openliberty.boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>@pom.version@</version>
-				<!-- Test configurable runtime artifact -->
 				<configuration>
 					<runtimeArtifact>
-						<groupId>io.openliberty</groupId>
-						<artifactId>openliberty-runtime</artifactId>
-						<version>18.0.0.2</version>
+						<groupId>${runtimeGroupId}</groupId>
+						<artifactId>${runtimeArtifactId}</artifactId>
+						<version>${runtimeVersion}</version>
 						<type>zip</type>
 					</runtimeArtifact>
 				</configuration>
