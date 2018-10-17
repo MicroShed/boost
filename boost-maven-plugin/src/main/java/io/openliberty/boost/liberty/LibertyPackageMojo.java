@@ -55,6 +55,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     BoosterPacksParent boosterParent;
     List<BoosterPackConfigurator> boosterFeatures = null;
 
+    File springBootMavenPluginUberJarLocation;
+
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
@@ -90,9 +92,12 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                     attach = true;
                 }
 
+                springBootMavenPluginUberJarLocation = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil
+                        .getSpringBootUberJARLocation(project, getLog());
+
                 File springBootUberJar = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil.getSpringBootUberJAR(project,
                         getLog());
-                validateSpringBootUberJAR(springBootUberJar);
+                checkForEitherValidUberJAR(springBootUberJar);
                 copySpringBootUberJar(springBootUberJar, attach); // Only copy back if we need to overwrite the project
                                                                   // artifact
                 installApp("spring-boot-project");
@@ -109,7 +114,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                     createUberJar(null, attach);
                 }
 
-                if (!MavenProjectUtil.isNotNullOrEmpty(springBootClassifier)) {
+                if (MavenProjectUtil.isNotNullOrEmpty(springBootClassifier)) {
                     // If necessary, add the manifest to prevent Spring Boot from repackaging again
                     addSpringBootVersionToManifest(springBootVersion);
                 }
@@ -134,10 +139,11 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      * @throws MojoExecutionException
      */
     private void addSpringBootVersionToManifest(String springBootVersion) throws MojoExecutionException {
-        File artifact = project.getArtifact().getFile();
-        if (BoostUtil.isLibertyJar(artifact, BoostLogger.getInstance())) {
+
+        if (BoostUtil.isLibertyJar(springBootMavenPluginUberJarLocation, BoostLogger.getInstance())) {
             try {
-                SpringBootUtil.addSpringBootVersionToManifest(artifact, springBootVersion, BoostLogger.getInstance());
+                SpringBootUtil.addSpringBootVersionToManifest(springBootMavenPluginUberJarLocation, springBootVersion,
+                        BoostLogger.getInstance());
             } catch (BoostException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
@@ -154,8 +160,9 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      * 
      * @throws MojoExecutionException
      */
-    private void validateSpringBootUberJAR(File springBootUberJar) throws MojoExecutionException {
-        if (!BoostUtil.isLibertyJar(project.getArtifact().getFile(), BoostLogger.getInstance())
+    private void checkForEitherValidUberJAR(File springBootUberJar) throws MojoExecutionException {
+
+        if (!BoostUtil.isLibertyJar(springBootMavenPluginUberJarLocation, BoostLogger.getInstance())
                 && springBootUberJar == null) {
             throw new MojoExecutionException(
                     "A valid Spring Boot Uber JAR was not found. Run spring-boot:repackage and try again.");
@@ -177,15 +184,16 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             }
 
             if (springBootUberJarCopy == null) { // Copy didn't happen
-                if (attach) { // If we are replacing the project artifact, then copy back the Spring Boot Uber
-                              // JAR so we can thin and package it again
-                    File springJar = new File(
-                            SpringBootUtil.getBoostedSpringBootUberJarPath(project.getArtifact().getFile()));
-                    if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(springJar)) {
-                        getLog().info("Copying back Spring Boot Uber JAR as project artifact.");
-                        FileUtils.copyFile(springJar, project.getArtifact().getFile());
-                    }
+
+                File springJar = new File(
+                        SpringBootUtil.getBoostedSpringBootUberJarPath(springBootMavenPluginUberJarLocation));
+
+                if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(springJar)) {
+                    getLog().info("Copying back Spring Boot Uber JAR to "
+                            + springBootMavenPluginUberJarLocation.getCanonicalPath());
+                    FileUtils.copyFile(springJar, springBootMavenPluginUberJarLocation);
                 }
+
             } else {
                 getLog().info("Copied Spring Boot Uber JAR to " + springBootUberJarCopy.getCanonicalPath());
             }
