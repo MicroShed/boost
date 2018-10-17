@@ -37,7 +37,7 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     protected String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
     protected String libertyMavenPluginArtifactId = "liberty-maven-plugin";
 
-    @Parameter(defaultValue = "2.6.1", readonly = true)
+    @Parameter(defaultValue = "2.6.2-SNAPSHOT", readonly = true)
     protected String libertyMavenPluginVersion;
 
     @Parameter(defaultValue = "${project.build.directory}", readonly = true)

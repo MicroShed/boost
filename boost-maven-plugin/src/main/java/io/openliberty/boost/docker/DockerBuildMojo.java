@@ -34,7 +34,7 @@
 /*
  ******************************************************************************
  * We now include the copyright for our modification:
- *
+
  * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -127,8 +127,27 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         // actually point to the Liberty Uber JAR. Check if this is the case and if so,
         // use the .spring artifact that we preserved during the Boost packaging
         // process.
+
+        // Strictly speaking, the Liberty Uber JAR (in the "unboosted" SpringBoot Uber
+        // JAR location), is not needed to build the Docker image. However, let's throw
+        // an exception if we get here and it doesn't exist, assuming we've done
+        // something wrong. If it turns out we want to relax this later, we could.
+        File unboostedSpringBootUberJarLocation = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil
+                .getSpringBootUberJARLocation(project, getLog());
+        if (!unboostedSpringBootUberJarLocation.exists()) {
+            String excMsg = "Expected file does not exist at path = "
+                    + getPathMessageText(unboostedSpringBootUberJarLocation)
+                    + ". Make sure you have executed the spring-boot:repackage goal first before attempting the current goal.";
+            throw new BoostException(excMsg);
+        }
+        // Get the Boost location for the SpringBoot Uber JAR
         appArchive = new File(io.openliberty.boost.utils.SpringBootUtil
-                .getBoostedSpringBootUberJarPath(project.getArtifact().getFile()));
+                .getBoostedSpringBootUberJarPath(unboostedSpringBootUberJarLocation));
+        if (!appArchive.exists()) {
+            String excMsg = "Expected file does not exist at path = " + getPathMessageText(appArchive)
+                    + ". Make sure you have executed the spring-boot:repackage goal first before attempting the current goal.";
+            throw new BoostException(excMsg);
+        }
         if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(appArchive)) {
             getLog().info("Found Spring Boot Uber JAR with .spring extension.");
             return appArchive;
@@ -179,4 +198,25 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         return buildParams;
     }
 
+    /**
+     * Get the artifact path
+     *
+     * @param artifact
+     * @return the canonical path, if it can be obtained successfully, otherwise the
+     *         absolute path
+     */
+    private static String getPathMessageText(File artifact) {
+        String retVal = null;
+        try {
+            if (artifact != null) {
+                retVal = artifact.getCanonicalPath();
+            }
+        } catch (IOException ioexc) {
+            retVal = artifact.getAbsolutePath();
+        }
+        return retVal;
+    }
+
+    private void throwFileDoesntExistException(File unboostedSpringBootUberJarLocation) throws BoostException {
+    }
 }
