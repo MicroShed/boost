@@ -20,6 +20,8 @@
         <module>test15Implicit</module>
         <module>test20Implicit</module>
         <module>testWebsocket</module>
+        <module>test-jaxrs-2.0</module>
+        <module>test-jaxrs-2.1</module>
         <module>test-docker</module>
         <module>test-run-server</module>
     </modules>
