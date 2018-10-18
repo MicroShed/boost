@@ -4,9 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>io.openliberty.boost</groupId>
+        <artifactId>boost-maven-parent</artifactId>
+        <version>0.1.2-SNAPSHOT</version>
+    </parent>
+	
+	<!--  Though this is related to the boosters, which individually are versioned separately from boost-maven-parent
+	      and boost-maven-plugin, this is more of an internal/build thing, so we version along with boost-maven-parent -->
 	<groupId>io.openliberty.boost</groupId>
 	<artifactId>boost-boosters</artifactId>
-	<version>1.0-SNAPSHOT</version>
 	
 	<build>
 		<plugins>
