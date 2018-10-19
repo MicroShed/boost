@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.boost.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -36,6 +38,26 @@ public class MavenProjectUtil {
 
     public static boolean isNotNullOrEmpty(String s) {
         return s != null && !s.isEmpty();
+    }
+    
+    /**
+     * Get all dependencies with "spring-boot-starter-*" as the artifactId. These
+     * dependencies will be used to determine which additional Liberty features need
+     * to be enabled.
+     * 
+     */
+    public static List<String> getSpringBootStarters(MavenProject project) {
+
+        List<String> springBootStarters = new ArrayList<String>();
+
+        Set<Artifact> artifacts = project.getArtifacts();
+        for (Artifact art : artifacts) {
+            if (art.getArtifactId().contains("spring-boot-starter")) {
+                springBootStarters.add(art.getArtifactId());
+            }
+        }
+
+        return springBootStarters;
     }
 
 }
