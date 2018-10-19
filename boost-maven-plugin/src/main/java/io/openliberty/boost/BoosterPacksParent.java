@@ -15,8 +15,8 @@ public class BoosterPacksParent {
 
     JDBCBoosterPackConfigurator jdbcConfig = null;
     private String JDBC_BOOSTER_PACK_STRING = "liberty-booster-data-jdbc";
-    public static String JAXRS_BOOSTER_PACK_STRING_10 = "io.openliberty.boost:booster-jaxrs:1.0-SNAPSHOT";
-    public static String JAXRS_BOOSTER_PACK_STRING_20 = "io.openliberty.boost:booster-jaxrs:2.0-SNAPSHOT";
+    public static String JAXRS_BOOSTER_PACK_STRING_10 = "io.openliberty.boosters:jaxrs:0.1-SNAPSHOT";
+    public static String JAXRS_BOOSTER_PACK_STRING_20 = "io.openliberty.boosters:jaxrs:0.2-SNAPSHOT";
     private List<BoosterPackConfigurator> boosterPackConfigList = new ArrayList<BoosterPackConfigurator>();
 
     /**
@@ -34,8 +34,8 @@ public class BoosterPacksParent {
             if (dep.equals(JDBC_BOOSTER_PACK_STRING)) {
                 boosterPackConfigList.add(new JDBCBoosterPackConfigurator());
             } else if (dep.equals(JAXRS_BOOSTER_PACK_STRING_10) || dep.equals(JAXRS_BOOSTER_PACK_STRING_20)) {
-            	JAXRSBoosterPackConfigurator jaxrsConfig = new JAXRSBoosterPackConfigurator();
-            	jaxrsConfig.setFeatureString(dep);
+                JAXRSBoosterPackConfigurator jaxrsConfig = new JAXRSBoosterPackConfigurator();
+                jaxrsConfig.setFeatureString(dep);
                 boosterPackConfigList.add(jaxrsConfig);
             }
 

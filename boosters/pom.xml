@@ -10,10 +10,8 @@
         <version>0.1.2-SNAPSHOT</version>
     </parent>
 	
-	<!--  Though this is related to the boosters, which individually are versioned separately from boost-maven-parent
-	      and boost-maven-plugin, this is more of an internal/build thing, so we version along with boost-maven-parent -->
-	<groupId>io.openliberty.boost</groupId>
-	<artifactId>boost-boosters</artifactId>
+	<groupId>io.openliberty.boosters</groupId>
+	<artifactId>boosters</artifactId>
 	
 	<build>
 		<plugins>
@@ -29,10 +27,7 @@
 					</goals>
 					<configuration>
 						<projectsDirectory>.</projectsDirectory>
-						<cloneProjectsTo>${project.build.directory}/boosters</cloneProjectsTo>
-						<pomIncludes>
-							<pomInclude>*/*/pom.xml</pomInclude>
-						</pomIncludes>
+						<cloneProjectsTo>${project.build.directory}/boosters-build</cloneProjectsTo>
 					</configuration>					
 				</execution>
 			</executions>

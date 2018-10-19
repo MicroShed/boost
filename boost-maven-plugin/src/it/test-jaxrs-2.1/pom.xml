@@ -32,9 +32,9 @@
 	<dependencyManagement>
 		<dependencies>
 		<dependency>
-			<groupId>io.openliberty.boost</groupId>
-			<artifactId>boost-javaee8-bom</artifactId>
-			<version>0.1-SNAPSHOT</version>
+			<groupId>io.openliberty.boosters</groupId>
+			<artifactId>ee8-bom</artifactId>
+			<version>@pom.version@</version>
 			<scope>import</scope>
 			<type>pom</type>
 		</dependency>
@@ -43,8 +43,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.openliberty.boost</groupId>
-			<artifactId>booster-jaxrs</artifactId>
+			<groupId>io.openliberty.boosters</groupId>
+			<artifactId>jaxrs</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
