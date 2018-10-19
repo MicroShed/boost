@@ -116,6 +116,11 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             } else {
                 // The Spring Boot Uber JAR was already replaced with the Liberty Uber JAR (this
                 // is a re-execution in the non-classifier scenario)
+                //installApp("project"); - need to do this after any config is created - move it below
+                boosterFeatures = getBoosterConfigsFromDependencies(project);
+                generateServerXMLJ2EE(boosterFeatures);
+                installMissingFeatures();
+                installApp("project");
                 createUberJar(null, attach);
             }
 
@@ -253,6 +258,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             // starters defined
             List<String> boosterFeatureNames = getBoosterFeatureNames(boosterConfigurators);
             serverConfig.addFeatures(boosterFeatureNames);
+            serverConfig.addConfigForApp(project.getArtifactId(), project.getVersion());
             serverConfig.addConfigForFeatures(boosterConfigurators);
         
             // Write server.xml to Liberty server config directory
@@ -261,7 +267,6 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         } catch (TransformerException | IOException | ParserConfigurationException e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
         }
-
     }
 
     /**
@@ -294,6 +299,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     private void installApp(String installAppPackagesVal) throws MojoExecutionException {
         executeMojo(getPlugin(), goal("install-apps"),
                 configuration(element(name("installAppPackages"), installAppPackagesVal),
+                element(name("appsDirectory"), "apps"),
                         element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
                 getExecutionEnvironment());
     }
