@@ -26,16 +26,28 @@ public class LibertyRunMojoIT {
 
     private static Process process;
 
+    private static String runtimeGroupId;
+    private static String runtimeArtifactId;
+    private static String runtimeVersion;
+
     @BeforeClass
     public static void init() throws Exception {
         URL = "http://localhost:8080/";
 
-        process = Runtime.getRuntime().exec("mvn boost:run");
+        runtimeGroupId = System.getProperty("runtimeGroupId");
+        runtimeArtifactId = System.getProperty("runtimeArtifactId");
+        runtimeVersion = System.getProperty("runtimeVersion");
+
+        String runCommand = "mvn boost:run -DruntimeGroupId=" + runtimeGroupId + " -DruntimeArtifactId="
+                + runtimeArtifactId + " -DruntimeVersion=" + runtimeVersion;
+        process = Runtime.getRuntime().exec(runCommand);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        Runtime.getRuntime().exec("mvn boost:stop");
+        String stopCommand = "mvn boost:stop -DruntimeGroupId=" + runtimeGroupId + " -DruntimeArtifactId="
+                + runtimeArtifactId + " -DruntimeVersion=" + runtimeVersion;
+        Runtime.getRuntime().exec(stopCommand);
         process.destroyForcibly();
     }
 
