@@ -128,6 +128,10 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             boosterFeatures = getBoosterConfigsFromDependencies(project);
             generateServerXMLJ2EE(boosterFeatures);
             installMissingFeatures();
+            // we install the app now, after server.xml is configured. This is so that we can 
+            // specify a custom config-root in server.xml ("/"). If we installed the app prior
+            // to server.xml configuration, then the LMP would write out a webapp stanza into 
+            // config dropins that would include a config-root setting set to the app name.
             installApp("project");
 
             createUberJar(null, attach);
@@ -292,11 +296,21 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      * Invoke the liberty-maven-plugin to run the install-app goal.
      */
     private void installApp(String installAppPackagesVal) throws MojoExecutionException {
-        executeMojo(getPlugin(), goal("install-apps"),
-                configuration(element(name("installAppPackages"), installAppPackagesVal),
-                element(name("appsDirectory"), "apps"),
-                        element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
-                getExecutionEnvironment());
+
+		if (MavenProjectUtil.isNotNullOrEmpty(springBootVersion)) { 
+			//dealing with a spring boot app - not sure if the EE choices below are applicable
+			executeMojo(getPlugin(), goal("install-apps"),
+					configuration(element(name("installAppPackages"), installAppPackagesVal),
+							element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
+					getExecutionEnvironment());
+		} else { // dealing with an EE based app
+			executeMojo(getPlugin(), goal("install-apps"),
+					configuration(element(name("installAppPackages"), installAppPackagesVal),
+							element(name("appsDirectory"), "apps"), // write apps dir
+							element(name("looseApplication"), "true"), // make app loose for iterative development
+							element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
+					getExecutionEnvironment());
+		}
     }
 
     /**
