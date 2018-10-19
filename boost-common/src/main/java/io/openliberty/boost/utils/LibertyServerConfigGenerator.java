@@ -150,4 +150,13 @@ public class LibertyServerConfigGenerator {
         }
 
     }
+    
+    public void addConfigForApp(String artifactId, String version){
+    	Element appCfg = doc.createElement(APPLICATION);
+    	appCfg.setAttribute("context-root", "/");
+    	appCfg.setAttribute("location", artifactId+"-"+version+".war");
+    	appCfg.setAttribute("type", "war");
+    	serverRoot.appendChild(appCfg);
+
+    }
 }

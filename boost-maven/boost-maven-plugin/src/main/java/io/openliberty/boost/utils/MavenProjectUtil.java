@@ -37,5 +37,9 @@ public class MavenProjectUtil {
     public static boolean isNotNullOrEmpty(String s) {
         return s != null && !s.isEmpty();
     }
+    
+    public static String getArtictIdFromProject(MavenProject proj){
+    	return proj.getArtifactId();
+    }
 
 }
