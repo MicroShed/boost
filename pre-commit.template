@@ -21,7 +21,7 @@
 # set this to the location of your Eclipse installation
 # linux/Mac Example: ECLIPSE_HOME=/Users/mac/EclipseInstalls/EclipseO2/EClipse.app/Contents/MacOS
 # Windows/Cygwin Example: ECLIPSE_HOME="C:/EclJavaFrmtAdmin/eclipse"
-ECLIPSE_HOME=/Users/ctianus.ibm.com/eclipse/jee-oxygen/Eclipse.app/Contents/MacOS
+ECLIPSE_HOME=***** Fully qualified location of your Eclipse executable *****
 
 # Style file is provided in the root directory of the project as java.prefs
 PROJECT_LOCATION=$PWD
