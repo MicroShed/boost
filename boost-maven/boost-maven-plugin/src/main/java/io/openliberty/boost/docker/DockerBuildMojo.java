@@ -100,7 +100,9 @@ public class DockerBuildMojo extends AbstractDockerMojo {
             // Create a Dockerfile for the application
             Dockerize dockerize = new Dockerize(project, appArchive, log);
             dockerize.createDockerFile();
-
+            // Create a .dockerignore file
+            dockerize.createDockerIgnore();
+            
             buildDockerImage(dockerClient, appArchive);
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
