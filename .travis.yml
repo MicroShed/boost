@@ -33,12 +33,10 @@ before_install:
      - echo "Deleting old .m2 artifacts..."
      - rm -rf $HOME/.m2/repository/net/wasdev
      - rm -rf $HOME/.m2/repository/io/openliberty
-     - echo 'Installing boost-common lib ....'
-     - git clone https://github.com/OpenLiberty/boost-common.git ./boost-common
-     - cd ./boost-common
-     - mvn clean install
-     - cd ..
      - docker run -d -p 5000:5000 --restart=always --name registry registry:2
 install: true
 script:
+    - cd boost-common
+    - travis_wait mvn verify -Dinvoker.streamLogs=true
+    - cd ../boost-maven
     - travis_wait mvn verify -Pit -Dinvoker.streamLogs=true -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION
