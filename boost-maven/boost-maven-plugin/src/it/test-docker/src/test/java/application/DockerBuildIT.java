@@ -57,7 +57,7 @@ public class DockerBuildIT {
     }
 
     @Test
-    public void testDockerizeCreatesDockerfile() throws Exception {
+    public void testDockerBuildCreatesDockerfile() throws Exception {
         assertTrue(dockerFile.getCanonicalPath() + " was not created", dockerFile.exists());
     }
 
@@ -73,6 +73,19 @@ public class DockerBuildIT {
             } else if (version.startsWith("2.")) {
                 assertTrue("Expected Open liberty base image open-liberty:springBoot2 was not found in "
                         + dockerFile.getCanonicalPath(), line.contains("open-liberty:springBoot2"));
+            }
+        }
+    }
+    
+    @Test
+    public void testDockerBuildCreatesDockerIgnoreFile() throws Exception {
+        File dockerignore = new File(".dockerignore");
+        assertTrue(dockerignore.getCanonicalPath() + " was not created", dockerignore.exists());
+        try (FileReader fileReader = new FileReader(dockerignore)) {
+            try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+                String line = bufferedReader.readLine();
+                assertNotNull(".dockerignore cannot be empty", line);
+                assertEquals("Expected comment not found", "# The following lines are added by boost-maven-plugin", line);
             }
         }
     }
