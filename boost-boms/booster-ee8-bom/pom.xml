@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+
+	<parent>
+		<groupId>io.openliberty.boost</groupId>
+		<artifactId>boost-maven-parent</artifactId>
+		<version>0.1.2-SNAPSHOT</version>
+		<relativePath>../..</relativePath>
+	</parent>
+
+	<groupId>io.openliberty.boosters</groupId>
+	<artifactId>ee8-bom</artifactId>
+	<packaging>pom</packaging>
+
+	<description>Booster EE8 Feature Bom</description>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.openliberty.boost</groupId>
+				<artifactId>boost-ee8-apis-bom</artifactId>
+				<version>0.1-SNAPSHOT</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>io.openliberty.boosters</groupId>
+				<artifactId>jaxrs</artifactId>
+				<!-- Booster version distinct from the BOM, boost-maven-plugin version -->
+				<!-- Could also use 7.0, 8.0 for EE7, 8 -->
+				<!-- Probably will be 1.0 for initial GA -->
+				<version>0.2-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>

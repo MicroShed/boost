@@ -9,6 +9,8 @@ import org.w3c.dom.NodeList;
 public class JDBCBoosterPackConfigurator implements BoosterPackConfigurator {
 
     private String jdbcDefault = "jdbc-4.1";
+    
+    String featureGAV = null;
 
     /**
      * retrieves the default boost feature string for the jdbc dependency
@@ -56,4 +58,10 @@ public class JDBCBoosterPackConfigurator implements BoosterPackConfigurator {
         lib.appendChild(fileLoc);
         serverRoot.appendChild(lib);
     }
+
+	@Override
+	public void setFeatureString(String feature) {
+		featureGAV = feature;
+		
+	}
 }
