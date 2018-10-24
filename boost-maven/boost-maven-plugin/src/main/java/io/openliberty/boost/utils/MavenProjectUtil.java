@@ -41,23 +41,24 @@ public class MavenProjectUtil {
     }
     
     /**
-     * Get all dependencies with "spring-boot-starter-*" as the artifactId. These
+     * Get all dependencies with "org.springframework" as the groupId. These
      * dependencies will be used to determine which additional Liberty features need
      * to be enabled.
      * 
      */
-    public static List<String> getSpringBootStarters(MavenProject project) {
+    public static List<String> getSpringFrameworkDependencies(MavenProject project) {
 
-        List<String> springBootStarters = new ArrayList<String>();
+        List<String> springFrameworkDependencies = new ArrayList<String>();
 
         Set<Artifact> artifacts = project.getArtifacts();
         for (Artifact art : artifacts) {
-            if (art.getArtifactId().contains("spring-boot-starter")) {
-                springBootStarters.add(art.getArtifactId());
+            String groupId = art.getGroupId();
+            if (groupId.equals("org.springframework")) {
+                springFrameworkDependencies.add(art.getArtifactId());
             }
         }
 
-        return springBootStarters;
+        return springFrameworkDependencies;
     }
 
 }

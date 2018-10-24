@@ -60,6 +60,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
     BoosterPacksParent boosterParent;
     List<BoosterPackConfigurator> boosterFeatures = null;
+    
+    String libertyServerPath = null; 
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -68,6 +70,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
 
         boosterParent = new BoosterPacksParent();
+        
+        libertyServerPath = projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName;
 
         createServer();
 
@@ -140,13 +144,10 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         
         try {
             // Get Spring Boot starters from Maven project
-            List<String> springBootStarters = MavenProjectUtil.getSpringBootStarters(project);
-            
-            // Set Liberty server path
-            String libertyServerPath = projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName; 
+            List<String> springFrameworkDependencies = MavenProjectUtil.getSpringFrameworkDependencies(project);
             
             // Generate server config
-            SpringBootUtil.generateLibertyServerConfig(projectBuildDir + "/classes", libertyServerPath, springBootVersion, springBootStarters, BoostLogger.getInstance());
+            SpringBootUtil.generateLibertyServerConfig(projectBuildDir + "/classes", libertyServerPath, springBootVersion, springFrameworkDependencies, BoostLogger.getInstance());
         
         } catch (Exception e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
@@ -246,7 +247,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     private void generateServerXMLJ2EE(List<BoosterPackConfigurator> boosterConfigurators) throws MojoExecutionException {
 
         try {
-            LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName);
+            LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath);
 
             // Add any other Liberty features needed depending on the spring boot
             // starters defined
