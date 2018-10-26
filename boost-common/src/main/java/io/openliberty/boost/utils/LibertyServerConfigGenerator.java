@@ -13,8 +13,14 @@ package io.openliberty.boost.utils;
 import static io.openliberty.boost.utils.ConfigConstants.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -38,14 +44,22 @@ import io.openliberty.boost.BoosterPackConfigurator;
  */
 public class LibertyServerConfigGenerator {
 
+    String serverPath;
+    
     Document doc;
     Element featureManager;
     Element serverRoot;
 
     Set<String> featuresAdded;
+    
+    Properties bootstrapProperties;
 
-    public LibertyServerConfigGenerator() throws ParserConfigurationException {
+    public LibertyServerConfigGenerator(String serverPath) throws ParserConfigurationException {
+        this.serverPath = serverPath;
         generateDocument();
+        
+        featuresAdded = new HashSet<String>();
+        bootstrapProperties = new Properties();
     }
 
     private void generateDocument() throws ParserConfigurationException {
@@ -60,8 +74,6 @@ public class LibertyServerConfigGenerator {
         // Create featureManager config element
         featureManager = doc.createElement(FEATURE_MANAGER);
         serverRoot.appendChild(featureManager);
-
-        featuresAdded = new HashSet<String>();
     }
 
     /**
@@ -90,6 +102,39 @@ public class LibertyServerConfigGenerator {
         }
 
         serverRoot.appendChild(httpEndpoint);
+    }
+    
+
+    /**
+     * Add a keystore definition for this server
+     * 
+     * @param keystore
+     *              The keystore file name.
+     * @param keystorePassword
+     *              The keystore password
+     * @param keystoreType
+     *              The keystore type
+     */
+    public void addKeystore(Map<String, String> keystoreProps, Map<String, String> keyProps) {
+        Element keystore = doc.createElement(KEYSTORE);
+        keystore.setAttribute("id", DEFAULT_KEYSTORE);
+        
+        for (String key : keystoreProps.keySet()) {
+            keystore.setAttribute(key, keystoreProps.get(key));
+        }
+        
+        if (!keyProps.isEmpty()) {
+            Element keyEntry = doc.createElement(KEY_ENTRY);
+            
+            for (String key : keyProps.keySet()) {
+                keyEntry.setAttribute(key, keyProps.get(key));
+            }
+            
+            keystore.appendChild(keyEntry);
+        }
+        
+        serverRoot.appendChild(keystore);
+        
     }
 
     /**
@@ -123,13 +168,12 @@ public class LibertyServerConfigGenerator {
     }
 
     /**
-     * Write the server.xml to the server config directory
+     * Write the server.xml and bootstrap.properties to the server config directory
      *
-     * @param serverPath
-     *            The full path to the server config directory.
      * @throws TransformerException
+     * @throws IOException
      */
-    public void writeToServer(String serverPath) throws TransformerException {
+    public void writeToServer() throws TransformerException, IOException {
 
         // Replace auto-generated server.xml
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -142,6 +186,19 @@ public class LibertyServerConfigGenerator {
         StreamResult result = new StreamResult(new File(serverPath + "/server.xml"));
         transformer.transform(source, result);
 
+        // Generate bootstrap.properties
+        if(!bootstrapProperties.isEmpty()){
+            
+            OutputStream output = null;
+             try {
+                output = new FileOutputStream(serverPath + "/bootstrap.properties");
+                bootstrapProperties.store(output, null);
+             } finally {
+                if (output != null) {
+                    output.close();
+                }
+            }
+        }
     }
 
     public void addConfigForFeatures(List<BoosterPackConfigurator> boosterConfigurators) {
@@ -149,5 +206,13 @@ public class LibertyServerConfigGenerator {
             booster.writeConfigToServerXML(doc);
         }
 
+    }
+
+    public void addBootstrapProperties(Properties properties) throws IOException{
+        
+        for(String key : properties.stringPropertyNames()) {
+              String value = properties.getProperty(key);
+              bootstrapProperties.put(key, value);
+        }
     }
 }
