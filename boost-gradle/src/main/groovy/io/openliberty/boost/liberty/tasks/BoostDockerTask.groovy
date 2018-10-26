@@ -11,9 +11,7 @@
 package io.openliberty.boost.liberty.tasks
 
 import org.gradle.api.GradleException
-import org.gradle.api.tasks.TaskAction
 import org.gradle.api.logging.LogLevel
-import org.gradle.util.ConfigureUtil
 
 import io.openliberty.boost.utils.GradleProjectUtil
 

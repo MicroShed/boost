@@ -48,14 +48,37 @@ jar {
 
 test {
     doFirst { //Copying gradle.properties with plugin version to test projects
+        String runtimeGroup
+        String runtimeArtifactId
+        String libertyRuntime = System.getProperty('runtime')
+        String runtimeVersion = System.getProperty('runtimeVersion')
+
+        if (libertyRuntime == null || libertyRuntime.isEmpty()) {
+            throw new GradleException('Tests could not be run. Please specify a Liberty runtime. Choose either wlp or ol.')
+        }
+        if (runtimeVersion == null || runtimeVersion.isEmpty()) {
+            throw new GradleException('Tests could not be run. Please specify a Liberty runtime version.')
+        }
+
         Properties prop = new Properties()
         OutputStream output = null
 
         try {
             output = new FileOutputStream("${buildDir}/gradle.properties")
 
+            if (libertyRuntime == "ol") {
+                runtimeGroup = "io.openliberty"
+                runtimeArtifactId = "openliberty-runtime"
+            } else {
+                runtimeGroup = "com.ibm.websphere.appserver.runtime"
+                runtimeArtifactId = "wlp-javaee7"
+            }
+
             // set the properties value
             prop.setProperty("boostVersion", version)
+            prop.setProperty("runtimeGroup", runtimeGroup)
+            prop.setProperty("runtimeArtifactId", runtimeArtifactId)
+            prop.setProperty("runtimeVersion", runtimeVersion)
 
             // save properties to project root folder
             prop.store(output, null)

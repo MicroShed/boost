@@ -10,9 +10,6 @@
  *******************************************************************************/
 package io.openliberty.boost.liberty.tasks
 
-import org.gradle.api.GradleException
-import org.gradle.api.tasks.TaskAction
-import org.gradle.api.Task
 import org.gradle.api.logging.LogLevel
 
 public class BoostStopTask extends AbstractBoostTask {

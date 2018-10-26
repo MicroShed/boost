@@ -10,19 +10,7 @@
  *******************************************************************************/
 package io.openliberty.boost.liberty.tasks
 
-import org.gradle.api.GradleException
-import org.gradle.api.tasks.TaskAction
 import org.gradle.api.logging.LogLevel
-import org.gradle.util.ConfigureUtil
-
-import io.openliberty.boost.utils.GradleProjectUtil
-
-import net.wasdev.wlp.common.plugins.util.SpringBootUtil
-
-import java.nio.file.FileAlreadyExistsException
-import java.nio.file.Files
-import java.nio.charset.Charset
-import java.util.ArrayList
 
 public class BoostDockerPushTask extends AbstractBoostTask {
 
@@ -32,7 +20,7 @@ public class BoostDockerPushTask extends AbstractBoostTask {
             logging.level = LogLevel.INFO
             group 'Boost'
 
-            dependsOn 'build'
+            dependsOn 'boostDocker'
 
             project.afterEvaluate {
                 if (isDockerConfigured()) {

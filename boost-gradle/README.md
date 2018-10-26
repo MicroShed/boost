@@ -6,7 +6,13 @@ Liberty Boost Gradle support
 Build the plugin locally with:
 
 ```
-gradle clean build
+gradle clean install
+```
+
+Test the plugin with:
+
+```
+gradle clean install check -Druntime=<ol|wlp> -DruntimeVersion=<version> -i -s
 ```
 
 To use the installed version of the plugin add the following code snippet to your project's `build.gradle` file:

@@ -35,7 +35,14 @@ public class BoostFunctionalTest extends AbstractBoostTest {
                                         "classpath \"io.openliberty.boost:boost-gradle-plugin:\$boostVersion\"\n\t" +
                                     "}\n" +
                                 "}\n\n" +
-                                "apply plugin: 'boost'"
+                                "apply plugin: 'boost'\n\n" +
+                                "repositories {\n\t" +
+                                    "mavenLocal()\n\t" +
+                                    "mavenCentral()\n" +
+                                "}\n\n" +
+                                "dependencies {\n\t" +
+                                    "libertyRuntime \"\$runtimeGroup:\$runtimeArtifactId:\$runtimeVersion\"\n" +
+                                "}"
 
     @Before
     void setup () {
