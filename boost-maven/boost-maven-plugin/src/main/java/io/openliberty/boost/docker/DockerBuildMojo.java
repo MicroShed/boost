@@ -169,6 +169,7 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
         final String imageName = getImageName();
         BuildParam[] buidParams = getBuildParams(appArchive);
+        log.info(""); //Adding empty log for formatting purpose
         log.info("Building image: " + imageName);
         try {
             dockerClient.build(project.getBasedir().toPath(), imageName, progressHandler, buidParams);
