@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package io.openliberty.boost;
 
 import java.util.ArrayList;
@@ -15,7 +25,8 @@ public class BoosterPacksParent {
 
     JDBCBoosterPackConfigurator jdbcConfig = null;
     private String JDBC_BOOSTER_PACK_STRING = "liberty-booster-data-jdbc";
-    private String JAXRS_BOOSTER_PACK_STRING = "io.openliberty.features:jaxrs-2.0";
+    public static String JAXRS_BOOSTER_PACK_STRING_10 = "io.openliberty.boosters:jaxrs:0.1-SNAPSHOT";
+    public static String JAXRS_BOOSTER_PACK_STRING_20 = "io.openliberty.boosters:jaxrs:0.2-SNAPSHOT";
     private List<BoosterPackConfigurator> boosterPackConfigList = new ArrayList<BoosterPackConfigurator>();
 
     /**
@@ -32,8 +43,10 @@ public class BoosterPacksParent {
         for (String dep : dependencies) {
             if (dep.equals(JDBC_BOOSTER_PACK_STRING)) {
                 boosterPackConfigList.add(new JDBCBoosterPackConfigurator());
-            } else if (dep.equals(JAXRS_BOOSTER_PACK_STRING)) {
-                boosterPackConfigList.add(new JAXRSBoosterPackConfigurator());
+            } else if (dep.startsWith("io.openliberty.boosters:jaxrs:")) {		
+                JAXRSBoosterPackConfigurator jaxrsConfig = new JAXRSBoosterPackConfigurator();
+                jaxrsConfig.setFeatureString(dep);
+                boosterPackConfigList.add(jaxrsConfig);
             }
 
         }

@@ -19,20 +19,18 @@ import org.w3c.dom.Document;
  *
  */
 public interface BoosterPackConfigurator {
-
-    /**
-     * method to return the string feature name - will be written to the feature
-     * manager stanza of server.xml
-     * 
-     * @return
-     */
-    public String getFeatureString();
-
-    /**
-     * method to write out the default config for a particular feature into
-     * server.xml
-     * 
-     * @param doc
-     */
-    public void writeConfigToServerXML(Document doc);
+		
+	/**
+	 * method to return the string feature name - will be written to the feature manager stanza of server.xml
+	 * @return
+	 */
+	public abstract String getFeatureString();
+	
+	/**
+	 * method to write out the default config for a particular feature into server.xml
+	 * @param doc
+	 */
+	public abstract void writeConfigToServerXML(Document doc);
+	
+	public abstract void setFeatureString(String featureStr);
 }
