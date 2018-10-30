@@ -25,6 +25,7 @@ import java.net.URL
 
 import org.junit.Test
 import org.junit.BeforeClass
+import org.junit.AfterClass
 import java.util.List
 
 import com.github.dockerjava.api.DockerClient
@@ -38,6 +39,8 @@ public class DockerEmpty20Test extends AbstractBoostTest {
     private static File dockerFile
     private static DockerClient dockerClient
     private static BuildResult result
+
+    private static String containerId
         
     static File resourceDir = new File("build/resources/test/springApp")
     static File testProjectDir = new File(integTestDir, "DockerEmpty20Test")
@@ -56,6 +59,13 @@ public class DockerEmpty20Test extends AbstractBoostTest {
             .build()
 
         assertEquals(SUCCESS, result.task(":boostDocker").getOutcome())
+    }
+
+    @AfterClass
+    public static void cleanup() throws Exception {
+        dockerClient.stopContainerCmd(containerId).exec()
+
+        dockerClient.removeContainerCmd(containerId).exec()
     }
 
     @Test
@@ -82,17 +92,15 @@ public class DockerEmpty20Test extends AbstractBoostTest {
                 .withPortBindings(PortBinding.parse("9080:9080")).exec()
         Thread.sleep(3000)
 
-        dockerClient.startContainerCmd(container.getId()).exec()
+        containerId = container.getId()
+
+        dockerClient.startContainerCmd(containerId).exec()
 
         Thread.sleep(10000)
         testDockerContainerRunning()
 
-        Thread.sleep(3000)
+        Thread.sleep(10000)
         testAppRunningOnEndpoint()
-
-        dockerClient.stopContainerCmd(container.getId()).exec()
-
-        dockerClient.removeContainerCmd(container.getId()).exec()
     }
 
     public void testDockerContainerRunning() throws Exception {

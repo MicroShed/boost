@@ -172,7 +172,7 @@ public class BoostPackageTask extends AbstractBoostTask {
             serverConfig.addHttpEndpoint(null, "\${server.port}", null)
 
             // Write server.xml to Liberty server config directory
-            serverConfig.writeToServer("${project.buildDir}/wlp/usr/servers/" + project.liberty.server.name)
+            serverConfig.writeToServer(("${project.buildDir}/wlp/usr/servers/" + project.liberty.server.name).toString())
         }
     }
 
