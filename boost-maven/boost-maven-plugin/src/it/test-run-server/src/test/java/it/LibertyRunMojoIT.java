@@ -11,6 +11,9 @@
 package it;
 
 import static org.junit.Assert.*;
+
+import net.wasdev.wlp.common.plugins.util.OSUtil;
+
 import org.junit.BeforeClass;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -22,7 +25,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class LibertyRunMojoIT {
-    private static String URL;
+    private static String URL = "http://localhost:8080/";
 
     private static Process process;
 
@@ -30,22 +33,36 @@ public class LibertyRunMojoIT {
     private static String runtimeArtifactId;
     private static String runtimeVersion;
 
+    private static String mvnCmd;
+
+    public static void setupMvnPath() {
+
+        String mvnPath = System.getenv("M2_HOME") + "/bin/mvn";
+
+        if (OSUtil.isWindows()) {
+            mvnCmd = "cmd.exe /c " + mvnPath;
+        } else {
+            mvnCmd = mvnPath;
+        }
+    }
+
     @BeforeClass
     public static void init() throws Exception {
-        URL = "http://localhost:8080/";
+
+        setupMvnPath();
 
         runtimeGroupId = System.getProperty("runtimeGroupId");
         runtimeArtifactId = System.getProperty("runtimeArtifactId");
         runtimeVersion = System.getProperty("runtimeVersion");
 
-        String runCommand = "mvn boost:run -DruntimeGroupId=" + runtimeGroupId + " -DruntimeArtifactId="
+        String runCommand = mvnCmd + " boost:run -DruntimeGroupId=" + runtimeGroupId + " -DruntimeArtifactId="
                 + runtimeArtifactId + " -DruntimeVersion=" + runtimeVersion;
         process = Runtime.getRuntime().exec(runCommand);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        String stopCommand = "mvn boost:stop -DruntimeGroupId=" + runtimeGroupId + " -DruntimeArtifactId="
+        String stopCommand = mvnCmd + " boost:stop -DruntimeGroupId=" + runtimeGroupId + " -DruntimeArtifactId="
                 + runtimeArtifactId + " -DruntimeVersion=" + runtimeVersion;
         Runtime.getRuntime().exec(stopCommand);
         process.destroyForcibly();

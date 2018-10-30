@@ -45,9 +45,9 @@ public class LibertyServerConfigGeneratorTest {
     @Test
     public void testAddSpringFeature() throws ParserConfigurationException, TransformerException, IOException {
 
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator();
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(outputDir.getRoot().getAbsolutePath());
         serverConfig.addFeature(SPRING_BOOT_15);
-        serverConfig.writeToServer(outputDir.getRoot().getAbsolutePath());
+        serverConfig.writeToServer();
 
         String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
 
@@ -60,7 +60,7 @@ public class LibertyServerConfigGeneratorTest {
     @Test
     public void testZeroFeaturesInDefaultServerConfig()
             throws ParserConfigurationException, TransformerException, IOException {
-        LibertyServerConfigGenerator g = new LibertyServerConfigGenerator();
+        LibertyServerConfigGenerator g = new LibertyServerConfigGenerator(outputDir.getRoot().getAbsolutePath());
         Element serverRoot = g.doc.getDocumentElement();
         List<Element> featureMgrList = getDirectChildrenByTag(serverRoot, FEATURE_MANAGER);
         assertEquals("Didn't find one and only one featureMgr", 1, featureMgrList.size());
