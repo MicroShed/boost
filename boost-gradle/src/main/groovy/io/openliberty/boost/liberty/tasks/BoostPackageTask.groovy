@@ -162,7 +162,7 @@ public class BoostPackageTask extends AbstractBoostTask {
 
     protected void createServerXml() throws TransformerException, ParserConfigurationException {
         if (isSpringProject()) {
-            LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator()
+            LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator("${project.buildDir}/wlp/usr/servers/" + project.liberty.server.name)
 
             // Find and add appropriate springBoot features
             List<String> featuresNeededForSpringBootApp = SpringBootUtil.getLibertyFeaturesForSpringBoot(springBootVersion,
@@ -172,7 +172,7 @@ public class BoostPackageTask extends AbstractBoostTask {
             serverConfig.addHttpEndpoint(null, "\${server.port}", null)
 
             // Write server.xml to Liberty server config directory
-            serverConfig.writeToServer(("${project.buildDir}/wlp/usr/servers/" + project.liberty.server.name).toString())
+            serverConfig.writeToServer()
         }
     }
 
