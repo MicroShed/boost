@@ -116,11 +116,6 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             } else {
                 // The Spring Boot Uber JAR was already replaced with the Liberty Uber JAR (this
                 // is a re-execution in the non-classifier scenario)
-                //installApp("project"); - need to do this after any config is created - move it below
-                boosterFeatures = getBoosterConfigsFromDependencies(project);
-                generateServerXMLJ2EE(boosterFeatures);
-                installMissingFeatures();
-                installApp("project");
                 createUberJar(null, attach);
             }
 
