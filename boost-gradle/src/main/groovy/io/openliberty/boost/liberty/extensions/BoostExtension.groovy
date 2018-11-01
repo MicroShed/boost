@@ -22,4 +22,10 @@ class BoostExtension {
         ConfigureUtil.configure(closure, docker)
 	}
 
+	BoostPackageExtension packaging
+
+	def packaging(Closure closure){
+        packaging = new BoostPackageExtension()
+        ConfigureUtil.configure(closure, packaging)
+	}
 }

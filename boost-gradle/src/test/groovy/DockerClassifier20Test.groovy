@@ -34,8 +34,8 @@ import com.github.dockerjava.api.model.Container
 import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.core.DockerClientBuilder
 
-//Tests an empty BoostDockerExtension
-public class DockerEmpty15Test extends AbstractBoostTest {
+//Tests creating a Docker image with an extension
+public class DockerClassifier20Test extends AbstractBoostTest {
     private static File dockerFile
     private static DockerClient dockerClient
     private static BuildResult result
@@ -43,8 +43,8 @@ public class DockerEmpty15Test extends AbstractBoostTest {
     private static String containerId
         
     static File resourceDir = new File("build/resources/test/springApp")
-    static File testProjectDir = new File(integTestDir, "DockerEmpty15Test")
-    static String buildFilename = "dockerEmpty15Test.gradle"
+    static File testProjectDir = new File(integTestDir, "DockerClassifier20Test")
+    static String buildFilename = "dockerClassifier20Test.gradle"
 
     @BeforeClass
     public static void setup() {
@@ -82,13 +82,13 @@ public class DockerEmpty15Test extends AbstractBoostTest {
     public void testDockerfileContainsCorrectLibertyImage() throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(dockerFile))
 
-        assertTrue("Expected Open liberty base image open-liberty:springBoot1 was not found in " + dockerFile.getCanonicalPath(), reader.readLine().contains("open-liberty:springBoot1"))
+        assertTrue("Expected Open liberty base image open-liberty:springBoot2 was not found in " + dockerFile.getCanonicalPath(), reader.readLine().contains("open-liberty:springBoot2"))
 
     }
     
     @Test
     public void runDockerContainerAndVerifyAppOnEndpoint() throws Exception {
-        CreateContainerResponse container = dockerClient.createContainerCmd("test-docker15:latest")
+        CreateContainerResponse container = dockerClient.createContainerCmd("test-docker20-test:latest")
                 .withPortBindings(PortBinding.parse("9080:9080")).exec()
         Thread.sleep(3000)
 

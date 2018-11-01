@@ -86,7 +86,7 @@ public class BoostPackageTask extends AbstractBoostTask {
                         dependsOn 'bootRepackage'
 
                         //Skipping if Docker is configured
-                        if (!isDockerConfigured()) {
+                        if (!isDockerConfigured() || isPackageConfigured()) {
                             project.bootRepackage.finalizedBy 'boostPackage'
                         }
                     }
@@ -101,7 +101,13 @@ public class BoostPackageTask extends AbstractBoostTask {
 
             //The task will perform this before any other task actions
             doFirst {
-                // boostPackage.archive = "${project.buildDir}/" + boostPackage.archive
+                
+                if (isPackageConfigured()) {
+                    if (project.boost.packaging.packageName != null && !project.boost.packaging.packageName.isEmpty()) {
+                        boostPackage.archive = "${project.buildDir}/libs/${project.boost.packaging.packageName}"
+                    }
+                }
+
                 project.liberty.server.packageLiberty = boostPackage
 
                 if (isSpringProject()) {
@@ -133,12 +139,12 @@ public class BoostPackageTask extends AbstractBoostTask {
         return springBootVersion != null && !springBootVersion.isEmpty()
     }
 
-    protected List<String> getSpringBootStarters() {
+    protected List<String> getSpringBootDependencies() {
 
         List<String> springBootStarters = new ArrayList<String>()
 
         project.configurations.compile.dependencies.each { Dependency art ->
-            if (art.getName().contains("spring-boot-starter")) {
+            if (art.getGroup().equals("org.springframework")) {
                 springBootStarters.add(art.getName())
             }
         }
@@ -166,7 +172,9 @@ public class BoostPackageTask extends AbstractBoostTask {
 
             // Find and add appropriate springBoot features
             List<String> featuresNeededForSpringBootApp = SpringBootUtil.getLibertyFeaturesForSpringBoot(springBootVersion,
-                    getSpringBootStarters(), new BoostLogger())
+                    getSpringBootDependencies(), new BoostLogger())
+
+            featuresNeededForSpringBootApp.add("servlet-4.0")
             serverConfig.addFeatures(featuresNeededForSpringBootApp)
 
             serverConfig.addHttpEndpoint(null, "\${server.port}", null)
@@ -251,7 +259,12 @@ public class BoostPackageTask extends AbstractBoostTask {
     //returns true if bootJar is using the same archiveName as jar
     private boolean shouldReplaceProjectArchive() {
         if (project.plugins.hasPlugin('java')) {
-            return project.jar.archiveName == project.bootJar.archiveName
+            if (springBootVersion.startsWith('2.')) {
+                return project.jar.archiveName == project.bootJar.archiveName
+            } 
+            // else if (springBootVersion.startsWith('1.')) {
+            //     return project.jar.archiveName == project.jar.archivePath.toString()
+            // }
         }
         return false
     }
