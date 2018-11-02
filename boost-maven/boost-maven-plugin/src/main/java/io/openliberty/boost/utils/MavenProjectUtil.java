@@ -61,8 +61,4 @@ public class MavenProjectUtil {
         return springFrameworkDependencies;
     }
 
-    public static String getArtictIdFromProject(MavenProject proj){
-    	return proj.getArtifactId();
-    }
-
 }

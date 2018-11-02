@@ -253,11 +253,13 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         try {
             LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath);
 
-            // Add any other Liberty features needed depending on the spring boot
-            // starters defined
+            // Add any other Liberty features needed depending on the boost boosters defined
             List<String> boosterFeatureNames = getBoosterFeatureNames(boosterConfigurators);
             serverConfig.addFeatures(boosterFeatureNames);
-            serverConfig.addConfigForApp(project.getArtifactId(), project.getVersion());
+            if (project.getPackaging().equals("war")){
+            	// write out config on behalf of a web app
+            	serverConfig.addConfigForApp(project.getArtifactId(), project.getVersion());
+            }
             serverConfig.addConfigForFeatures(boosterConfigurators);
         
             // Write server.xml to Liberty server config directory
