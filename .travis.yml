@@ -40,3 +40,5 @@ script:
     - travis_wait mvn install -Dinvoker.streamLogs=true
     - cd ../boost-maven
     - travis_wait mvn install -Pit -Dinvoker.streamLogs=true -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION
+    - cd ../boost-gradle
+    - travis_wait ./gradlew install check -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION --stacktrace --info --no-daemon
