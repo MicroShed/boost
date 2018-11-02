@@ -40,6 +40,7 @@ import io.openliberty.boost.BoosterPackConfigurator;
 import io.openliberty.boost.BoosterPacksParent;
 import io.openliberty.boost.utils.BoostLogger;
 import io.openliberty.boost.utils.BoostUtil;
+import io.openliberty.boost.utils.ConfigConstants;
 import io.openliberty.boost.utils.LibertyServerConfigGenerator;
 import io.openliberty.boost.utils.MavenProjectUtil;
 import io.openliberty.boost.utils.SpringBootUtil;
@@ -60,8 +61,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
     BoosterPacksParent boosterParent;
     List<BoosterPackConfigurator> boosterFeatures = null;
-    
-    String libertyServerPath = null; 
+
+    String libertyServerPath = null;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -70,25 +71,29 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
 
         boosterParent = new BoosterPacksParent();
-        
+
         libertyServerPath = projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName;
 
         createServer();
 
         /**
-         * Whether the packaged Liberty Uber JAR will be the project artifact. This
-         * should be the case in Spring Boot scenarios since Spring Boot developers
-         * expect a runnable JAR.
+         * Whether the packaged Liberty Uber JAR will be the project artifact.
+         * This should be the case in Spring Boot scenarios since Spring Boot
+         * developers expect a runnable JAR.
          */
         boolean attach;
 
         /**
-         * Use the classifier to determine whether we need to set the Liberty Uber JAR
-         * as the project artifact, and add Spring-Boot-Version to the manifest
+         * Use the classifier to determine whether we need to set the Liberty
+         * Uber JAR as the project artifact, and add Spring-Boot-Version to the
+         * manifest
          */
         String springBootClassifier = null;
 
-        if (MavenProjectUtil.isNotNullOrEmpty(springBootVersion)) { // Dealing with a spring boot app
+        if (MavenProjectUtil.isNotNullOrEmpty(springBootVersion)) { // Dealing
+                                                                    // with a
+                                                                    // spring
+                                                                    // boot app
             springBootClassifier = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil
                     .getSpringBootMavenPluginClassifier(project, getLog());
 
@@ -102,25 +107,31 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             File springBootUberJar = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil.getSpringBootUberJAR(project,
                     getLog());
             validateSpringBootUberJAR(springBootUberJar);
-            copySpringBootUberJar(springBootUberJar, attach); // Only copy back if we need to overwrite the project
+            copySpringBootUberJar(springBootUberJar, attach); // Only copy back
+                                                              // if we need to
+                                                              // overwrite the
+                                                              // project
                                                               // artifact
 
             generateServerConfigSpringBoot();
-            
+
             installMissingFeatures();
-            installApp("spring-boot-project");
+            installApp(ConfigConstants.SPRING_BOOT_PROJ);
 
             if (springBootUberJar != null) {
-                // Create the Liberty Uber JAR from the Spring Boot Uber JAR in place
+                // Create the Liberty Uber JAR from the Spring Boot Uber JAR in
+                // place
                 createUberJar(springBootUberJar.getAbsolutePath(), attach);
             } else {
-                // The Spring Boot Uber JAR was already replaced with the Liberty Uber JAR (this
+                // The Spring Boot Uber JAR was already replaced with the
+                // Liberty Uber JAR (this
                 // is a re-execution in the non-classifier scenario)
                 createUberJar(null, attach);
             }
 
             if (!MavenProjectUtil.isNotNullOrEmpty(springBootClassifier)) {
-                // If necessary, add the manifest to prevent Spring Boot from repackaging again
+                // If necessary, add the manifest to prevent Spring Boot from
+                // repackaging again
                 addSpringBootVersionToManifest(springBootVersion);
             }
         } else { // Dealing with an EE based app
@@ -128,39 +139,44 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             boosterFeatures = getBoosterConfigsFromDependencies(project);
             generateServerXMLJ2EE(boosterFeatures);
             installMissingFeatures();
-            // we install the app now, after server.xml is configured. This is so that we can 
-            // specify a custom config-root in server.xml ("/"). If we installed the app prior
-            // to server.xml configuration, then the LMP would write out a webapp stanza into 
-            // config dropins that would include a config-root setting set to the app name.
-            installApp("project");
+            // we install the app now, after server.xml is configured. This is
+            // so that we can
+            // specify a custom config-root in server.xml ("/"). If we installed
+            // the app prior
+            // to server.xml configuration, then the LMP would write out a
+            // webapp stanza into
+            // config dropins that would include a config-root setting set to
+            // the app name.
+            installApp(ConfigConstants.EE_APP_PROJ);
 
             createUberJar(null, attach);
         }
     }
-    
+
     /**
      * Generate config for the Liberty server based on the Maven Spring Boot
-     * project. 
+     * project.
      * 
      * @throws MojoExecutionException
      */
     private void generateServerConfigSpringBoot() throws MojoExecutionException {
-        
+
         try {
             // Get Spring Boot starters from Maven project
             List<String> springFrameworkDependencies = MavenProjectUtil.getSpringFrameworkDependencies(project);
-            
+
             // Generate server config
-            SpringBootUtil.generateLibertyServerConfig(projectBuildDir + "/classes", libertyServerPath, springBootVersion, springFrameworkDependencies, BoostLogger.getInstance());
-        
+            SpringBootUtil.generateLibertyServerConfig(projectBuildDir + "/classes", libertyServerPath,
+                    springBootVersion, springFrameworkDependencies, BoostLogger.getInstance());
+
         } catch (Exception e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
         }
     }
 
     /**
-     * Manipulate the manifest so that Spring Boot will not attempt to repackage a
-     * Liberty Uber JAR.
+     * Manipulate the manifest so that Spring Boot will not attempt to repackage
+     * a Liberty Uber JAR.
      * 
      * @param springBootVersion
      * @throws MojoExecutionException
@@ -181,8 +197,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
     /**
      * Check that we either have a Liberty Uber JAR (in which case this is a
-     * re-execution) or a Spring Boot Uber JAR (from which we will create a Liberty
-     * Uber JAR) when we begin the packaging for Spring Boot projects.
+     * re-execution) or a Spring Boot Uber JAR (from which we will create a
+     * Liberty Uber JAR) when we begin the packaging for Spring Boot projects.
      * 
      * @throws MojoExecutionException
      */
@@ -195,21 +211,23 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     }
 
     /**
-     * Copy the Spring Boot uber JAR back as the project artifact, only if Spring
-     * Boot didn't create it already
+     * Copy the Spring Boot uber JAR back as the project artifact, only if
+     * Spring Boot didn't create it already
      * 
      * @throws MojoExecutionException
      */
     private void copySpringBootUberJar(File springBootUberJar, boolean attach) throws MojoExecutionException {
         try {
             File springBootUberJarCopy = null;
-            if (springBootUberJar != null) { // Only copy the Uber JAR if it is valid
+            if (springBootUberJar != null) { // Only copy the Uber JAR if it is
+                                             // valid
                 springBootUberJarCopy = SpringBootUtil.copySpringBootUberJar(springBootUberJar,
                         BoostLogger.getInstance());
             }
 
             if (springBootUberJarCopy == null) { // Copy didn't happen
-                if (attach) { // If we are replacing the project artifact, then copy back the Spring Boot Uber
+                if (attach) { // If we are replacing the project artifact, then
+                              // copy back the Spring Boot Uber
                               // JAR so we can thin and package it again
                     File springJar = new File(
                             SpringBootUtil.getBoostedSpringBootUberJarPath(project.getArtifact().getFile()));
@@ -226,8 +244,6 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         }
     }
 
-    
-
     private List<BoosterPackConfigurator> getBoosterConfigsFromDependencies(MavenProject proj) {
 
         List<String> listOfDependencies = new ArrayList<String>();
@@ -236,7 +252,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         for (Artifact artifact : project.getArtifacts()) {
             getLog().debug("Found dependency while processing project: " + artifact.getGroupId() + ":"
                     + artifact.getArtifactId() + ":" + artifact.getVersion());
-            listOfDependencies.add(artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion());
+            listOfDependencies
+                    .add(artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion());
         }
 
         return boosterParent.mapDependenciesToFeatureList(listOfDependencies);
@@ -248,23 +265,28 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      * @throws TransformerException
      * @throws ParserConfigurationException
      */
-    private void generateServerXMLJ2EE(List<BoosterPackConfigurator> boosterConfigurators) throws MojoExecutionException {
+    private void generateServerXMLJ2EE(List<BoosterPackConfigurator> boosterConfigurators)
+            throws MojoExecutionException {
 
         try {
             LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath);
 
-            // Add any other Liberty features needed depending on the boost boosters defined
+            // Add any other Liberty features needed depending on the boost
+            // boosters defined
             List<String> boosterFeatureNames = getBoosterFeatureNames(boosterConfigurators);
             serverConfig.addFeatures(boosterFeatureNames);
-            if (project.getPackaging().equals("war")){
-            	// write out config on behalf of a web app
-            	serverConfig.addConfigForApp(project.getArtifactId(), project.getVersion());
+            if (project.getPackaging().equals(ConfigConstants.WAR_PKG_TYPE)) {
+                // write out config on behalf of a web app
+                serverConfig.addConfigForApp(project.getArtifactId(), project.getVersion());
+            } else { // only support war packaging type currently
+                throw new MojoExecutionException(
+                        "Unsupported maven packaging type - Liberty Boost currently supports WAR packaging type only.");
             }
             serverConfig.addConfigForFeatures(boosterConfigurators);
-        
+
             // Write server.xml to Liberty server config directory
             serverConfig.writeToServer();
-            
+
         } catch (TransformerException | IOException | ParserConfigurationException e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
         }
@@ -299,20 +321,27 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      */
     private void installApp(String installAppPackagesVal) throws MojoExecutionException {
 
-		if (MavenProjectUtil.isNotNullOrEmpty(springBootVersion)) { 
-			//dealing with a spring boot app - not sure if the EE choices below are applicable
-			executeMojo(getPlugin(), goal("install-apps"),
-					configuration(element(name("installAppPackages"), installAppPackagesVal),
-							element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
-					getExecutionEnvironment());
-		} else { // dealing with an EE based app
-			executeMojo(getPlugin(), goal("install-apps"),
-					configuration(element(name("installAppPackages"), installAppPackagesVal),
-							element(name("appsDirectory"), "apps"), // write apps dir
-							element(name("looseApplication"), "true"), // make app loose for iterative development
-							element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
-					getExecutionEnvironment());
-		}
+        if (MavenProjectUtil.isNotNullOrEmpty(installAppPackagesVal)) {
+            // dealing with a spring boot app - not sure if the EE choices below
+            // are applicable
+            executeMojo(getPlugin(), goal("install-apps"),
+                    configuration(element(name("installAppPackages"), installAppPackagesVal),
+                            element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
+                    getExecutionEnvironment());
+        } else { // dealing with an EE based app
+            executeMojo(getPlugin(), goal("install-apps"),
+                    configuration(element(name("installAppPackages"), installAppPackagesVal),
+                            element(name("appsDirectory"), "apps"), // write
+                                                                    // apps dir
+                            element(name("looseApplication"), "true"), // make
+                                                                       // app
+                                                                       // loose
+                                                                       // for
+                                                                       // iterative
+                                                                       // development
+                            element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
+                    getExecutionEnvironment());
+        }
     }
 
     /**
@@ -328,14 +357,15 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     }
 
     /**
-     * Invoke the liberty-maven-plugin to package the server into a runnable Liberty
-     * JAR
+     * Invoke the liberty-maven-plugin to package the server into a runnable
+     * Liberty JAR
      * 
      * @param packageFilePath
      *            the Spring Boot Uber JAR file path, whose contents will be
      *            replaced by the Liberty Uber JAR
      * @param attach
-     *            whether or not to make the packaged server the project artifact
+     *            whether or not to make the packaged server the project
+     *            artifact
      * @throws MojoExecutionException
      */
     private void createUberJar(String packageFilePath, boolean attach) throws MojoExecutionException {
@@ -348,7 +378,5 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                         element(name("packageFile"), packageFilePath), element(name("serverName"), libertyServerName)),
                 getExecutionEnvironment());
     }
-
-    
 
 }
