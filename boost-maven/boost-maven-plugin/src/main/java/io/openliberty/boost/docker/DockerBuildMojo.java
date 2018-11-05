@@ -68,8 +68,10 @@ import io.openliberty.boost.BoostException;
 import net.wasdev.wlp.maven.plugins.utils.SpringBootUtil;
 
 /**
- * Builds a docker image from a packaged application.
- *
+ * Builds a docker image from a packaged application. This goal will either
+ * generate a Dockerfile or use the existing Dockerfile if it already exists. An
+ * ignore file (.dockerignore) will be created if one does not exist, and if it
+ * does exist the same entries will be appended to the existing .dockerignore.
  */
 @Mojo(name = "docker-build", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class DockerBuildMojo extends AbstractDockerMojo {
@@ -102,7 +104,7 @@ public class DockerBuildMojo extends AbstractDockerMojo {
             dockerize.createDockerFile();
             // Create a .dockerignore file
             dockerize.createDockerIgnore();
-            
+
             buildDockerImage(dockerClient, appArchive);
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
@@ -169,7 +171,7 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
         final String imageName = getImageName();
         BuildParam[] buidParams = getBuildParams(appArchive);
-        log.info(""); //Adding empty log for formatting purpose
+        log.info(""); // Adding empty log for formatting purpose
         log.info("Building image: " + imageName);
         try {
             dockerClient.build(project.getBasedir().toPath(), imageName, progressHandler, buidParams);
