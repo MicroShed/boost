@@ -21,6 +21,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,15 +32,11 @@ import org.apache.commons.httpclient.methods.GetMethod;
 
 public class EndpointIT {
     private static String URL;
-    /*
-     * private static String runtimeGroupId; private static String
-     * runtimeArtifactId; private static String runtimeVersion;
-     */
     private static Process process;
 
     private static String HelloResource;
     private static String osname;
-    // private static boolean isWindows;
+    private static boolean isWindows;
     private static String originalStatement = "        return \"Hello World From Your Friends at Liberty Boost EE! start over - added the ctxRoot support and now added looseApp support - is it back?!?!?\";";
     private static String updatedStatement = "        return \"Hello World From Your Friends at Liberty Boost EE! Updated after compile\";";
 
@@ -46,7 +44,13 @@ public class EndpointIT {
     public static void init() {
         URL = "http://localhost:9080/api/hello";
 
+        if (System.getProperty("os.name").contains("Windows")) {
+            isWindows = true;
+        } else {
+            isWindows = false;
+        }
         setupHelloResources();
+
     }
 
     @Test
@@ -76,6 +80,9 @@ public class EndpointIT {
         GetMethod method = new GetMethod(URL);
 
         try {
+            // make sure original message is in the source
+            updateApplicationSource(originalStatement, updatedStatement, false);
+
             int statusCode = client.executeMethod(method);
 
             assertEquals("HTTP GET failed", HttpStatus.SC_OK, statusCode);
@@ -85,39 +92,112 @@ public class EndpointIT {
             assertTrue("Unexpected response body 1st request = " + response, response.contains(
                     "Hello World From Your Friends at Liberty Boost EE! start over - added the ctxRoot support and now added looseApp support - is it back?!?!?"));
 
-            // Change text from HTTP Get
-            updateApplicationSource(updatedStatement, originalStatement);
+            method.releaseConnection();
 
+            // Change text from HTTP Get
+            updateApplicationSource(updatedStatement, originalStatement, true);
+
+            // Compile source change
             mavenCompile();
 
+            // give server time to catch up with the file changes
             Thread.sleep(1000);
 
             method = new GetMethod(URL);
 
+            // Get a new response
             statusCode = client.executeMethod(method);
 
             assertEquals("HTTP GET failed", HttpStatus.SC_OK, statusCode);
 
             response = method.getResponseBodyAsString(10000);
 
-            // Reset java files.
-            updateApplicationSource(originalStatement, updatedStatement);
-
             assertTrue("Unexpected response body 2nd request = " + response,
                     response.contains("Hello World From Your Friends at Liberty Boost EE! Updated after compile"));
 
         } finally {
+
+            // Set the source back.
+            updateApplicationSource(originalStatement, updatedStatement, false);
+
             method.releaseConnection();
         }
 
     }
 
+    /*
+     * Execute mvn compile Note the command will be different in Windows, Linux/MAC
+     * and Cygwin. Thus all the
+     */
     private void mavenCompile() throws IOException {
-        String command;
-        command = "mvn compile";
-        runCommand(command);
+
+        boolean isCYGWIN = false;
+        String sep = File.separator;
+        // for windows/CYGWIN enbvironments need the path to maven
+        Map<String, String> env = System.getenv();
+        String path = env.get("M2");
+        System.out.println("Path from M2 = " + path);
+        // if M2 is not set try MAVEN_HOME.
+        if (path == null) {
+            path = env.get("MAVEN_HOME");
+            System.out.println("Path from MAVEN_HOME = " + path);
+            if (path != null) {
+                if (path.indexOf(".") >= 0) {
+                    path = path.substring(0, path.indexOf("."));
+                    System.out.println("Path from MAVEN_HOME after strip of periods" + path);
+                }
+            }
+
+        }
+        if (path != null) {
+            String seperator = "\\";
+            path = path.replaceAll(Pattern.quote(seperator), "\\\\");
+            if (isWindows && (path.contains("/"))) {
+                // in CYGWIN
+                System.out.println("In CYGWIN");
+                isCYGWIN = true;
+                path = path.trim() + "/mvn";
+                path = "\'\"" + path + "\"" + " compile\'";
+                System.out.println("CYGWIN Path = " + path);
+            } else {
+                // plain Windows or linux
+                System.out.println("In plain windows");
+                path = path + sep + "mvn";
+            }
+        } else {
+            // default will try just using mvn. This
+            // may not work and will cause the test
+            // to fail if it doesn't... then again it may (works fine on Mac)
+            path = "mvn";
+        }
+        System.out.println("MVN Command path = " + path);
+        String[] commandToRun = null;
+        if (isWindows && !isCYGWIN) {
+            commandToRun = new String[4];
+            commandToRun[0] = "cmd.exe";
+            commandToRun[1] = "/C";
+            commandToRun[2] = path;
+            commandToRun[3] = "compile";
+            runCommand(commandToRun);
+        } else if (isCYGWIN) {
+            // CYGWIN doesn't like the String[] parm for Runtime.getRuntime.exec
+            // So have to make something special....
+            System.out.println("running CYGWIN Command");
+            String command = "c:\\cygwin\\bin\\bash.exe -c " + path;
+            runCommand(command);
+        } else {
+            commandToRun = new String[2];
+            commandToRun[0] = path;
+            commandToRun[1] = "compile";
+            runCommand(commandToRun);
+        }
+
     }
 
+    /*
+     * get file name path setup correctly for environment. This file will be edited
+     * on the fly by the testcase This is to test loosApplication function.
+     */
     private static void setupHelloResources() {
 
         String sep = File.separator;
@@ -126,7 +206,21 @@ public class EndpointIT {
 
     }
 
-    private void updateApplicationSource(String newStatement, String oldStatement) throws Exception {
+    /*
+     * Update source that will be recompiled to test loose application support
+     * 
+     * @param String newStatement - the statement the application should output
+     * 
+     * @param String oldStatement - the statement the application is currently
+     * outputting
+     * 
+     * @param boolean - validate that the old statement was in the file before
+     * editing.
+     * 
+     * @throws Exception throws IOException on file errors, throw Exception if
+     * validate is true and the old statement is not found in the file.
+     */
+    private void updateApplicationSource(String newStatement, String oldStatement, boolean validate) throws Exception {
         BufferedWriter bw;
         FileReader fr;
         FileWriter fw;
@@ -148,7 +242,7 @@ public class EndpointIT {
             }
             br.close();
 
-            if (!updatedApplication)
+            if (!updatedApplication && validate)
                 throw new Exception("Statement not found in application " + oldStatement);
 
             fw = new FileWriter(HelloResource);
@@ -167,12 +261,39 @@ public class EndpointIT {
 
     }
 
+    /*
+     * run a command using a String array
+     */
+    private void runCommand(String[] command) throws IOException {
+
+        StringBuilder commandString = new StringBuilder();
+        for (String commandPart : command) {
+            commandString.append(commandPart);
+            commandString.append(" ");
+        }
+        System.out.println("executing command " + commandString.toString());
+        process = Runtime.getRuntime().exec(command);
+        handleCommandOutput(process);
+
+    }
+
+    /*
+     * run a command using a string
+     */
     private void runCommand(String command) throws IOException {
 
-        System.out.println("Command to run = " + command);
-
+        System.out.println("Executing command: " + command);
         process = Runtime.getRuntime().exec(command);
+        handleCommandOutput(process);
 
+    }
+
+    /*
+     * Handle output from the command issued.
+     */
+    private void handleCommandOutput(Process process) throws IOException {
+
+        BufferedReader ereader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         StringBuilder builder = new StringBuilder();
         String line = null;
@@ -180,7 +301,17 @@ public class EndpointIT {
             builder.append(line);
             builder.append(System.getProperty("line.separator"));
         }
+        System.out.println("command result =" + builder.toString());
+
+        line = null;
+        builder = new StringBuilder();
+        while ((line = ereader.readLine()) != null) {
+            builder.append(line);
+            builder.append(System.getProperty("line.separator"));
+        }
+
         String result = builder.toString();
-        System.out.println("command result =" + result);
+        System.out.println("error result =" + builder.toString());
+
     }
 }
