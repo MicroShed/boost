@@ -21,7 +21,7 @@ public interface ConfigConstants {
 	public String WAR_PKG_TYPE = "war";
 	
 	public String SPRING_BOOT_PROJ = "spring-boot-project";
-	public String EE_APP_PROJ = "project";		
+	public String NORMAL_PROJ = "project";		
 	
 	public String FEATURE_MANAGER = "featureManager";
 	public String HTTP_ENDPOINT = "httpEndpoint";

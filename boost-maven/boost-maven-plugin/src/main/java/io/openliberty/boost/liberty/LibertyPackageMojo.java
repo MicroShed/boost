@@ -33,6 +33,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.apache.maven.plugins.annotations.*;
 
 import io.openliberty.boost.BoostException;
@@ -140,14 +141,11 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             generateServerXMLJ2EE(boosterFeatures);
             installMissingFeatures();
             // we install the app now, after server.xml is configured. This is
-            // so that we can
-            // specify a custom config-root in server.xml ("/"). If we installed
-            // the app prior
-            // to server.xml configuration, then the LMP would write out a
-            // webapp stanza into
-            // config dropins that would include a config-root setting set to
-            // the app name.
-            installApp(ConfigConstants.EE_APP_PROJ);
+            // so that we can specify a custom config-root in server.xml ("/").
+            // If we installed the app prior to server.xml configuration, then
+            // the LMP would write out a webapp stanza into config dropins that
+            // would include a config-root setting set to the app name.
+            installApp(ConfigConstants.NORMAL_PROJ);
 
             createUberJar(null, attach);
         }
@@ -280,7 +278,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                 serverConfig.addConfigForApp(project.getArtifactId(), project.getVersion());
             } else { // only support war packaging type currently
                 throw new MojoExecutionException(
-                        "Unsupported maven packaging type - Liberty Boost currently supports WAR packaging type only.");
+                        "Unsupported Maven packaging type - Liberty Boost currently supports WAR packaging type only.");
             }
             serverConfig.addConfigForFeatures(boosterConfigurators);
 
@@ -321,27 +319,17 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      */
     private void installApp(String installAppPackagesVal) throws MojoExecutionException {
 
-        if (MavenProjectUtil.isNotNullOrEmpty(installAppPackagesVal)) {
-            // dealing with a spring boot app - not sure if the EE choices below
-            // are applicable
-            executeMojo(getPlugin(), goal("install-apps"),
-                    configuration(element(name("installAppPackages"), installAppPackagesVal),
-                            element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
-                    getExecutionEnvironment());
-        } else { // dealing with an EE based app
-            executeMojo(getPlugin(), goal("install-apps"),
-                    configuration(element(name("installAppPackages"), installAppPackagesVal),
-                            element(name("appsDirectory"), "apps"), // write
-                                                                    // apps dir
-                            element(name("looseApplication"), "true"), // make
-                                                                       // app
-                                                                       // loose
-                                                                       // for
-                                                                       // iterative
-                                                                       // development
-                            element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
-                    getExecutionEnvironment());
+        Element installAppPackages = element(name("installAppPackages"), installAppPackagesVal);
+        Element serverName = element(name("serverName"), libertyServerName);
+
+        Xpp3Dom configuration = configuration(installAppPackages, serverName, getRuntimeArtifactElement());
+        if (ConfigConstants.NORMAL_PROJ.equals(installAppPackagesVal)) {
+            configuration.addChild(element(name("appsDirectory"), "apps").toDom());
+            configuration.addChild(element(name("looseApplication"), "true").toDom());
         }
+
+        executeMojo(getPlugin(), goal("install-apps"), configuration, getExecutionEnvironment());
+
     }
 
     /**
