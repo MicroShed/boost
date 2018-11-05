@@ -61,7 +61,7 @@ public class BoostPackageTask extends AbstractBoostTask {
                         dependsOn 'bootJar'
 
                         //Skipping if Docker is configured
-                        if (!isDockerConfigured()) {
+                        if (!isDockerConfigured() || isPackageConfigured()) {
                             project.bootJar.finalizedBy 'boostPackage'
                         }
                     } else if(springBootVersion.startsWith('1.')) { //Assume 1.5?
@@ -102,10 +102,8 @@ public class BoostPackageTask extends AbstractBoostTask {
             //The task will perform this before any other task actions
             doFirst {
                 
-                if (isPackageConfigured()) {
-                    if (project.boost.packaging.packageName != null && !project.boost.packaging.packageName.isEmpty()) {
-                        boostPackage.archive = "${project.buildDir}/libs/${project.boost.packaging.packageName}"
-                    }
+                if (isPackageConfigured() && project.boost.packaging.packageName != null && !project.boost.packaging.packageName.isEmpty()) {
+                    boostPackage.archive = "${project.buildDir}/libs/${project.boost.packaging.packageName}"
                 }
 
                 project.liberty.server.packageLiberty = boostPackage
@@ -174,7 +172,6 @@ public class BoostPackageTask extends AbstractBoostTask {
             List<String> featuresNeededForSpringBootApp = SpringBootUtil.getLibertyFeaturesForSpringBoot(springBootVersion,
                     getSpringBootDependencies(), new BoostLogger())
 
-            featuresNeededForSpringBootApp.add("servlet-4.0")
             serverConfig.addFeatures(featuresNeededForSpringBootApp)
 
             serverConfig.addHttpEndpoint(null, "\${server.port}", null)
@@ -261,10 +258,7 @@ public class BoostPackageTask extends AbstractBoostTask {
         if (project.plugins.hasPlugin('java')) {
             if (springBootVersion.startsWith('2.')) {
                 return project.jar.archiveName == project.bootJar.archiveName
-            } 
-            // else if (springBootVersion.startsWith('1.')) {
-            //     return project.jar.archiveName == project.jar.archivePath.toString()
-            // }
+            }
         }
         return false
     }
