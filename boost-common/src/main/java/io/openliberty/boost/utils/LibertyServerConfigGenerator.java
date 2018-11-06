@@ -215,4 +215,13 @@ public class LibertyServerConfigGenerator {
               bootstrapProperties.put(key, value);
         }
     }
+    
+    public void addConfigForApp(String artifactId, String version){
+    	Element appCfg = doc.createElement(APPLICATION);
+    	appCfg.setAttribute("context-root", "/");
+    	appCfg.setAttribute("location", artifactId+"-"+version+ "." + ConfigConstants.WAR_PKG_TYPE);
+    	appCfg.setAttribute("type", ConfigConstants.WAR_PKG_TYPE);
+    	serverRoot.appendChild(appCfg);
+
+    }
 }

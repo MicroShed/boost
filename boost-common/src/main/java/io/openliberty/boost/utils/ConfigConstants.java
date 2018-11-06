@@ -12,10 +12,22 @@
 package io.openliberty.boost.utils;
 
 public interface ConfigConstants {
-    public String FEATURE = "feature";
-    public String FEATURE_MANAGER = "featureManager";
-    public String HTTP_ENDPOINT = "httpEndpoint";
-    public String DEFAULT_HTTP_ENDPOINT = "defaultHttpEndpoint";
+
+	public String FEATURE = "feature";
+	public String DEPENDENCY = "dependency";
+	public String GROUPID = "groupId";
+	public String ARTIFACTID = "artifactId";
+	public String VERSION = "version";
+	public String WAR_PKG_TYPE = "war";
+	
+	public String SPRING_BOOT_PROJ = "spring-boot-project";
+	public String NORMAL_PROJ = "project";		
+	
+	public String FEATURE_MANAGER = "featureManager";
+	public String HTTP_ENDPOINT = "httpEndpoint";
+	public String DEFAULT_HTTP_ENDPOINT = "defaultHttpEndpoint";
+	
+	public String APPLICATION = "application";
 
     // KeyStore configuration values
     public String KEYSTORE = "keyStore";
