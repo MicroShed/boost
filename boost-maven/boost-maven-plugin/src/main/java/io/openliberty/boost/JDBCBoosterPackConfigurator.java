@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package io.openliberty.boost;
 
 import io.openliberty.boost.BoosterPackConfigurator;
@@ -7,8 +17,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class JDBCBoosterPackConfigurator implements BoosterPackConfigurator {
-
-    private String jdbcDefault = "jdbc-4.1";
     
     String featureGAV = null;
 
@@ -16,8 +24,7 @@ public class JDBCBoosterPackConfigurator implements BoosterPackConfigurator {
      * retrieves the default boost feature string for the jdbc dependency
      */
     public String getFeatureString() {
-        System.out.println("AJM: getting default string for jdbc booster");
-        return jdbcDefault;
+        return featureGAV;
     }
 
     /**
@@ -25,8 +32,6 @@ public class JDBCBoosterPackConfigurator implements BoosterPackConfigurator {
      * boost dependency
      */
     public void writeConfigToServerXML(Document doc) {
-
-        System.out.println("AJM: creating config for jdbc ");
 
         Element serverRoot;
         // find the root server element
