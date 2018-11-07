@@ -55,16 +55,19 @@ import java.util.ArrayList;
 import java.util.Map;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 import com.google.gson.Gson;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.BuildParam;
 import com.spotify.docker.client.exceptions.DockerException;
 
 import io.openliberty.boost.BoostException;
+import io.openliberty.boost.docker.dockerizer.DockerizeLiberty;
 import net.wasdev.wlp.maven.plugins.utils.SpringBootUtil;
 
 /**
@@ -100,9 +103,8 @@ public class DockerBuildMojo extends AbstractDockerMojo {
             File appArchive = getAppArchive();
 
             // Create a Dockerfile for the application
-            Dockerize dockerize = new Dockerize(project, appArchive, log);
+            Dockerizer dockerize = getDockerizer(project, appArchive, log);
             dockerize.createDockerFile();
-            // Create a .dockerignore file
             dockerize.createDockerIgnore();
 
             buildDockerImage(dockerClient, appArchive);
@@ -160,6 +162,10 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         // At this point we did not find the Spring Boot Uber JAR in any of its expected
         // locations.
         throw new BoostException("Could not find Spring Boot Uber JAR.");
+    }
+
+    private Dockerizer getDockerizer(MavenProject project, File appArchive, Log log) {
+        return new DockerizeLiberty(project, appArchive, log);
     }
 
     /**
