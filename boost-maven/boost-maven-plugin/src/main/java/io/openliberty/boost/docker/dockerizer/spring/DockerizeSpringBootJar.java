@@ -22,28 +22,28 @@ import org.apache.maven.project.MavenProject;
 
 public class DockerizeSpringBootJar extends SpringDockerizer {
 
-    public DockerizeSpringBootJar(MavenProject project, File appArchive, Log log) {
-    		super(project, appArchive, log);
-    }
+	public DockerizeSpringBootJar(MavenProject project, File appArchive, Log log) {
+		super(project, appArchive, log);
+	}
 
-    public Map<String, String> getBuildArgs() {
-        Map<String, String> buildArgs = new HashMap<String, String>();
-        buildArgs.put("JAR_FILE", "target/" + appArchive.getName());
-        return buildArgs;
-    }
+	public Map<String, String> getBuildArgs() {
+		Map<String, String> buildArgs = new HashMap<String, String>();
+		buildArgs.put("JAR_FILE", "target/" + appArchive.getName());
+		return buildArgs;
+	}
 
-    public List<String> getDockerfileLines() throws MojoExecutionException {
-        ArrayList<String> lines = new ArrayList<>();
-        lines.add(BOOST_GEN);
-        lines.add("FROM adoptopenjdk/openjdk8-openj9");
-        lines.add("VOLUME /tmp");
-        lines.add("ARG JAR_FILE");
-        lines.add("COPY ${JAR_FILE} app.jar");
-        lines.add("ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/app.jar\"]");
-        return lines;
-    }
-    
-    @Override
+	public List<String> getDockerfileLines() throws MojoExecutionException {
+		ArrayList<String> lines = new ArrayList<>();
+		lines.add(BOOST_GEN);
+		lines.add("FROM adoptopenjdk/openjdk8-openj9");
+		lines.add("VOLUME /tmp");
+		lines.add("ARG JAR_FILE");
+		lines.add("COPY ${JAR_FILE} app.jar");
+		lines.add("ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/app.jar\"]");
+		return lines;
+	}
+
+	@Override
 	public List<String> getDockerIgnoreList() {
 		List<String> lines = new ArrayList<String>();
 		lines.add("*.log");

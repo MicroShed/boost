@@ -22,17 +22,16 @@ import org.apache.maven.project.MavenProject;
 
 public class DockerizeSpringBootClasspath extends SpringDockerizer {
 
-    public Map<String, String> getBuildArgs() {
-        // Nothing at this time
-        return new HashMap<String, String>();
-    }
+	public Map<String, String> getBuildArgs() {
+		// Nothing at this time
+		return new HashMap<String, String>();
+	}
 
-    public DockerizeSpringBootClasspath(MavenProject project, File appArchive, Log log) {
-    		super(project, appArchive, log);
-    }
+	public DockerizeSpringBootClasspath(MavenProject project, File appArchive, Log log) {
+		super(project, appArchive, log);
+	}
 
-
-    @Override
+	@Override
 	public List<String> getDockerIgnoreList() {
 		List<String> lines = new ArrayList<String>();
 		lines.add("*.log");
@@ -43,15 +42,15 @@ public class DockerizeSpringBootClasspath extends SpringDockerizer {
 	@Override
 	public List<String> getDockerfileLines() throws MojoExecutionException {
 		ArrayList<String> lines = new ArrayList<>();
-        lines.add(BOOST_GEN);
-        lines.add("FROM adoptopenjdk/openjdk8-openj9");
-        lines.add("VOLUME /tmp");
-        lines.add("ARG DEPENDENCY=target/dependency");
-        lines.add("COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib");
-        lines.add("COPY ${DEPENDENCY}/META-INF /app/META-INF");
-        lines.add("COPY ${DEPENDENCY}/BOOT-INF/classes /app");
-        lines.add("ENTRYPOINT [\"java\",\"-cp\",\"app:app/lib/*\",\"" + getSpringStartClass() + "\"]");
-        return lines;
+		lines.add(BOOST_GEN);
+		lines.add("FROM adoptopenjdk/openjdk8-openj9");
+		lines.add("VOLUME /tmp");
+		lines.add("ARG DEPENDENCY=target/dependency");
+		lines.add("COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib");
+		lines.add("COPY ${DEPENDENCY}/META-INF /app/META-INF");
+		lines.add("COPY ${DEPENDENCY}/BOOT-INF/classes /app");
+		lines.add("ENTRYPOINT [\"java\",\"-cp\",\"app:app/lib/*\",\"" + getSpringStartClass() + "\"]");
+		return lines;
 	}
-    
+
 }

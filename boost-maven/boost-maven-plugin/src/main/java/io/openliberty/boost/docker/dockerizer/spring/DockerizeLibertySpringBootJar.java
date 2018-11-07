@@ -48,8 +48,8 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
             libertyImage = LIBERTY_IMAGE_1;
         } else if (springBootVersion.startsWith("2.")) {
             libertyImage = LIBERTY_IMAGE_2;
-        } else {
-            throw new MojoExecutionException(
+		} else {
+			throw new MojoExecutionException(
                     "No supporting docker image found for Open Liberty for the Spring Boot version "
                             + springBootVersion);
         }
