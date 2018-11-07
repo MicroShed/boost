@@ -121,35 +121,28 @@ public class DockerizeLiberty implements Dockerizer {
     private void writeSpringBootDockerFile(File dockerFile, String libertyImage) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
         lines.add(BOOST_GEN);
-        lines.add(LINE_SEPARATOR);
         lines.add(FROM + libertyImage + " as " + "staging");
 
-        lines.add(LINE_SEPARATOR);
+        lines.add("");
         lines.add("# The APP_FILE ARG provides the final name of the Spring Boot application archive");
         lines.add("ARG" + " " + "APP_FILE");
 
-        lines.add(LINE_SEPARATOR);
+        lines.add("");
         lines.add("# Stage the fat JAR");
         lines.add(COPY + outputDirectory.getName() + "/" + "${APP_FILE}" + " " + "/staging/" + "${APP_FILE}");
 
-        lines.add(LINE_SEPARATOR);
+        lines.add("");
         lines.add("# Thin the fat application; stage the thin app output and the library cache");
         lines.add(RUN + "springBootUtility thin " + ARG_SOURCE_APP + "=" + "/staging/" + "${APP_FILE}" + " "
                 + ARG_DEST_THIN_APP + "=" + "/staging/" + "thin-${APP_FILE}" + " " + ARG_DEST_LIB_CACHE + "="
                 + "/staging/" + LIB_INDEX_CACHE);
 
-        lines.add(LINE_SEPARATOR);
+        lines.add("");
         lines.add("# Final stage, only copying the liberty installation (includes primed caches)");
         lines.add("# and the lib.index.cache and thin application");
         lines.add(FROM + libertyImage);
-
-        lines.add(LINE_SEPARATOR);
         lines.add("ARG" + " " + "APP_FILE");
-
-        lines.add(LINE_SEPARATOR);
         lines.add(COPY + "--from=staging " + "/staging/" + LIB_INDEX_CACHE + " " + "/" + LIB_INDEX_CACHE);
-
-        lines.add(LINE_SEPARATOR);
         lines.add(COPY + "--from=staging " + "/staging/thin-${APP_FILE}" + " "
                 + "/config/dropins/spring/thin-${APP_FILE}");
         Files.write(dockerFile.toPath(), lines, Charset.forName("UTF-8"));
