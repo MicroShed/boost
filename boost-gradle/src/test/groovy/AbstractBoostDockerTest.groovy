@@ -79,7 +79,7 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     
     @Test
     public void runDockerContainerAndVerifyAppOnEndpoint() throws Exception {
-        CreateContainerResponse container = dockerClient.createContainerCmd("localhost:5000/${imageName}:latest")
+        CreateContainerResponse container = dockerClient.createContainerCmd("${imageName}:latest")
                 .withPortBindings(PortBinding.parse("9080:9080")).exec()
         Thread.sleep(3000)
 

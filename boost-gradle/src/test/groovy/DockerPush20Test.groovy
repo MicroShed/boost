@@ -40,7 +40,7 @@ public class DockerPush20Test extends AbstractBoostDockerTest {
         testProjectDir = new File(integTestDir, "DockerPush20Test")
         buildFilename = "docker20Test.gradle"
         libertyImage = OL_SPRING_20_IMAGE
-        imageName = "test-image20"
+        imageName = "localhost:5000/test-image20"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
@@ -70,7 +70,7 @@ public class DockerPush20Test extends AbstractBoostDockerTest {
 
         // Pull the image from the local repository which got pushed by the plugin. This
         // is possible if the plugin successfully pushed to the registry.
-        dockerClient.pullImageCmd("localhost:5000/${imageName}").withTag("latest").exec(new PullImageResultCallback())
+        dockerClient.pullImageCmd("${imageName}").withTag("latest").exec(new PullImageResultCallback())
                 .awaitCompletion(10, TimeUnit.SECONDS)
 
         Image pulledImage = getImage(fullImageName)
