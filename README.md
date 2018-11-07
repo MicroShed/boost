@@ -12,6 +12,12 @@ There are three separate Boost projects. Click the links for more information.
 
 If you are interested in contributing to Liberty Boost, read the [wiki](https://github.com/OpenLiberty/boost-maven/wiki) for more information.
 
+### Build Dependencies
+
+The Boost plugin builds on the Liberty plugin.
+
+For Maven, you will need to clone and `mvn install` the following repositories: [ci.common](https://github.com/WASdev/ci.common) and [ci.maven](https://github.com/WASdev/ci.maven).
+
 ### Building Liberty Boost
 
 You will need to build the `boost-common` project before building either the Boost Maven Plugin or Boost Gradle Plugin. We provide some scripts below to simplify this process. 
