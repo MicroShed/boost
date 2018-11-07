@@ -53,7 +53,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Properties;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -68,9 +67,10 @@ import com.spotify.docker.client.DockerClient.BuildParam;
 import com.spotify.docker.client.exceptions.DockerException;
 
 import io.openliberty.boost.BoostException;
-import io.openliberty.boost.docker.dockerizer.DockerizeLiberty;
-import io.openliberty.boost.docker.dockerizer.DockerizeSpringBootJar;
-import io.openliberty.boost.docker.dockerizer.DockerizeSpringBootClasspath;
+import io.openliberty.boost.docker.dockerizer.Dockerizer;
+import io.openliberty.boost.docker.dockerizer.spring.DockerizeLibertySpringBootJar;
+import io.openliberty.boost.docker.dockerizer.spring.DockerizeSpringBootClasspath;
+import io.openliberty.boost.docker.dockerizer.spring.DockerizeSpringBootJar;
 import net.wasdev.wlp.maven.plugins.utils.SpringBootUtil;
 
 /**
@@ -100,6 +100,9 @@ public class DockerBuildMojo extends AbstractDockerMojo {
     @Parameter(property = "buildArgs")
     private Map<String, String> buildArgs;
 
+    @Parameter(property="boostDockerizer")
+    private String boostDockerizer;
+    
     @Override
     protected void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException {
         try {
@@ -171,15 +174,14 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         // Needed future enhancements:
         // 1. Is it Spring or something else? sense with MavenProjectUtil.findSpringBootVersion(project);
         // 2. Use OpenJ9 or HotSpot? sense with boost.docker.jvm
-        Properties props = project.getProperties();
-        String dockerizer = props.getProperty("boost.dockerizer");
-        if ("jar".equalsIgnoreCase(dockerizer)) {
+        if ("springboot-jar".equalsIgnoreCase(boostDockerizer)) {
             return new DockerizeSpringBootJar(project, appArchive, log);
         }
-        if ("classpath".equalsIgnoreCase(dockerizer)) {
+        if ("springboot-classpath".equalsIgnoreCase(boostDockerizer)) {
             return new DockerizeSpringBootClasspath(project, appArchive, log);
         }
-        return new DockerizeLiberty(project, appArchive, log);
+        // TODO: Maybe don't make the Spring Boot dockerizer default after EE stuff is added
+        return new DockerizeLibertySpringBootJar(project, appArchive, log);
     }
 
     /**
@@ -242,6 +244,4 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         return retVal;
     }
 
-    private void throwFileDoesntExistException(File unboostedSpringBootUberJarLocation) throws BoostException {
-    }
 }

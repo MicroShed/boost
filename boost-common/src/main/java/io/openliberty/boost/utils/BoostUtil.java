@@ -12,11 +12,20 @@
 package io.openliberty.boost.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import io.openliberty.boost.BoostLoggerI;
 
 public class BoostUtil {
+	
+    public static boolean isNotNullOrEmpty(String s) {
+        return s != null && !s.isEmpty();
+    }
 
     public static boolean isLibertyJar(File artifact, BoostLoggerI logger) {
         boolean isLibertyJar = false;
@@ -28,6 +37,39 @@ public class BoostUtil {
         }
 
         return isLibertyJar;
+    }
+    
+    public static void extract(File artifact, File projectDirectory) {
+        File extractDir = new File(projectDirectory.getPath() + "/target/dependency/");
+        if (!extractDir.exists())
+            extractDir.mkdirs();
+
+        try {
+            byte[] buffer = new byte[1024];
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(artifact));
+            ZipEntry ze = zis.getNextEntry();
+            while (ze != null) {
+                File newFile = new File(extractDir, ze.getName());
+                if (ze.isDirectory()) {
+                    newFile.mkdirs();
+                } else {
+                    new File(newFile.getParent()).mkdirs();
+                    FileOutputStream fos = new FileOutputStream(newFile);
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.close();
+                }
+                ze = zis.getNextEntry();
+            }
+            // close last ZipEntry
+            zis.closeEntry();
+            zis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
