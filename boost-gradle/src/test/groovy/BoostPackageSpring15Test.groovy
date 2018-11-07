@@ -51,7 +51,7 @@ public class PackageSpring15Test extends AbstractBoostTest {
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStop").getOutcome())
 
-        assertTrue(new File(testProjectDir, "build/libs/PackageSpring15Test.jar").exists())
+        assertTrue(new File(testProjectDir, "build/libs/test-spring15.jar").exists())
     }
 
     @Test //Testing that springBoot-1.5 feature was added to the packaged server.xml
