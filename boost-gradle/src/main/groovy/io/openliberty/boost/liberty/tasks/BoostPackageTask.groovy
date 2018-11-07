@@ -26,11 +26,11 @@ import org.gradle.api.logging.LogLevel
 import org.gradle.api.artifacts.Dependency
 import org.gradle.tooling.BuildException
 
+import io.openliberty.boost.utils.BoostLogger
 import io.openliberty.boost.utils.GradleProjectUtil
 import io.openliberty.boost.utils.BoostUtil
 import io.openliberty.boost.utils.LibertyServerConfigGenerator
 import io.openliberty.boost.utils.SpringBootUtil
-import io.openliberty.boost.BoostLoggerI
 
 import net.wasdev.wlp.gradle.plugins.extensions.PackageAndDumpExtension
 
@@ -170,7 +170,7 @@ public class BoostPackageTask extends AbstractBoostTask {
 
             // Find and add appropriate springBoot features
             List<String> featuresNeededForSpringBootApp = SpringBootUtil.getLibertyFeaturesForSpringBoot(springBootVersion,
-                    getSpringBootDependencies(), new BoostLogger())
+                    getSpringBootDependencies(), BoostLogger.getInstance())
 
             serverConfig.addFeatures(featuresNeededForSpringBootApp)
 
@@ -219,7 +219,7 @@ public class BoostPackageTask extends AbstractBoostTask {
             File springBootUberJarCopy = null
             if (springBootUberJar != null) { // Only copy the Uber JAR if it is valid
                 springBootUberJarCopy = SpringBootUtil.copySpringBootUberJar(springBootUberJar,
-                        new BoostLogger())
+                        BoostLogger.getInstance())
             }
 
             if (springBootUberJarCopy == null) {
@@ -245,7 +245,7 @@ public class BoostPackageTask extends AbstractBoostTask {
 
     protected void validateSpringBootUberJAR(File springBootUberJar) throws GradleException {
         if (!project.configurations.archives.allArtifacts.isEmpty()) {
-            if (!BoostUtil.isLibertyJar(project.configurations.archives.allArtifacts[0].getFile(), new BoostLogger())
+            if (!BoostUtil.isLibertyJar(project.configurations.archives.allArtifacts[0].getFile(), BoostLogger.getInstance())
                 && springBootUberJar == null) {
             throw new GradleException (
                     "A valid Spring Boot Uber JAR was not found. Run the 'bootJar' task and try again.")
@@ -261,43 +261,5 @@ public class BoostPackageTask extends AbstractBoostTask {
             }
         }
         return false
-    }
-
-    private class BoostLogger implements BoostLoggerI {
-
-        @Override
-        public void debug(String msg) {
-            logger.debug(msg)
-        }
-
-        @Override
-        public void debug(String msg, Throwable e) {
-            logger.debug(msg, e)
-        }
-
-        @Override
-        public void debug(Throwable e) {
-            logger.debug(e)
-        }
-
-        @Override
-        public void warn(String msg) {
-            logger.warn(msg)
-        }
-
-        @Override
-        public void info(String msg) {
-            logger.info(msg)
-        }
-
-        @Override
-        public void error(String msg) {
-            logger.error(msg)
-        }
-
-        @Override
-        public boolean isDebugEnabled() {
-            return logger.isEnabled(LogLevel.DEBUG)
-        }
     }
 }
