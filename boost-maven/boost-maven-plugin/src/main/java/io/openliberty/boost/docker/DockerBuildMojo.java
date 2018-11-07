@@ -53,6 +53,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Properties;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -68,6 +69,8 @@ import com.spotify.docker.client.exceptions.DockerException;
 
 import io.openliberty.boost.BoostException;
 import io.openliberty.boost.docker.dockerizer.DockerizeLiberty;
+import io.openliberty.boost.docker.dockerizer.DockerizeSpringBootJar;
+import io.openliberty.boost.docker.dockerizer.DockerizeSpringBootClasspath;
 import net.wasdev.wlp.maven.plugins.utils.SpringBootUtil;
 
 /**
@@ -103,11 +106,11 @@ public class DockerBuildMojo extends AbstractDockerMojo {
             File appArchive = getAppArchive();
 
             // Create a Dockerfile for the application
-            Dockerizer dockerize = getDockerizer(project, appArchive, log);
-            dockerize.createDockerFile();
-            dockerize.createDockerIgnore();
+            Dockerizer dockerizer = getDockerizer(project, appArchive, log);
+            dockerizer.createDockerFile();
+            dockerizer.createDockerIgnore();
 
-            buildDockerImage(dockerClient, appArchive);
+            buildDockerImage(dockerClient, dockerizer);
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
@@ -165,6 +168,17 @@ public class DockerBuildMojo extends AbstractDockerMojo {
     }
 
     private Dockerizer getDockerizer(MavenProject project, File appArchive, Log log) {
+        // Needed future enhancements:
+        // 1. Is it Spring or something else? sense with MavenProjectUtil.findSpringBootVersion(project);
+        // 2. Use OpenJ9 or HotSpot? sense with boost.docker.jvm
+        Properties props = project.getProperties();
+        String dockerizer = props.getProperty("boost.dockerizer");
+        if ("jar".equalsIgnoreCase(dockerizer)) {
+            return new DockerizeSpringBootJar(project, appArchive, log);
+        }
+        if ("classpath".equalsIgnoreCase(dockerizer)) {
+            return new DockerizeSpringBootClasspath(project, appArchive, log);
+        }
         return new DockerizeLiberty(project, appArchive, log);
     }
 
@@ -172,11 +186,11 @@ public class DockerBuildMojo extends AbstractDockerMojo {
      * Use the DockerClient to build the image
      * 
      */
-    private void buildDockerImage(DockerClient dockerClient, File appArchive)
+    private void buildDockerImage(DockerClient dockerClient, Dockerizer dockerizer)
             throws MojoExecutionException, IOException {
         final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
         final String imageName = getImageName();
-        BuildParam[] buidParams = getBuildParams(appArchive);
+        BuildParam[] buidParams = getBuildParams(dockerizer);
         log.info(""); // Adding empty log for formatting purpose
         log.info("Building image: " + imageName);
         try {
@@ -186,7 +200,7 @@ public class DockerBuildMojo extends AbstractDockerMojo {
         }
     }
 
-    private BuildParam[] getBuildParams(File appArchive) throws MojoExecutionException {
+    private BuildParam[] getBuildParams(Dockerizer dockerizer) throws MojoExecutionException {
         final ArrayList<BuildParam> buildParamsList = new ArrayList<>();
         final BuildParam[] buildParams;
         if (pullNewerImage) {
@@ -196,7 +210,7 @@ public class DockerBuildMojo extends AbstractDockerMojo {
             buildParamsList.add(BuildParam.noCache());
         }
 
-        buildArgs.put("APP_FILE", appArchive.getName());
+        buildArgs.putAll(dockerizer.getBuildArgs());
 
         try {
             final String encodedBuildArgs = URLEncoder.encode(new Gson().toJson(buildArgs), "utf-8");

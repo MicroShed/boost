@@ -19,6 +19,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -28,6 +29,13 @@ import io.openliberty.boost.utils.MavenProjectUtil;
 import net.wasdev.wlp.common.plugins.util.SpringBootUtil;
 
 public interface Dockerizer {
+
+	/**
+	 * Construct the build arguments needed by the Dockerfile
+	 *
+	 * @throws Exception
+	 */
+	Map<String, String> getBuildArgs();
 
 	/**
 	 * Creates a new Dockerfile in the project directory if the Dockerfile doesn't
