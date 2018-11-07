@@ -44,6 +44,7 @@ public class DockerPush15Test extends AbstractBoostDockerTest {
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
+        dockerFile = new File(testProjectDir, "Dockerfile")
         dockerClient = DockerClientBuilder.getInstance().build()
 
         result = GradleRunner.create()
