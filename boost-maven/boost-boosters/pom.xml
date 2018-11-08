@@ -9,13 +9,11 @@
 		<version>0.1.2-SNAPSHOT</version>
 	</parent>
 
-	<groupId>io.openliberty.boosters</groupId>
-	<artifactId>boosters</artifactId>
+	<artifactId>boost-boosters</artifactId>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-invoker-plugin</artifactId>
 				<version>3.1.0</version>
 				<executions>
