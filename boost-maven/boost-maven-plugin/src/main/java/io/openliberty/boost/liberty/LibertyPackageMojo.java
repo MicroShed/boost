@@ -26,15 +26,15 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.apache.maven.plugins.annotations.*;
 
-import io.openliberty.boost.BoostException;
-import io.openliberty.boost.BoosterPackConfigurator;
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.BoosterPackConfigurator;
 import io.openliberty.boost.BoosterPacksParent;
 import io.openliberty.boost.utils.BoostLogger;
-import io.openliberty.boost.utils.BoostUtil;
-import io.openliberty.boost.utils.ConfigConstants;
-import io.openliberty.boost.utils.LibertyServerConfigGenerator;
+import io.openliberty.boost.common.utils.BoostUtil;
+import io.openliberty.boost.common.utils.ConfigConstants;
+import io.openliberty.boost.common.utils.LibertyServerConfigGenerator;
 import io.openliberty.boost.utils.MavenProjectUtil;
-import io.openliberty.boost.utils.SpringBootUtil;
+import io.openliberty.boost.common.utils.SpringBootUtil;
 import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;

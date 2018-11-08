@@ -11,7 +11,7 @@
 package io.openliberty.boost;
 
 import org.w3c.dom.Document;
-import io.openliberty.boost.BoosterPackConfigurator;
+import io.openliberty.boost.common.BoosterPackConfigurator;
 
 public class JAXRSBoosterPackConfigurator implements BoosterPackConfigurator {
 

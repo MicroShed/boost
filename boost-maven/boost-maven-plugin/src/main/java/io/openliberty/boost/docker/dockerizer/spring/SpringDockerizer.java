@@ -14,7 +14,7 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
 import io.openliberty.boost.docker.dockerizer.Dockerizer;
-import io.openliberty.boost.utils.BoostUtil;
+import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.utils.MavenProjectUtil;
 import net.wasdev.wlp.common.plugins.util.SpringBootUtil;
 

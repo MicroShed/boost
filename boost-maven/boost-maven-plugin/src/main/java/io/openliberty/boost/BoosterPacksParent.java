@@ -13,7 +13,7 @@ package io.openliberty.boost;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.openliberty.boost.BoosterPackConfigurator;
+import io.openliberty.boost.common.BoosterPackConfigurator;
 
 public class BoosterPacksParent {
 
@@ -23,7 +23,6 @@ public class BoosterPacksParent {
 
     List<String> featureList;
 
-    JDBCBoosterPackConfigurator jdbcConfig = null;
     private String JDBC_BOOSTER_PACK_STRING = "liberty-booster-data-jdbc";
     public static String JAXRS_BOOSTER_PACK_STRING_10 = "io.openliberty.boosters:jaxrs:0.1-SNAPSHOT";
     public static String JAXRS_BOOSTER_PACK_STRING_20 = "io.openliberty.boosters:jaxrs:0.2-SNAPSHOT";
@@ -38,11 +37,11 @@ public class BoosterPacksParent {
      * @return
      */
     public List<BoosterPackConfigurator> mapDependenciesToFeatureList(List<String> dependencies) {
-
         featureList = new ArrayList<String>();
         for (String dep : dependencies) {
             if (dep.equals(JDBC_BOOSTER_PACK_STRING)) {
-                boosterPackConfigList.add(new JDBCBoosterPackConfigurator());
+                JDBCBoosterPackConfigurator jdbcConfig = new JDBCBoosterPackConfigurator();
+                boosterPackConfigList.add(jdbcConfig);
             } else if (dep.startsWith("io.openliberty.boosters:jaxrs:")) {		
                 JAXRSBoosterPackConfigurator jaxrsConfig = new JAXRSBoosterPackConfigurator();
                 jaxrsConfig.setFeatureString(dep);
