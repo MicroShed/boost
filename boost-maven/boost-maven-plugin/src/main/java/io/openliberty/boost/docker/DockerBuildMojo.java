@@ -100,8 +100,8 @@ public class DockerBuildMojo extends AbstractDockerMojo {
 	@Parameter(property = "buildArgs")
 	private Map<String, String> buildArgs;
 
-	@Parameter(property = "boost.dockerizer", defaultValue = "liberty")
-	private String boostDockerizer;
+	@Parameter(property = "dockerizer", defaultValue = "liberty")
+	private String dockerizer;
 
 	@Override
 	protected void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException {
@@ -174,10 +174,10 @@ public class DockerBuildMojo extends AbstractDockerMojo {
 		// TODO: Needed future enhancements:
 		// 1. Is it Spring or something else? sense with MavenProjectUtil.findSpringBootVersion(project);
 		// 2. Use OpenJ9 or HotSpot? sense with property boost.docker.jvm
-		if ("jar".equalsIgnoreCase(boostDockerizer)) {
+		if ("jar".equalsIgnoreCase(dockerizer)) {
 			return new DockerizeSpringBootJar(project, appArchive, log);
 		}
-		if ("classpath".equalsIgnoreCase(boostDockerizer)) {
+		if ("classpath".equalsIgnoreCase(dockerizer)) {
 			return new DockerizeSpringBootClasspath(project, appArchive, log);
 		}
 		// TODO: Maybe don't make the Spring Boot dockerizer default after EE stuff is added
