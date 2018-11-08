@@ -100,6 +100,9 @@ public class DockerBuildMojo extends AbstractDockerMojo {
 	@Parameter(property = "buildArgs")
 	private Map<String, String> buildArgs;
 
+	/**
+	 * Sets the type of docker build to run.
+	 */
 	@Parameter(property = "dockerizer", defaultValue = "liberty")
 	private String dockerizer;
 
