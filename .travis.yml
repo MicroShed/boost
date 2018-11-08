@@ -38,7 +38,7 @@ install: true
 script:
     - cd boost-boosters
     - travis_wait mvn install -Dinvoker.streamLogs=true
-    - cd boost-common
+    - cd ../boost-common
     - travis_wait mvn install -Dinvoker.streamLogs=true
     - cd ../boost-maven
     - travis_wait mvn install -Pit -Dinvoker.streamLogs=true -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION
