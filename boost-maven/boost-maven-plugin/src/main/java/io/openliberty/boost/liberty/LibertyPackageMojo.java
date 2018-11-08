@@ -11,19 +11,9 @@
 package io.openliberty.boost.liberty;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -91,7 +81,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
          */
         String springBootClassifier = null;
 
-        if (MavenProjectUtil.isNotNullOrEmpty(springBootVersion)) { // Dealing
+        if (BoostUtil.isNotNullOrEmpty(springBootVersion)) { // Dealing
                                                                     // with a
                                                                     // spring
                                                                     // boot app
@@ -99,7 +89,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                     .getSpringBootMavenPluginClassifier(project, getLog());
 
             // Check if we need to attach based on the classifier configuration
-            if (MavenProjectUtil.isNotNullOrEmpty(springBootClassifier)) {
+            if (BoostUtil.isNotNullOrEmpty(springBootClassifier)) {
                 attach = false;
             } else {
                 attach = true;
@@ -130,7 +120,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                 createUberJar(null, attach);
             }
 
-            if (!MavenProjectUtil.isNotNullOrEmpty(springBootClassifier)) {
+            if (!BoostUtil.isNotNullOrEmpty(springBootClassifier)) {
                 // If necessary, add the manifest to prevent Spring Boot from
                 // repackaging again
                 addSpringBootVersionToManifest(springBootVersion);

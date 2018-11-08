@@ -35,10 +35,6 @@ public class MavenProjectUtil {
 
         return version;
     }
-
-    public static boolean isNotNullOrEmpty(String s) {
-        return s != null && !s.isEmpty();
-    }
     
     /**
      * Get all dependencies with "org.springframework" as the groupId. These
