@@ -100,7 +100,7 @@ public class DockerBuildMojo extends AbstractDockerMojo {
 	@Parameter(property = "buildArgs")
 	private Map<String, String> buildArgs;
 
-	@Parameter(property = "boostDockerizer")
+	@Parameter(property = "boost.dockerizer", defaultValue = "liberty")
 	private String boostDockerizer;
 
 	@Override
@@ -171,18 +171,18 @@ public class DockerBuildMojo extends AbstractDockerMojo {
 	}
 
 	private Dockerizer getDockerizer(MavenProject project, File appArchive, Log log) {
-		// Needed future enhancements:
-		// 1. Is it Spring or something else? sense with
-		// MavenProjectUtil.findSpringBootVersion(project);
-		// 2. Use OpenJ9 or HotSpot? sense with boost.docker.jvm
-		if ("springboot-jar".equalsIgnoreCase(boostDockerizer)) {
+		// TODO: Needed future enhancements:
+		// 1. Is it Spring or something else? sense with MavenProjectUtil.findSpringBootVersion(project);
+		// 2. Use OpenJ9 or HotSpot? sense with property boost.docker.jvm
+		if ("jar".equalsIgnoreCase(boostDockerizer)) {
 			return new DockerizeSpringBootJar(project, appArchive, log);
 		}
-		if ("springboot-classpath".equalsIgnoreCase(boostDockerizer)) {
+		if ("classpath".equalsIgnoreCase(boostDockerizer)) {
 			return new DockerizeSpringBootClasspath(project, appArchive, log);
 		}
-		// TODO: Maybe don't make the Spring Boot dockerizer default after EE stuff is
-		// added
+		// TODO: Maybe don't make the Spring Boot dockerizer default after EE stuff is added
+		// The current property values of 'jar', 'classpath' and 'liberty' are intentionally
+		// generic so that they can be applied irrespective of the project type (Spring vs EE)
 		return new DockerizeLibertySpringBootJar(project, appArchive, log);
 	}
 

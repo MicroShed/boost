@@ -22,21 +22,13 @@ import org.apache.maven.project.MavenProject;
 
 public class DockerizeSpringBootClasspath extends SpringDockerizer {
 
-	public Map<String, String> getBuildArgs() {
-		// Nothing at this time
-		return new HashMap<String, String>();
-	}
-
 	public DockerizeSpringBootClasspath(MavenProject project, File appArchive, Log log) {
 		super(project, appArchive, log);
 	}
 
-	@Override
-	public List<String> getDockerIgnoreList() {
-		List<String> lines = new ArrayList<String>();
-		lines.add("*.log");
-		lines.add("target/liberty");
-		return lines;
+	public Map<String, String> getBuildArgs() {
+		// Nothing at this time
+		return new HashMap<String, String>();
 	}
 
 	@Override
@@ -50,6 +42,14 @@ public class DockerizeSpringBootClasspath extends SpringDockerizer {
 		lines.add("COPY ${DEPENDENCY}/META-INF /app/META-INF");
 		lines.add("COPY ${DEPENDENCY}/BOOT-INF/classes /app");
 		lines.add("ENTRYPOINT [\"java\",\"-cp\",\"app:app/lib/*\",\"" + getSpringStartClass() + "\"]");
+		return lines;
+	}
+
+	@Override
+	public List<String> getDockerIgnoreList() {
+		List<String> lines = new ArrayList<String>();
+		lines.add("*.log");
+		lines.add("target/liberty");
 		return lines;
 	}
 

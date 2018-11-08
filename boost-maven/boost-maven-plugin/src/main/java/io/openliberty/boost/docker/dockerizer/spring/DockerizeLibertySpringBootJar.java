@@ -57,7 +57,7 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
     }
 
     public List<String> getDockerfileLines() throws MojoExecutionException {
-    		String libertyImage = getLibertySpringBootBaseImage();
+        String libertyImage = getLibertySpringBootBaseImage();
         ArrayList<String> lines = new ArrayList<>();
         lines.add(BOOST_GEN);
         lines.add(FROM + libertyImage + " as " + "staging");
