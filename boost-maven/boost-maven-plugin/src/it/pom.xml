@@ -20,7 +20,7 @@
         <module>test-spring-boot-1.5-implicit</module>
         <module>test-spring-boot-2.0-implicit</module>
         <module>test-spring-boot-websocket</module>
-        <module>test-docker</module>
+        <module>test-spring-boot-docker</module>
         <module>test-run-server</module>
         <module>test-spring-boot-ssl</module>
         <module>test-jaxrs-2.0</module>

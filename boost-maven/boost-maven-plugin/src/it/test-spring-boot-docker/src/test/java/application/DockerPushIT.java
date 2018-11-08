@@ -36,7 +36,7 @@ public class DockerPushIT {
     @BeforeClass
     public static void setup() throws Exception {
         dockerClient = DockerClientBuilder.getInstance().build();
-        imageName = "localhost:5000/test-docker:latest";
+        imageName = "localhost:5000/test-spring-boot-docker:latest";
     }
 
     @Test
@@ -52,8 +52,8 @@ public class DockerPushIT {
 
         // Pull the image from the local repository which got pushed by the plugin. This
         // is possible if the plugin successfully pushed to the registry.
-        dockerClient.pullImageCmd("localhost:5000/test-docker").withTag("latest").exec(new PullImageResultCallback())
-                .awaitCompletion(10, TimeUnit.SECONDS);
+        dockerClient.pullImageCmd("localhost:5000/test-spring-boot-docker").withTag("latest")
+                .exec(new PullImageResultCallback()).awaitCompletion(10, TimeUnit.SECONDS);
 
         Image pulledImage = getImage(imageName);
         assertNotNull(imageName + " was not pulled.", pulledImage);
