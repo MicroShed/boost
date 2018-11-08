@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (c) 2018 IBM Corporation and others. All rights reserved. 
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License v1.0 which accompanies this distribution, 
@@ -23,21 +24,21 @@
     <licenses>
         <license>
             <name>Eclipse Public License 1.0 (EPL-1.0)</name>
-            <url>https://raw.github.com/OpenLiberty/boost-maven/master/LICENSE</url>
+            <url>https://raw.github.com/OpenLiberty/boost/master/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:OpenLiberty/boost-maven.git</connection>
-        <developerConnection>scm:git:git@github.com:OpenLiberty/boost-maven.git</developerConnection>
-        <url>git@github.com:OpenLiberty/boost-maven.git</url>
+        <connection>scm:git:git@github.com:OpenLiberty/boost.git</connection>
+        <developerConnection>scm:git:git@github.com:OpenLiberty/boost.git</developerConnection>
+        <url>git@github.com:OpenLiberty/boost.git</url>
         <tag>HEAD</tag>
     </scm>
 
     <modules>
-		<module>boost-boms</module>
-		<module>boosters</module>
+        <module>boost-boms</module>
+        <module>boost-boosters</module>
         <module>boost-maven-plugin</module>
     </modules>
 

@@ -66,7 +66,7 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.BuildParam;
 import com.spotify.docker.client.exceptions.DockerException;
 
-import io.openliberty.boost.BoostException;
+import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.docker.dockerizer.Dockerizer;
 import io.openliberty.boost.docker.dockerizer.spring.DockerizeLibertySpringBootJar;
 import io.openliberty.boost.docker.dockerizer.spring.DockerizeSpringBootClasspath;
@@ -100,6 +100,9 @@ public class DockerBuildMojo extends AbstractDockerMojo {
 	@Parameter(property = "buildArgs")
 	private Map<String, String> buildArgs;
 
+	/**
+	 * Sets the type of docker build to run.
+	 */
 	@Parameter(property = "dockerizer", defaultValue = "liberty")
 	private String dockerizer;
 
@@ -153,7 +156,7 @@ public class DockerBuildMojo extends AbstractDockerMojo {
 			throw new BoostException(excMsg);
 		}
 		// Get the Boost location for the SpringBoot Uber JAR
-		appArchive = new File(io.openliberty.boost.utils.SpringBootUtil
+		appArchive = new File(io.openliberty.boost.common.utils.SpringBootUtil
 				.getBoostedSpringBootUberJarPath(unboostedSpringBootUberJarLocation));
 		if (!appArchive.exists()) {
 			String excMsg = "Expected file does not exist at path = " + getPathMessageText(appArchive)

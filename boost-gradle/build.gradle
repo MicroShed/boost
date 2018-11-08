@@ -111,7 +111,7 @@ gradlePlugin {
     plugins {
         boostPlugin {
             id = 'io.openliberty.boost'
-            implementationClass = 'io.openliberty.boost.liberty.Boost'
+            implementationClass = 'io.openliberty.boost.gradle.Boost'
         }
     }
 }

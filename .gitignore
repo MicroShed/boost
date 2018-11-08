@@ -1,4 +1,5 @@
 .recommenders
+bin
 .project
 .settings
 .classpath
