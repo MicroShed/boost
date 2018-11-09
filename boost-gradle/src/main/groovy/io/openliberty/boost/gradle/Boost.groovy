@@ -14,7 +14,6 @@ import org.gradle.api.*
 import net.wasdev.wlp.gradle.plugins.extensions.ServerExtension
 
 import io.openliberty.boost.gradle.extensions.BoostExtension
-
 import io.openliberty.boost.gradle.utils.BoostLogger
 
 public class Boost implements Plugin<Project> {

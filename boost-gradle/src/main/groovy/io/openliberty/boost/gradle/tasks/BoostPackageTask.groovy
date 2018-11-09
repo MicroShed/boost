@@ -31,7 +31,6 @@ import io.openliberty.boost.gradle.utils.GradleProjectUtil
 import io.openliberty.boost.common.utils.BoostUtil
 import io.openliberty.boost.common.utils.LibertyServerConfigGenerator
 import io.openliberty.boost.common.utils.SpringBootUtil
-import io.openliberty.boost.common.BoostLoggerI
 
 import net.wasdev.wlp.gradle.plugins.extensions.PackageAndDumpExtension
 

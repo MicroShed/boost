@@ -35,7 +35,7 @@ public class MavenProjectUtil {
 
         return version;
     }
-
+    
     /**
      * Get all dependencies with "org.springframework" as the groupId. These
      * dependencies will be used to determine which additional Liberty features need
