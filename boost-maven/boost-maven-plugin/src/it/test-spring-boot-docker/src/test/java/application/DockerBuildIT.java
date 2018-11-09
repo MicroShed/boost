@@ -35,7 +35,7 @@ import com.github.dockerjava.core.DockerClientBuilder;
 
 import org.springframework.boot.SpringBootVersion;
 
-import io.openliberty.boost.docker.dockerizer.Dockerizer;
+import io.openliberty.boost.common.docker.dockerizer.Dockerizer;
 
 public class DockerBuildIT {
     private static File dockerFile;
