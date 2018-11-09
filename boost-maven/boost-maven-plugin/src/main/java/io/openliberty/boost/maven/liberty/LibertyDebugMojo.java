@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.liberty;
+package io.openliberty.boost.maven.liberty;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
@@ -21,22 +21,24 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Runs the executable archive application (in the console foreground).
+ * Runs the executable archive application (in the console foreground) after a
+ * debugger connects to debug port <b>7777</b>.
+ *
  */
-@Mojo(name = "run")
-public class LibertyRunMojo extends AbstractLibertyMojo {
+@Mojo(name = "debug")
+public class LibertyDebugMojo extends AbstractLibertyMojo {
 
     /**
      * Clean all cached information on server start up.
      */
     @Parameter(property = "clean", defaultValue = "false")
-    private boolean clean;
+    protected boolean clean;
 
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
 
-        executeMojo(getPlugin(), goal("run"),
+        executeMojo(getPlugin(), goal("debug"),
                 configuration(element(name("serverName"), libertyServerName),
                         element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
                 getExecutionEnvironment());

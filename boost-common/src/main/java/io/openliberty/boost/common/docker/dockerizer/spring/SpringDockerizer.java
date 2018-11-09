@@ -1,14 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-package io.openliberty.boost.docker.dockerizer.spring;
+package io.openliberty.boost.common.docker.dockerizer.spring;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,21 +9,19 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
-
-import io.openliberty.boost.docker.dockerizer.Dockerizer;
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.docker.dockerizer.Dockerizer;
 import io.openliberty.boost.common.utils.BoostUtil;
-import io.openliberty.boost.utils.MavenProjectUtil;
 import net.wasdev.wlp.common.plugins.util.SpringBootUtil;
 
 public abstract class SpringDockerizer extends Dockerizer {
+    
+    public final String springBootVersion;
 
-    protected final String springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
-
-    public SpringDockerizer(MavenProject project, File appArchive, Log log) {
-        super(project, appArchive, log);
+    public SpringDockerizer(File projectDirectory, File outputDirectory, File appArchive, String springBootVersion, BoostLoggerI log) {
+        super(projectDirectory, outputDirectory, appArchive, log);
+        this.springBootVersion = springBootVersion;
     }
 
     /**
@@ -43,7 +31,7 @@ public abstract class SpringDockerizer extends Dockerizer {
      * @throws Exception
      */
     @Override
-    public void createDockerFile() throws MojoExecutionException {
+    public void createDockerFile() throws BoostException {
         if (BoostUtil.isNotNullOrEmpty(springBootVersion)) {
             if (SpringBootUtil.isSpringBootUberJar(appArchive)) {
                 BoostUtil.extract(appArchive, projectDirectory);
@@ -53,31 +41,31 @@ public abstract class SpringDockerizer extends Dockerizer {
                     writeSpringBootDockerFile(dockerFile, startClass);
                 }
             } else {
-                throw new MojoExecutionException(appArchive.getAbsolutePath() + " file is not an executable archive. "
+                throw new BoostException(appArchive.getAbsolutePath() + " file is not an executable archive. "
                         + "The repackage goal of the spring-boot-maven-plugin must be configured to run first in order to create the required executable archive.");
             }
         } else {
-            throw new MojoExecutionException("Unable to create a Dockerfile because application type is not supported");
+            throw new BoostException("Unable to create a Dockerfile because application type is not supported");
         }
     }
 
-    protected String getSpringStartClass() throws MojoExecutionException {
+    protected String getSpringStartClass() throws BoostException {
         try (JarFile jarFile = new JarFile(appArchive)) {
             Manifest manifest = jarFile.getManifest();
             if (manifest != null) {
                 Attributes attributes = manifest.getMainAttributes();
                 return attributes.getValue("Start-Class");
             } else {
-                throw new MojoExecutionException(
+                throw new BoostException(
                         "Could not get Spring Boot start class due to error getting app manifest.");
             }
         } catch (IOException e) {
-            throw new MojoExecutionException("Could not get Spring Boot start class due to error opening app archive.",
+            throw new BoostException("Could not get Spring Boot start class due to error opening app archive.",
                     e);
         }
     }
 
-    private File createNewDockerFile() throws MojoExecutionException {
+    private File createNewDockerFile() throws BoostException {
         try {
             File dockerFile = new File(projectDirectory, "Dockerfile");
             Files.createFile(dockerFile.toPath());
@@ -87,15 +75,15 @@ public abstract class SpringDockerizer extends Dockerizer {
             log.warn("Dockerfile already exists");
             return null;
         } catch (IOException e2) {
-            throw new MojoExecutionException("Could not create Dockerfile.", e2);
+            throw new BoostException("Could not create Dockerfile.", e2);
         }
     }
 
-    private void writeSpringBootDockerFile(File dockerFile, String startClass) throws MojoExecutionException {
+    private void writeSpringBootDockerFile(File dockerFile, String startClass) throws BoostException {
         try {
             Files.write(dockerFile.toPath(), getDockerfileLines(), Charset.forName("UTF-8"));
         } catch (IOException e) {
-            throw new MojoExecutionException("Could not write Spring Boot Dockerfile.", e);
+            throw new BoostException("Could not write Spring Boot Dockerfile.", e);
         }
     }
 

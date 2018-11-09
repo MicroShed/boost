@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.liberty;
+package io.openliberty.boost.maven.liberty;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
@@ -18,20 +18,27 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Stops the executable archive application started by the 'start' or 'run'
- * goals.
+ * Runs the executable archive application (in the console foreground).
  */
-@Mojo(name = "stop")
-public class LibertyStopMojo extends AbstractLibertyMojo {
+@Mojo(name = "run")
+public class LibertyRunMojo extends AbstractLibertyMojo {
+
+    /**
+     * Clean all cached information on server start up.
+     */
+    @Parameter(property = "clean", defaultValue = "false")
+    private boolean clean;
 
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
 
-        executeMojo(getPlugin(), goal("stop"),
-                configuration(element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
+        executeMojo(getPlugin(), goal("run"),
+                configuration(element(name("serverName"), libertyServerName),
+                        element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
                 getExecutionEnvironment());
     }
 

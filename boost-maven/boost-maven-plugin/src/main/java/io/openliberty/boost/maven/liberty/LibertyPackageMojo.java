@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.liberty;
+package io.openliberty.boost.maven.liberty;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,13 +28,13 @@ import org.apache.maven.plugins.annotations.*;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoosterPackConfigurator;
-import io.openliberty.boost.BoosterPacksParent;
-import io.openliberty.boost.utils.BoostLogger;
 import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.utils.ConfigConstants;
 import io.openliberty.boost.common.utils.LibertyServerConfigGenerator;
-import io.openliberty.boost.utils.MavenProjectUtil;
 import io.openliberty.boost.common.utils.SpringBootUtil;
+import io.openliberty.boost.maven.BoosterPacksParent;
+import io.openliberty.boost.maven.utils.BoostLogger;
+import io.openliberty.boost.maven.utils.MavenProjectUtil;
 import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;

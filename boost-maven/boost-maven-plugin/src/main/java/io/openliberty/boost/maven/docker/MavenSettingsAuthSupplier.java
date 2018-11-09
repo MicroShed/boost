@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.docker;
+package io.openliberty.boost.maven.docker;
 
 import java.util.HashMap;
 import java.util.List;

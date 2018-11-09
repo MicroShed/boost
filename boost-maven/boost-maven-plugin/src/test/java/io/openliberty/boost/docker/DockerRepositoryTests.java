@@ -15,9 +15,19 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import io.openliberty.boost.maven.docker.DockerBuildMojo;
+
 public class DockerRepositoryTests {
+
+    DockerBuildMojo mojo;
+
+    @Before
+    public void setup() {
+        mojo = new DockerBuildMojo();
+    }
 
     @Test
     public void testValidRepositoryNames() throws Exception {
@@ -27,7 +37,7 @@ public class DockerRepositoryTests {
                 "host.com:8080/namespace__name/image.module-name", "user-name/image-name");
 
         for (String repository : repositories) {
-            assertEquals(repository + " should be valid", true, AbstractDockerMojo.isRepositoryValid(repository));
+            assertEquals(repository + " should be valid", true, mojo.isRepositoryValid(repository));
         }
     }
 
@@ -38,7 +48,7 @@ public class DockerRepositoryTests {
                 "user**name/image", "image:8080", "host.com:abcd/image", "-host.com/-image", "user/repo/image/");
 
         for (String repository : repositories) {
-            assertEquals(repository + " should be invalid", false, AbstractDockerMojo.isRepositoryValid(repository));
+            assertEquals(repository + " should be invalid", false, mojo.isRepositoryValid(repository));
         }
     }
 

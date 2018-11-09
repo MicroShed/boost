@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.docker.dockerizer.spring;
+package io.openliberty.boost.common.docker.dockerizer.spring;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,9 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.BoostLoggerI;
 
 public class DockerizeLibertySpringBootJar extends SpringDockerizer {
 
@@ -32,8 +31,8 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
     private static final String COPY = "COPY ";
     private static final String RUN = "RUN ";
 
-    public DockerizeLibertySpringBootJar(MavenProject project, File appArchive, Log log) {
-    		super(project, appArchive, log);
+    public DockerizeLibertySpringBootJar(File projectDirectory, File outputDirectory, File appArchive, String springBootVersion, BoostLoggerI log) {
+    		super(projectDirectory, outputDirectory, appArchive, springBootVersion, log);
     }
     
     public Map<String, String> getBuildArgs() {
@@ -42,21 +41,21 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
         return buildArgs;
     }
 
-    private String getLibertySpringBootBaseImage() throws MojoExecutionException {
+    private String getLibertySpringBootBaseImage() throws BoostException {
         String libertyImage = null;
         if (springBootVersion.startsWith("1.")) {
             libertyImage = LIBERTY_IMAGE_1;
         } else if (springBootVersion.startsWith("2.")) {
             libertyImage = LIBERTY_IMAGE_2;
 		} else {
-			throw new MojoExecutionException(
+			throw new BoostException(
                     "No supporting docker image found for Open Liberty for the Spring Boot version "
                             + springBootVersion);
         }
         return libertyImage;
     }
 
-    public List<String> getDockerfileLines() throws MojoExecutionException {
+    public List<String> getDockerfileLines() throws BoostException {
         String libertyImage = getLibertySpringBootBaseImage();
         ArrayList<String> lines = new ArrayList<>();
         lines.add(BOOST_GEN);

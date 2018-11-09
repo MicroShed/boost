@@ -8,14 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.docker;
-
-import java.util.regex.Pattern;
+package io.openliberty.boost.maven.docker;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -24,14 +21,13 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.crypto.SettingsDecrypter;
 
-import com.spotify.docker.client.DefaultDockerClient;
-import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.ImageRef;
 import com.spotify.docker.client.auth.ConfigFileRegistryAuthSupplier;
 import com.spotify.docker.client.auth.RegistryAuthSupplier;
-import com.spotify.docker.client.exceptions.DockerCertificateException;
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.docker.AbstractDockerI;
 
-public abstract class AbstractDockerMojo extends AbstractMojo {
+public abstract class AbstractDockerMojo extends AbstractMojo implements AbstractDockerI {
 
     /**
      * Current Maven project.
@@ -69,10 +65,8 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
 
     protected Log log;
 
-    protected abstract void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException;
-
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException {
         log = getLog();
         if (repository.equals(project.getArtifactId()) && !repository.equals(repository.toLowerCase())) {
             this.repository = project.getArtifactId().toLowerCase();
@@ -88,25 +82,21 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
                 throw new MojoExecutionException("The <repository> parameter is not configured with a valid name");
             }
         }
-        if (!isTagValid(tag)) {
+        if (!AbstractDockerI.super.isTagValid(tag)) {
             throw new MojoExecutionException("The <tag> parameter is not configured with a valid name");
         }
 
-        execute(getDockerClient());
-    }
-
-    private DockerClient getDockerClient() throws MojoExecutionException {
-        final RegistryAuthSupplier authSupplier = createRegistryAuthSupplier();
         try {
-            return DefaultDockerClient.fromEnv().registryAuthSupplier(authSupplier).useProxy(useProxy).build();
-        } catch (DockerCertificateException e) {
-            throw new MojoExecutionException("Problem loading Docker certificates", e);
+            execute(getDockerClient(useProxy));
+        } catch (BoostException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
-    private RegistryAuthSupplier createRegistryAuthSupplier() throws MojoExecutionException {
+    @Override
+    public RegistryAuthSupplier createRegistryAuthSupplier() throws BoostException {
         RegistryAuthSupplier supplier = null;
-        final ImageRef ref = new ImageRef(getImageName());
+        final ImageRef ref = new ImageRef(getImageName(repository, tag));
         final Settings settings = session.getSettings();
         final Server server = settings.getServer(ref.getRegistryName());
 
@@ -120,25 +110,4 @@ public abstract class AbstractDockerMojo extends AbstractMojo {
         return supplier;
     }
 
-    protected final String getImageName() {
-        return this.repository + ":" + this.tag;
-    }
-
-    protected String getImageName(String repository, String tag) {
-        return repository + ":" + tag;
-    }
-
-    protected static boolean isTagValid(String tag) {
-        return Pattern.matches("[\\w][\\w.-]{0,127}", tag);
-    }
-
-    protected static boolean isRepositoryValid(String repository) {
-        String nameRegExp = "[a-z0-9]+((?:[._]|__|[-]*)[a-z0-9]+)*?";
-        String domain = "(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])";
-        String domainRegExp = domain + "(\\." + domain + ")*?" + "(:[0-9]+)?";
-
-        String repositoryRegExp = "(" + domainRegExp + "\\/)?" + nameRegExp + "(\\/" + nameRegExp + ")*?";
-
-        return Pattern.matches(repositoryRegExp, repository);
-    }
 }

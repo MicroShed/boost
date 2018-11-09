@@ -1,28 +1,18 @@
-/*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-package io.openliberty.boost.docker;
+package io.openliberty.boost.common.docker;
 
 import java.text.MessageFormat;
-
-import org.apache.maven.plugin.logging.Log;
 
 import com.spotify.docker.client.ProgressHandler;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.ProgressMessage;
 
+import io.openliberty.boost.common.BoostLoggerI;
+
 public class DockerLoggingProgressHandler implements ProgressHandler {
 
-    private final Log log;
+    private final BoostLoggerI log;
 
-    public DockerLoggingProgressHandler(Log log) {
+    public DockerLoggingProgressHandler(BoostLoggerI log) {
         this.log = log;
     }
 
