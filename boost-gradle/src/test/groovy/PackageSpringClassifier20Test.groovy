@@ -23,13 +23,13 @@ import static org.junit.Assert.assertTrue
 
 import static org.gradle.testkit.runner.TaskOutcome.*
 
-public class PackageSpring15Test extends AbstractBoostTest {
+public class PackageSpringClassifier20Test extends AbstractBoostTest {
 
     static File resourceDir = new File("build/resources/test/springApp")
-    static File testProjectDir = new File(integTestDir, "PackageSpring15Test")
-    static String buildFilename = "springApp-15.gradle"
+    static File testProjectDir = new File(integTestDir, "PackageSpringClassifier20Test")
+    static String buildFilename = "springAppClassifier-20.gradle"
 
-    private static final String SPRING_BOOT_15_FEATURE = "<feature>springBoot-1.5</feature>"
+    private static final String SPRING_BOOT_20_FEATURE = "<feature>springBoot-2.0</feature>"
     private static String SERVER_XML = "build/wlp/usr/servers/BoostServer/server.xml"
 
     @BeforeClass
@@ -51,7 +51,7 @@ public class PackageSpring15Test extends AbstractBoostTest {
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStop").getOutcome())
 
-        assertTrue(new File(testProjectDir, "build/libs/test-spring15.jar").exists())
+        assertTrue(new File(testProjectDir, "build/libs/gs-spring-boot-0.1.0-test.jar").exists())
     }
 
     @Test //Testing that springBoot-1.5 feature was added to the packaged server.xml
@@ -67,7 +67,7 @@ public class PackageSpring15Test extends AbstractBoostTest {
             br = new BufferedReader(new FileReader(targetFile));
             String line
             while ((line = br.readLine()) != null) {
-                if (line.contains(SPRING_BOOT_15_FEATURE)) {
+                if (line.contains(SPRING_BOOT_20_FEATURE)) {
                     found = true
                     break
                 }
@@ -78,6 +78,6 @@ public class PackageSpring15Test extends AbstractBoostTest {
             }
         }
         
-        assertTrue("The "+SPRING_BOOT_15_FEATURE+" feature was not found in the server configuration", found);    
+        assertTrue("The "+SPRING_BOOT_20_FEATURE+" feature was not found in the server configuration", found);    
     }
 }

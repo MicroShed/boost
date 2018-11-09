@@ -8,36 +8,42 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import static org.gradle.testkit.runner.TaskOutcome.*
-
 import org.junit.BeforeClass
-import static org.junit.Assert.*
+import org.junit.Test
 
 import java.io.File
+import java.io.IOException
+import java.io.BufferedReader
+import java.io.FileReader
 
-import com.github.dockerjava.core.DockerClientBuilder
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 
-public class DockerEmpty15Test extends AbstractBoostDockerTest {
+import static org.gradle.testkit.runner.TaskOutcome.*
+
+public class PackageExtensionTest extends AbstractBoostTest {
+
+    static File resourceDir = new File("build/resources/test/springApp")
+    static File testProjectDir = new File(integTestDir, "PackageExtensionTest")
+    static String buildFilename = "packageExtensionTest.gradle"
 
     @BeforeClass
     public static void setup() {
-        resourceDir = new File("build/resources/test/springApp")
-        testProjectDir = new File(integTestDir, "DockerEmpty15Test")
-        buildFilename = "dockerEmpty15Test.gradle"
-        libertyImage = OL_SPRING_15_IMAGE
-        imageName = "test-docker15"
-
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
-        dockerFile = new File(testProjectDir, "Dockerfile")
-        dockerClient = DockerClientBuilder.getInstance().build()
+    }
 
-        result = GradleRunner.create()
+    @Test
+    public void testPackageSuccess() throws IOException {
+        BuildResult result = GradleRunner.create()
             .withProjectDir(testProjectDir)
             .withArguments("build")
             .build()
+
+        assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
+
+        assertTrue(new File(testProjectDir, "build/libs/extensionTest.jar").exists())
     }
 }

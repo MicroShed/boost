@@ -24,8 +24,8 @@ import java.util.List
 
 public class AbstractBoostTest {
 
-    static File integTestDir = new File('build/testBuilds')
-    File testProjectDir
+    protected static File integTestDir = new File('build/testBuilds')
+    protected static File testProjectDir
 
     protected static void deleteDir(File dir) {
         if (dir.exists()) {

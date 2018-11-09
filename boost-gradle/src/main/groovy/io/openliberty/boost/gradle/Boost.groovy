@@ -14,20 +14,27 @@ import org.gradle.api.*
 import net.wasdev.wlp.gradle.plugins.extensions.ServerExtension
 
 import io.openliberty.boost.gradle.extensions.BoostExtension
+import io.openliberty.boost.gradle.utils.BoostLogger
 
 public class Boost implements Plugin<Project> {
 
     final String BOOST_SERVER_NAME = 'BoostServer'
 
+    final String OPEN_LIBERTY_VERSION = '[18.0.0.3,)'
+
     void apply(Project project) {
         project.extensions.create('boost', BoostExtension)
+
+        BoostLogger.init(project)
 
         new BoostTaskFactory(project).createTasks()
 
         project.pluginManager.apply('net.wasdev.wlp.gradle.plugins.Liberty')
+
         project.pluginManager.apply('com.palantir.docker')
 
         project.liberty.server = configureBoostServerProperties()
+        configureRuntimeArtifact(project)
     }
 
     //Overwritten by any liberty configuration in build file
@@ -36,5 +43,11 @@ public class Boost implements Plugin<Project> {
         boostServer.name = BOOST_SERVER_NAME
         boostServer.looseApplication = false
         return boostServer
+    }
+
+    void configureRuntimeArtifact(Project project) {
+        //The libertyRuntime configuration won't be null. It is added with the Liberty plugin.
+        //A libertyRuntime configuration in the build.gradle will overwrite this.
+        project.dependencies.add('libertyRuntime', "io.openliberty:openliberty-runtime:$OPEN_LIBERTY_VERSION")
     }
 }

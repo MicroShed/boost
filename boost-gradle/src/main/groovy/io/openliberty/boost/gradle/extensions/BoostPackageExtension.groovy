@@ -8,18 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.gradle.tasks
 
-import org.gradle.api.DefaultTask
-import org.gradle.api.Project
+package io.openliberty.boost.gradle.extensions
 
-abstract class AbstractBoostTask extends DefaultTask {
+class BoostPackageExtension {
 
-    protected boolean isDockerConfigured() {
-        return project.boost.docker != null
-    }
+	String packageName = null
 
-    protected boolean isPackageConfigured() {
-        return project.boost.packaging != null
-    }
 }

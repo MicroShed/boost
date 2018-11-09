@@ -10,8 +10,6 @@
  *******************************************************************************/
 package io.openliberty.boost.gradle.utils
 
-import java.util.Set
-
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 
@@ -39,5 +37,4 @@ public class GradleProjectUtil {
 
         return version        
     }
-
 }

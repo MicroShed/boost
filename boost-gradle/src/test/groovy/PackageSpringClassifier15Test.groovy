@@ -23,11 +23,11 @@ import static org.junit.Assert.assertTrue
 
 import static org.gradle.testkit.runner.TaskOutcome.*
 
-public class PackageSpring15Test extends AbstractBoostTest {
+public class PackageSpringClassifier15Test extends AbstractBoostTest {
 
     static File resourceDir = new File("build/resources/test/springApp")
-    static File testProjectDir = new File(integTestDir, "PackageSpring15Test")
-    static String buildFilename = "springApp-15.gradle"
+    static File testProjectDir = new File(integTestDir, "PackageSpringClassifier15Test")
+    static String buildFilename = "springAppClassifier-15.gradle"
 
     private static final String SPRING_BOOT_15_FEATURE = "<feature>springBoot-1.5</feature>"
     private static String SERVER_XML = "build/wlp/usr/servers/BoostServer/server.xml"
@@ -51,7 +51,7 @@ public class PackageSpring15Test extends AbstractBoostTest {
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStop").getOutcome())
 
-        assertTrue(new File(testProjectDir, "build/libs/test-spring15.jar").exists())
+        assertTrue(new File(testProjectDir, "build/libs/PackageSpringClassifier15Test-test.jar").exists())
     }
 
     @Test //Testing that springBoot-1.5 feature was added to the packaged server.xml

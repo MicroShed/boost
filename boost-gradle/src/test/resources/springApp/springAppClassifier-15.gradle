@@ -19,12 +19,9 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-jar {
-    baseName = 'test-spring15'
-}
-
 bootRepackage {
     mainClass = 'hello.Application'
+    classifier = 'test'
 }
 
 repositories {

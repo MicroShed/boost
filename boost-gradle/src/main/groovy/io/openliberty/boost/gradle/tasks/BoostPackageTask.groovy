@@ -26,11 +26,11 @@ import org.gradle.api.logging.LogLevel
 import org.gradle.api.artifacts.Dependency
 import org.gradle.tooling.BuildException
 
+import io.openliberty.boost.gradle.utils.BoostLogger
 import io.openliberty.boost.gradle.utils.GradleProjectUtil
 import io.openliberty.boost.common.utils.BoostUtil
 import io.openliberty.boost.common.utils.LibertyServerConfigGenerator
 import io.openliberty.boost.common.utils.SpringBootUtil
-import io.openliberty.boost.common.BoostLoggerI
 
 import net.wasdev.wlp.gradle.plugins.extensions.PackageAndDumpExtension
 
@@ -61,7 +61,7 @@ public class BoostPackageTask extends AbstractBoostTask {
                         dependsOn 'bootJar'
 
                         //Skipping if Docker is configured
-                        if (!isDockerConfigured()) {
+                        if (!isDockerConfigured() || isPackageConfigured()) {
                             project.bootJar.finalizedBy 'boostPackage'
                         }
                     } else if(springBootVersion.startsWith('1.')) { //Assume 1.5?
@@ -86,7 +86,7 @@ public class BoostPackageTask extends AbstractBoostTask {
                         dependsOn 'bootRepackage'
 
                         //Skipping if Docker is configured
-                        if (!isDockerConfigured()) {
+                        if (!isDockerConfigured() || isPackageConfigured()) {
                             project.bootRepackage.finalizedBy 'boostPackage'
                         }
                     }
@@ -101,7 +101,11 @@ public class BoostPackageTask extends AbstractBoostTask {
 
             //The task will perform this before any other task actions
             doFirst {
-                // boostPackage.archive = "${project.buildDir}/" + boostPackage.archive
+                
+                if (isPackageConfigured() && project.boost.packaging.packageName != null && !project.boost.packaging.packageName.isEmpty()) {
+                    boostPackage.archive = "${project.buildDir}/libs/${project.boost.packaging.packageName}"
+                }
+
                 project.liberty.server.packageLiberty = boostPackage
 
                 if (isSpringProject()) {
@@ -133,12 +137,12 @@ public class BoostPackageTask extends AbstractBoostTask {
         return springBootVersion != null && !springBootVersion.isEmpty()
     }
 
-    protected List<String> getSpringBootStarters() {
+    protected List<String> getSpringBootDependencies() {
 
         List<String> springBootStarters = new ArrayList<String>()
 
         project.configurations.compile.dependencies.each { Dependency art ->
-            if (art.getName().contains("spring-boot-starter")) {
+            if (art.getGroup().equals("org.springframework")) {
                 springBootStarters.add(art.getName())
             }
         }
@@ -166,7 +170,8 @@ public class BoostPackageTask extends AbstractBoostTask {
 
             // Find and add appropriate springBoot features
             List<String> featuresNeededForSpringBootApp = SpringBootUtil.getLibertyFeaturesForSpringBoot(springBootVersion,
-                    getSpringBootStarters(), new BoostLogger())
+                    getSpringBootDependencies(), BoostLogger.getInstance())
+
             serverConfig.addFeatures(featuresNeededForSpringBootApp)
 
             serverConfig.addHttpEndpoint(null, "\${server.port}", null)
@@ -214,7 +219,7 @@ public class BoostPackageTask extends AbstractBoostTask {
             File springBootUberJarCopy = null
             if (springBootUberJar != null) { // Only copy the Uber JAR if it is valid
                 springBootUberJarCopy = SpringBootUtil.copySpringBootUberJar(springBootUberJar,
-                        new BoostLogger())
+                        BoostLogger.getInstance())
             }
 
             if (springBootUberJarCopy == null) {
@@ -240,7 +245,7 @@ public class BoostPackageTask extends AbstractBoostTask {
 
     protected void validateSpringBootUberJAR(File springBootUberJar) throws GradleException {
         if (!project.configurations.archives.allArtifacts.isEmpty()) {
-            if (!BoostUtil.isLibertyJar(project.configurations.archives.allArtifacts[0].getFile(), new BoostLogger())
+            if (!BoostUtil.isLibertyJar(project.configurations.archives.allArtifacts[0].getFile(), BoostLogger.getInstance())
                 && springBootUberJar == null) {
             throw new GradleException (
                     "A valid Spring Boot Uber JAR was not found. Run the 'bootJar' task and try again.")
@@ -251,46 +256,10 @@ public class BoostPackageTask extends AbstractBoostTask {
     //returns true if bootJar is using the same archiveName as jar
     private boolean shouldReplaceProjectArchive() {
         if (project.plugins.hasPlugin('java')) {
-            return project.jar.archiveName == project.bootJar.archiveName
+            if (springBootVersion.startsWith('2.')) {
+                return project.jar.archiveName == project.bootJar.archiveName
+            }
         }
         return false
-    }
-
-    private class BoostLogger implements BoostLoggerI {
-
-        @Override
-        public void debug(String msg) {
-            logger.debug(msg)
-        }
-
-        @Override
-        public void debug(String msg, Throwable e) {
-            logger.debug(msg, e)
-        }
-
-        @Override
-        public void debug(Throwable e) {
-            logger.debug(e)
-        }
-
-        @Override
-        public void warn(String msg) {
-            logger.warn(msg)
-        }
-
-        @Override
-        public void info(String msg) {
-            logger.info(msg)
-        }
-
-        @Override
-        public void error(String msg) {
-            logger.error(msg)
-        }
-
-        @Override
-        public boolean isDebugEnabled() {
-            return logger.isEnabled(LogLevel.DEBUG)
-        }
     }
 }

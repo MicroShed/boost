@@ -10,48 +10,56 @@
  *******************************************************************************/
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.BeforeClass
-import org.junit.Test
-
-import java.io.File
-import java.io.IOException
-import java.io.BufferedReader
-import java.io.FileReader
-
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertTrue
-
 import static org.gradle.testkit.runner.TaskOutcome.*
 
-public class PackageSpring15Test extends AbstractBoostTest {
+import org.junit.Test
+import org.junit.BeforeClass
+import static org.junit.Assert.*
 
-    static File resourceDir = new File("build/resources/test/springApp")
-    static File testProjectDir = new File(integTestDir, "PackageSpring15Test")
-    static String buildFilename = "springApp-15.gradle"
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
+
+import com.github.dockerjava.api.command.CreateContainerResponse
+import com.github.dockerjava.api.model.Container
+import com.github.dockerjava.api.model.PortBinding
+import com.github.dockerjava.core.DockerClientBuilder
+
+public class PackageAndDockerize15Test extends AbstractBoostDockerTest {
 
     private static final String SPRING_BOOT_15_FEATURE = "<feature>springBoot-1.5</feature>"
     private static String SERVER_XML = "build/wlp/usr/servers/BoostServer/server.xml"
 
     @BeforeClass
     public static void setup() {
+        resourceDir = new File("build/resources/test/springApp")
+        testProjectDir = new File(integTestDir, "PackageAndDockerize15Test")
+        buildFilename = "springApp-15.gradle"
+        libertyImage = OL_SPRING_15_IMAGE
+        imageName = "test-spring15"
+
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
+
+        dockerFile = new File(testProjectDir, "Dockerfile")
+        dockerClient = DockerClientBuilder.getInstance().build()
+
+        result = GradleRunner.create()
+            .withProjectDir(testProjectDir)
+            .withArguments("boostDocker", "boostPackage", "boostStart", "boostStop")
+            .build()
     }
 
     @Test
-    public void testPackageSuccess() throws IOException {
-        BuildResult result = GradleRunner.create()
-            .withProjectDir(testProjectDir)
-            .withArguments("build", "boostStart", "boostStop")
-            .build()
-
+    public void testBuildSuccess() throws IOException {
         assertEquals(SUCCESS, result.task(":installLiberty").getOutcome())
         assertEquals(SUCCESS, result.task(":libertyCreate").getOutcome())
+        assertEquals(SUCCESS, result.task(":boostDocker").getOutcome())
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStop").getOutcome())
 
-        assertTrue(new File(testProjectDir, "build/libs/test-spring15.jar").exists())
+        assertTrue(new File(testProjectDir, "build/libs/${imageName}.jar").exists())
     }
 
     @Test //Testing that springBoot-1.5 feature was added to the packaged server.xml
