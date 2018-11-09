@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.boost.liberty.extensions
+package io.openliberty.boost.gradle.extensions
 
 class BoostPackageExtension {
 
