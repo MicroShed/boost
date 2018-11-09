@@ -14,7 +14,6 @@ import org.gradle.testkit.runner.GradleRunner
 
 import static org.gradle.testkit.runner.TaskOutcome.*
 
-import static org.junit.Assert.assertTrue
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNull
 import static org.junit.Assert.assertNotNull
@@ -26,53 +25,56 @@ import java.util.concurrent.TimeUnit
 import org.junit.BeforeClass
 import org.junit.Test
 
-import com.github.dockerjava.api.DockerClient
 import com.github.dockerjava.core.DockerClientBuilder
 import com.github.dockerjava.api.model.Image
 import com.github.dockerjava.core.command.PullImageResultCallback
 
-public class DockerPush20Test extends AbstractBoostTest {
+public class DockerPush20Test extends AbstractBoostDockerTest {
 
-    private static DockerClient dockerClient
-    private static String imageName = "localhost:5000/test-image20:latest"
-    private static BuildResult result
-        
-    static File resourceDir = new File("build/resources/test/springApp")
-    static File testProjectDir = new File(integTestDir, "DockerPush20Test")
-    static String buildFilename = "docker20Test.gradle"
+    private static String fullImageName = "localhost:5000/test-image20:latest"
 
     @BeforeClass
     public static void setup() {
+
+        resourceDir = new File("build/resources/test/springApp")
+        testProjectDir = new File(integTestDir, "DockerPush20Test")
+        buildFilename = "docker20Test.gradle"
+        libertyImage = OL_SPRING_20_IMAGE
+        imageName = "localhost:5000/test-image20"
+
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
+        dockerFile = new File(testProjectDir, "Dockerfile")
         dockerClient = DockerClientBuilder.getInstance().build()
 
         result = GradleRunner.create()
             .withProjectDir(testProjectDir)
             .withArguments("boostDockerPush")
             .build()
+    }
 
-        assertEquals(SUCCESS, result.task(":boostDocker").getOutcome())
+    @Test
+    public void testPushSuccess() throws Exception {
         assertEquals(SUCCESS, result.task(":boostDockerPush").getOutcome())
     }
 
     @Test
     public void testPushDockerImageToLocalRegistry() throws Exception {
-        Image pushedImage = getImage(imageName)
-        assertNotNull(imageName + " was not built.", pushedImage)
+        Image pushedImage = getImage(fullImageName)
+        assertNotNull(fullImageName + " was not built.", pushedImage)
 
         long sizeOfPushedImage = pushedImage.getSize()
         String idOfPushedImage = pushedImage.getId()
 
         // Remove the local image.
-        removeImage(imageName)
+        removeImage(fullImageName)
 
         // Pull the image from the local repository which got pushed by the plugin. This
         // is possible if the plugin successfully pushed to the registry.
-        dockerClient.pullImageCmd("localhost:5000/test-image20").withTag("latest").exec(new PullImageResultCallback())
+        dockerClient.pullImageCmd("${imageName}").withTag("latest").exec(new PullImageResultCallback())
                 .awaitCompletion(10, TimeUnit.SECONDS)
 
-        Image pulledImage = getImage(imageName)
+        Image pulledImage = getImage(fullImageName)
         assertNotNull(imageName + " was not pulled.", pulledImage)
 
         long sizeOfPulledImage = pulledImage.getSize()

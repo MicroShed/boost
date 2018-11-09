@@ -10,51 +10,59 @@
  *******************************************************************************/
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.BeforeClass
-import org.junit.Test
-
-import java.io.File
-import java.io.IOException
-import java.io.BufferedReader
-import java.io.FileReader
-
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertTrue
-
 import static org.gradle.testkit.runner.TaskOutcome.*
 
-public class PackageSpring15Test extends AbstractBoostTest {
+import org.junit.Test
+import org.junit.BeforeClass
+import static org.junit.Assert.*
 
-    static File resourceDir = new File("build/resources/test/springApp")
-    static File testProjectDir = new File(integTestDir, "PackageSpring15Test")
-    static String buildFilename = "springApp-15.gradle"
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
 
-    private static final String SPRING_BOOT_15_FEATURE = "<feature>springBoot-1.5</feature>"
+import com.github.dockerjava.api.command.CreateContainerResponse
+import com.github.dockerjava.api.model.Container
+import com.github.dockerjava.api.model.PortBinding
+import com.github.dockerjava.core.DockerClientBuilder
+
+public class PackageAndDockerize20Test extends AbstractBoostDockerTest {
+
+    private static final String SPRING_BOOT_20_FEATURE = "<feature>springBoot-2.0</feature>"
     private static String SERVER_XML = "build/wlp/usr/servers/BoostServer/server.xml"
 
     @BeforeClass
     public static void setup() {
+        resourceDir = new File("build/resources/test/springApp")
+        testProjectDir = new File(integTestDir, "PackageAndDockerize20Test")
+        buildFilename = "springApp-20.gradle"
+        libertyImage = OL_SPRING_20_IMAGE
+        imageName = "gs-spring-boot-0.1.0"
+
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
+
+        dockerFile = new File(testProjectDir, "Dockerfile")
+        dockerClient = DockerClientBuilder.getInstance().build()
+
+        result = GradleRunner.create()
+            .withProjectDir(testProjectDir)
+            .withArguments("boostDocker", "boostPackage", "boostStart", "boostStop")
+            .build()
     }
 
     @Test
-    public void testPackageSuccess() throws IOException {
-        BuildResult result = GradleRunner.create()
-            .withProjectDir(testProjectDir)
-            .withArguments("build", "boostStart", "boostStop")
-            .build()
-
+    public void testBuildSuccess() throws IOException {
         assertEquals(SUCCESS, result.task(":installLiberty").getOutcome())
         assertEquals(SUCCESS, result.task(":libertyCreate").getOutcome())
+        assertEquals(SUCCESS, result.task(":boostDocker").getOutcome())
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStop").getOutcome())
 
-        assertTrue(new File(testProjectDir, "build/libs/test-spring15.jar").exists())
+        assertTrue(new File(testProjectDir, "build/libs/gs-spring-boot-0.1.0.jar").exists())
     }
 
-    @Test //Testing that springBoot-1.5 feature was added to the packaged server.xml
+    @Test //Testing that springBoot-2.0 feature was added to the packaged server.xml
     public void testPackageContents() throws IOException {
         File targetFile = new File(testProjectDir, SERVER_XML)
         assertTrue(targetFile.getCanonicalFile().toString() + "does not exist.", targetFile.exists())
@@ -67,7 +75,7 @@ public class PackageSpring15Test extends AbstractBoostTest {
             br = new BufferedReader(new FileReader(targetFile));
             String line
             while ((line = br.readLine()) != null) {
-                if (line.contains(SPRING_BOOT_15_FEATURE)) {
+                if (line.contains(SPRING_BOOT_20_FEATURE)) {
                     found = true
                     break
                 }
@@ -78,6 +86,6 @@ public class PackageSpring15Test extends AbstractBoostTest {
             }
         }
         
-        assertTrue("The "+SPRING_BOOT_15_FEATURE+" feature was not found in the server configuration", found);    
+        assertTrue("The "+SPRING_BOOT_20_FEATURE+" feature was not found in the server configuration", found);    
     }
 }

@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.14.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.4.RELEASE")
         classpath("io.openliberty.boost:boost-gradle-plugin:$boostVersion")
     }
 }
@@ -19,12 +19,14 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-jar {
-    baseName = 'test-spring15'
+bootJar {
+    baseName = 'test-docker20'
+    classifier = 'test'
+    mainClassName = 'hello.Application'
 }
 
-bootRepackage {
-    mainClass = 'hello.Application'
+boost {
+    docker {}
 }
 
 repositories {
@@ -37,10 +39,5 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
-
     compile("org.springframework.boot:spring-boot-starter-actuator")
-
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-
-    libertyRuntime "$runtimeGroup:$runtimeArtifactId:$runtimeVersion"
 }

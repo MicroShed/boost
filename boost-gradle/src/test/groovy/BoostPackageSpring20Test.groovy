@@ -10,7 +10,7 @@
  *******************************************************************************/
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 
 import java.io.File
@@ -32,8 +32,8 @@ public class PackageSpring20Test extends AbstractBoostTest {
     private static final String SPRING_BOOT_20_FEATURE = "<feature>springBoot-2.0</feature>"
     private static String SERVER_XML = "build/wlp/usr/servers/BoostServer/server.xml"
 
-    @Before
-    public void setup() {
+    @BeforeClass
+    public static void setup() {
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
     }
@@ -42,12 +42,16 @@ public class PackageSpring20Test extends AbstractBoostTest {
     public void testPackageSuccess() throws IOException {
         BuildResult result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("boostPackage")
+            .withArguments("boostPackage", "boostStart", "boostStop")
             .build()
 
         assertEquals(SUCCESS, result.task(":installLiberty").getOutcome())
         assertEquals(SUCCESS, result.task(":libertyCreate").getOutcome())
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
+        assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
+        assertEquals(SUCCESS, result.task(":boostStop").getOutcome())
+
+        assertTrue(new File(testProjectDir, "build/libs/gs-spring-boot-0.1.0.jar").exists())
     }
 
     @Test //Testing that springBoot-2.0 feature was added to the packaged server.xml

@@ -14,21 +14,26 @@ import org.gradle.testkit.runner.GradleRunner
 import static org.gradle.testkit.runner.TaskOutcome.*
 
 import org.junit.BeforeClass
+import org.junit.Test
 import static org.junit.Assert.*
 
 import java.io.File
 
+import com.github.dockerjava.api.command.CreateContainerResponse
+import com.github.dockerjava.api.model.Container
+import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.core.DockerClientBuilder
 
-public class DockerEmpty15Test extends AbstractBoostDockerTest {
+//Tests creating a Docker image with an extension
+public class DockerClassifier20Test extends AbstractBoostDockerTest {
 
     @BeforeClass
     public static void setup() {
         resourceDir = new File("build/resources/test/springApp")
-        testProjectDir = new File(integTestDir, "DockerEmpty15Test")
-        buildFilename = "dockerEmpty15Test.gradle"
-        libertyImage = OL_SPRING_15_IMAGE
-        imageName = "test-docker15"
+        testProjectDir = new File(integTestDir, "DockerClassifier20Test")
+        buildFilename = "dockerClassifier20Test.gradle"
+        libertyImage = OL_SPRING_20_IMAGE
+        imageName = "test-docker20-test"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
@@ -39,5 +44,22 @@ public class DockerEmpty15Test extends AbstractBoostDockerTest {
             .withProjectDir(testProjectDir)
             .withArguments("build")
             .build()
+    }
+
+    @Test
+    public void runDockerContainerAndVerifyAppOnEndpoint() throws Exception {
+        CreateContainerResponse container = dockerClient.createContainerCmd("${imageName}:latest")
+                .withPortBindings(PortBinding.parse("9080:9080")).exec()
+        Thread.sleep(3000)
+
+        containerId = container.getId()
+
+        dockerClient.startContainerCmd(containerId).exec()
+
+        Thread.sleep(10000)
+        testDockerContainerRunning()
+
+        Thread.sleep(10000)
+        testAppRunningOnEndpoint()
     }
 }
