@@ -30,6 +30,7 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.core.DockerClientBuilder;
 
 import org.springframework.boot.SpringBootVersion;
@@ -43,7 +44,6 @@ public class DockerBuildIT {
 
     private static String dockerizer = System.getProperty("dockerizer");
     private static String port;
-    private static String root;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -51,22 +51,21 @@ public class DockerBuildIT {
         switch (dockerizer) {
         case "jar":
             port = "8080";
-            root = "/";
             break;
         case "classpath":
             port = "8080";
-            root = "/";
             break;
         default: // liberty
             port = "9080";
-            root = "/spring/";
             break;
         }
+
+        ExposedPort exposedPort = ExposedPort.tcp(Integer.valueOf(port));
 
         dockerFile = new File("Dockerfile");
         dockerClient = DockerClientBuilder.getInstance().build();
         container = dockerClient.createContainerCmd("localhost:5000/test-spring-boot-docker:latest")
-                .withPortBindings(PortBinding.parse(port + ":" + port)).exec();
+                .withPortBindings(PortBinding.parse(port + ":" + port)).withExposedPorts(exposedPort).exec();
         Thread.sleep(3000);
 
         dockerClient.startContainerCmd(container.getId()).exec();
@@ -157,8 +156,7 @@ public class DockerBuildIT {
     }
 
     public void testAppRunningOnEndpoint() throws Exception {
-
-        URL requestUrl = new URL("http://" + getTestDockerHost() + ":" + port + root);
+        URL requestUrl = new URL("http://" + getTestDockerHost() + ":" + port + "/spring/");
         HttpURLConnection conn = (HttpURLConnection) requestUrl.openConnection();
 
         if (conn != null) {
