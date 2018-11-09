@@ -13,16 +13,22 @@ package io.openliberty.boost.gradle.utils
 
 import io.openliberty.boost.common.BoostLoggerI
 
-import org.gradle.api.DefaultTask
+import org.gradle.api.Project
 
-public class BoostLogger extends DefaultTask implements BoostLoggerI {
+public class BoostLogger implements BoostLoggerI {
 
-    private static BoostLogger logger = null;
+    private static BoostLogger logger = null
+    private static Project project
+
+    BoostLogger(Project project) {
+        this.project = project
+    }
+
+    public static init(Project project) {
+        logger = new BoostLogger(project)
+    }
 
     public static BoostLogger getInstance() {
-        if (logger == null) {
-            logger = new BoostLogger()
-        }
         return logger
     }
 

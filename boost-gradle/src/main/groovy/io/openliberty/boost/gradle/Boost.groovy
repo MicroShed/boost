@@ -15,14 +15,18 @@ import net.wasdev.wlp.gradle.plugins.extensions.ServerExtension
 
 import io.openliberty.boost.gradle.extensions.BoostExtension
 
+import io.openliberty.boost.utils.BoostLogger
+
 public class Boost implements Plugin<Project> {
 
     final String BOOST_SERVER_NAME = 'BoostServer'
 
-    final String OPEN_LIBERTY_VERSION = '18.0.0.3'
+    final String OPEN_LIBERTY_VERSION = '[18.0.0.3,)'
 
     void apply(Project project) {
         project.extensions.create('boost', BoostExtension)
+
+        BoostLogger.init(project)
 
         new BoostTaskFactory(project).createTasks()
 
