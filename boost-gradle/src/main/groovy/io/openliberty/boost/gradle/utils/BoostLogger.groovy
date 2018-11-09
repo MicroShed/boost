@@ -8,56 +8,63 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.utils;
 
-import org.codehaus.mojo.pluginsupport.MojoSupport;
+package io.openliberty.boost.gradle.utils
 
-import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.BoostLoggerI
 
-public class BoostLogger extends MojoSupport implements BoostLoggerI {
+import org.gradle.api.Project
 
-    private static BoostLogger logger = null;
+public class BoostLogger implements BoostLoggerI {
+
+    private static BoostLogger logger = null
+    private static Project project
+
+    BoostLogger(Project project) {
+        this.project = project
+    }
+
+    public static init(Project project) {
+        logger = new BoostLogger(project)
+    }
 
     public static BoostLogger getInstance() {
-        if (logger == null) {
-            logger = new BoostLogger();
-        }
-        return logger;
+        return logger
     }
 
     @Override
     public void debug(String msg) {
-        getLog().debug(msg);
+        project.getLogger().debug(msg)
     }
 
     @Override
     public void debug(String msg, Throwable e) {
-        getLog().debug(msg, e);
+        project.getLogger().debug(msg, e)
     }
 
     @Override
     public void debug(Throwable e) {
-        getLog().debug(e);
+        project.getLogger().debug(e)
     }
 
     @Override
     public void warn(String msg) {
-        getLog().warn(msg);
+        project.getLogger().warn(msg)
     }
 
     @Override
     public void info(String msg) {
-        getLog().info(msg);
+        project.getLogger().info(msg)
     }
 
     @Override
     public void error(String msg) {
-        getLog().error(msg);
+        project.getLogger().error(msg)
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return getLog().isDebugEnabled();
+        return project.getLogger().isEnabled(LogLevel.DEBUG)
     }
 
 }

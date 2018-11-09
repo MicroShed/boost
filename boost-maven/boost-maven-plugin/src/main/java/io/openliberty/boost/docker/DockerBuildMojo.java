@@ -55,16 +55,22 @@ import java.util.ArrayList;
 import java.util.Map;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 import com.google.gson.Gson;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.BuildParam;
 import com.spotify.docker.client.exceptions.DockerException;
 
-import io.openliberty.boost.BoostException;
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.docker.dockerizer.Dockerizer;
+import io.openliberty.boost.docker.dockerizer.spring.DockerizeLibertySpringBootJar;
+import io.openliberty.boost.docker.dockerizer.spring.DockerizeSpringBootClasspath;
+import io.openliberty.boost.docker.dockerizer.spring.DockerizeSpringBootJar;
 import net.wasdev.wlp.maven.plugins.utils.SpringBootUtil;
 
 /**
@@ -75,153 +81,172 @@ import net.wasdev.wlp.maven.plugins.utils.SpringBootUtil;
  */
 @Mojo(name = "docker-build", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class DockerBuildMojo extends AbstractDockerMojo {
-    /**
-     * Pull newer version of the image, if set. Use the cache by default when
-     * building the image.
-     */
-    @Parameter(property = "pullNewerImage", defaultValue = "false")
-    private boolean pullNewerImage;
+	/**
+	 * Pull newer version of the image, if set. Use the cache by default when
+	 * building the image.
+	 */
+	@Parameter(property = "pullNewerImage", defaultValue = "false")
+	private boolean pullNewerImage;
 
-    /**
-     * Do not use cache when building the image.
-     */
-    @Parameter(property = "noCache", defaultValue = "false")
-    private boolean noCache;
+	/**
+	 * Do not use cache when building the image.
+	 */
+	@Parameter(property = "noCache", defaultValue = "false")
+	private boolean noCache;
 
-    /**
-     * Set build time variables.
-     */
-    @Parameter(property = "buildArgs")
-    private Map<String, String> buildArgs;
+	/**
+	 * Set build time variables.
+	 */
+	@Parameter(property = "buildArgs")
+	private Map<String, String> buildArgs;
 
-    @Override
-    protected void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException {
-        try {
-            File appArchive = getAppArchive();
+	/**
+	 * Sets the type of docker build to run.
+	 */
+	@Parameter(property = "dockerizer", defaultValue = "liberty")
+	private String dockerizer;
 
-            // Create a Dockerfile for the application
-            Dockerize dockerize = new Dockerize(project, appArchive, log);
-            dockerize.createDockerFile();
-            // Create a .dockerignore file
-            dockerize.createDockerIgnore();
+	@Override
+	protected void execute(DockerClient dockerClient) throws MojoExecutionException, MojoFailureException {
+		try {
+			File appArchive = getAppArchive();
 
-            buildDockerImage(dockerClient, appArchive);
-        } catch (Exception e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-        }
-    }
+			// Create a Dockerfile for the application
+			Dockerizer dockerizer = getDockerizer(project, appArchive, log);
+			dockerizer.createDockerFile();
+			dockerizer.createDockerIgnore();
 
-    /**
-     * Find the location of the Spring Boot Uber JAR
-     * 
-     * @throws BoostException
-     */
-    private File getAppArchive() throws BoostException {
-        File appArchive;
+			buildDockerImage(dockerClient, dockerizer);
+		} catch (Exception e) {
+			throw new MojoExecutionException(e.getMessage(), e);
+		}
+	}
 
-        // First try to get the Spring Boot Uber JAR as the project artifact as a result
-        // of the spring-boot-maven-plugin execution, handling classifier scenario if
-        // necessary.
-        appArchive = SpringBootUtil.getSpringBootUberJAR(project, getLog());
-        if (appArchive != null) {
-            return appArchive;
-        }
+	/**
+	 * Find the location of the Spring Boot Uber JAR
+	 * 
+	 * @throws BoostException
+	 */
+	private File getAppArchive() throws BoostException {
+		File appArchive;
 
-        // If Boost replaced the project artifact, then the appArchive path will
-        // actually point to the Liberty Uber JAR. Check if this is the case and if so,
-        // use the .spring artifact that we preserved during the Boost packaging
-        // process.
+		// First try to get the Spring Boot Uber JAR as the project artifact as a result
+		// of the spring-boot-maven-plugin execution, handling classifier scenario if
+		// necessary.
+		appArchive = SpringBootUtil.getSpringBootUberJAR(project, getLog());
+		if (appArchive != null) {
+			return appArchive;
+		}
 
-        // Strictly speaking, the Liberty Uber JAR (in the "unboosted" SpringBoot Uber
-        // JAR location), is not needed to build the Docker image. However, let's throw
-        // an exception if we get here and it doesn't exist, assuming we've done
-        // something wrong. If it turns out we want to relax this later, we could.
-        File unboostedSpringBootUberJarLocation = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil
-                .getSpringBootUberJARLocation(project, getLog());
-        if (!unboostedSpringBootUberJarLocation.exists()) {
-            String excMsg = "Expected file does not exist at path = "
-                    + getPathMessageText(unboostedSpringBootUberJarLocation)
-                    + ". Make sure you have executed the spring-boot:repackage goal first before attempting the current goal.";
-            throw new BoostException(excMsg);
-        }
-        // Get the Boost location for the SpringBoot Uber JAR
-        appArchive = new File(io.openliberty.boost.utils.SpringBootUtil
-                .getBoostedSpringBootUberJarPath(unboostedSpringBootUberJarLocation));
-        if (!appArchive.exists()) {
-            String excMsg = "Expected file does not exist at path = " + getPathMessageText(appArchive)
-                    + ". Make sure you have executed the spring-boot:repackage goal first before attempting the current goal.";
-            throw new BoostException(excMsg);
-        }
-        if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(appArchive)) {
-            getLog().info("Found Spring Boot Uber JAR with .spring extension.");
-            return appArchive;
-        }
+		// If Boost replaced the project artifact, then the appArchive path will
+		// actually point to the Liberty Uber JAR. Check if this is the case and if so,
+		// use the .spring artifact that we preserved during the Boost packaging
+		// process.
 
-        // At this point we did not find the Spring Boot Uber JAR in any of its expected
-        // locations.
-        throw new BoostException("Could not find Spring Boot Uber JAR.");
-    }
+		// Strictly speaking, the Liberty Uber JAR (in the "unboosted" SpringBoot Uber
+		// JAR location), is not needed to build the Docker image. However, let's throw
+		// an exception if we get here and it doesn't exist, assuming we've done
+		// something wrong. If it turns out we want to relax this later, we could.
+		File unboostedSpringBootUberJarLocation = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil
+				.getSpringBootUberJARLocation(project, getLog());
+		if (!unboostedSpringBootUberJarLocation.exists()) {
+			String excMsg = "Expected file does not exist at path = "
+					+ getPathMessageText(unboostedSpringBootUberJarLocation)
+					+ ". Make sure you have executed the spring-boot:repackage goal first before attempting the current goal.";
+			throw new BoostException(excMsg);
+		}
+		// Get the Boost location for the SpringBoot Uber JAR
+		appArchive = new File(io.openliberty.boost.common.utils.SpringBootUtil
+				.getBoostedSpringBootUberJarPath(unboostedSpringBootUberJarLocation));
+		if (!appArchive.exists()) {
+			String excMsg = "Expected file does not exist at path = " + getPathMessageText(appArchive)
+					+ ". Make sure you have executed the spring-boot:repackage goal first before attempting the current goal.";
+			throw new BoostException(excMsg);
+		}
+		if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(appArchive)) {
+			getLog().info("Found Spring Boot Uber JAR with .spring extension.");
+			return appArchive;
+		}
 
-    /**
-     * Use the DockerClient to build the image
-     * 
-     */
-    private void buildDockerImage(DockerClient dockerClient, File appArchive)
-            throws MojoExecutionException, IOException {
-        final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
-        final String imageName = getImageName();
-        BuildParam[] buidParams = getBuildParams(appArchive);
-        log.info(""); // Adding empty log for formatting purpose
-        log.info("Building image: " + imageName);
-        try {
-            dockerClient.build(project.getBasedir().toPath(), imageName, progressHandler, buidParams);
-        } catch (DockerException | InterruptedException e) {
-            throw new MojoExecutionException("Unable to build image", e);
-        }
-    }
+		// At this point we did not find the Spring Boot Uber JAR in any of its expected
+		// locations.
+		throw new BoostException("Could not find Spring Boot Uber JAR.");
+	}
 
-    private BuildParam[] getBuildParams(File appArchive) throws MojoExecutionException {
-        final ArrayList<BuildParam> buildParamsList = new ArrayList<>();
-        final BuildParam[] buildParams;
-        if (pullNewerImage) {
-            buildParamsList.add(BuildParam.pullNewerImage());
-        }
-        if (noCache) {
-            buildParamsList.add(BuildParam.noCache());
-        }
+	private Dockerizer getDockerizer(MavenProject project, File appArchive, Log log) {
+		// TODO: Needed future enhancements:
+		// 1. Is it Spring or something else? sense with MavenProjectUtil.findSpringBootVersion(project);
+		// 2. Use OpenJ9 or HotSpot? sense with property boost.docker.jvm
+		if ("jar".equalsIgnoreCase(dockerizer)) {
+			return new DockerizeSpringBootJar(project, appArchive, log);
+		}
+		if ("classpath".equalsIgnoreCase(dockerizer)) {
+			return new DockerizeSpringBootClasspath(project, appArchive, log);
+		}
+		// TODO: Maybe don't make the Spring Boot dockerizer default after EE stuff is added
+		// The current property values of 'jar', 'classpath' and 'liberty' are intentionally
+		// generic so that they can be applied irrespective of the project type (Spring vs EE)
+		return new DockerizeLibertySpringBootJar(project, appArchive, log);
+	}
 
-        buildArgs.put("APP_FILE", appArchive.getName());
+	/**
+	 * Use the DockerClient to build the image
+	 * 
+	 */
+	private void buildDockerImage(DockerClient dockerClient, Dockerizer dockerizer)
+			throws MojoExecutionException, IOException {
+		final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
+		final String imageName = getImageName();
+		BuildParam[] buidParams = getBuildParams(dockerizer);
+		log.info(""); // Adding empty log for formatting purpose
+		log.info("Building image: " + imageName);
+		try {
+			dockerClient.build(project.getBasedir().toPath(), imageName, progressHandler, buidParams);
+		} catch (DockerException | InterruptedException e) {
+			throw new MojoExecutionException("Unable to build image", e);
+		}
+	}
 
-        try {
-            final String encodedBuildArgs = URLEncoder.encode(new Gson().toJson(buildArgs), "utf-8");
-            buildParamsList.add(new BuildParam("buildargs", encodedBuildArgs));
-        } catch (UnsupportedEncodingException e) {
-            throw new MojoExecutionException("Unable to build image", e);
-        }
+	private BuildParam[] getBuildParams(Dockerizer dockerizer) throws MojoExecutionException {
+		final ArrayList<BuildParam> buildParamsList = new ArrayList<>();
+		final BuildParam[] buildParams;
+		if (pullNewerImage) {
+			buildParamsList.add(BuildParam.pullNewerImage());
+		}
+		if (noCache) {
+			buildParamsList.add(BuildParam.noCache());
+		}
 
-        buildParams = buildParamsList.toArray(new BuildParam[buildParamsList.size()]);
-        return buildParams;
-    }
+		buildArgs.putAll(dockerizer.getBuildArgs());
 
-    /**
-     * Get the artifact path
-     *
-     * @param artifact
-     * @return the canonical path, if it can be obtained successfully, otherwise the
-     *         absolute path
-     */
-    private static String getPathMessageText(File artifact) {
-        String retVal = null;
-        try {
-            if (artifact != null) {
-                retVal = artifact.getCanonicalPath();
-            }
-        } catch (IOException ioexc) {
-            retVal = artifact.getAbsolutePath();
-        }
-        return retVal;
-    }
+		try {
+			final String encodedBuildArgs = URLEncoder.encode(new Gson().toJson(buildArgs), "utf-8");
+			buildParamsList.add(new BuildParam("buildargs", encodedBuildArgs));
+		} catch (UnsupportedEncodingException e) {
+			throw new MojoExecutionException("Unable to build image", e);
+		}
 
-    private void throwFileDoesntExistException(File unboostedSpringBootUberJarLocation) throws BoostException {
-    }
+		buildParams = buildParamsList.toArray(new BuildParam[buildParamsList.size()]);
+		return buildParams;
+	}
+
+	/**
+	 * Get the artifact path
+	 *
+	 * @param artifact
+	 * @return the canonical path, if it can be obtained successfully, otherwise the
+	 *         absolute path
+	 */
+	private static String getPathMessageText(File artifact) {
+		String retVal = null;
+		try {
+			if (artifact != null) {
+				retVal = artifact.getCanonicalPath();
+			}
+		} catch (IOException ioexc) {
+			retVal = artifact.getAbsolutePath();
+		}
+		return retVal;
+	}
+
 }

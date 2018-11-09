@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.boost;
 
-import io.openliberty.boost.BoosterPackConfigurator;
+import io.openliberty.boost.common.BoosterPackConfigurator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

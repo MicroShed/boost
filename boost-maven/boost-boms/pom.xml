@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (c) 2018 IBM Corporation and others. All rights reserved. 
 	This program and the accompanying materials are made available under the 
 	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
@@ -14,7 +15,6 @@
         <version>0.1.2-SNAPSHOT</version>
     </parent>
 	
-	<groupId>io.openliberty.boost</groupId>
 	<artifactId>boost-boms</artifactId>
 	<packaging>pom</packaging>
 	
@@ -24,6 +24,5 @@
 		<module>boost-ee8-apis-bom</module>
 		<module>booster-ee8-bom</module>
 	</modules>
-
 
 </project>
