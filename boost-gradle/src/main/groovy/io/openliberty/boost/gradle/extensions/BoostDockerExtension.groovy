@@ -13,7 +13,13 @@ package io.openliberty.boost.gradle.extensions
 
 class BoostDockerExtension {
 
+    String dockerizer = "liberty"
 	String imageName = null
-	String dockerRepo = null
+	String dockerRepo = ""
+	String tag = "latest"
+	boolean useProxy = false
+	boolean pullNewerImage = false
+	boolean noCache = false
+	Map<String, String> buildArgs = new HashMap<String, String>()
 
 }

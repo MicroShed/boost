@@ -31,8 +31,6 @@ public class Boost implements Plugin<Project> {
 
         project.pluginManager.apply('net.wasdev.wlp.gradle.plugins.Liberty')
 
-        project.pluginManager.apply('com.palantir.docker')
-
         project.liberty.server = configureBoostServerProperties()
         configureRuntimeArtifact(project)
     }

@@ -17,8 +17,8 @@ import io.openliberty.boost.gradle.tasks.BoostRunTask
 import io.openliberty.boost.gradle.tasks.BoostStopTask
 import io.openliberty.boost.gradle.tasks.BoostPackageTask
 import io.openliberty.boost.gradle.tasks.BoostDebugTask
-import io.openliberty.boost.gradle.tasks.BoostDockerTask
-import io.openliberty.boost.gradle.tasks.BoostDockerPushTask
+import io.openliberty.boost.gradle.tasks.docker.BoostDockerBuildTask
+import io.openliberty.boost.gradle.tasks.docker.BoostDockerPushTask
 
 class BoostTaskFactory {
     Project project
@@ -33,7 +33,7 @@ class BoostTaskFactory {
         project.tasks.create('boostStop', BoostStopTask)
         project.tasks.create('boostPackage', BoostPackageTask)
         project.tasks.create('boostDebug', BoostDebugTask)
-        project.tasks.create('boostDocker', BoostDockerTask)
+        project.tasks.create('boostDockerBuild', BoostDockerBuildTask)
         project.tasks.create('boostDockerPush', BoostDockerPushTask)
         
     }

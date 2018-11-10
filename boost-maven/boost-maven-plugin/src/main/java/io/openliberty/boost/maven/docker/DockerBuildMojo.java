@@ -57,7 +57,6 @@ import com.spotify.docker.client.DockerClient;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.docker.DockerBuildI;
-import io.openliberty.boost.common.docker.dockerizer.spring.SpringDockerizer;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
 import net.wasdev.wlp.maven.plugins.utils.SpringBootUtil;
@@ -97,21 +96,11 @@ public class DockerBuildMojo extends AbstractDockerMojo implements DockerBuildI 
 
     @Override
     public void execute(DockerClient dockerClient) throws BoostException {
-        try {
-            File appArchive = getAppArchive();
-
-            // Create a Dockerfile for the application
-            File projectDirectory = project.getBasedir();
-            File outputDirectory = new File(project.getBuild().getDirectory());
-            String springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
-            SpringDockerizer springDockerizer = getDockerizer(dockerizer, projectDirectory, outputDirectory, appArchive, springBootVersion, BoostLogger.getInstance());
-            springDockerizer.createDockerFile();
-            springDockerizer.createDockerIgnore();
-
-            buildDockerImage(project.getBasedir().toPath(), dockerClient, springDockerizer, pullNewerImage, noCache, buildArgs, repository, tag, BoostLogger.getInstance());
-        } catch (Exception e) {
-            throw new BoostException(e.getMessage(), e);
-        }
+        File projectDirectory = project.getBasedir();
+        File outputDirectory = new File(project.getBuild().getDirectory());
+        String springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
+        dockerBuild(dockerizer, dockerClient, projectDirectory, outputDirectory, springBootVersion, pullNewerImage,
+                noCache, buildArgs, repository, tag, BoostLogger.getInstance());
     }
 
     /**

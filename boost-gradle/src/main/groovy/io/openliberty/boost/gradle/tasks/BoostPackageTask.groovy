@@ -46,7 +46,7 @@ public class BoostPackageTask extends AbstractBoostTask {
 
             dependsOn 'libertyCreate'
 
-            mustRunAfter 'boostDocker'
+            mustRunAfter 'boostDockerBuild'
 
             //There are some things that this task does before we can package up the server into a JAR
             PackageAndDumpExtension boostPackage = new PackageAndDumpExtension()

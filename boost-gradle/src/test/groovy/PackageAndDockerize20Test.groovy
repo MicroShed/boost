@@ -46,7 +46,7 @@ public class PackageAndDockerize20Test extends AbstractBoostDockerTest {
 
         result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("boostDocker", "boostPackage", "boostStart", "boostStop")
+            .withArguments("boostDockerBuild", "boostPackage", "boostStart", "boostStop")
             .build()
     }
 
@@ -54,7 +54,7 @@ public class PackageAndDockerize20Test extends AbstractBoostDockerTest {
     public void testBuildSuccess() throws IOException {
         assertEquals(SUCCESS, result.task(":installLiberty").getOutcome())
         assertEquals(SUCCESS, result.task(":libertyCreate").getOutcome())
-        assertEquals(SUCCESS, result.task(":boostDocker").getOutcome())
+        assertEquals(SUCCESS, result.task(":boostDockerBuild").getOutcome())
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStop").getOutcome())

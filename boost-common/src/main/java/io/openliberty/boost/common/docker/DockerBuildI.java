@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package io.openliberty.boost.common.docker;
 
 import java.io.File;
@@ -25,8 +35,28 @@ public abstract interface DockerBuildI extends AbstractDockerI {
     public File getAppArchive() throws BoostException;
 
     // Default methods
-    
-    default public SpringDockerizer getDockerizer(String dockerizer, File projectDirectory, File outputDirectory, File appArchive, String springBootVersion, BoostLoggerI log) {
+
+    default public void dockerBuild(String dockerizer, DockerClient dockerClient, File projectDirectory,
+            File outputDirectory, String springBootVersion, boolean pullNewerImage, boolean noCache,
+            Map<String, String> buildArgs, String repository, String tag, BoostLoggerI log) throws BoostException {
+        try {
+            File appArchive = getAppArchive();
+
+            // Create a Dockerfile for the application
+            SpringDockerizer springDockerizer = getDockerizer(dockerizer, projectDirectory, outputDirectory, appArchive,
+                    springBootVersion, log);
+            springDockerizer.createDockerFile();
+            springDockerizer.createDockerIgnore();
+
+            buildDockerImage(projectDirectory.toPath(), dockerClient, springDockerizer, pullNewerImage, noCache,
+                    buildArgs, repository, tag, log);
+        } catch (Exception e) {
+            throw new BoostException(e.getMessage(), e);
+        }
+    }
+
+    default public SpringDockerizer getDockerizer(String dockerizer, File projectDirectory, File outputDirectory,
+            File appArchive, String springBootVersion, BoostLoggerI log) {
 
         // TODO: Needed future enhancements:
         // 1. Is it Spring or something else? sense with
@@ -52,9 +82,9 @@ public abstract interface DockerBuildI extends AbstractDockerI {
      * Use the DockerClient to build the image
      * 
      */
-    default public void buildDockerImage(Path baseDir, DockerClient dockerClient, SpringDockerizer dockerizer, boolean pullNewerImage,
-            boolean noCache, Map<String, String> buildArgs, String repository, String tag, BoostLoggerI log)
-            throws BoostException, IOException {
+    default public void buildDockerImage(Path baseDir, DockerClient dockerClient, SpringDockerizer dockerizer,
+            boolean pullNewerImage, boolean noCache, Map<String, String> buildArgs, String repository, String tag,
+            BoostLoggerI log) throws BoostException, IOException {
         final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
         final String imageName = getImageName(repository, tag);
         BuildParam[] buidParams = getBuildParams(dockerizer, pullNewerImage, noCache, buildArgs);

@@ -61,7 +61,7 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
 
     @Test
     public void testDockerSuccess() throws IOException {
-        assertEquals(SUCCESS, result.task(":boostDocker").getOutcome())
+        assertEquals(SUCCESS, result.task(":boostDockerBuild").getOutcome())
     }  
     
     @Test

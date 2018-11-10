@@ -26,6 +26,7 @@ import com.spotify.docker.client.auth.ConfigFileRegistryAuthSupplier;
 import com.spotify.docker.client.auth.RegistryAuthSupplier;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.docker.AbstractDockerI;
+import io.openliberty.boost.maven.utils.BoostLogger;
 
 public abstract class AbstractDockerMojo extends AbstractMojo implements AbstractDockerI {
 
@@ -67,27 +68,10 @@ public abstract class AbstractDockerMojo extends AbstractMojo implements Abstrac
 
     @Override
     public void execute() throws MojoExecutionException {
-        log = getLog();
-        if (repository.equals(project.getArtifactId()) && !repository.equals(repository.toLowerCase())) {
-            this.repository = project.getArtifactId().toLowerCase();
-            log.debug(
-                    "Applying all lower case letters to the default repository name to build the Docker image successfully");
-        }
-
-        if (!isRepositoryValid(repository)) {
-            if (repository.equals(project.getArtifactId())) {
-                throw new MojoExecutionException(
-                        "The default repository name ${project.artifactId} cannot be used to build the image because it is not a valid repository name.");
-            } else {
-                throw new MojoExecutionException("The <repository> parameter is not configured with a valid name");
-            }
-        }
-        if (!AbstractDockerI.super.isTagValid(tag)) {
-            throw new MojoExecutionException("The <tag> parameter is not configured with a valid name");
-        }
-
         try {
-            execute(getDockerClient(useProxy));
+            if(isValidDockerConfig(BoostLogger.getInstance(), repository, tag, project.getArtifactId())) {
+                execute(getDockerClient(useProxy));
+            }
         } catch (BoostException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
