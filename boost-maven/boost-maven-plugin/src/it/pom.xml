@@ -25,6 +25,7 @@
         <module>test-spring-boot-ssl</module>
         <module>test-jaxrs-2.0</module>
         <module>test-jaxrs-2.1</module>
+        <module>test-context</module>
     </modules>
     
 </project>
