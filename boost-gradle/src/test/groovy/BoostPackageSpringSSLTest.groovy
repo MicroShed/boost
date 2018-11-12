@@ -55,9 +55,11 @@ public class BoostPackageSpringSSLTest extends AbstractBoostTest {
         
         BuildResult result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("boostPackage", "boostStart")
+            .forwardOutput()
+            .withArguments("boostPackage", "boostStart", "-i", "-s")
             .build()
             
+        assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
     }
     
@@ -66,10 +68,12 @@ public class BoostPackageSpringSSLTest extends AbstractBoostTest {
     
         BuildResult result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("boostStop")
+            .forwardOutput()
+            .withArguments("boostStop", "-i", "-s")
             .build()
        
         assertEquals(SUCCESS, result.task(":boostStop").getOutcome())
+       
     }
 
     @Test

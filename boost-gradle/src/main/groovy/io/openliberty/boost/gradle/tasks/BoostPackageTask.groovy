@@ -140,17 +140,17 @@ public class BoostPackageTask extends AbstractBoostTask {
         return springBootVersion != null && !springBootVersion.isEmpty()
     }
 
-    protected List<String> getSpringFrameworkDependencies() {
+    protected List<String> getSpringBootDependencies() {
 
-        List<String> springFrameworkDependencies = new ArrayList<String>()
+        List<String> springBootDependencies = new ArrayList<String>()
 
-        project.configurations.compile.dependencies.each { Dependency art ->
-            if (art.getGroup().equals("org.springframework")) {
-                springBootStarters.add(art.getName())
+        project.configurations.compile.resolvedConfiguration.resolvedArtifacts.each { art ->
+            if ("${art.name}".contains("spring")) {
+                springBootDependencies.add(art.name)
             }
         }
        
-        return springFrameworkDependencies
+        return springBootDependencies
     }
 
     public String getClassifier() {
@@ -171,11 +171,11 @@ public class BoostPackageTask extends AbstractBoostTask {
     
        try {
             // Get Spring Boot starters from Maven project
-            List<String> springFrameworkDependencies = getSpringBootDependencies();
+            List<String> springBootDependencies = getSpringBootDependencies();
 
             // Generate server config
             SpringBootUtil.generateLibertyServerConfig("${project.buildDir}/resources/main", libertyServerPath,
-                    springBootVersion, springFrameworkDependencies, BoostLogger.getInstance());
+                    springBootVersion, springBootDependencies, BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new GradleException("Unable to generate server configuration for the Liberty server.", e);
