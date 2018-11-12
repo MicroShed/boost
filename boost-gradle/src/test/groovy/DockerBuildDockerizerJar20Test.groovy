@@ -1,0 +1,44 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+import org.gradle.testkit.runner.BuildResult
+import org.gradle.testkit.runner.GradleRunner
+import static org.gradle.testkit.runner.TaskOutcome.*
+
+import org.junit.BeforeClass
+import static org.junit.Assert.*
+
+import java.io.File
+
+import com.github.dockerjava.core.DockerClientBuilder
+
+public class DockerBuildDockerizerJar20Test extends AbstractBoostDockerTest {
+
+    @BeforeClass
+    public static void setup() {
+        resourceDir = new File("build/resources/test/springApp")
+        testProjectDir = new File(integTestDir, "DockerBuildDockerizerJar20Test")
+        buildFilename = "dockerDockerizerJar20Test.gradle"
+        libertyImage = OL_SPRING_20_IMAGE
+        imageName = "localhost:5000/test-image20"
+        dockerPort = "8080"
+
+        createDir(testProjectDir)
+        createTestProject(testProjectDir, resourceDir, buildFilename)
+        dockerFile = new File(testProjectDir, "Dockerfile")
+        dockerClient = DockerClientBuilder.getInstance().build()
+
+        result = GradleRunner.create()
+            .withProjectDir(testProjectDir)
+            .withArguments("build")
+            .build()
+    }
+}

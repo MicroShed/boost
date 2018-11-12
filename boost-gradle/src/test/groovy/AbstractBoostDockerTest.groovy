@@ -33,6 +33,7 @@ import com.github.dockerjava.api.command.CreateContainerResponse
 import com.github.dockerjava.api.model.Container
 import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.core.DockerClientBuilder
+import com.github.dockerjava.api.model.ExposedPort;
 
 public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     protected static final String OL_SPRING_15_IMAGE = "open-liberty:springBoot1"
@@ -46,6 +47,7 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
 
     protected static String imageName
     protected static String libertyImage
+    protected static String dockerPort = "9080"
         
     protected static File resourceDir
     protected static File testProjectDir
@@ -79,8 +81,10 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     
     @Test
     public void runDockerContainerAndVerifyAppOnEndpoint() throws Exception {
+        ExposedPort exposedPort = ExposedPort.tcp(Integer.valueOf(dockerPort))
+        
         CreateContainerResponse container = dockerClient.createContainerCmd("${imageName}:latest")
-                .withPortBindings(PortBinding.parse("9080:9080")).exec()
+                .withPortBindings(PortBinding.parse(dockerPort + ":" + dockerPort)).withExposedPorts(exposedPort).exec()
         Thread.sleep(3000)
 
         containerId = container.getId()
@@ -101,7 +105,7 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     }
 
     public void testAppRunningOnEndpoint() throws Exception {
-        URL requestUrl = new URL("http://localhost:9080/")
+        URL requestUrl = new URL("http://localhost:" + dockerPort)
         HttpURLConnection conn = (HttpURLConnection) requestUrl.openConnection()
 
         if (conn != null) {
