@@ -17,6 +17,7 @@ import com.spotify.docker.client.DockerClient
 import io.openliberty.boost.common.BoostException
 import io.openliberty.boost.common.docker.DockerPushI
 
+import io.openliberty.boost.gradle.utils.BoostLogger
 import io.openliberty.boost.gradle.utils.GradleProjectUtil
 
 public class BoostDockerPushTask extends AbstractBoostDockerTask implements DockerPushI {

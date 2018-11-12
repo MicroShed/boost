@@ -26,6 +26,7 @@ import java.nio.file.FileAlreadyExistsException
 import java.nio.file.Files
 import java.nio.charset.Charset
 import java.util.ArrayList
+import java.io.File
 
 public class BoostDockerBuildTask extends AbstractBoostDockerTask implements DockerBuildI {
 
@@ -99,9 +100,7 @@ public class BoostDockerBuildTask extends AbstractBoostDockerTask implements Doc
     @Override
     public void execute(DockerClient dockerClient) throws BoostException {
         File projectDirectory = project.projectDir
-        File outputDirectory = project.buildDir
-        
-        println '------------------------------' + project.boost.docker.dockerRepo + appName
+        File outputDirectory = new File(project.buildDir.getAbsolutePath(), 'libs')
         
         dockerBuild(project.boost.docker.dockerizer, dockerClient, projectDirectory, outputDirectory, springBootVersion, project.boost.docker.pullNewerImage,
                 project.boost.docker.noCache, project.boost.docker.buildArgs, project.boost.docker.dockerRepo + appName, project.boost.docker.tag, BoostLogger.getInstance())

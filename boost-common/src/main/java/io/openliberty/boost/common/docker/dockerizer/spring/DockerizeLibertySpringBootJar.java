@@ -11,6 +11,7 @@
 package io.openliberty.boost.common.docker.dockerizer.spring;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,34 +57,38 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
     }
 
     public List<String> getDockerfileLines() throws BoostException {
-        String libertyImage = getLibertySpringBootBaseImage();
-        ArrayList<String> lines = new ArrayList<>();
-        lines.add(BOOST_GEN);
-        lines.add(FROM + libertyImage + " as " + "staging");
+        try {
+            String libertyImage = getLibertySpringBootBaseImage();
+            ArrayList<String> lines = new ArrayList<>();
+            lines.add(BOOST_GEN);
+            lines.add(FROM + libertyImage + " as " + "staging");
 
-        lines.add("");
-        lines.add("# The APP_FILE ARG provides the final name of the Spring Boot application archive");
-        lines.add("ARG" + " " + "APP_FILE");
+            lines.add("");
+            lines.add("# The APP_FILE ARG provides the final name of the Spring Boot application archive");
+            lines.add("ARG" + " " + "APP_FILE");
 
-        lines.add("");
-        lines.add("# Stage the fat JAR");
-        lines.add(COPY + outputDirectory.getName() + "/" + "${APP_FILE}" + " " + "/staging/" + "${APP_FILE}");
+            lines.add("");
+            lines.add("# Stage the fat JAR");
+            lines.add(COPY + outputDirectory.getCanonicalPath().replace(projectDirectory.getCanonicalPath(), "") + "/" + "${APP_FILE}" + " " + "/staging/" + "${APP_FILE}");
 
-        lines.add("");
-        lines.add("# Thin the fat application; stage the thin app output and the library cache");
-        lines.add(RUN + "springBootUtility thin " + ARG_SOURCE_APP + "=" + "/staging/" + "${APP_FILE}" + " "
-                + ARG_DEST_THIN_APP + "=" + "/staging/" + "thin-${APP_FILE}" + " " + ARG_DEST_LIB_CACHE + "="
-                + "/staging/" + LIB_INDEX_CACHE);
+            lines.add("");
+            lines.add("# Thin the fat application; stage the thin app output and the library cache");
+            lines.add(RUN + "springBootUtility thin " + ARG_SOURCE_APP + "=" + "/staging/" + "${APP_FILE}" + " "
+                    + ARG_DEST_THIN_APP + "=" + "/staging/" + "thin-${APP_FILE}" + " " + ARG_DEST_LIB_CACHE + "="
+                    + "/staging/" + LIB_INDEX_CACHE);
 
-        lines.add("");
-        lines.add("# Final stage, only copying the liberty installation (includes primed caches)");
-        lines.add("# and the lib.index.cache and thin application");
-        lines.add(FROM + libertyImage);
-        lines.add("ARG" + " " + "APP_FILE");
-        lines.add(COPY + "--from=staging " + "/staging/" + LIB_INDEX_CACHE + " " + "/" + LIB_INDEX_CACHE);
-        lines.add(COPY + "--from=staging " + "/staging/thin-${APP_FILE}" + " "
-                + "/config/dropins/spring/thin-${APP_FILE}");
-        return lines;
+            lines.add("");
+            lines.add("# Final stage, only copying the liberty installation (includes primed caches)");
+            lines.add("# and the lib.index.cache and thin application");
+            lines.add(FROM + libertyImage);
+            lines.add("ARG" + " " + "APP_FILE");
+            lines.add(COPY + "--from=staging " + "/staging/" + LIB_INDEX_CACHE + " " + "/" + LIB_INDEX_CACHE);
+            lines.add(COPY + "--from=staging " + "/staging/thin-${APP_FILE}" + " "
+                    + "/config/dropins/spring/thin-${APP_FILE}");
+            return lines;
+        } catch (IOException e) {
+            throw new BoostException("Could not resolve the project location when creating Dockerfile.", e);
+        }
     }
 
 	@Override
