@@ -40,7 +40,7 @@ public class BoostUtil {
     }
 
     public static void extract(File artifact, File projectDirectory, String dependencyFolder) {
-        File extractDir = new File(projectDirectory.getPath() + dependencyFolder);
+        File extractDir = new File(projectDirectory.getPath() + File.separator + dependencyFolder);
         if (!extractDir.exists())
             extractDir.mkdirs();
 
