@@ -81,7 +81,6 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
 
         assertTrue("Expected Liberty generated Dockerfile line ${Dockerizer.BOOST_GEN} was not found in " + dockerFile.getCanonicalPath(), reader.readLine().contains(Dockerizer.BOOST_GEN))
         assertTrue("Expected Open liberty base image ${libertyImage} was not found in " + dockerFile.getCanonicalPath(), reader.readLine().contains(libertyImage))
-
     }
     
     @Test
@@ -110,7 +109,7 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     }
 
     public void testAppRunningOnEndpoint() throws Exception {
-        URL requestUrl = new URL("http://localhost:" + dockerPort)
+        URL requestUrl = new URL("http://" + getTestDockerHost() + ":" + dockerPort)
         HttpURLConnection conn = (HttpURLConnection) requestUrl.openConnection()
 
         if (conn != null) {
@@ -126,4 +125,14 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
         }
         assertEquals("Expected body not found.", "Greetings from Spring Boot!", response.toString())
     }
+	
+	private static String getTestDockerHost() {
+		String dockerHostEnv = System.getenv("DOCKER_HOST");
+		if (dockerHostEnv == null || dockerHostEnv.isEmpty()) {
+			return "localhost";
+		} else {
+			URI dockerHostURI = URI.create(dockerHostEnv);
+				return dockerHostURI.getHost();
+		}
+	}
 }
