@@ -74,7 +74,8 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     @Test
     public void testDockerfileContainsCorrectLibertyImage() throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(dockerFile))
-
+		reader.readLine()
+		// need to read two lines since the first is the generator comment
         assertTrue("Expected Open liberty base image ${libertyImage} was not found in " + dockerFile.getCanonicalPath(), reader.readLine().contains(libertyImage))
 
     }
