@@ -12,7 +12,7 @@
 	<artifactId>boost-common</artifactId>
 	<version>0.1.2-SNAPSHOT</version>
 
-	<url>https://github.com/OpenLiberty/boost-common</url>
+	<url>https://github.com/OpenLiberty/boost</url>
 
 	<parent>
 		<groupId>net.wasdev.maven.parent</groupId>
@@ -30,9 +30,9 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:git@github.com:OpenLiberty/boost-common.git</connection>
-		<developerConnection>scm:git:git@github.com:OpenLiberty/boost-common.git</developerConnection>
-		<url>git@github.com:OpenLiberty/boost-common.git</url>
+		<connection>scm:git:git@github.com:OpenLiberty/boost.git</connection>
+		<developerConnection>scm:git:git@github.com:OpenLiberty/boost.git</developerConnection>
+		<url>git@github.com:OpenLiberty/boost.git</url>
 		<tag>HEAD</tag>
 	</scm>
 
