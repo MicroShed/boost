@@ -18,12 +18,13 @@ import java.util.Map;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.docker.DockerParameters;
 
 public class DockerizeSpringBootClasspath extends SpringDockerizer {
-
+    
     public DockerizeSpringBootClasspath(File projectDirectory, File outputDirectory, File appArchive,
-            String springBootVersion, BoostLoggerI log) {
-        super(projectDirectory, outputDirectory, appArchive, springBootVersion, log);
+            String springBootVersion, DockerParameters params, BoostLoggerI log) {
+        super(projectDirectory, outputDirectory, appArchive, springBootVersion, params, log);
     }
 
     public Map<String, String> getBuildArgs() {
@@ -37,7 +38,7 @@ public class DockerizeSpringBootClasspath extends SpringDockerizer {
         lines.add(BOOST_GEN);
         lines.add("FROM adoptopenjdk/openjdk8-openj9");
         lines.add("VOLUME /tmp");
-        lines.add("ARG DEPENDENCY=target/dependency");
+        lines.add("ARG DEPENDENCY=" + params.getDependencyFolder());
         lines.add("COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib");
         lines.add("COPY ${DEPENDENCY}/META-INF /app/META-INF");
         lines.add("COPY ${DEPENDENCY}/BOOT-INF/classes /app");
@@ -50,6 +51,8 @@ public class DockerizeSpringBootClasspath extends SpringDockerizer {
         List<String> lines = new ArrayList<String>();
         lines.add("*.log");
         lines.add("target/liberty");
+        lines.add(".gradle/");
+        lines.add("build/wlp");
         return lines;
     }
 

@@ -15,23 +15,27 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.docker.DockerParameters;
 import io.openliberty.boost.common.docker.dockerizer.Dockerizer;
 import io.openliberty.boost.common.utils.BoostUtil;
 import net.wasdev.wlp.common.plugins.util.SpringBootUtil;
 
 public abstract class SpringDockerizer extends Dockerizer {
     
-    public final String springBootVersion;
+    public final String SPRING_BOOT_VERSION;
+    public final DockerParameters params;
 
-    public SpringDockerizer(File projectDirectory, File outputDirectory, File appArchive, String springBootVersion, BoostLoggerI log) {
+    public SpringDockerizer(File projectDirectory, File outputDirectory, File appArchive, String springBootVersion, DockerParameters params, BoostLoggerI log) {
         super(projectDirectory, outputDirectory, appArchive, log);
-        this.springBootVersion = springBootVersion;
+        this.SPRING_BOOT_VERSION = springBootVersion;
+        this.params = params;
     }
 
     /**
@@ -42,9 +46,9 @@ public abstract class SpringDockerizer extends Dockerizer {
      */
     @Override
     public void createDockerFile() throws BoostException {
-        if (BoostUtil.isNotNullOrEmpty(springBootVersion)) {
+        if (BoostUtil.isNotNullOrEmpty(SPRING_BOOT_VERSION)) {
             if (SpringBootUtil.isSpringBootUberJar(appArchive)) {
-                BoostUtil.extract(appArchive, projectDirectory);
+                BoostUtil.extract(appArchive, projectDirectory, params.getDependencyFolder());
                 String startClass = getSpringStartClass();
                 File dockerFile = createNewDockerFile();
                 if (dockerFile != null) { // File was created
@@ -57,6 +61,18 @@ public abstract class SpringDockerizer extends Dockerizer {
         } else {
             throw new BoostException("Unable to create a Dockerfile because application type is not supported");
         }
+    }
+    
+    protected String getAppPathString() {
+
+        Path projPath = projectDirectory.toPath();
+        Path outputPath = outputDirectory.toPath();
+
+        // goes from '~/proj/build/lib' to 'build/lib'
+        Path appPath = projPath.relativize(outputPath);
+
+        // On Windows the last line might be 'build\lib'
+        return appPath.toString().replace(File.separatorChar, '/');
     }
 
     protected String getSpringStartClass() throws BoostException {

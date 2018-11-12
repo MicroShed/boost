@@ -38,13 +38,14 @@ public abstract interface DockerBuildI extends AbstractDockerI {
 
     default public void dockerBuild(String dockerizer, DockerClient dockerClient, File projectDirectory,
             File outputDirectory, String springBootVersion, boolean pullNewerImage, boolean noCache,
-            Map<String, String> buildArgs, String repository, String tag, BoostLoggerI log) throws BoostException {
+            Map<String, String> buildArgs, String repository, String tag, DockerParameters params, BoostLoggerI log)
+            throws BoostException {
         try {
             File appArchive = getAppArchive();
 
             // Create a Dockerfile for the application
             SpringDockerizer springDockerizer = getDockerizer(dockerizer, projectDirectory, outputDirectory, appArchive,
-                    springBootVersion, log);
+                    springBootVersion, params, log);
             springDockerizer.createDockerFile();
             springDockerizer.createDockerIgnore();
 
@@ -56,18 +57,19 @@ public abstract interface DockerBuildI extends AbstractDockerI {
     }
 
     default public SpringDockerizer getDockerizer(String dockerizer, File projectDirectory, File outputDirectory,
-            File appArchive, String springBootVersion, BoostLoggerI log) {
+            File appArchive, String springBootVersion, DockerParameters params, BoostLoggerI log) {
 
         // TODO: Needed future enhancements:
         // 1. Is it Spring or something else? sense with
         // MavenProjectUtil.findSpringBootVersion(project);
         // 2. Use OpenJ9 or HotSpot? sense with property boost.docker.jvm
         if ("jar".equalsIgnoreCase(dockerizer)) {
-            return new DockerizeSpringBootJar(projectDirectory, outputDirectory, appArchive, springBootVersion, log);
+            return new DockerizeSpringBootJar(projectDirectory, outputDirectory, appArchive, springBootVersion, params,
+                    log);
         }
         if ("classpath".equalsIgnoreCase(dockerizer)) {
             return new DockerizeSpringBootClasspath(projectDirectory, outputDirectory, appArchive, springBootVersion,
-                    log);
+                    params, log);
         }
         // TODO: Maybe don't make the Spring Boot dockerizer default after EE stuff is
         // added
@@ -75,7 +77,8 @@ public abstract interface DockerBuildI extends AbstractDockerI {
         // intentionally
         // generic so that they can be applied irrespective of the project type (Spring
         // vs EE)
-        return new DockerizeLibertySpringBootJar(projectDirectory, outputDirectory, appArchive, springBootVersion, log);
+        return new DockerizeLibertySpringBootJar(projectDirectory, outputDirectory, appArchive, springBootVersion,
+                params, log);
     }
 
     /**
