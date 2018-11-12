@@ -36,7 +36,7 @@ public class PackageAndDockerize20Test extends AbstractBoostDockerTest {
         testProjectDir = new File(integTestDir, "PackageAndDockerize20Test")
         buildFilename = "springApp-20.gradle"
         libertyImage = OL_SPRING_20_IMAGE
-        imageName = "gs-spring-boot-0.1.0"
+        repository = "gs-spring-boot-0.1.0"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
@@ -59,7 +59,7 @@ public class PackageAndDockerize20Test extends AbstractBoostDockerTest {
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStop").getOutcome())
 
-        assertTrue(new File(testProjectDir, "build/libs/gs-spring-boot-0.1.0.jar").exists())
+        assertTrue(new File(testProjectDir, "build/libs/${repository}.jar").exists())
     }
 
     @Test //Testing that springBoot-2.0 feature was added to the packaged server.xml

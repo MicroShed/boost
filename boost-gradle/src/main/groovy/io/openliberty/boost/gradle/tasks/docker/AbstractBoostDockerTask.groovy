@@ -27,7 +27,7 @@ public abstract class AbstractBoostDockerTask extends AbstractBoostTask implemen
 
     void doExecute(String artifactId) throws GradleException {
         try {
-            if(isValidDockerConfig(BoostLogger.getInstance(), project.boost.docker.dockerRepo + artifactId, project.boost.docker.tag, artifactId)) {
+            if(isValidDockerConfig(BoostLogger.getInstance(), project.boost.docker.repository, project.boost.docker.tag, artifactId)) {
                 execute(getDockerClient(project.boost.docker.useProxy));
             }
         } catch (BoostException e) {
@@ -63,11 +63,7 @@ public abstract class AbstractBoostDockerTask extends AbstractBoostTask implemen
             }
             
             //Getting image name from boost docker extension if it is set, otherwise we use the file name w/o extension
-            if (isDockerConfigured() && project.boost.docker.imageName != null && !project.boost.docker.imageName.isEmpty()) {
-                return project.boost.docker.imageName
-            } else {
-                return appFile.getName().substring(0, appFile.getName().lastIndexOf("."))
-            }
-        }  
+            return appFile.getName().substring(0, appFile.getName().lastIndexOf("."))
+        }
     }    
 }

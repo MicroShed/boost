@@ -45,6 +45,6 @@ public class BoostDockerPushTask extends AbstractBoostDockerTask implements Dock
     @Override
     public void execute(DockerClient dockerClient) throws BoostException {
         dockerPush(dockerClient, appName,
-            project.boost.docker.dockerRepo, project.boost.docker.tag, BoostLogger.getInstance());
+            project.boost.docker.repository, project.boost.docker.tag, BoostLogger.getInstance())
     }
 }

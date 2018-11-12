@@ -27,8 +27,8 @@ public class DockerBuildDockerizerClasspath20Test extends AbstractBoostDockerTes
         resourceDir = new File("build/resources/test/springApp")
         testProjectDir = new File(integTestDir, "DockerBuildDockerizerClasspath20Test")
         buildFilename = "dockerDockerizerClasspath20Test.gradle"
-        libertyImage = OL_SPRING_20_IMAGE
-        imageName = "localhost:5000/test-image20"
+        libertyImage = OPEN_J9_IMAGE
+        repository = "localhost:5000/test-image20"
         dockerPort = "8080"
 
         createDir(testProjectDir)

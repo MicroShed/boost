@@ -92,9 +92,9 @@ public class BoostPackageTask extends AbstractBoostTask {
                     }
                 }
                 //Configuring liberty plugin task dependencies and parameters
-                //installFeature should check the server.xml in the server directory and install the missing features
-
+                //installFeature should check the server.xml in the server directory and install the missing feature
                 project.tasks.getByName('libertyPackage').dependsOn 'installApps', 'installFeature'
+                project.tasks.getByName('installApps').mustRunAfter 'installFeature'
                 finalizedBy 'libertyPackage'
                 boostPackage.include = "runnable, minify"
             }

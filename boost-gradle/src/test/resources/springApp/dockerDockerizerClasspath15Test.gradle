@@ -29,9 +29,8 @@ bootRepackage {
 
 boost {
     docker {
-        imageName = 'test-image15'
-        dockerRepo = 'localhost:5000/'
-        classifier = 'classpath'
+        repository = 'localhost:5000/test-image15'
+        dockerizer = 'classpath'
     }
 }
 

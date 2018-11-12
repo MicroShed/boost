@@ -35,9 +35,13 @@ import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.core.DockerClientBuilder
 import com.github.dockerjava.api.model.ExposedPort;
 
+import io.openliberty.boost.common.docker.dockerizer.Dockerizer
+
 public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     protected static final String OL_SPRING_15_IMAGE = "open-liberty:springBoot1"
     protected static final String OL_SPRING_20_IMAGE = "open-liberty:springBoot2"
+
+    protected static final String OPEN_J9_IMAGE = "adoptopenjdk/openjdk8-openj9"
 
     protected static File dockerFile
     protected static DockerClient dockerClient
@@ -45,7 +49,7 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
 
     protected static String containerId
 
-    protected static String imageName
+    protected static String repository
     protected static String libertyImage
     protected static String dockerPort = "9080"
         
@@ -75,6 +79,7 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     public void testDockerfileContainsCorrectLibertyImage() throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(dockerFile))
 
+        assertTrue("Expected Liberty generated Dockerfile line ${Dockerizer.BOOST_GEN} was not found in " + dockerFile.getCanonicalPath(), reader.readLine().contains(Dockerizer.BOOST_GEN))
         assertTrue("Expected Open liberty base image ${libertyImage} was not found in " + dockerFile.getCanonicalPath(), reader.readLine().contains(libertyImage))
 
     }
@@ -83,7 +88,7 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     public void runDockerContainerAndVerifyAppOnEndpoint() throws Exception {
         ExposedPort exposedPort = ExposedPort.tcp(Integer.valueOf(dockerPort))
         
-        CreateContainerResponse container = dockerClient.createContainerCmd("${imageName}:latest")
+        CreateContainerResponse container = dockerClient.createContainerCmd("${repository}:latest")
                 .withPortBindings(PortBinding.parse(dockerPort + ":" + dockerPort)).withExposedPorts(exposedPort).exec()
         Thread.sleep(3000)
 

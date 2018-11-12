@@ -28,7 +28,7 @@ public class DockerBuild15Test extends AbstractBoostDockerTest {
         testProjectDir = new File(integTestDir, "DockerBuild15Test")
         buildFilename = "docker15Test.gradle"
         libertyImage = OL_SPRING_15_IMAGE
-        imageName = "localhost:5000/test-image15"
+        repository = "localhost:5000/test-image15"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)

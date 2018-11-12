@@ -28,6 +28,8 @@ import java.nio.charset.Charset
 import java.util.ArrayList
 import java.io.File
 
+import io.openliberty.boost.gradle.extensions.BoostDockerExtension
+
 public class BoostDockerBuildTask extends AbstractBoostDockerTask implements DockerBuildI {
 
     String springBootVersion
@@ -73,13 +75,7 @@ public class BoostDockerBuildTask extends AbstractBoostDockerTask implements Doc
                     }
 
                     //Getting image name from boost docker extension if it is set, otherwise we use the file name w/o extension
-                    if (isDockerConfigured() && project.boost.docker.imageName != null && !project.boost.docker.imageName.isEmpty()) {
-                        logger.info ("Setting image name to: ${project.boost.docker.imageName}")
-                        appName = project.boost.docker.imageName
-                    } else {
-                        appName = appFile.getName().substring(0, appFile.getName().lastIndexOf("."))
-                        logger.info ("Setting image name to: ${appName}")
-                    }
+                    appName = appFile.getName().substring(0, appFile.getName().lastIndexOf("."))
                 }
             }
             
@@ -92,6 +88,12 @@ public class BoostDockerBuildTask extends AbstractBoostDockerTask implements Doc
                         throw new GradleException ('Unable to determine the project artifact name.')
                     }
                 }
+                if (!isDockerConfigured()) {
+                    project.boost.docker = new BoostDockerExtension()
+                }
+                if (project.boost.docker.repository == null || project.boost.docker.repository.isEmpty()) {
+                    project.boost.docker.repository = appName
+                }
                 doExecute(appName)
             }
         })
@@ -103,7 +105,7 @@ public class BoostDockerBuildTask extends AbstractBoostDockerTask implements Doc
         File outputDirectory = new File(project.buildDir.getAbsolutePath(), 'libs')
         
         dockerBuild(project.boost.docker.dockerizer, dockerClient, projectDirectory, outputDirectory, springBootVersion, project.boost.docker.pullNewerImage,
-                project.boost.docker.noCache, project.boost.docker.buildArgs, project.boost.docker.dockerRepo + appName, project.boost.docker.tag, BoostLogger.getInstance())
+                project.boost.docker.noCache, project.boost.docker.buildArgs, project.boost.docker.repository, project.boost.docker.tag, BoostLogger.getInstance())
     }
 
     /**
