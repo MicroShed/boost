@@ -18,17 +18,18 @@ import java.util.Map;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.docker.DockerParameters;
 
 public class DockerizeSpringBootJar extends SpringDockerizer {
 
     public DockerizeSpringBootJar(File projectDirectory, File outputDirectory, File appArchive,
-            String springBootVersion, BoostLoggerI log) {
-        super(projectDirectory, outputDirectory, appArchive, springBootVersion, log);
+            String springBootVersion, DockerParameters params, BoostLoggerI log) {
+        super(projectDirectory, outputDirectory, appArchive, springBootVersion, params, log);
     }
 
     public Map<String, String> getBuildArgs() {
         Map<String, String> buildArgs = new HashMap<String, String>();
-        buildArgs.put("JAR_FILE", "target/" + appArchive.getName());
+        buildArgs.put("JAR_FILE", getAppPathString() + "/"  + appArchive.getName());
         return buildArgs;
     }
 
@@ -48,6 +49,8 @@ public class DockerizeSpringBootJar extends SpringDockerizer {
         List<String> lines = new ArrayList<String>();
         lines.add("*.log");
         lines.add("target/liberty");
+        lines.add(".gradle/");
+        lines.add("build/wlp");
         return lines;
     }
 

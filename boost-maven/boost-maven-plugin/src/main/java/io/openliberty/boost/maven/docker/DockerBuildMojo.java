@@ -57,6 +57,7 @@ import com.spotify.docker.client.DockerClient;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.docker.DockerBuildI;
+import io.openliberty.boost.common.docker.DockerParameters;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
 import net.wasdev.wlp.maven.plugins.utils.SpringBootUtil;
@@ -99,8 +100,9 @@ public class DockerBuildMojo extends AbstractDockerMojo implements DockerBuildI 
         File projectDirectory = project.getBasedir();
         File outputDirectory = new File(project.getBuild().getDirectory());
         String springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
+        DockerParameters params = new DockerParameters("target/dependency");
         dockerBuild(dockerizer, dockerClient, projectDirectory, outputDirectory, springBootVersion, pullNewerImage,
-                noCache, buildArgs, repository, tag, BoostLogger.getInstance());
+                noCache, buildArgs, repository, tag, params, BoostLogger.getInstance());
     }
 
     /**

@@ -11,8 +11,6 @@
 package io.openliberty.boost.common.docker.dockerizer.spring;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +18,7 @@ import java.util.Map;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.docker.DockerParameters;
 
 public class DockerizeLibertySpringBootJar extends SpringDockerizer {
 
@@ -34,8 +33,8 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
     private static final String RUN = "RUN ";
 
     public DockerizeLibertySpringBootJar(File projectDirectory, File outputDirectory, File appArchive,
-            String springBootVersion, BoostLoggerI log) {
-        super(projectDirectory, outputDirectory, appArchive, springBootVersion, log);
+            String springBootVersion, DockerParameters params, BoostLoggerI log) {
+        super(projectDirectory, outputDirectory, appArchive, springBootVersion, params, log);
     }
 
     public Map<String, String> getBuildArgs() {
@@ -46,27 +45,15 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
 
     private String getLibertySpringBootBaseImage() throws BoostException {
         String libertyImage = null;
-        if (springBootVersion.startsWith("1.")) {
+        if (SPRING_BOOT_VERSION.startsWith("1.")) {
             libertyImage = LIBERTY_IMAGE_1;
-        } else if (springBootVersion.startsWith("2.")) {
+        } else if (SPRING_BOOT_VERSION.startsWith("2.")) {
             libertyImage = LIBERTY_IMAGE_2;
         } else {
             throw new BoostException("No supporting docker image found for Open Liberty for the Spring Boot version "
-                    + springBootVersion);
+                    + SPRING_BOOT_VERSION);
         }
         return libertyImage;
-    }
-
-    private String getAppPathString() {
-
-        Path projPath = projectDirectory.toPath();
-        Path outputPath = outputDirectory.toPath();
-
-        // goes from '~/proj/build/lib' to 'build/lib'
-        Path appPath = projPath.relativize(outputPath);
-
-        // On Windows the last line might be 'build\lib'
-        return appPath.toString().replace(File.separatorChar, '/');
     }
 
     public List<String> getDockerfileLines() throws BoostException {
@@ -107,6 +94,7 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
         lines.add("*.log");
         lines.add("target/liberty");
         lines.add(".gradle/");
+        lines.add("build/wlp");
         return lines;
     }
 
