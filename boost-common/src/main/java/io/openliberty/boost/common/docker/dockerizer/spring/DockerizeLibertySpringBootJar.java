@@ -32,10 +32,11 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
     private static final String COPY = "COPY ";
     private static final String RUN = "RUN ";
 
-    public DockerizeLibertySpringBootJar(File projectDirectory, File outputDirectory, File appArchive, String springBootVersion, BoostLoggerI log) {
-    		super(projectDirectory, outputDirectory, appArchive, springBootVersion, log);
+    public DockerizeLibertySpringBootJar(File projectDirectory, File outputDirectory, File appArchive,
+            String springBootVersion, BoostLoggerI log) {
+        super(projectDirectory, outputDirectory, appArchive, springBootVersion, log);
     }
-    
+
     public Map<String, String> getBuildArgs() {
         Map<String, String> buildArgs = new HashMap<String, String>();
         buildArgs.put("APP_FILE", appArchive.getName());
@@ -48,10 +49,9 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
             libertyImage = LIBERTY_IMAGE_1;
         } else if (springBootVersion.startsWith("2.")) {
             libertyImage = LIBERTY_IMAGE_2;
-		} else {
-			throw new BoostException(
-                    "No supporting docker image found for Open Liberty for the Spring Boot version "
-                            + springBootVersion);
+        } else {
+            throw new BoostException("No supporting docker image found for Open Liberty for the Spring Boot version "
+                    + springBootVersion);
         }
         return libertyImage;
     }
@@ -91,12 +91,13 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
         }
     }
 
-	@Override
-	public List<String> getDockerIgnoreList() {
-		List<String> lines = new ArrayList<String>();
-		lines.add("*.log");
-		lines.add("target/liberty");
-		return lines;
-	}
+    @Override
+    public List<String> getDockerIgnoreList() {
+        List<String> lines = new ArrayList<String>();
+        lines.add("*.log");
+        lines.add("target/liberty");
+        lines.add(".gradle/");
+        return lines;
+    }
 
 }
