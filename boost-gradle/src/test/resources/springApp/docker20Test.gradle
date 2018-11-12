@@ -26,8 +26,7 @@ bootJar {
 
 boost {
     docker {
-        imageName = 'test-image20'
-        dockerRepo = 'localhost:5000'
+        repository = 'localhost:5000/test-image20'
     }
 }
 

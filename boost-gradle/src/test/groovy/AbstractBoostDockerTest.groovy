@@ -33,10 +33,15 @@ import com.github.dockerjava.api.command.CreateContainerResponse
 import com.github.dockerjava.api.model.Container
 import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.core.DockerClientBuilder
+import com.github.dockerjava.api.model.ExposedPort;
+
+import io.openliberty.boost.common.docker.dockerizer.Dockerizer
 
 public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     protected static final String OL_SPRING_15_IMAGE = "open-liberty:springBoot1"
     protected static final String OL_SPRING_20_IMAGE = "open-liberty:springBoot2"
+
+    protected static final String OPEN_J9_IMAGE = "adoptopenjdk/openjdk8-openj9"
 
     protected static File dockerFile
     protected static DockerClient dockerClient
@@ -44,8 +49,9 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
 
     protected static String containerId
 
-    protected static String imageName
+    protected static String repository
     protected static String libertyImage
+    protected static String dockerPort = "9080"
         
     protected static File resourceDir
     protected static File testProjectDir
@@ -61,7 +67,7 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
 
     @Test
     public void testDockerSuccess() throws IOException {
-        assertEquals(SUCCESS, result.task(":boostDocker").getOutcome())
+        assertEquals(SUCCESS, result.task(":boostDockerBuild").getOutcome())
     }  
     
     @Test
@@ -73,14 +79,16 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     public void testDockerfileContainsCorrectLibertyImage() throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(dockerFile))
 
+        assertTrue("Expected Liberty generated Dockerfile line ${Dockerizer.BOOST_GEN} was not found in " + dockerFile.getCanonicalPath(), reader.readLine().contains(Dockerizer.BOOST_GEN))
         assertTrue("Expected Open liberty base image ${libertyImage} was not found in " + dockerFile.getCanonicalPath(), reader.readLine().contains(libertyImage))
-
     }
     
     @Test
     public void runDockerContainerAndVerifyAppOnEndpoint() throws Exception {
-        CreateContainerResponse container = dockerClient.createContainerCmd("${imageName}:latest")
-                .withPortBindings(PortBinding.parse("9080:9080")).exec()
+        ExposedPort exposedPort = ExposedPort.tcp(Integer.valueOf(dockerPort))
+        
+        CreateContainerResponse container = dockerClient.createContainerCmd("${repository}:latest")
+                .withPortBindings(PortBinding.parse(dockerPort + ":" + dockerPort)).withExposedPorts(exposedPort).exec()
         Thread.sleep(3000)
 
         containerId = container.getId()
@@ -101,7 +109,7 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     }
 
     public void testAppRunningOnEndpoint() throws Exception {
-        URL requestUrl = new URL("http://localhost:9080/")
+        URL requestUrl = new URL("http://" + getTestDockerHost() + ":" + dockerPort)
         HttpURLConnection conn = (HttpURLConnection) requestUrl.openConnection()
 
         if (conn != null) {
@@ -117,4 +125,14 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
         }
         assertEquals("Expected body not found.", "Greetings from Spring Boot!", response.toString())
     }
+	
+	private static String getTestDockerHost() {
+		String dockerHostEnv = System.getenv("DOCKER_HOST");
+		if (dockerHostEnv == null || dockerHostEnv.isEmpty()) {
+			return "localhost";
+		} else {
+			URI dockerHostURI = URI.create(dockerHostEnv);
+				return dockerHostURI.getHost();
+		}
+	}
 }

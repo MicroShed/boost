@@ -46,7 +46,7 @@ public class BoostPackageTask extends AbstractBoostTask {
 
             dependsOn 'libertyCreate'
 
-            mustRunAfter 'boostDocker'
+            mustRunAfter 'boostDockerBuild'
 
             //There are some things that this task does before we can package up the server into a JAR
             PackageAndDumpExtension boostPackage = new PackageAndDumpExtension()
@@ -92,9 +92,9 @@ public class BoostPackageTask extends AbstractBoostTask {
                     }
                 }
                 //Configuring liberty plugin task dependencies and parameters
-                //installFeature should check the server.xml in the server directory and install the missing features
-
+                //installFeature should check the server.xml in the server directory and install the missing feature
                 project.tasks.getByName('libertyPackage').dependsOn 'installApps', 'installFeature'
+                project.tasks.getByName('installApps').mustRunAfter 'installFeature'
                 finalizedBy 'libertyPackage'
                 boostPackage.include = "runnable, minify"
             }

@@ -36,7 +36,7 @@ public class PackageAndDockerize15Test extends AbstractBoostDockerTest {
         testProjectDir = new File(integTestDir, "PackageAndDockerize15Test")
         buildFilename = "springApp-15.gradle"
         libertyImage = OL_SPRING_15_IMAGE
-        imageName = "test-spring15"
+        repository = "test-spring15"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
@@ -46,7 +46,7 @@ public class PackageAndDockerize15Test extends AbstractBoostDockerTest {
 
         result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("boostDocker", "boostPackage", "boostStart", "boostStop")
+            .withArguments("boostDockerBuild", "boostPackage", "boostStart", "boostStop")
             .build()
     }
 
@@ -54,12 +54,12 @@ public class PackageAndDockerize15Test extends AbstractBoostDockerTest {
     public void testBuildSuccess() throws IOException {
         assertEquals(SUCCESS, result.task(":installLiberty").getOutcome())
         assertEquals(SUCCESS, result.task(":libertyCreate").getOutcome())
-        assertEquals(SUCCESS, result.task(":boostDocker").getOutcome())
+        assertEquals(SUCCESS, result.task(":boostDockerBuild").getOutcome())
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStop").getOutcome())
 
-        assertTrue(new File(testProjectDir, "build/libs/${imageName}.jar").exists())
+        assertTrue(new File(testProjectDir, "build/libs/${repository}.jar").exists())
     }
 
     @Test //Testing that springBoot-1.5 feature was added to the packaged server.xml

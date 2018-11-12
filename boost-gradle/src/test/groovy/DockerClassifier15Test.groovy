@@ -33,7 +33,7 @@ public class DockerClassifier15Test extends AbstractBoostDockerTest {
         testProjectDir = new File(integTestDir, "DockerClassifier15Test")
         buildFilename = "dockerClassifier15Test.gradle"
         libertyImage = OL_SPRING_15_IMAGE
-        imageName = "test-docker15-test"
+        repository = "test-docker15-test"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
@@ -48,7 +48,7 @@ public class DockerClassifier15Test extends AbstractBoostDockerTest {
 
     @Test
     public void runDockerContainerAndVerifyAppOnEndpoint() throws Exception {
-        CreateContainerResponse container = dockerClient.createContainerCmd("${imageName}:latest")
+        CreateContainerResponse container = dockerClient.createContainerCmd("${repository}:latest")
                 .withPortBindings(PortBinding.parse("9080:9080")).exec()
         Thread.sleep(3000)
 

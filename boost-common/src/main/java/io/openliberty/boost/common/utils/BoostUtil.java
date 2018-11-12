@@ -22,7 +22,7 @@ import java.util.zip.ZipInputStream;
 import io.openliberty.boost.common.BoostLoggerI;
 
 public class BoostUtil {
-	
+
     public static boolean isNotNullOrEmpty(String s) {
         return s != null && !s.isEmpty();
     }
@@ -38,9 +38,9 @@ public class BoostUtil {
 
         return isLibertyJar;
     }
-    
-    public static void extract(File artifact, File projectDirectory) {
-        File extractDir = new File(projectDirectory.getPath() + "/target/dependency/");
+
+    public static void extract(File artifact, File projectDirectory, String dependencyFolder) {
+        File extractDir = new File(projectDirectory.getPath() + File.separator + dependencyFolder);
         if (!extractDir.exists())
             extractDir.mkdirs();
 

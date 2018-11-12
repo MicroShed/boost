@@ -31,7 +31,7 @@ import com.github.dockerjava.core.command.PullImageResultCallback
 
 public class DockerPush15Test extends AbstractBoostDockerTest {
 
-    private static String fullImageName = "localhost:5000/test-image15:latest"
+    private static String imageName = "localhost:5000/test-image15:latest"
 
     @BeforeClass
     public static void setup() {
@@ -40,7 +40,7 @@ public class DockerPush15Test extends AbstractBoostDockerTest {
         testProjectDir = new File(integTestDir, "DockerPush15Test")
         buildFilename = "docker15Test.gradle"
         libertyImage = OL_SPRING_15_IMAGE
-        imageName = "localhost:5000/test-image15"
+        repository = "localhost:5000/test-image15"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
@@ -60,22 +60,22 @@ public class DockerPush15Test extends AbstractBoostDockerTest {
 
     @Test
     public void testPushDockerImageToLocalRegistry() throws Exception {
-        Image pushedImage = getImage(fullImageName)
-        assertNotNull(fullImageName + " was not built.", pushedImage)
+        Image pushedImage = getImage(imageName)
+        assertNotNull(imageName + " was not built.", pushedImage)
 
         long sizeOfPushedImage = pushedImage.getSize()
         String idOfPushedImage = pushedImage.getId()
 
         // Remove the local image.
-        removeImage(fullImageName)
+        removeImage(imageName)
 
         // Pull the image from the local repository which got pushed by the plugin. This
         // is possible if the plugin successfully pushed to the registry.
-        dockerClient.pullImageCmd("${imageName}").withTag("latest").exec(new PullImageResultCallback())
+        dockerClient.pullImageCmd("${repository}").withTag("latest").exec(new PullImageResultCallback())
                 .awaitCompletion(10, TimeUnit.SECONDS)
 
-        Image pulledImage = getImage(fullImageName)
-        assertNotNull(imageName + " was not pulled.", pulledImage)
+        Image pulledImage = getImage(imageName)
+        assertNotNull(repository + " was not pulled.", pulledImage)
 
         long sizeOfPulledImage = pulledImage.getSize()
         String idOfPulledImage = pulledImage.getId()
@@ -84,13 +84,13 @@ public class DockerPush15Test extends AbstractBoostDockerTest {
         assertEquals("Expected image was not pulled, id doesn't match.", idOfPushedImage, idOfPulledImage)
     }
 
-    private Image getImage(String imageName) throws Exception {
+    private Image getImage(String repository) throws Exception {
         List<Image> images = dockerClient.listImagesCmd().exec()
         for (Image image : images) {
             String[] repoTags = image.getRepoTags()
             if (repoTags != null) {
                 String repoTag = repoTags[0]
-                if (repoTag != null && repoTag.equals(imageName)) {
+                if (repoTag != null && repoTag.equals(repository)) {
                     return image
                 }
             }
@@ -98,9 +98,9 @@ public class DockerPush15Test extends AbstractBoostDockerTest {
         return null;
     }
 
-    private void removeImage(String imageName) throws Exception {
-        dockerClient.removeImageCmd(imageName).exec()
-        Image removedImage = getImage(imageName)
-        assertNull(imageName + " was not removed.", removedImage)
+    private void removeImage(String repository) throws Exception {
+        dockerClient.removeImageCmd(repository).exec()
+        Image removedImage = getImage(repository)
+        assertNull(repository + " was not removed.", removedImage)
     }
 }
