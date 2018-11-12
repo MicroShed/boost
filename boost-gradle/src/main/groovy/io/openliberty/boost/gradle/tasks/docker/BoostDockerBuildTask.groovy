@@ -17,6 +17,7 @@ import com.spotify.docker.client.DockerClient
 
 import io.openliberty.boost.common.BoostException
 import io.openliberty.boost.common.docker.DockerBuildI
+import io.openliberty.boost.common.docker.DockerParameters
 import io.openliberty.boost.gradle.utils.GradleProjectUtil
 import io.openliberty.boost.gradle.utils.BoostLogger
 
@@ -103,9 +104,11 @@ public class BoostDockerBuildTask extends AbstractBoostDockerTask implements Doc
     public void execute(DockerClient dockerClient) throws BoostException {
         File projectDirectory = project.projectDir
         File outputDirectory = new File(project.buildDir.getAbsolutePath(), 'libs')
+
+        DockerParameters params = new DockerParameters("build/dependency")
         
         dockerBuild(project.boost.docker.dockerizer, dockerClient, projectDirectory, outputDirectory, springBootVersion, project.boost.docker.pullNewerImage,
-                project.boost.docker.noCache, project.boost.docker.buildArgs, project.boost.docker.repository, project.boost.docker.tag, BoostLogger.getInstance())
+                project.boost.docker.noCache, project.boost.docker.buildArgs, project.boost.docker.repository, project.boost.docker.tag, params, BoostLogger.getInstance())
     }
 
     /**
