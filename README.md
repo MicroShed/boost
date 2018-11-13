@@ -1,55 +1,89 @@
-## Liberty Boost
+# Boost Maven Plugin Prototype
 
-Boost is a Maven and Gradle plugin that enhances the builds for your Java EE, MicroProfile, and Spring Boot applications. 
+### What is Boost?
 
-There are three separate Boost projects. Click the links for more information.
+This is a prototype Maven plugin to package a Spring Boot application with Liberty.
 
-- [Boost Maven Plugin](https://github.com/OpenLiberty/boost/tree/master/boost-maven)
-- [Boost Gradle Plugin](https://github.com/OpenLiberty/boost/tree/master/boost-gradle)
-- [Boost Common Resources](https://github.com/OpenLiberty/boost/tree/master/boost-common)
+When added to your pom.xml, the plugin will
 
-### Developing Liberty Boost
+1. Install Open Liberty.
+2. Create an Open Liberty server.
+3. Thin the Spring Boot project application.
+4. Install the application to the server.
+5. Install and add appropriate Liberty features to the server configuration.
+6. Package the server and application into a runnable jar.
+7. Create a Spring Boot application Docker image that uses Liberty.
 
-If you are interested in contributing to Liberty Boost, read the [wiki](https://github.com/OpenLiberty/boost-maven/wiki) for more information.
 
-### Build Dependencies
+### Build Liberty Boost Plugin
 
-The Boost plugin builds on the Liberty plugin.
+1. `git clone git@github.com:OpenLiberty/boost-common.git`
+2. `cd boost-common`
+3. `mvn clean install`
+4. `git clone git@github.com:OpenLiberty/boost-maven.git`
+5. `cd boost-maven`
+6. `mvn clean install`  (To run integration tests, add the -Pit parameter)
 
-For Maven, you will need to clone and `mvn install` the following repositories: [ci.common](https://github.com/WASdev/ci.common) and [ci.maven](https://github.com/WASdev/ci.maven).
+### Use the Liberty Boost plugin in your Spring Boot Maven project 
 
-### Building Liberty Boost
+#### Try it!
 
-You will need to build the `boost-common` project before building either the Boost Maven Plugin or Boost Gradle Plugin. We provide some scripts below to simplify this process. 
+Kick the tires of Boost with zero configuration:
 
-#### Boost Maven Plugin
+* Produce a Liberty uber jar for your Spring Boot app:
+    * `mvn clean package io.openliberty.boost:boost-maven-plugin:0.1:package`
+    * `java -jar target/<application name>.jar`
 
-To build the Boost Maven Plugin:
+* Create a Liberty based Docker image for your Spring Boot app:
+    * `mvn clean package io.openliberty.boost:boost-maven-plugin:0.1:docker-build`
+    * `docker run -p 9080:9080 <application name>`
 
-##### Windows:
 
-```
-./boost-maven.bat
-```
+#### Quick start - uber jar
 
-##### Mac/Linux:
+1. Add the following to your project pom.xml
+    ```xml
+      <plugin>
+            <groupId>io.openliberty.boost</groupId>
+            <artifactId>boost-maven-plugin</artifactId>
+            <version>0.1</version>
+            <executions>
+              <execution>
+                    <phase>package</phase>
+                    <goals>
+                          <goal>package</goal>
+                    </goals>
+              </execution>
+           </executions>
+      </plugin>
+    ```
+1. Run `mvn clean package`
+1. Run the produced jar file: `java -jar <application_name>.jar`
 
-```
-./boost-maven.sh
-```
+#### Quick start - docker
 
-#### Boost Gradle Plugin
+1. Add the following to your project pom.xml
+    ```xml
+      <plugin>
+            <groupId>io.openliberty.boost</groupId>
+            <artifactId>boost-maven-plugin</artifactId>
+            <version>0.1</version>
+            <executions>
+              <execution>
+                    <goals>
+                          <goal>docker-build</goal>
+                    </goals>
+              </execution>
+           </executions>
+      </plugin>
+    ```
+1. Run `mvn clean install`
+1. Run the produced Docker image: `docker run -p 9080:9080 <application_name>`
 
-To build the Boost Gradle Plugin:
+#### Tutorial
 
-##### Windows:
+For a more detailed tutorial, see [here](Tutorial.md).
 
-```
-./boost-gradle.bat
-```
+### Building and Developing Boost
 
-##### Mac/Linux:
-
-```
-./boost-gradle.sh
-```
+See [here](https://github.com/OpenLiberty/boost/wiki/Home) 
