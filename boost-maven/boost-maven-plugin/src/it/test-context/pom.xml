@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.openliberty.boost</groupId>
-	<artifactId>test-jaxrs-2.0</artifactId>
+	<artifactId>test-context</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
 
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>io.openliberty.boosters</groupId>
 			<artifactId>ee8-bom</artifactId>
-			<version>0.1.2-SNAPSHOT</version>
+			<version>@pom.version@</version>
 			<scope>import</scope>
 			<type>pom</type>
 		</dependency>
