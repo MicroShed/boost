@@ -9,7 +9,7 @@
 
     <groupId>io.openliberty.boost</groupId>
     <artifactId>boost-maven-parent</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.1.2</version>
     <packaging>pom</packaging>
 
     <name>boost-maven-plugin Parent</name>
@@ -33,7 +33,7 @@
         <connection>scm:git:git@github.com:OpenLiberty/boost.git</connection>
         <developerConnection>scm:git:git@github.com:OpenLiberty/boost.git</developerConnection>
         <url>git@github.com:OpenLiberty/boost.git</url>
-        <tag>HEAD</tag>
+        <tag>boost-maven-parent-0.1.2</tag>
     </scm>
 
     <modules>
