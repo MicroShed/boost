@@ -90,18 +90,27 @@ public class DockerBuildMojo extends AbstractDockerMojo implements DockerBuildI 
     private Map<String, String> buildArgs;
 
     /**
-     * Sets the type of docker build to run.
+     * Determine the type of Dockerfile to create.<br>
+     * Supported values are: liberty, jar, classpath
      */
     @Parameter(property = "dockerizer", defaultValue = "liberty")
     private String dockerizer;
+
+	/**
+	 * Determine the JVM to use in the Dockerfile to create.<br>
+	 * Supported values are: openj9, hotspot, graalvm
+	 */
+	@Parameter(property = "dockerizerJVM", defaultValue = "openj9")
+	private String dockerizerJVM;
 
     @Override
     public void execute(DockerClient dockerClient) throws BoostException {
         File projectDirectory = project.getBasedir();
         File outputDirectory = new File(project.getBuild().getDirectory());
+        String javaVersion = project.getProperties().getProperty("java.version", "1.8");
         String springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
         DockerParameters params = new DockerParameters("target/dependency");
-        dockerBuild(dockerizer, dockerClient, projectDirectory, outputDirectory, springBootVersion, pullNewerImage,
+        dockerBuild(dockerizer, dockerizerJVM, dockerClient, projectDirectory, outputDirectory, javaVersion, springBootVersion, pullNewerImage,
                 noCache, buildArgs, repository, tag, params, BoostLogger.getInstance());
     }
 

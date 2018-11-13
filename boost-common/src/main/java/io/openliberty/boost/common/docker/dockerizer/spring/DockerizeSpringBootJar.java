@@ -23,8 +23,8 @@ import io.openliberty.boost.common.docker.DockerParameters;
 public class DockerizeSpringBootJar extends SpringDockerizer {
 
     public DockerizeSpringBootJar(File projectDirectory, File outputDirectory, File appArchive,
-            String springBootVersion, DockerParameters params, BoostLoggerI log) {
-        super(projectDirectory, outputDirectory, appArchive, springBootVersion, params, log);
+            String springBootVersion, DockerParameters params, BoostLoggerI log, String fromJVM) {
+        super(projectDirectory, outputDirectory, appArchive, springBootVersion, params, log, fromJVM);
     }
 
     public Map<String, String> getBuildArgs() {
@@ -36,7 +36,7 @@ public class DockerizeSpringBootJar extends SpringDockerizer {
     public List<String> getDockerfileLines() throws BoostException {
         ArrayList<String> lines = new ArrayList<>();
         lines.add(BOOST_GEN);
-        lines.add("FROM adoptopenjdk/openjdk8-openj9");
+        lines.add(fromJVM);
         lines.add("VOLUME /tmp");
         lines.add("ARG JAR_FILE");
         lines.add("COPY ${JAR_FILE} app.jar");

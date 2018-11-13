@@ -32,8 +32,8 @@ public abstract class SpringDockerizer extends Dockerizer {
     public final String SPRING_BOOT_VERSION;
     public final DockerParameters params;
 
-    public SpringDockerizer(File projectDirectory, File outputDirectory, File appArchive, String springBootVersion, DockerParameters params, BoostLoggerI log) {
-        super(projectDirectory, outputDirectory, appArchive, log);
+    public SpringDockerizer(File projectDirectory, File outputDirectory, File appArchive, String springBootVersion, DockerParameters params, BoostLoggerI log, String fromJVM) {
+        super(projectDirectory, outputDirectory, appArchive, log, fromJVM);
         this.SPRING_BOOT_VERSION = springBootVersion;
         this.params = params;
     }
