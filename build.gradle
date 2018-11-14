@@ -93,6 +93,16 @@ compileTestJava {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+compileGroovy {
+   sourceCompatibility = JavaVersion.VERSION_1_8
+   targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+compileTestGroovy {
+   sourceCompatibility = JavaVersion.VERSION_1_8
+   targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -103,8 +113,14 @@ task groovydocJar(type: Jar) {
     from groovydoc
 }
 
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
 artifacts {
-    archives groovydocJar, sourcesJar
+    archives groovydocJar, sourcesJar, javadocJar
 }
 
 if (!version.endsWith("SNAPSHOT")) {
@@ -146,6 +162,14 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
               url 'https://raw.github.com/OpenLiberty/boost/master/LICENSE'
             }
           }
+
+          developers {
+            developer {
+              id 'chyt'
+              name 'Charles Tian'
+              email 'ctian@us.ibm.com'
+            }
+          }
         }
       }
     }
@@ -160,3 +184,5 @@ gradlePlugin {
         }
     }
 }
+
+groovydoc.enabled = false
