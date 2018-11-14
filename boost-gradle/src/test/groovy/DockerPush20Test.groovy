@@ -41,6 +41,7 @@ public class DockerPush20Test extends AbstractBoostDockerTest {
         buildFilename = "docker20Test.gradle"
         libertyImage = OL_SPRING_20_IMAGE
         repository = "localhost:5000/test-image20"
+        dockerPort = "9080"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
@@ -49,7 +50,8 @@ public class DockerPush20Test extends AbstractBoostDockerTest {
 
         result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("boostDockerPush")
+            .forwardOutput()
+            .withArguments("boostDockerPush", "-i", "-s")
             .build()
     }
 

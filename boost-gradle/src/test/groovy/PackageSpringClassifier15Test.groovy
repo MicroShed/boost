@@ -42,7 +42,8 @@ public class PackageSpringClassifier15Test extends AbstractBoostTest {
     public void testPackageSuccess() throws IOException {
         BuildResult result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("build", "boostStart", "boostStop")
+            .forwardOutput()
+            .withArguments("build", "boostStart", "boostStop", "-i", "-s")
             .build()
 
         assertEquals(SUCCESS, result.task(":installLiberty").getOutcome())

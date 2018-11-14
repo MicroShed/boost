@@ -37,6 +37,7 @@ public class PackageAndDockerize15Test extends AbstractBoostDockerTest {
         buildFilename = "springApp-15.gradle"
         libertyImage = OL_SPRING_15_IMAGE
         repository = "test-spring15"
+        dockerPort = "9080"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
@@ -46,7 +47,8 @@ public class PackageAndDockerize15Test extends AbstractBoostDockerTest {
 
         result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("boostDockerBuild", "boostPackage", "boostStart", "boostStop")
+            .forwardOutput()
+            .withArguments("boostDockerBuild", "boostPackage", "boostStart", "boostStop", "-i", "-s")
             .build()
     }
 

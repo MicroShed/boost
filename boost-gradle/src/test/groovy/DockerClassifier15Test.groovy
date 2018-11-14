@@ -42,24 +42,8 @@ public class DockerClassifier15Test extends AbstractBoostDockerTest {
 
         result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("build")
+            .forwardOutput()
+            .withArguments("build", "-i", "-s")
             .build()
-    }
-
-    @Test
-    public void runDockerContainerAndVerifyAppOnEndpoint() throws Exception {
-        CreateContainerResponse container = dockerClient.createContainerCmd("${repository}:latest")
-                .withPortBindings(PortBinding.parse("9080:9080")).exec()
-        Thread.sleep(3000)
-
-        containerId = container.getId()
-
-        dockerClient.startContainerCmd(containerId).exec()
-
-        Thread.sleep(10000)
-        testDockerContainerRunning()
-
-        Thread.sleep(10000)
-        testAppRunningOnEndpoint()
     }
 }

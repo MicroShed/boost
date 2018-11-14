@@ -1,6 +1,7 @@
 plugins {
     id 'groovy'
     id 'java-gradle-plugin'
+    id 'signing'
     id 'maven'
 }
 
@@ -23,7 +24,7 @@ dependencies {
     compile localGroovy()
     compile 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
-    compile 'io.openliberty.boost:boost-common:0.1.2-SNAPSHOT'
+    compile 'io.openliberty.boost:boost-common:0.1.2'
     compile 'com.spotify:docker-client:8.11.7'
 
     testCompile 'junit:junit:4.12'
@@ -90,6 +91,65 @@ compileJava {
 compileTestJava {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task groovydocJar(type: Jar) {
+    classifier = 'groovydoc'
+    from groovydoc
+}
+
+artifacts {
+    archives groovydocJar, sourcesJar
+}
+
+if (!version.endsWith("SNAPSHOT")) {
+    signing {
+        sign configurations.archives
+    }
+}
+
+if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+  uploadArchives {
+    repositories {
+      mavenDeployer {
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+          authentication(userName: ossrhUsername, password: ossrhPassword)
+        }
+
+        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+          authentication(userName: ossrhUsername, password: ossrhPassword)
+        }
+
+        pom.project {
+          name 'boost-gradle-plugin'
+          packaging 'jar'
+          description 'Boost Gradle Plug-in.'
+          url 'https://github.com/OpenLiberty/boost'
+
+          scm {
+            connection 'scm:git:git@github.com:OpenLiberty/boost.git'
+            developerConnection 'scm:git:git@github.com:OpenLiberty/boost.git'
+            url 'git@github.com:OpenLiberty/boost.git'
+            tag 'HEAD'
+          }
+
+          licenses {
+            license {
+              name 'Eclipse Public License 1.0 (EPL-1.0)'
+              url 'https://raw.github.com/OpenLiberty/boost/master/LICENSE'
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 gradlePlugin {

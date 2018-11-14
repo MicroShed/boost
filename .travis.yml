@@ -9,21 +9,35 @@ matrix:
     exclude:
     # Exclude 18.0.0.3 with Java 9
     - jdk: oraclejdk9
-      env: RUNTIME=ol RUNTIME_VERSION=18.0.0.3
+      env: RUNTIME=ol RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
     - jdk: oraclejdk9
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.3
+      env: RUNTIME=ol RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
+    - jdk: oraclejdk9
+      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
+    - jdk: oraclejdk9
+      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
     # Exclude 18.0.0.2 WLP
     - jdk: openjdk8
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2
+      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=maven
+    - jdk: openjdk8
+      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=gradle
     - jdk: oraclejdk8
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2
+      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=maven
+    - jdk: oraclejdk8
+      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=gradle
     - jdk: oraclejdk9
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2
+      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=maven
+    - jdk: oraclejdk9
+      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=gradle
 env:
-    - RUNTIME=ol RUNTIME_VERSION=18.0.0.2
-    - RUNTIME=ol RUNTIME_VERSION=18.0.0.3
-    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.2
-    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.3
+    - RUNTIME=ol RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=maven
+    - RUNTIME=ol RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
+    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=maven
+    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
+    - RUNTIME=ol RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=gradle
+    - RUNTIME=ol RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
+    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=gradle
+    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
 cache:
     directories:
         - $HOME/.m2
@@ -37,8 +51,16 @@ before_install:
 install: true
 script:
     - cd boost-common
-    - travis_wait mvn install -Dinvoker.streamLogs=true
+    - mvn install -Dinvoker.streamLogs=true
     - cd ../boost-maven
-    - travis_wait mvn install -Pit -Dinvoker.streamLogs=true -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION
-    - cd ../boost-gradle
-    - travis_wait ./gradlew install check -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION --stacktrace --info --no-daemon
+    - mvn install -Dinvoker.streamLogs=true
+    - cd ..
+    - |
+      if [ "$BUILD_TOOL" = "maven" ]; then
+          export CD_COMMAND="cd boost-maven";
+          export TEST_COMMAND="mvn install -Pit -Dinvoker.streamLogs=true -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION";
+      else
+          export CD_COMMAND="cd boost-gradle";
+          export TEST_COMMAND="./gradlew install check -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION --stacktrace --info --no-daemon";
+      fi;
+    - ./travis.sh

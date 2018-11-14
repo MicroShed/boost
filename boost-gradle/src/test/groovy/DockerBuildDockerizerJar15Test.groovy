@@ -28,7 +28,7 @@ public class DockerBuildDockerizerJar15Test extends AbstractBoostDockerTest {
         testProjectDir = new File(integTestDir, "DockerBuildDockerizerJar15Test")
         buildFilename = "dockerDockerizerJar15Test.gradle"
         libertyImage = OPEN_J9_IMAGE
-        repository = "localhost:5000/test-image15"
+        repository = "localhost:5000/test-jar15"
         dockerPort = "8080"
 
         createDir(testProjectDir)
@@ -38,7 +38,8 @@ public class DockerBuildDockerizerJar15Test extends AbstractBoostDockerTest {
 
         result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("build")
+            .forwardOutput()
+            .withArguments("build", "-i", "-s")
             .build()
     }
 }

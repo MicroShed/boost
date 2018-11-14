@@ -39,7 +39,8 @@ public class PackageExtensionTest extends AbstractBoostTest {
     public void testPackageSuccess() throws IOException {
         BuildResult result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("build")
+            .forwardOutput()
+            .withArguments("build", "-i", "-s")
             .build()
 
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
