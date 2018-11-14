@@ -29,6 +29,7 @@ public class DockerEmpty20Test extends AbstractBoostDockerTest {
         buildFilename = "dockerEmpty20Test.gradle"
         libertyImage = OL_SPRING_20_IMAGE
         repository = "test-docker20"
+        dockerPort = "9080"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
@@ -37,7 +38,8 @@ public class DockerEmpty20Test extends AbstractBoostDockerTest {
 
         result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("build")
+            .forwardOutput()
+            .withArguments("build", "-i", "-s")
             .build()
     }
 }

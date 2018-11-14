@@ -29,7 +29,7 @@ bootRepackage {
 
 boost {
     docker {
-        repository = 'localhost:5000/test-image15'
+        repository = 'localhost:5000/test-jar15'
         dockerizer = 'jar'
     }
 }
@@ -44,5 +44,4 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
 }

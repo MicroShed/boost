@@ -33,7 +33,7 @@ import com.github.dockerjava.api.command.CreateContainerResponse
 import com.github.dockerjava.api.model.Container
 import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.core.DockerClientBuilder
-import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.ExposedPort
 
 import io.openliberty.boost.common.docker.dockerizer.Dockerizer
 
@@ -51,7 +51,7 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
 
     protected static String repository
     protected static String libertyImage
-    protected static String dockerPort = "9080"
+    protected static String dockerPort
         
     protected static File resourceDir
     protected static File testProjectDir

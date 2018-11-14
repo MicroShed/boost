@@ -37,6 +37,7 @@ public class PackageAndDockerize20Test extends AbstractBoostDockerTest {
         buildFilename = "springApp-20.gradle"
         libertyImage = OL_SPRING_20_IMAGE
         repository = "gs-spring-boot-0.1.0"
+        dockerPort = "9080"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
@@ -46,7 +47,8 @@ public class PackageAndDockerize20Test extends AbstractBoostDockerTest {
 
         result = GradleRunner.create()
             .withProjectDir(testProjectDir)
-            .withArguments("boostDockerBuild", "boostPackage", "boostStart", "boostStop")
+            .forwardOutput()
+            .withArguments("boostDockerBuild", "boostPackage", "boostStart", "boostStop", "-i", "-s")
             .build()
     }
 
