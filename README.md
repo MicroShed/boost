@@ -1,55 +1,43 @@
-## Liberty Boost
+# boost-gradle
+Liberty Boost Gradle support
 
-Boost is a Maven and Gradle plugin that enhances the builds for your Java EE, MicroProfile, and Spring Boot applications. 
+# Adding the plugin to a project
 
-There are three separate Boost projects. Click the links for more information.
-
-- [Boost Maven Plugin](https://github.com/OpenLiberty/boost/tree/master/boost-maven)
-- [Boost Gradle Plugin](https://github.com/OpenLiberty/boost/tree/master/boost-gradle)
-- [Boost Common Resources](https://github.com/OpenLiberty/boost/tree/master/boost-common)
-
-### Developing Liberty Boost
-
-If you are interested in contributing to Liberty Boost, read the [wiki](https://github.com/OpenLiberty/boost-maven/wiki) for more information.
-
-### Build Dependencies
-
-The Boost plugin builds on the Liberty plugin.
-
-For Maven, you will need to clone and `mvn install` the following repositories: [ci.common](https://github.com/WASdev/ci.common) and [ci.maven](https://github.com/WASdev/ci.maven).
-
-### Building Liberty Boost
-
-You will need to build the `boost-common` project before building either the Boost Maven Plugin or Boost Gradle Plugin. We provide some scripts below to simplify this process. 
-
-#### Boost Maven Plugin
-
-To build the Boost Maven Plugin:
-
-##### Windows:
+Build the plugin locally with:
 
 ```
-./boost-maven.bat
+gradle clean install
 ```
 
-##### Mac/Linux:
+Test the plugin with:
 
 ```
-./boost-maven.sh
+gradle clean install check -Druntime=<ol|wlp> -DruntimeVersion=<version> -i -s
 ```
 
-#### Boost Gradle Plugin
-
-To build the Boost Gradle Plugin:
-
-##### Windows:
+To use the installed version of the plugin add the following code snippet to your project's `build.gradle` file:
 
 ```
-./boost-gradle.bat
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'io.openliberty.boost:boost-gradle-plugin:0.1-SNAPSHOT'
+    }
+}
+
+apply plugin: 'boost'
 ```
 
-##### Mac/Linux:
+# Plugin Tasks
 
-```
-./boost-gradle.sh
-```
+| Task Name        | Description                                      |
+|------------------|--------------------------------------------------|
+| boostStart       | Starts the Boost application.                    |
+| boostStop        | Stops the Boost application.                     |
+| boostRun         | Runs the Boost application in the foreground.    |
+| boostDebug       | Runs the Boost application in debug mode.        |
+| boostPackage     | Packages the application and server.             |
+| boostDockerBuild | Creates a Docker file and image for the project. |
+| boostDockerPush  | Pushes Docker image to a Docker repository.      |
