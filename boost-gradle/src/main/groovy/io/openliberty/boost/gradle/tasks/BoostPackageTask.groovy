@@ -26,8 +26,13 @@ import org.gradle.api.logging.LogLevel
 import org.gradle.api.artifacts.Dependency
 import org.gradle.tooling.BuildException
 
+import org.gradle.maven.MavenModule
+import org.gradle.maven.MavenPomArtifact
+
 import io.openliberty.boost.gradle.utils.BoostLogger
 import io.openliberty.boost.gradle.utils.GradleProjectUtil
+import io.openliberty.boost.common.boosters.BoosterPackConfigurator
+import io.openliberty.boost.common.boosters.BoosterPacksParent
 import io.openliberty.boost.common.utils.BoostUtil
 import io.openliberty.boost.common.utils.LibertyServerConfigGenerator
 import io.openliberty.boost.common.utils.SpringBootUtil
@@ -38,7 +43,10 @@ public class BoostPackageTask extends AbstractBoostTask {
 
     String springBootVersion = GradleProjectUtil.findSpringBootVersion(this.project)
 
-    String libertyServerPath = null; 
+    BoosterPacksParent boosterParent = new BoosterPacksParent()
+    List<BoosterPackConfigurator> boosterFeatures = null
+
+    String libertyServerPath = null
     
     BoostPackageTask() {
         configure({
@@ -92,6 +100,16 @@ public class BoostPackageTask extends AbstractBoostTask {
                             project.bootRepackage.finalizedBy 'boostPackage'
                         }
                     }
+                } else if (isJ2EEProject()) {
+                    if (project.plugins.hasPlugin('war')) {
+                        boostPackage.archive = project.war.archiveName.substring(0, project.war.archiveName.lastIndexOf("."))
+                    } //ear check here when supported
+
+                    //Skipping if Docker is configured
+                    if (!isDockerConfigured() || isPackageConfigured()) {
+                        //Assemble works for the ear task too
+                        project.assemble.finalizedBy 'boostPackage'
+                    }
                 }
                 //Configuring liberty plugin task dependencies and parameters
                 //installFeature should check the server.xml in the server directory and install the missing feature
@@ -104,7 +122,7 @@ public class BoostPackageTask extends AbstractBoostTask {
             //The task will perform this before any other task actions
             doFirst {
 
-                libertyServerPath = "${project.buildDir}/wlp/usr/servers/BoostServer"
+                libertyServerPath = "${project.buildDir}/wlp/usr/servers/${project.liberty.server.name}"
                 
                 if (isPackageConfigured() && project.boost.packaging.packageName != null && !project.boost.packaging.packageName.isEmpty()) {
                     boostPackage.archive = "${project.buildDir}/libs/${project.boost.packaging.packageName}"
@@ -127,8 +145,10 @@ public class BoostPackageTask extends AbstractBoostTask {
                     copySpringBootUberJar(springUberJar)
                     generateServerConfigSpringBoot()
                     
-                } else { //JavaEE projects?
-                    throw new GradleException('Could not package the project with boostPackage. The boostPackage task must be used with a SpringBoot project.')
+                } else if (isJ2EEProject()) {
+                    generateServerXMLJ2EE(getBoosterConfigsFromDependencies())
+                } else {
+                    throw new GradleException('Could not package the project with boostPackage. The boostPackage task must be used with a SpringBoot or JavaEE project.')
                 }
 
                 logger.info('Packaging the applicaiton.')
@@ -138,6 +158,10 @@ public class BoostPackageTask extends AbstractBoostTask {
 
     public boolean isSpringProject() {
         return springBootVersion != null && !springBootVersion.isEmpty()
+    }
+
+    public boolean isJ2EEProject() {
+        return !isSpringProject() && project.plugins.hasPlugin('war') //need to add ear check here
     }
 
     protected List<String> getSpringBootDependencies() {
@@ -165,6 +189,48 @@ public class BoostPackageTask extends AbstractBoostTask {
         }
 
         return classifier
+    }
+
+    protected List<BoosterPackConfigurator> getBoosterConfigsFromDependencies() {
+        List<String> dependencyList = new ArrayList<String>()
+
+        def componentIds = project.configurations.compile.incoming.resolutionResult.allDependencies.collect { it.selected.id }
+        def result = project.dependencies.createArtifactResolutionQuery()
+            .forComponents(componentIds)
+            .withArtifacts(MavenModule, MavenPomArtifact)
+            .execute()
+
+        for (component in result.resolvedComponents) {
+            logger.info("Adding ${component.id} to dependency list.")
+            component.getArtifacts(MavenPomArtifact).each { dependencyList.add(component.id.toString()) }
+        }
+
+        return boosterParent.mapDependenciesToFeatureList(dependencyList)
+    }
+
+    protected void generateServerXMLJ2EE(List<BoosterPackConfigurator> boosterConfigurators) throws GradleException {
+        try {
+            LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath)
+
+            // Add any other Liberty features needed depending on the boost
+            // boosters defined
+            List<String> boosterFeatureNames = getBoosterFeatureNames(boosterConfigurators)
+            serverConfig.addFeatures(boosterFeatureNames)
+            if (project.plugins.hasPlugin('war')) {
+                // write out config on behalf of a web app
+                serverConfig.addConfigForApp(project.war.baseName, project.war.version)
+            } else { // only support war packaging type currently
+                throw new GradleException(
+                        "Unsupported Gradle packaging type - Liberty Boost currently supports WAR packaging type only.");
+            }
+            serverConfig.addConfigForFeatures(boosterConfigurators)
+
+            // Write server.xml to Liberty server config directory
+            serverConfig.writeToServer()
+
+        } catch (TransformerException | IOException | ParserConfigurationException e) {
+            throw new GradleException("Unable to generate server configuration for the Liberty server.", e);
+        }
     }
 
     protected void generateServerConfigSpringBoot() throws GradleException {
@@ -219,6 +285,15 @@ public class BoostPackageTask extends AbstractBoostTask {
                     "A valid Spring Boot Uber JAR was not found. Run the 'bootJar' task and try again.")
             }
         }
+    }
+
+    private List<String> getBoosterFeatureNames(List<BoosterPackConfigurator> boosterConfigurators) {
+        List<String> featureStrings = new ArrayList<String>()
+        for (BoosterPackConfigurator bpconfig : boosterConfigurators) {
+            featureStrings.add(bpconfig.getFeatureString())
+        }
+
+        return featureStrings
     }
 
     //returns true if bootJar is using the same archiveName as jar

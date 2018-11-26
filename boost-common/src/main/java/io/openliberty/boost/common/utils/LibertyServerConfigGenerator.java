@@ -35,7 +35,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import io.openliberty.boost.common.BoosterPackConfigurator;
+import io.openliberty.boost.common.boosters.BoosterPackConfigurator;
 
 /**
  * Create a Liberty server.xml
@@ -218,7 +218,11 @@ public class LibertyServerConfigGenerator {
     public void addConfigForApp(String artifactId, String version){
     	Element appCfg = doc.createElement(APPLICATION);
     	appCfg.setAttribute("context-root", "/");
-    	appCfg.setAttribute("location", artifactId+"-"+version+ "." + ConfigConstants.WAR_PKG_TYPE);
+        if(version == null) {
+            appCfg.setAttribute("location", artifactId + "." + ConfigConstants.WAR_PKG_TYPE);
+        } else {
+            appCfg.setAttribute("location", artifactId + "-" + version + "." + ConfigConstants.WAR_PKG_TYPE);
+        }
     	appCfg.setAttribute("type", ConfigConstants.WAR_PKG_TYPE);
     	serverRoot.appendChild(appCfg);
 
