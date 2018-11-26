@@ -38,6 +38,8 @@ public class BoostPackageTask extends AbstractBoostTask {
 
     String springBootVersion = GradleProjectUtil.findSpringBootVersion(this.project)
 
+    String libertyServerPath = null; 
+    
     BoostPackageTask() {
         configure({
             description 'Packages the application into an executable Liberty jar.'
@@ -101,11 +103,13 @@ public class BoostPackageTask extends AbstractBoostTask {
 
             //The task will perform this before any other task actions
             doFirst {
+
+                libertyServerPath = "${project.buildDir}/wlp/usr/servers/BoostServer"
                 
                 if (isPackageConfigured() && project.boost.packaging.packageName != null && !project.boost.packaging.packageName.isEmpty()) {
                     boostPackage.archive = "${project.buildDir}/libs/${project.boost.packaging.packageName}"
                 }
-
+                
                 project.liberty.server.packageLiberty = boostPackage
 
                 if (isSpringProject()) {
@@ -121,12 +125,11 @@ public class BoostPackageTask extends AbstractBoostTask {
                     }
                     validateSpringBootUberJAR(springUberJar)
                     copySpringBootUberJar(springUberJar)
+                    generateServerConfigSpringBoot()
+                    
                 } else { //JavaEE projects?
                     throw new GradleException('Could not package the project with boostPackage. The boostPackage task must be used with a SpringBoot project.')
                 }
-
-                createServerXml()
-                generateBootstrapProps()
 
                 logger.info('Packaging the applicaiton.')
             }
@@ -139,15 +142,15 @@ public class BoostPackageTask extends AbstractBoostTask {
 
     protected List<String> getSpringBootDependencies() {
 
-        List<String> springBootStarters = new ArrayList<String>()
+        List<String> springBootDependencies = new ArrayList<String>()
 
-        project.configurations.compile.dependencies.each { Dependency art ->
-            if (art.getGroup().equals("org.springframework")) {
-                springBootStarters.add(art.getName())
+        project.configurations.compile.resolvedConfiguration.resolvedArtifacts.each { art ->
+            if ("${art.name}".contains("spring")) {
+                springBootDependencies.add(art.name)
             }
         }
-
-        return springBootStarters
+       
+        return springBootDependencies
     }
 
     public String getClassifier() {
@@ -164,53 +167,18 @@ public class BoostPackageTask extends AbstractBoostTask {
         return classifier
     }
 
-    protected void createServerXml() throws TransformerException, ParserConfigurationException {
-        if (isSpringProject()) {
-            LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator("${project.buildDir}/wlp/usr/servers/" + project.liberty.server.name)
+    protected void generateServerConfigSpringBoot() throws GradleException {
+    
+       try {
+            // Get Spring Boot starters from Maven project
+            List<String> springBootDependencies = getSpringBootDependencies();
 
-            // Find and add appropriate springBoot features
-            List<String> featuresNeededForSpringBootApp = SpringBootUtil.getLibertyFeaturesForSpringBoot(springBootVersion,
-                    getSpringBootDependencies(), BoostLogger.getInstance())
+            // Generate server config
+            SpringBootUtil.generateLibertyServerConfig("${project.buildDir}/resources/main", libertyServerPath,
+                    springBootVersion, springBootDependencies, BoostLogger.getInstance());
 
-            serverConfig.addFeatures(featuresNeededForSpringBootApp)
-
-            serverConfig.addHttpEndpoint(null, "\${server.port}", null)
-
-            // Write server.xml to Liberty server config directory
-            serverConfig.writeToServer()
-        }
-    }
-
-    protected void generateBootstrapProps() throws GradleException {
-
-        Properties springBootProps = new Properties()
-
-        try {
-            springBootProps = SpringBootUtil.getSpringBootServerProperties(project.buildDir.toString())
-
-        } catch (IOException e) {
-            throw new GradleException("Unable to read properties from Spring Boot application", e)
-        }
-
-        // Write properties to bootstrap.properties
-        OutputStream output = null
-
-        try {
-            output = new FileOutputStream(
-                    "${project.buildDir}/wlp/usr/servers/" + project.liberty.server.name + "/bootstrap.properties")
-            springBootProps.store(output, null)
-
-        } catch (IOException io) {
-            throw new GradleException("Unable to write properties to bootstrap.properties file", io)
-        } finally {
-            if (output != null) {
-                try {
-                    output.close()
-                } catch (IOException io_finally) {
-                    throw new GradleException("Unable to write properties to bootstrap.properties file",
-                            io_finally)
-                }
-            }
+        } catch (Exception e) {
+            throw new GradleException("Unable to generate server configuration for the Liberty server.", e);
         }
     }
 
