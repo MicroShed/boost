@@ -30,6 +30,8 @@ import org.apache.commons.httpclient.methods.GetMethod
 
 public class BoostPackageJaxRS20Test extends AbstractBoostTest {
 
+    static BuildResult result
+
     static File resourceDir = new File("build/resources/test/jaxrsTestApp")
     static File testProjectDir = new File(integTestDir, "BoostPackageJaxRS20Test")
     static String buildFilename = "testJaxrs20.gradle"
@@ -38,17 +40,24 @@ public class BoostPackageJaxRS20Test extends AbstractBoostTest {
 
     private static final String JAXRS_20_FEATURE = "<feature>jaxrs-2.0</feature>"
     private static String SERVER_XML = "build/wlp/usr/servers/BoostServer/server.xml"
+    private static String SERVLET_RESPONSE = "Hello World From Your Friends at Liberty Boost EE!"
 
     @BeforeClass
     public static void setup() {
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
+
+        result = GradleRunner.create()
+            .withProjectDir(testProjectDir)
+            .forwardOutput()
+            .withArguments("boostPackage", "boostStart", "-i", "-s")
+            .build()
     }
 
     @AfterClass
     public static void teardown() {
     
-        BuildResult result = GradleRunner.create()
+        result = GradleRunner.create()
             .withProjectDir(testProjectDir)
             .forwardOutput()
             .withArguments("boostStop", "-i", "-s")
@@ -59,12 +68,6 @@ public class BoostPackageJaxRS20Test extends AbstractBoostTest {
 
     @Test
     public void testPackageSuccess() throws IOException {
-        BuildResult result = GradleRunner.create()
-            .withProjectDir(testProjectDir)
-            .forwardOutput()
-            .withArguments("boostPackage", "boostStart", "-i", "-s")
-            .build()
-
         assertEquals(SUCCESS, result.task(":installLiberty").getOutcome())
         assertEquals(SUCCESS, result.task(":libertyCreate").getOutcome())
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
@@ -101,22 +104,7 @@ public class BoostPackageJaxRS20Test extends AbstractBoostTest {
     }
 
     @Test
-    public void testServlet() throws Exception {
-        HttpClient client = new HttpClient()
-
-        GetMethod method = new GetMethod(URL)
-
-        try {
-            int statusCode = client.executeMethod(method)
-
-            assertEquals("HTTP GET failed", HttpStatus.SC_OK, statusCode)
-
-            String response = method.getResponseBodyAsString(10000)
-
-            assertTrue("Unexpected response body",
-                    response.contains("Hello World From Your Friends at Liberty Boost EE!"))
-        } finally {
-            method.releaseConnection()
-        }
+    public void testServletResponse() throws Exception {
+        testServlet(URL, SERVLET_RESPONSE)
     }
 }

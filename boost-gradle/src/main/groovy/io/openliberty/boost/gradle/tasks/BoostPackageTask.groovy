@@ -100,7 +100,7 @@ public class BoostPackageTask extends AbstractBoostTask {
                             project.bootRepackage.finalizedBy 'boostPackage'
                         }
                     }
-                } else if (isJ2EEProject()) {
+                } else {
                     if (project.plugins.hasPlugin('war')) {
                         boostPackage.archive = project.war.archiveName.substring(0, project.war.archiveName.lastIndexOf("."))
                     } //ear check here when supported
@@ -145,10 +145,10 @@ public class BoostPackageTask extends AbstractBoostTask {
                     copySpringBootUberJar(springUberJar)
                     generateServerConfigSpringBoot()
                     
-                } else if (isJ2EEProject()) {
+                } else if (project.plugins.hasPlugin('war')) {
                     generateServerXMLJ2EE(getBoosterConfigsFromDependencies())
                 } else {
-                    throw new GradleException('Could not package the project with boostPackage. The boostPackage task must be used with a SpringBoot or JavaEE project.')
+                    throw new GradleException('Could not package the project with boostPackage. The boostPackage task must be used with a SpringBoot or Java EE project.')
                 }
 
                 logger.info('Packaging the applicaiton.')
@@ -158,10 +158,6 @@ public class BoostPackageTask extends AbstractBoostTask {
 
     public boolean isSpringProject() {
         return springBootVersion != null && !springBootVersion.isEmpty()
-    }
-
-    public boolean isJ2EEProject() {
-        return !isSpringProject() && project.plugins.hasPlugin('war') //need to add ear check here
     }
 
     protected List<String> getSpringBootDependencies() {
@@ -201,7 +197,7 @@ public class BoostPackageTask extends AbstractBoostTask {
             .execute()
 
         for (component in result.resolvedComponents) {
-            logger.info("Adding ${component.id} to dependency list.")
+            logger.debug("Adding ${component.id} to dependency list.")
             component.getArtifacts(MavenPomArtifact).each { dependencyList.add(component.id.toString()) }
         }
 
