@@ -27,12 +27,12 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.apache.maven.plugins.annotations.*;
 
 import io.openliberty.boost.common.BoostException;
-import io.openliberty.boost.common.BoosterPackConfigurator;
+import io.openliberty.boost.common.boosters.BoosterPackConfigurator;
+import io.openliberty.boost.common.boosters.BoosterPacksParent;
 import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.utils.ConfigConstants;
 import io.openliberty.boost.common.utils.LibertyServerConfigGenerator;
 import io.openliberty.boost.common.utils.SpringBootUtil;
-import io.openliberty.boost.maven.BoosterPacksParent;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
 import net.wasdev.wlp.common.plugins.util.PluginExecutionException;

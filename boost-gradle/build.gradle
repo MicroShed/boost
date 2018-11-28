@@ -7,7 +7,9 @@ plugins {
 
 archivesBaseName = 'boost-gradle-plugin'
 group = 'io.openliberty.boost'
-version = '0.1-SNAPSHOT'
+version = '0.1.1-SNAPSHOT'
+
+def boosterVersion = '0.1.3-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -24,12 +26,13 @@ dependencies {
     compile localGroovy()
     compile 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
-    compile 'io.openliberty.boost:boost-common:0.1.2'
+    compile 'io.openliberty.boost:boost-common:0.1.3-SNAPSHOT'
     compile 'com.spotify:docker-client:8.11.7'
 
     testCompile 'junit:junit:4.12'
     testCompile("javax.ws.rs:javax.ws.rs-api:2.1")
     testCompile("com.github.docker-java:docker-java:3.1.0-rc-4")
+    testCompile "commons-httpclient:commons-httpclient:3.1"
 }
 
 test {
@@ -62,6 +65,7 @@ test {
 
             // set the properties value
             prop.setProperty("boostVersion", version)
+            prop.setProperty("boosterVersion", boosterVersion)
             prop.setProperty("runtimeGroup", runtimeGroup)
             prop.setProperty("runtimeArtifactId", runtimeArtifactId)
             prop.setProperty("runtimeVersion", runtimeVersion)

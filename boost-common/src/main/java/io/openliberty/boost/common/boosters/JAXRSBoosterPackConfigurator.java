@@ -8,10 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.maven;
+package io.openliberty.boost.common.boosters;
 
 import org.w3c.dom.Document;
-import io.openliberty.boost.common.BoosterPackConfigurator;
 
 public class JAXRSBoosterPackConfigurator implements BoosterPackConfigurator {
 

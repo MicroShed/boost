@@ -8,12 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.GradleRunner
-import org.junit.Before
-import org.junit.Test
 
+import org.apache.commons.httpclient.HttpClient
+import org.apache.commons.httpclient.HttpStatus
+import org.apache.commons.httpclient.methods.GetMethod
 import org.apache.commons.io.FileUtils
+
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 
 import java.io.BufferedWriter
 import java.io.File
@@ -92,6 +94,25 @@ public class AbstractBoostTest {
             if (output != null) {
                 output.close()
             }
+        }
+    }
+
+    public void testServlet(String url, String responseString) throws Exception {
+        HttpClient client = new HttpClient()
+
+        GetMethod method = new GetMethod(url)
+
+        try {
+            int statusCode = client.executeMethod(method)
+
+            assertEquals("HTTP GET failed", HttpStatus.SC_OK, statusCode)
+
+            String response = method.getResponseBodyAsString(10000)
+
+            assertTrue("Unexpected response body",
+                    response.contains(responseString))
+        } finally {
+            method.releaseConnection()
         }
     }
 }

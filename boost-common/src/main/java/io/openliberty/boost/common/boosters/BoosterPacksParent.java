@@ -8,12 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.maven;
+package io.openliberty.boost.common.boosters;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.openliberty.boost.common.BoosterPackConfigurator;
 
 public class BoosterPacksParent {
 

@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.boost.common;
+package io.openliberty.boost.common.boosters;
 
 import org.w3c.dom.Document;
 
