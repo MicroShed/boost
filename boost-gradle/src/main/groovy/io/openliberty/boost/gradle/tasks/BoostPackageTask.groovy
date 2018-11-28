@@ -103,13 +103,13 @@ public class BoostPackageTask extends AbstractBoostTask {
                 } else {
                     if (project.plugins.hasPlugin('war')) {
                         boostPackage.archive = project.war.archiveName.substring(0, project.war.archiveName.lastIndexOf("."))
-                    } //ear check here when supported
 
-                    //Skipping if Docker is configured
-                    if (!isDockerConfigured() || isPackageConfigured()) {
-                        //Assemble works for the ear task too
-                        project.assemble.finalizedBy 'boostPackage'
-                    }
+                        //Skipping if Docker is configured
+                        if (!isDockerConfigured() || isPackageConfigured()) {
+                            //Assemble works for the ear task too
+                            project.war.finalizedBy 'boostPackage'
+                        }
+                    } //ear check here when supported
                 }
                 //Configuring liberty plugin task dependencies and parameters
                 //installFeature should check the server.xml in the server directory and install the missing feature
