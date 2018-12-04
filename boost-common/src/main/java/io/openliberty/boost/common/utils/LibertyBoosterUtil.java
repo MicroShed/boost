@@ -16,9 +16,15 @@ import java.util.Map;
 
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.config.BoosterPackConfigurator;
+import io.openliberty.boost.common.config.CDIBoosterPackConfigurator;
 import io.openliberty.boost.common.config.JAXRSBoosterPackConfigurator;
 import io.openliberty.boost.common.config.JDBCBoosterPackConfigurator;
+import io.openliberty.boost.common.config.JSONPBoosterPackConfigurator;
 import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
+import io.openliberty.boost.common.config.MPConfigBoosterPackConfigurator;
+import io.openliberty.boost.common.config.MPHealthBoosterPackConfigurator;
+import io.openliberty.boost.common.config.MPOpenTracingBoosterPackConfigurator;
+import io.openliberty.boost.common.config.MPRestClientBoosterPackConfigurator;
 
 public class LibertyBoosterUtil {
 
@@ -26,7 +32,13 @@ public class LibertyBoosterUtil {
 
     public static String BOOSTER_JAXRS = "jaxrs";
     public static String BOOSTER_JDBC = "jdbc";
-
+    public static String BOOSTER_MPHEALTH = "mpHealth";
+    public static String BOOSTER_JSONP = "jsonp";
+    public static String BOOSTER_CDI = "cdi";
+    public static String BOOSTER_MPCONFIG = "mpConfig";
+    public static String BOOSTER_MPRESTCLIENT = "mpRestClient";
+    public static String BOOSTER_OPENTRACING = "mpOpenTracing";
+    
     protected String libertyServerPath;
     protected List<BoosterPackConfigurator> boosterPackConfigurators;
     protected BoostLoggerI logger;
@@ -50,18 +62,41 @@ public class LibertyBoosterUtil {
 
         List<BoosterPackConfigurator> boosterPackConfigList = new ArrayList<BoosterPackConfigurator>();
 
+        
         for (String dep : dependencies.keySet()) {
             if (dep.equals(BOOSTER_JDBC)) {
                 JDBCBoosterPackConfigurator jdbcConfig = new JDBCBoosterPackConfigurator();
                 jdbcConfig.setFeature(dependencies.get(dep));
                 boosterPackConfigList.add(jdbcConfig);
-
             } else if (dep.equals(BOOSTER_JAXRS)) {
                 JAXRSBoosterPackConfigurator jaxrsConfig = new JAXRSBoosterPackConfigurator();
                 jaxrsConfig.setFeature(dependencies.get(dep));
                 boosterPackConfigList.add(jaxrsConfig);
-            }
-
+			} else if (dep.equals(BOOSTER_MPHEALTH)) {
+				MPHealthBoosterPackConfigurator mpHealthConfig = new MPHealthBoosterPackConfigurator();
+				mpHealthConfig.setFeature(dependencies.get(dep));
+				boosterPackConfigList.add(mpHealthConfig);
+			} else if (dep.equals(BOOSTER_MPCONFIG)) {
+				MPConfigBoosterPackConfigurator mpConfigConfig = new MPConfigBoosterPackConfigurator();
+				mpConfigConfig.setFeature(dependencies.get(dep));
+				boosterPackConfigList.add(mpConfigConfig);
+			} else if (dep.equals(BOOSTER_CDI)) {
+				CDIBoosterPackConfigurator CDIConfig = new CDIBoosterPackConfigurator();
+				CDIConfig.setFeature(dependencies.get(dep));
+				boosterPackConfigList.add(CDIConfig);
+			} else if (dep.equals(BOOSTER_MPRESTCLIENT)) {
+				MPRestClientBoosterPackConfigurator mpRestClientConfig = new MPRestClientBoosterPackConfigurator();
+				mpRestClientConfig.setFeature(dependencies.get(dep));
+				boosterPackConfigList.add(mpRestClientConfig);
+			} else if (dep.equals(BOOSTER_JSONP)) {
+				JSONPBoosterPackConfigurator jsonpConfig = new JSONPBoosterPackConfigurator();
+				jsonpConfig.setFeature(dependencies.get(dep));
+				boosterPackConfigList.add(jsonpConfig);
+			} else if (dep.equals(BOOSTER_OPENTRACING)) {
+				MPOpenTracingBoosterPackConfigurator mpOpenTracingConfig = new MPOpenTracingBoosterPackConfigurator();
+				mpOpenTracingConfig.setFeature(dependencies.get(dep));
+				boosterPackConfigList.add(mpOpenTracingConfig);
+			}
         }
 
         return boosterPackConfigList;
@@ -90,12 +125,11 @@ public class LibertyBoosterUtil {
     }
 
     public List<String> getDependenciesToCopy() {
-
+    	
         List<String> dependenciesToCopy = new ArrayList<String>();
 
         for (BoosterPackConfigurator configurator : boosterPackConfigurators) {
             String dependencyToCopy = configurator.getDependencyToCopy();
-
             if (dependencyToCopy != null) {
 
                 dependenciesToCopy.add(dependencyToCopy);

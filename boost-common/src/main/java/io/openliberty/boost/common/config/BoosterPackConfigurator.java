@@ -25,6 +25,7 @@ public abstract class BoosterPackConfigurator {
 
     protected String EE_7_VERSION = "0.1-SNAPSHOT";
     protected String EE_8_VERSION = "0.2-SNAPSHOT";
+    protected String MP_20_VERSION = "0.2-SNAPSHOT";
 
     /**
      * Return the Liberty feature name

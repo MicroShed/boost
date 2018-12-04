@@ -64,6 +64,11 @@ public interface ConfigConstants {
     public String JAXRS_21 = "jaxrs-2.1";
     public String JDBC_41 = "jdbc-4.1";
     public String JDBC_42 = "jdbc-4.2";
+    public String CDI_20 = "cdi-2.0";
+    public String MPHEALTH_10 = "mpHealth-1.0";
+    public String MPRESTCLIENT_11 = "mpRestClient-1.1";
+    public String JSONP_11 = "jsonp-1.1";
+    public String MPCONFIG_13 = "mpConfig-1.3";
 
     public String SHARED_RESOURCES_DIR = "${shared.resource.dir}";
     public String SERVER_OUTPUT_DIR = "${server.output.dir}";

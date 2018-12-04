@@ -16,28 +16,15 @@ matrix:
       env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
     - jdk: oraclejdk9
       env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
-    # Exclude 18.0.0.2 WLP
-    - jdk: openjdk8
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=maven
-    - jdk: openjdk8
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=gradle
-    - jdk: oraclejdk8
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=maven
-    - jdk: oraclejdk8
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=gradle
-    - jdk: oraclejdk9
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=maven
-    - jdk: oraclejdk9
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=gradle
 env:
-    - RUNTIME=ol RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=maven
     - RUNTIME=ol RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
-    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=maven
+#    - RUNTIME=ol RUNTIME_VERSION=18.0.0.4 BUILD_TOOL=maven
     - RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
-    - RUNTIME=ol RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=gradle
+#    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.4 BUILD_TOOL=maven
     - RUNTIME=ol RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
-    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.2 BUILD_TOOL=gradle
+#    - RUNTIME=ol RUNTIME_VERSION=18.0.0.4 BUILD_TOOL=gradle
     - RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
+#    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.4 BUILD_TOOL=gradle
 cache:
     directories:
         - $HOME/.m2
