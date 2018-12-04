@@ -90,7 +90,7 @@ public class SpringBootUtil {
      *         null otherwise
      * @throws PluginExecutionException
      */
-    public static File copySpringBootUberJar(File artifact, BoostLoggerI logger) throws PluginExecutionException {
+    public static File copySpringBootUberJarFile(File artifact, BoostLoggerI logger) throws PluginExecutionException {
         if (artifact == null || !artifact.exists() || !artifact.isFile()) {
             throw new BoostException("Could not find a project artifact.");
         }
@@ -109,6 +109,44 @@ public class SpringBootUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * Copy the Spring Boot Uber JAR to a .spring extension to preserve it
+     * 
+     * @param springBootUberJar
+     * @param projectArtifact
+     * @param shouldReplaceProjectArchive
+     * @param boostLogger
+     * @throws BoostException
+     */
+
+    public static void copySpringBootUberJar(File springBootUberJar, File projectArtifact, boolean shouldReplaceProjectArchive, BoostLoggerI boostLogger) throws BoostException {
+        try {
+            File springBootUberJarCopy = null;
+            if (springBootUberJar != null) { // Only copy the Uber JAR if it is valid
+                springBootUberJarCopy = SpringBootUtil.copySpringBootUberJarFile(springBootUberJar,
+                        boostLogger);
+            }
+
+            if (springBootUberJarCopy == null) {
+                boostLogger.info("Plugin should replace the project archive: " + shouldReplaceProjectArchive);
+                if (shouldReplaceProjectArchive) {
+                    if (projectArtifact != null) {
+                        File springJar = new File(
+                            getBoostedSpringBootUberJarPath(projectArtifact));
+                        if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(springJar)) {
+                            boostLogger.info("Copying back Spring Boot Uber JAR as project artifact.");
+                            FileUtils.copyFile(springJar, projectArtifact);
+                        }
+                    }
+                }
+            } else {
+                boostLogger.info("Copied Spring Boot Uber JAR to " + springBootUberJarCopy.getCanonicalPath());
+            }
+        } catch (Exception e) {
+            throw new BoostException(e.getMessage(), e);
+        }  
     }
 
     /**
@@ -260,84 +298,95 @@ public class SpringBootUtil {
      * @throws IOException 
      * @throws TransformerException 
      */
-    public static void generateLibertyServerConfig(String springBootProjectResources, String libertyServerPath, String springBootVersion, List<String> springBootStarters, BoostLoggerI logger) throws ParserConfigurationException, IOException, TransformerException {
-        
-        logger.info("Generating Liberty server configuration");
-        
-        // Generate Liberty configuration
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath);
-    
-        // Find and add appropriate springBoot features
-        List<String> featuresNeededForSpringBootApp = getLibertyFeaturesForSpringBoot(springBootVersion,
-                springBootStarters, logger);
-        
-        serverConfig.addFeatures(featuresNeededForSpringBootApp);
-        
-         // Get Spring Boot server properties
-        Properties springBootServerProps = getSpringBootServerProperties(springBootProjectResources);
-        
-        // Configure SSL and endpoints
-        if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE)) {
+    public static void generateLibertyServerConfig(String springBootProjectResources, String libertyServerPath, String springBootVersion, List<String> springBootStarters, BoostLoggerI logger) throws BoostException {
+        try {
+            logger.info("Generating Liberty server configuration");
             
-            Map<String, String> keystoreProperties = new HashMap<String, String>();
-            Map<String, String> keyProperties = new HashMap<String, String>();
+            // Generate Liberty configuration
+            LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath);
+        
+            // Find and add appropriate springBoot features
+            List<String> featuresNeededForSpringBootApp = getLibertyFeaturesForSpringBoot(springBootVersion,
+                    springBootStarters, logger);
             
-            // For each Spring Boot keystore property, add an entry to the keystore map which maps our 
-            // Liberty keystore attribute to a bootstrap variable with the same name as the Spring Boot property.
-            // The Spring Boot properties will then be added to the server's bootstrap.properties file. 
-            keystoreProperties.put(ConfigConstants.LOCATION, makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE));
+            serverConfig.addFeatures(featuresNeededForSpringBootApp);
             
-            if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD)) {
-                keystoreProperties.put(ConfigConstants.PASSWORD, makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD));
-            }
-            if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE)) {
-                keystoreProperties.put(ConfigConstants.TYPE, makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE));
-            }
-            if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER)) {
-                keystoreProperties.put(ConfigConstants.PROVIDER, makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER));
-            }
+            // Get Spring Boot server properties
+            Properties springBootServerProps = getSpringBootServerProperties(springBootProjectResources);
             
-            // Add any key properties to the separate key map.
-            if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_PASSWORD)) {
-                keyProperties.put(ConfigConstants.KEY_PASSWORD, makeVariable(SpringBootUtil.SERVER_SSL_KEY_PASSWORD));
-            } 
-            if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_ALIAS)) {
-                keyProperties.put(ConfigConstants.NAME, makeVariable(SpringBootUtil.SERVER_SSL_KEY_ALIAS));
-            }
-           
-            // Create keystore element in server.xml and endpoint with http disabled. 
-            serverConfig.addKeystore(keystoreProperties, keyProperties);
-            serverConfig.addHttpEndpoint(makeVariable(SpringBootUtil.SERVER_ADDRESS), "-1", makeVariable(SpringBootUtil.SERVER_PORT)); 
-            serverConfig.addFeature(ConfigConstants.TRANSPORT_SECURITY_10);
-            
-            // Since the keystore for the Spring Boot app is created manually and already exists, 
-            // if it is specified on the classpath, we need to copy it to the Liberty server. Otherwise, 
-            // we can just reference the external location without needing to copy the file.
-            String keystoreFile = springBootServerProps.getProperty(SpringBootUtil.SERVER_SSL_KEYSTORE);
-                  
-            if (keystoreFile.contains("classpath:")){
+            // Configure SSL and endpoints
+            if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE)) {
                 
-                // Keystore is in resources directory of spring boot application
-                keystoreFile = keystoreFile.replace("classpath:", "");
-                springBootServerProps.put(SpringBootUtil.SERVER_SSL_KEYSTORE, keystoreFile);
+                Map<String, String> keystoreProperties = new HashMap<String, String>();
+                Map<String, String> keyProperties = new HashMap<String, String>();
                 
-                // Copy keystore to Liberty
-                Path springBootKeystorePath = Paths.get(springBootProjectResources, keystoreFile);
-                Path libertyKeystorePath = Paths.get(libertyServerPath + "/resources/security/" + keystoreFile);
-                Path libertySecurityPath = Paths.get(libertyServerPath + "/resources/security");
+                // For each Spring Boot keystore property, add an entry to the keystore map which maps our 
+                // Liberty keystore attribute to a bootstrap variable with the same name as the Spring Boot property.
+                // The Spring Boot properties will then be added to the server's bootstrap.properties file. 
+                keystoreProperties.put(ConfigConstants.LOCATION, makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE));
                 
-                Files.createDirectories(libertySecurityPath);
-                Files.copy(springBootKeystorePath, libertyKeystorePath, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
-            } 
+                if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD)) {
+                    keystoreProperties.put(ConfigConstants.PASSWORD, makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD));
+                }
+                if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE)) {
+                    keystoreProperties.put(ConfigConstants.TYPE, makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE));
+                }
+                if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER)) {
+                    keystoreProperties.put(ConfigConstants.PROVIDER, makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER));
+                }
+                
+                // Add any key properties to the separate key map.
+                if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_PASSWORD)) {
+                    keyProperties.put(ConfigConstants.KEY_PASSWORD, makeVariable(SpringBootUtil.SERVER_SSL_KEY_PASSWORD));
+                } 
+                if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_ALIAS)) {
+                    keyProperties.put(ConfigConstants.NAME, makeVariable(SpringBootUtil.SERVER_SSL_KEY_ALIAS));
+                }
             
-        } else {
-            serverConfig.addHttpEndpoint(makeVariable(SpringBootUtil.SERVER_ADDRESS), makeVariable(SpringBootUtil.SERVER_PORT), null);
-         }
-        
-        // Add properties to bootstrap properties
-        serverConfig.addBootstrapProperties(springBootServerProps);
-        
-        serverConfig.writeToServer();
+                // Create keystore element in server.xml and endpoint with http disabled. 
+                serverConfig.addKeystore(keystoreProperties, keyProperties);
+                serverConfig.addHttpEndpoint(makeVariable(SpringBootUtil.SERVER_ADDRESS), "-1", makeVariable(SpringBootUtil.SERVER_PORT)); 
+                serverConfig.addFeature(ConfigConstants.TRANSPORT_SECURITY_10);
+                
+                // Since the keystore for the Spring Boot app is created manually and already exists, 
+                // if it is specified on the classpath, we need to copy it to the Liberty server. Otherwise, 
+                // we can just reference the external location without needing to copy the file.
+                String keystoreFile = springBootServerProps.getProperty(SpringBootUtil.SERVER_SSL_KEYSTORE);
+                    
+                if (keystoreFile.contains("classpath:")){
+                    
+                    // Keystore is in resources directory of spring boot application
+                    keystoreFile = keystoreFile.replace("classpath:", "");
+                    springBootServerProps.put(SpringBootUtil.SERVER_SSL_KEYSTORE, keystoreFile);
+                    
+                    // Copy keystore to Liberty
+                    Path springBootKeystorePath = Paths.get(springBootProjectResources, keystoreFile);
+                    Path libertyKeystorePath = Paths.get(libertyServerPath + "/resources/security/" + keystoreFile);
+                    Path libertySecurityPath = Paths.get(libertyServerPath + "/resources/security");
+                    
+                    Files.createDirectories(libertySecurityPath);
+                    Files.copy(springBootKeystorePath, libertyKeystorePath, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+                } 
+                
+            } else {
+                serverConfig.addHttpEndpoint(makeVariable(SpringBootUtil.SERVER_ADDRESS), makeVariable(SpringBootUtil.SERVER_PORT), null);
+            }
+            
+            // Add properties to bootstrap properties
+            serverConfig.addBootstrapProperties(springBootServerProps);
+            
+            serverConfig.writeToServer();
+
+        } catch (Exception e) {
+            throw new BoostException("Unable to generate server configuration for the Liberty server.", e);
+        }
+    }
+
+    public static void validateSpringBootUberJAR(File springBootUberJar, File artifactId, BoostLoggerI boostLogger) throws BoostException {
+        if (!BoostUtil.isLibertyJar(artifactId, boostLogger) && springBootUberJar == null) {
+            throw new BoostException (
+                "A valid Spring Boot Uber JAR was not found. Rebuild the file and try again.");
+        }
     }
     
     private static String makeVariable(String propertyName) {

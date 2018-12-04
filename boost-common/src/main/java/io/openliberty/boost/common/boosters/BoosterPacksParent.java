@@ -19,12 +19,9 @@ public class BoosterPacksParent {
      * Creates a list of config writer objects for all boost dependencies found
      */
 
-    List<String> featureList;
-
-    private String JDBC_BOOSTER_PACK_STRING = "liberty-booster-data-jdbc";
+    private static String JDBC_BOOSTER_PACK_STRING = "liberty-booster-data-jdbc";
     public static String JAXRS_BOOSTER_PACK_STRING_10 = "io.openliberty.boosters:jaxrs:0.1-SNAPSHOT";
     public static String JAXRS_BOOSTER_PACK_STRING_20 = "io.openliberty.boosters:jaxrs:0.2-SNAPSHOT";
-    private List<BoosterPackConfigurator> boosterPackConfigList = new ArrayList<BoosterPackConfigurator>();
 
     /**
      * take a list of pom boost dependency strings and map to liberty features for
@@ -34,8 +31,10 @@ public class BoosterPacksParent {
      * @param dependencies
      * @return
      */
-    public List<BoosterPackConfigurator> mapDependenciesToFeatureList(List<String> dependencies) {
-        featureList = new ArrayList<String>();
+    public static List<BoosterPackConfigurator> mapDependenciesToFeatureList(List<String> dependencies) {
+        List<BoosterPackConfigurator> boosterPackConfigList = new ArrayList<BoosterPackConfigurator>();
+        List<String> featureList = new ArrayList<String>();
+        
         for (String dep : dependencies) {
             if (dep.equals(JDBC_BOOSTER_PACK_STRING)) {
                 JDBCBoosterPackConfigurator jdbcConfig = new JDBCBoosterPackConfigurator();
