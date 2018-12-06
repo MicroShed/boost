@@ -27,7 +27,9 @@ import java.io.InputStreamReader;
 public class LibertyRunMojoIT {
     private static String URL = "http://localhost:8080/";
 
-    private static Process process;
+    private static Process process = null;
+
+    private static String CustomPortURL = "http://localhost:8081/";
 
     private static String runtimeGroupId;
     private static String runtimeArtifactId;
@@ -46,8 +48,12 @@ public class LibertyRunMojoIT {
         }
     }
 
-    @BeforeClass
     public static void init() throws Exception {
+        String port = null;
+        init(port);
+    }
+
+    public static void init(String port) throws Exception {
 
         setupMvnPath();
 
@@ -55,8 +61,15 @@ public class LibertyRunMojoIT {
         runtimeArtifactId = System.getProperty("runtimeArtifactId");
         runtimeVersion = System.getProperty("runtimeVersion");
 
-        String runCommand = mvnCmd + " boost:run -DruntimeGroupId=" + runtimeGroupId + " -DruntimeArtifactId="
-                + runtimeArtifactId + " -DruntimeVersion=" + runtimeVersion;
+        String passPort = null;
+        String runCommand = null;
+        if (port != null) {
+            runCommand = mvnCmd + " boost:run -Dserver.port=" + port + " -DruntimeGroupId=" + runtimeGroupId
+                    + " -DruntimeArtifactId=" + runtimeArtifactId + " -DruntimeVersion=" + runtimeVersion;
+        } else {
+            runCommand = mvnCmd + " boost:run -DruntimeGroupId=" + runtimeGroupId + " -DruntimeArtifactId="
+                    + runtimeArtifactId + " -DruntimeVersion=" + runtimeVersion;
+        }
         process = Runtime.getRuntime().exec(runCommand);
     }
 
@@ -70,6 +83,12 @@ public class LibertyRunMojoIT {
 
     @Test
     public void testLibertyRunMojo() throws Exception {
+
+        // make sure server is not already running
+        if (process != null)
+            teardown();
+
+        init();
 
         // Verify server started message in logs
         int timeout = 0;
@@ -116,5 +135,54 @@ public class LibertyRunMojoIT {
         } finally {
             method.releaseConnection();
         }
+    }
+
+    @Test
+    public void testLibertyRunMojoCustomPort() throws Exception {
+        // make sure server is not already running
+        if (process != null)
+            teardown();
+
+        // run server with new port.
+        init("8081");
+        // Verify server started message in logs
+        int timeout = 0;
+        boolean serverStarted = false;
+        while (timeout < 10 && !serverStarted) {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                // Check for startup message
+                if (line.contains("CWWKF0011I")) {
+                    serverStarted = true;
+                    break;
+                }
+            }
+            bufferedReader.close();
+            if (!serverStarted) {
+                Thread.sleep(1000);
+                timeout++;
+            }
+        }
+        assertTrue("The messages.log did not show that the server has started.", serverStarted);
+        // Verify that the application is reachable
+        HttpClient client = new HttpClient();
+        GetMethod method = new GetMethod(CustomPortURL);
+        try {
+            int statusCode = client.executeMethod(method);
+            assertEquals("HTTP GET failed", HttpStatus.SC_OK, statusCode);
+            String response = method.getResponseBodyAsString(1000);
+            assertTrue("Unexpected response body", response.contains("Greetings from Spring Boot!"));
+        } finally {
+            method.releaseConnection();
+        }
+    }
+
+    @Test
+    public void testLibertyRunMojoReturnDefaultPort() throws Exception {
+        // Start server with custom port
+        testLibertyRunMojoCustomPort();
+        // Make sure we go back to the original port after run with custom port
+        testLibertyRunMojo();
     }
 }

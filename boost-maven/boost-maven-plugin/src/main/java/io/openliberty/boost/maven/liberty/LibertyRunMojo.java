@@ -35,11 +35,12 @@ public class LibertyRunMojo extends AbstractLibertyMojo {
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
-
+        setServerPort();
         executeMojo(getPlugin(), goal("run"),
                 configuration(element(name("serverName"), libertyServerName),
                         element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
                 getExecutionEnvironment());
+        resetServerPort();
     }
 
 }

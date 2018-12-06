@@ -37,11 +37,12 @@ public class LibertyDebugMojo extends AbstractLibertyMojo {
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
-
+        setServerPort();
         executeMojo(getPlugin(), goal("debug"),
                 configuration(element(name("serverName"), libertyServerName),
                         element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
                 getExecutionEnvironment());
+        resetServerPort();
     }
 
 }
