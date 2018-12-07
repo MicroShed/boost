@@ -90,7 +90,7 @@ public class SpringBootUtil {
      *         null otherwise
      * @throws PluginExecutionException
      */
-    public static File copySpringBootUberJarFile(File artifact, BoostLoggerI logger) throws PluginExecutionException {
+    private static File copySpringBootUberJarFile(File artifact, BoostLoggerI logger) throws PluginExecutionException {
         if (artifact == null || !artifact.exists() || !artifact.isFile()) {
             throw new BoostException("Could not find a project artifact.");
         }
@@ -144,8 +144,8 @@ public class SpringBootUtil {
             } else {
                 boostLogger.info("Copied Spring Boot Uber JAR to " + springBootUberJarCopy.getCanonicalPath());
             }
-        } catch (Exception e) {
-            throw new BoostException(e.getMessage(), e);
+        } catch (PluginExecutionException | IOException e) {
+            throw new BoostException("Error copying Spring Boot Uber JAR.", e);
         }  
     }
 
@@ -294,9 +294,7 @@ public class SpringBootUtil {
      * @param springBootVersion - Version of Spring Boot for the application
      * @param springBootStarters - List of Spring Boot starters used by this application
      * @param logger - BoostLogger for information logging
-     * @throws ParserConfigurationException 
-     * @throws IOException 
-     * @throws TransformerException 
+     * @throws BoostException 
      */
     public static void generateLibertyServerConfig(String springBootProjectResources, String libertyServerPath, String springBootVersion, List<String> springBootStarters, BoostLoggerI logger) throws BoostException {
         try {
@@ -377,15 +375,8 @@ public class SpringBootUtil {
             
             serverConfig.writeToServer();
 
-        } catch (Exception e) {
+        } catch (ParserConfigurationException | IOException | TransformerException e) {
             throw new BoostException("Unable to generate server configuration for the Liberty server.", e);
-        }
-    }
-
-    public static void validateSpringBootUberJAR(File springBootUberJar, File artifactId, BoostLoggerI boostLogger) throws BoostException {
-        if (!BoostUtil.isLibertyJar(artifactId, boostLogger) && springBootUberJar == null) {
-            throw new BoostException (
-                "A valid Spring Boot Uber JAR was not found. Rebuild the file and try again.");
         }
     }
     

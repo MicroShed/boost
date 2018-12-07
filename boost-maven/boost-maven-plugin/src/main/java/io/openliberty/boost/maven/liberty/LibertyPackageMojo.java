@@ -29,12 +29,10 @@ import org.apache.maven.plugins.annotations.*;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.utils.ConfigConstants;
-import io.openliberty.boost.common.utils.LibertyServerConfigGenerator;
 import io.openliberty.boost.common.utils.PackageUtil;
 import io.openliberty.boost.common.utils.SpringBootUtil;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
-import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
@@ -91,7 +89,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
                 File springBootUberJar = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil.getSpringBootUberJAR(project,
                         getLog());
-                SpringBootUtil.validateSpringBootUberJAR(springBootUberJar, project.getArtifact().getFile(), BoostLogger.getInstance());
+                validateSpringBootUberJAR(springBootUberJar, project.getArtifact().getFile());
                 SpringBootUtil.copySpringBootUberJar(springBootUberJar, project.getArtifact().getFile(), attach, BoostLogger.getInstance()); // Only copy back
                                                                 // if we need to
                                                                 // overwrite the
@@ -257,4 +255,10 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                 getExecutionEnvironment());
     }
 
+    public void validateSpringBootUberJAR(File springBootUberJar, File artifactId) throws MojoExecutionException {
+        if (!BoostUtil.isLibertyJar(artifactId, BoostLogger.getInstance()) && springBootUberJar == null) {
+            throw new MojoExecutionException (
+                "A valid Spring Boot Uber JAR was not found. Rebuild the file and try again.");
+        }
+    }
 }

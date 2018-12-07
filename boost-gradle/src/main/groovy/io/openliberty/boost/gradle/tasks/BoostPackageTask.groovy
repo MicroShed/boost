@@ -12,14 +12,6 @@
 package io.openliberty.boost.gradle.tasks
 
 import java.util.ArrayList
-import java.io.OutputStream
-import java.io.FileOutputStream
-import java.io.IOException
-
-import org.apache.commons.io.FileUtils
-
-import javax.xml.parsers.ParserConfigurationException
-import javax.xml.transform.TransformerException
 
 import org.gradle.api.GradleException
 import org.gradle.api.logging.LogLevel
@@ -32,7 +24,6 @@ import org.gradle.maven.MavenPomArtifact
 import io.openliberty.boost.gradle.utils.BoostLogger
 import io.openliberty.boost.gradle.utils.GradleProjectUtil
 import io.openliberty.boost.common.utils.BoostUtil
-import io.openliberty.boost.common.utils.LibertyServerConfigGenerator
 import io.openliberty.boost.common.utils.PackageUtil
 import io.openliberty.boost.common.utils.SpringBootUtil
 
@@ -140,7 +131,7 @@ public class BoostPackageTask extends AbstractBoostTask {
                     if (!project.configurations.archives.allArtifacts.isEmpty()) {
                         String springResourceDir = "${project.buildDir}/resources/main"
                         File projectArtifact = project.configurations.archives.allArtifacts[0].getFile()
-                        SpringBootUtil.validateSpringBootUberJAR(springUberJar, projectArtifact, BoostLogger.getInstance())
+
                         SpringBootUtil.copySpringBootUberJar(springUberJar, projectArtifact, shouldReplaceProjectArchive(), BoostLogger.getInstance())
                         SpringBootUtil.generateLibertyServerConfig(springResourceDir, libertyServerPath, springBootVersion, getSpringBootDependencies(), BoostLogger.getInstance())
                     } else {
