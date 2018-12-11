@@ -48,23 +48,29 @@ do
       action=$(eval "$actionCmd")
 
       # Is the file being renamed?
-      if [ "$action" == "RM" ] || [ "$action" == "R " ] ; then
+      # Yes that space in "R " needs to be there.
+      if [ "$action" == "RM" ] || [ "$action" == "R " ] ; then 
         echo "File $line is being renamed"
-
-        # find the new file name
-        newFileCmd="echo \"$line\" | sed 's/.*\=> //'"
+        #
+        # find the new file name, handling either the
+        #  old -> new   OR the old => new   output formats of `git status --porcelain`
+        #
+        # Note the sed output is a relative path (relative to project location)
+        #
+        newFileCmd="echo \"$line\" | sed 's/.*\(\=\|\-\)> //'"
         newFile=$(eval "$newFileCmd")
-        if [ $newlist == "Y" ]] ; then
+        if [ $newlist == "Y" ] ; then
           # formatFiles are input to the eclipse formatter
           formatFiles=$PROJECT_LOCATION/$newFile  
-          #
           checkIfFormatted=$newFile
           newlist=N
         else
           formatFiles="$formatFiles $PROJECT_LOCATION/$newFile"
           checkIfFormatted="$checkIfFormatted $newFile"
         fi
-      elif [ "$action" == "MD" ] || [ "$action" == "M " ] ; then
+      # Yes that space in "M " and "A " needs to be there.
+      elif [ "$action" == "MD" ] || [ "$action" == "M " ] || [ "$action" == "A " ] ; then
+        # Note the sed output is an absolute path including project location
         newFileCmd="echo $line | cut -c 3- | sed -e 's|^|$PROJECT_LOCATION/|'"
         newFile=$(eval "$newFileCmd")
         if [ $newlist == "Y" ] ; then
