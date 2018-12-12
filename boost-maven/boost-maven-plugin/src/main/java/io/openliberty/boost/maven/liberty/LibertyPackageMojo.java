@@ -127,7 +127,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
             copyBoosterDependencies();
 
-            generateServerConfigJ2EE();
+            generateServerConfigEE();
 
             installMissingFeatures();
             // we install the app now, after server.xml is configured. This is
