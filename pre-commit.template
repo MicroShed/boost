@@ -57,7 +57,7 @@ do
         #
         # Note the sed output is a relative path (relative to project location)
         #
-        newFileCmd="echo \"$line\" | sed 's/.*\(\=\|\-\)> //'"
+        newFileCmd="echo \"$line\" | sed 's/.* //'"
         newFile=$(eval "$newFileCmd")
         if [ $newlist == "Y" ] ; then
           # formatFiles are input to the eclipse formatter
