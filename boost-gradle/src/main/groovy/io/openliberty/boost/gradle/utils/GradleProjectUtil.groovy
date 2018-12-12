@@ -12,6 +12,9 @@ package io.openliberty.boost.gradle.utils
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
+import org.gradle.maven.MavenModule
+import org.gradle.maven.MavenPomArtifact
+import org.gradle.api.artifacts.ModuleVersionIdentifier
 
 import groovy.lang.MissingPropertyException
 
@@ -36,5 +39,34 @@ public class GradleProjectUtil {
         }
 
         return version        
+    }
+    
+    public static List<String> getSpringFrameworkDependencies(Project project) {
+
+        List<String> springBootDependencies = new ArrayList<String>()
+
+        project.configurations.compile.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
+        
+            if ( id.group.equals("org.springframework") ) {
+                
+                springBootDependencies.add(id.name.toString())
+            }
+        }
+       
+        return springBootDependencies
+    }
+    
+    public static Map<String, String> getBoosterDependencies(Project project) {
+        Map<String, String> boosterDependencies = new HashMap<String, String>()
+
+        project.configurations.compile.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
+        
+            if ( id.group.equals("io.openliberty.boosters") ) {
+                
+                boosterDependencies.put(id.name.toString(), id.version.toString())
+            }
+        }
+
+        return boosterDependencies
     }
 }

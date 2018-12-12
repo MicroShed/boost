@@ -28,23 +28,22 @@ import org.gradle.tooling.BuildException
 
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
+import org.gradle.api.artifacts.ModuleVersionIdentifier
+import org.gradle.api.tasks.Copy
 
 import io.openliberty.boost.gradle.utils.BoostLogger
 import io.openliberty.boost.gradle.utils.GradleProjectUtil
-import io.openliberty.boost.common.boosters.BoosterPackConfigurator
-import io.openliberty.boost.common.boosters.BoosterPacksParent
 import io.openliberty.boost.common.utils.BoostUtil
-import io.openliberty.boost.common.utils.LibertyServerConfigGenerator
 import io.openliberty.boost.common.utils.SpringBootUtil
+import io.openliberty.boost.common.utils.LibertyBoosterUtil
 
 import net.wasdev.wlp.gradle.plugins.extensions.PackageAndDumpExtension
 
 public class BoostPackageTask extends AbstractBoostTask {
 
+    LibertyBoosterUtil boosterUtil
+    
     String springBootVersion = GradleProjectUtil.findSpringBootVersion(this.project)
-
-    BoosterPacksParent boosterParent = new BoosterPacksParent()
-    List<BoosterPackConfigurator> boosterFeatures = null
 
     String libertyServerPath = null
     
@@ -146,7 +145,14 @@ public class BoostPackageTask extends AbstractBoostTask {
                     generateServerConfigSpringBoot()
                     
                 } else if (project.plugins.hasPlugin('war')) {
-                    generateServerXMLJ2EE(getBoosterConfigsFromDependencies())
+                    // Get booster dependencies from project
+                    Map<String, String> boosterDependencies = GradleProjectUtil.getBoosterDependencies(project)
+        	        boosterUtil = new LibertyBoosterUtil(libertyServerPath, boosterDependencies, BoostLogger.getInstance())
+        	        
+                    copyBoosterDependencies()
+        	
+                    generateServerConfigJ2EE()
+                    
                 } else {
                     throw new GradleException('Could not package the project with boostPackage. The boostPackage task must be used with a SpringBoot or Java EE project.')
                 }
@@ -158,19 +164,6 @@ public class BoostPackageTask extends AbstractBoostTask {
 
     public boolean isSpringProject() {
         return springBootVersion != null && !springBootVersion.isEmpty()
-    }
-
-    protected List<String> getSpringBootDependencies() {
-
-        List<String> springBootDependencies = new ArrayList<String>()
-
-        project.configurations.compile.resolvedConfiguration.resolvedArtifacts.each { art ->
-            if ("${art.name}".contains("spring")) {
-                springBootDependencies.add(art.name)
-            }
-        }
-       
-        return springBootDependencies
     }
 
     public String getClassifier() {
@@ -187,44 +180,23 @@ public class BoostPackageTask extends AbstractBoostTask {
         return classifier
     }
 
-    protected List<BoosterPackConfigurator> getBoosterConfigsFromDependencies() {
-        List<String> dependencyList = new ArrayList<String>()
-
-        def componentIds = project.configurations.compile.incoming.resolutionResult.allDependencies.collect { it.selected.id }
-        def result = project.dependencies.createArtifactResolutionQuery()
-            .forComponents(componentIds)
-            .withArtifacts(MavenModule, MavenPomArtifact)
-            .execute()
-
-        for (component in result.resolvedComponents) {
-            logger.debug("Adding ${component.id} to dependency list.")
-            component.getArtifacts(MavenPomArtifact).each { dependencyList.add(component.id.toString()) }
-        }
-
-        return boosterParent.mapDependenciesToFeatureList(dependencyList)
-    }
-
-    protected void generateServerXMLJ2EE(List<BoosterPackConfigurator> boosterConfigurators) throws GradleException {
+    protected void generateServerConfigJ2EE() throws GradleException {
+        String warName = null
+    	
+    	if (project.war != null) {
+    	
+    		if (project.war.version == null) {
+    			warName = project.war.baseName
+    		} else {
+    			warName = project.war.baseName + "-" + project.war.version
+    		}
+    	}
+    	
         try {
-            LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath)
-
-            // Add any other Liberty features needed depending on the boost
-            // boosters defined
-            List<String> boosterFeatureNames = getBoosterFeatureNames(boosterConfigurators)
-            serverConfig.addFeatures(boosterFeatureNames)
-            if (project.plugins.hasPlugin('war')) {
-                // write out config on behalf of a web app
-                serverConfig.addConfigForApp(project.war.baseName, project.war.version)
-            } else { // only support war packaging type currently
-                throw new GradleException(
-                        "Unsupported Gradle packaging type - Liberty Boost currently supports WAR packaging type only.");
-            }
-            serverConfig.addConfigForFeatures(boosterConfigurators)
-
-            // Write server.xml to Liberty server config directory
-            serverConfig.writeToServer()
-
-        } catch (TransformerException | IOException | ParserConfigurationException e) {
+        
+        	boosterUtil.generateLibertyServerConfig(warName)
+         
+        } catch (Exception e) {
             throw new GradleException("Unable to generate server configuration for the Liberty server.", e);
         }
     }
@@ -233,11 +205,11 @@ public class BoostPackageTask extends AbstractBoostTask {
     
        try {
             // Get Spring Boot starters from Maven project
-            List<String> springBootDependencies = getSpringBootDependencies();
+            List<String> springFrameworkDependencies = GradleProjectUtil.getSpringFrameworkDependencies(project);
 
             // Generate server config
             SpringBootUtil.generateLibertyServerConfig("${project.buildDir}/resources/main", libertyServerPath,
-                    springBootVersion, springBootDependencies, BoostLogger.getInstance());
+                    springBootVersion, springFrameworkDependencies, BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new GradleException("Unable to generate server configuration for the Liberty server.", e);
@@ -283,15 +255,6 @@ public class BoostPackageTask extends AbstractBoostTask {
         }
     }
 
-    private List<String> getBoosterFeatureNames(List<BoosterPackConfigurator> boosterConfigurators) {
-        List<String> featureStrings = new ArrayList<String>()
-        for (BoosterPackConfigurator bpconfig : boosterConfigurators) {
-            featureStrings.add(bpconfig.getFeatureString())
-        }
-
-        return featureStrings
-    }
-
     //returns true if bootJar is using the same archiveName as jar
     private boolean shouldReplaceProjectArchive() {
         if (project.plugins.hasPlugin('java')) {
@@ -301,4 +264,24 @@ public class BoostPackageTask extends AbstractBoostTask {
         }
         return false
     }
+    
+    protected void copyBoosterDependencies() {
+    	
+    	List<String> dependenciesToCopy = boosterUtil.getDependenciesToCopy()
+        
+        def boosterConfig = project.getConfigurations().create('boosterDependency')
+        
+        dependenciesToCopy.each { dep ->
+            
+         	project.getDependencies().add(boosterConfig.name, dep) 
+            
+    	}
+    	
+    	project.copy {
+        	from project.configurations.boosterDependency
+    		into "${project.buildDir}/wlp/usr/servers/BoostServer/resources"
+    		include '*.jar'
+    	}
+    }
+    
 }

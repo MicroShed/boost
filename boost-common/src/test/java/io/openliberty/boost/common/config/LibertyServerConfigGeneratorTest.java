@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.utils;
+package io.openliberty.boost.common.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -24,11 +24,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Element;
 
-import io.openliberty.boost.common.utils.LibertyServerConfigGenerator;
+import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
 
-import static io.openliberty.boost.common.utils.ConfigConstants.*;
-import static io.openliberty.boost.common.utils.ConfigFileUtils.findStringInServerXml;
-import static io.openliberty.boost.common.utils.DOMUtils.getDirectChildrenByTag;
+import static io.openliberty.boost.common.config.ConfigConstants.*;
+import static io.openliberty.boost.common.config.ConfigFileUtils.findStringInServerXml;
+import static io.openliberty.boost.common.config.DOMUtils.getDirectChildrenByTag;
 
 public class LibertyServerConfigGeneratorTest {
 
@@ -45,7 +45,8 @@ public class LibertyServerConfigGeneratorTest {
     @Test
     public void testAddSpringFeature() throws ParserConfigurationException, TransformerException, IOException {
 
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(outputDir.getRoot().getAbsolutePath());
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath());
         serverConfig.addFeature(SPRING_BOOT_15);
         serverConfig.writeToServer();
 
@@ -61,7 +62,7 @@ public class LibertyServerConfigGeneratorTest {
     public void testZeroFeaturesInDefaultServerConfig()
             throws ParserConfigurationException, TransformerException, IOException {
         LibertyServerConfigGenerator g = new LibertyServerConfigGenerator(outputDir.getRoot().getAbsolutePath());
-        Element serverRoot = g.doc.getDocumentElement();
+        Element serverRoot = g.getServerDoc().getDocumentElement();
         List<Element> featureMgrList = getDirectChildrenByTag(serverRoot, FEATURE_MANAGER);
         assertEquals("Didn't find one and only one featureMgr", 1, featureMgrList.size());
         Element featureMgr = featureMgrList.get(0);
