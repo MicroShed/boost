@@ -57,6 +57,11 @@ do
         #
         # Note the sed output is a relative path (relative to project location)
         #
+        # The idea is this translates
+        #  R a/b/c/X.java -> a/b/d/Y.java 
+        # into  'a/b/d/Y.java' .   That is, it strips off everything leaving the new relative path.
+        # It assumes there are no spaces in the path name.
+        #  We had some inconsistencies with Git versions and sed versions, so hopefully this covers all cases.
         newFileCmd="echo \"$line\" | sed 's/.* //'"
         newFile=$(eval "$newFileCmd")
         if [ $newlist == "Y" ] ; then
