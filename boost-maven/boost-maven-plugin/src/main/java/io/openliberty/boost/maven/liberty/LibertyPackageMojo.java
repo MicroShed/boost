@@ -168,7 +168,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      * 
      * @throws MojoExecutionException
      */
-    private void generateServerConfigJ2EE() throws MojoExecutionException {
+    private void generateServerConfigEE() throws MojoExecutionException {
 
         String warName = null;
 
