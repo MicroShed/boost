@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.utils;
+package io.openliberty.boost.common.config;
 
 import java.util.ArrayList;
 import java.util.List;

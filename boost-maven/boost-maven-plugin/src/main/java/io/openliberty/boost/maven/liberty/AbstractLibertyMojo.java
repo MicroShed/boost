@@ -37,6 +37,9 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     protected String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
     protected String libertyMavenPluginArtifactId = "liberty-maven-plugin";
 
+    protected String mavenDependencyPluginGroupId = "org.apache.maven.plugins";
+    protected String mavenDependencyPluginArtifactId = "maven-dependency-plugin";
+
     @Parameter(defaultValue = "2.6.2", readonly = true)
     protected String libertyMavenPluginVersion;
 
@@ -58,6 +61,10 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     protected Plugin getPlugin() throws MojoExecutionException {
         return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
                 version(libertyMavenPluginVersion));
+    }
+
+    protected Plugin getMavenDependencyPlugin() throws MojoExecutionException {
+        return plugin(groupId(mavenDependencyPluginGroupId), artifactId(mavenDependencyPluginArtifactId));
     }
 
     protected Element getRuntimeArtifactElement() {

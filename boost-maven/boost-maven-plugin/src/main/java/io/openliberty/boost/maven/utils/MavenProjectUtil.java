@@ -11,7 +11,9 @@
 package io.openliberty.boost.maven.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -35,11 +37,11 @@ public class MavenProjectUtil {
 
         return version;
     }
-    
+
     /**
      * Get all dependencies with "org.springframework" as the groupId. These
-     * dependencies will be used to determine which additional Liberty features need
-     * to be enabled.
+     * dependencies will be used to determine which additional Liberty features
+     * need to be enabled.
      * 
      */
     public static List<String> getSpringFrameworkDependencies(MavenProject project) {
@@ -55,6 +57,23 @@ public class MavenProjectUtil {
         }
 
         return springFrameworkDependencies;
+    }
+
+    public static Map<String, String> getBoosterDependencies(MavenProject project, BoostLogger logger) {
+
+        Map<String, String> boosterDependencies = new HashMap<String, String>();
+        logger.debug("Processing project for dependencies.");
+
+        for (Artifact artifact : project.getArtifacts()) {
+            logger.debug("Found dependency while processing project: " + artifact.getGroupId() + ":"
+                    + artifact.getArtifactId() + ":" + artifact.getVersion());
+
+            if (artifact.getGroupId().equals("io.openliberty.boosters")) {
+                boosterDependencies.put(artifact.getArtifactId(), artifact.getVersion());
+            }
+        }
+
+        return boosterDependencies;
     }
 
 }

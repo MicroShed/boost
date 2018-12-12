@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.utils;
+package io.openliberty.boost.common.config;
 
-import static io.openliberty.boost.common.utils.ConfigConstants.*;
+import static io.openliberty.boost.common.config.ConfigConstants.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,28 +35,26 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import io.openliberty.boost.common.boosters.BoosterPackConfigurator;
-
 /**
  * Create a Liberty server.xml
  *
  */
 public class LibertyServerConfigGenerator {
 
-    String serverPath;
-    
-    Document doc;
-    Element featureManager;
-    Element serverRoot;
+    private String serverPath;
 
-    Set<String> featuresAdded;
-    
-    Properties bootstrapProperties;
+    private Document doc;
+    private Element featureManager;
+    private Element serverRoot;
+
+    private Set<String> featuresAdded;
+
+    private Properties bootstrapProperties;
 
     public LibertyServerConfigGenerator(String serverPath) throws ParserConfigurationException {
         this.serverPath = serverPath;
         generateDocument();
-        
+
         featuresAdded = new HashSet<String>();
         bootstrapProperties = new Properties();
     }
@@ -73,6 +71,10 @@ public class LibertyServerConfigGenerator {
         // Create featureManager config element
         featureManager = doc.createElement(FEATURE_MANAGER);
         serverRoot.appendChild(featureManager);
+    }
+
+    public Document getServerDoc() {
+        return doc;
     }
 
     /**
@@ -102,38 +104,37 @@ public class LibertyServerConfigGenerator {
 
         serverRoot.appendChild(httpEndpoint);
     }
-    
 
     /**
      * Add a keystore definition for this server
      * 
      * @param keystore
-     *              The keystore file name.
+     *            The keystore file name.
      * @param keystorePassword
-     *              The keystore password
+     *            The keystore password
      * @param keystoreType
-     *              The keystore type
+     *            The keystore type
      */
     public void addKeystore(Map<String, String> keystoreProps, Map<String, String> keyProps) {
         Element keystore = doc.createElement(KEYSTORE);
         keystore.setAttribute("id", DEFAULT_KEYSTORE);
-        
+
         for (String key : keystoreProps.keySet()) {
             keystore.setAttribute(key, keystoreProps.get(key));
         }
-        
+
         if (!keyProps.isEmpty()) {
             Element keyEntry = doc.createElement(KEY_ENTRY);
-            
+
             for (String key : keyProps.keySet()) {
                 keyEntry.setAttribute(key, keyProps.get(key));
             }
-            
+
             keystore.appendChild(keyEntry);
         }
-        
+
         serverRoot.appendChild(keystore);
-        
+
     }
 
     /**
@@ -167,7 +168,8 @@ public class LibertyServerConfigGenerator {
     }
 
     /**
-     * Write the server.xml and bootstrap.properties to the server config directory
+     * Write the server.xml and bootstrap.properties to the server config
+     * directory
      *
      * @throws TransformerException
      * @throws IOException
@@ -186,13 +188,13 @@ public class LibertyServerConfigGenerator {
         transformer.transform(source, result);
 
         // Generate bootstrap.properties
-        if(!bootstrapProperties.isEmpty()){
-            
+        if (!bootstrapProperties.isEmpty()) {
+
             OutputStream output = null;
-             try {
+            try {
                 output = new FileOutputStream(serverPath + "/bootstrap.properties");
                 bootstrapProperties.store(output, null);
-             } finally {
+            } finally {
                 if (output != null) {
                     output.close();
                 }
@@ -200,31 +202,24 @@ public class LibertyServerConfigGenerator {
         }
     }
 
-    public void addConfigForFeatures(List<BoosterPackConfigurator> boosterConfigurators) {
-        for (BoosterPackConfigurator booster : boosterConfigurators) {
-            booster.writeConfigToServerXML(doc);
-        }
+    public void addBootstrapProperties(Properties properties) throws IOException {
 
+        for (String key : properties.stringPropertyNames()) {
+            String value = properties.getProperty(key);
+            bootstrapProperties.put(key, value);
+        }
     }
 
-    public void addBootstrapProperties(Properties properties) throws IOException{
-        
-        for(String key : properties.stringPropertyNames()) {
-              String value = properties.getProperty(key);
-              bootstrapProperties.put(key, value);
-        }
+    public void addBoosterConfig(BoosterPackConfigurator configurator) {
+        configurator.addServerConfig(getServerDoc());
     }
-    
-    public void addConfigForApp(String artifactId, String version){
-    	Element appCfg = doc.createElement(APPLICATION);
-    	appCfg.setAttribute("context-root", "/");
-        if(version == null) {
-            appCfg.setAttribute("location", artifactId + "." + ConfigConstants.WAR_PKG_TYPE);
-        } else {
-            appCfg.setAttribute("location", artifactId + "-" + version + "." + ConfigConstants.WAR_PKG_TYPE);
-        }
-    	appCfg.setAttribute("type", ConfigConstants.WAR_PKG_TYPE);
-    	serverRoot.appendChild(appCfg);
+
+    public void addApplication(String appName) {
+        Element appCfg = doc.createElement(APPLICATION);
+        appCfg.setAttribute(CONTEXT_ROOT, "/");
+        appCfg.setAttribute(LOCATION, appName + "." + WAR_PKG_TYPE);
+        appCfg.setAttribute(TYPE, WAR_PKG_TYPE);
+        serverRoot.appendChild(appCfg);
 
     }
 }
