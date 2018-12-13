@@ -8,42 +8,35 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
 import org.junit.BeforeClass
 import org.junit.Test
-
-import java.io.File
-import java.io.IOException
-import java.io.BufferedReader
-import java.io.FileReader
 
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 
-import static org.gradle.testkit.runner.TaskOutcome.*
 
 public class PackageExtensionTest extends AbstractBoostTest {
 
-    static File resourceDir = new File("build/resources/test/springApp")
-    static File testProjectDir = new File(integTestDir, "PackageExtensionTest")
-    static String buildFilename = "packageExtensionTest.gradle"
-
     @BeforeClass
     public static void setup() {
+        resourceDir = new File("build/resources/test/springApp")
+        testProjectDir = new File(integTestDir, "PackageExtensionTest")
+        buildFilename = "packageExtensionTest.gradle"
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
+
+        result = GradleRunner.create()
+                .withProjectDir(testProjectDir)
+                .forwardOutput()
+                .withArguments("build", "-i", "-s")
+                .build()
     }
 
     @Test
     public void testPackageSuccess() throws IOException {
-        BuildResult result = GradleRunner.create()
-            .withProjectDir(testProjectDir)
-            .forwardOutput()
-            .withArguments("build", "-i", "-s")
-            .build()
-
-        assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
+        assertEquals(TaskOutcome.SUCCESS, result.task(":boostPackage").getOutcome())
 
         assertTrue(new File(testProjectDir, "build/libs/extensionTest.jar").exists())
     }

@@ -9,19 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import static org.gradle.testkit.runner.TaskOutcome.*
-
 import org.junit.BeforeClass
-import org.junit.Test
-import static org.junit.Assert.*
-
-import java.io.File
-
-import com.github.dockerjava.api.command.CreateContainerResponse
-import com.github.dockerjava.api.model.Container
-import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.core.DockerClientBuilder
 
 //Tests creating a Docker image with an extension

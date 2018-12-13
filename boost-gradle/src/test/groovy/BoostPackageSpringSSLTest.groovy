@@ -8,16 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.After
-import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.AfterClass
 import org.junit.Test
-
-import java.io.File
-import java.io.IOException
-import java.io.BufferedReader
-import java.io.FileReader
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -25,35 +19,33 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
+
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.gradle.testkit.runner.TaskOutcome
 
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
-
-import static org.gradle.testkit.runner.TaskOutcome.*
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 public class BoostPackageSpringSSLTest extends AbstractBoostTest {
 
-    static File resourceDir = new File("build/resources/test/test-spring-boot-ssl")
-    static File testProjectDir = new File(integTestDir, "PackageSpringSSLTest")
-    static String buildFilename = "build.gradle"
-
     private static String URL = "https://localhost:8443/"; 
 
-    @Before
-    public void setup() {
+    @BeforeClass
+    public static void setup() {
+        resourceDir = new File("build/resources/test/test-spring-boot-ssl")
+        testProjectDir = new File(integTestDir, "PackageSpringSSLTest")
+        buildFilename = "build.gradle"
+
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
         
-        BuildResult result = GradleRunner.create()
+        result = GradleRunner.create()
             .withProjectDir(testProjectDir)
             .forwardOutput()
             .withArguments("boostPackage", "boostStart", "-i", "-s")
@@ -63,17 +55,16 @@ public class BoostPackageSpringSSLTest extends AbstractBoostTest {
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
     }
     
-    @After
-    public void teardown() {
+    @AfterClass
+    public static void teardown() {
     
-        BuildResult result = GradleRunner.create()
+        result = GradleRunner.create()
             .withProjectDir(testProjectDir)
             .forwardOutput()
             .withArguments("boostStop", "-i", "-s")
             .build()
        
         assertEquals(SUCCESS, result.task(":boostStop").getOutcome())
-       
     }
 
     @Test
@@ -108,8 +99,5 @@ public class BoostPackageSpringSSLTest extends AbstractBoostTest {
         String body = handler.handleResponse(response);
 
         assertTrue("Unexpected response body", body.contains("Greetings from Spring Boot!"));
-        
-        
-        
     }
 }
