@@ -35,12 +35,14 @@ public abstract class Dockerizer {
     protected final File outputDirectory;
     protected final File appArchive;
     protected final BoostLoggerI log;
+    protected final String fromJVM;
 
-    public Dockerizer(File projectDirectory, File outputDirectory, File appArchive, BoostLoggerI log) {
+    public Dockerizer(File projectDirectory, File outputDirectory, File appArchive, BoostLoggerI log, String fromJVM) {
         this.projectDirectory = projectDirectory;
         this.outputDirectory = outputDirectory;
         this.appArchive = appArchive;
         this.log = log;
+        this.fromJVM = fromJVM;
     }
 
     /**

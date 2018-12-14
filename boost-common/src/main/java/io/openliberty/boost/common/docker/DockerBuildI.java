@@ -36,16 +36,16 @@ public abstract interface DockerBuildI extends AbstractDockerI {
 
     // Default methods
 
-    default public void dockerBuild(String dockerizer, DockerClient dockerClient, File projectDirectory,
-            File outputDirectory, String springBootVersion, boolean pullNewerImage, boolean noCache,
+    default public void dockerBuild(String dockerizer, String dockerizerJVM, DockerClient dockerClient, File projectDirectory,
+            File outputDirectory, String javaVersion, String springBootVersion, boolean pullNewerImage, boolean noCache,
             Map<String, String> buildArgs, String repository, String tag, DockerParameters params, BoostLoggerI log)
             throws BoostException {
         try {
             File appArchive = getAppArchive();
 
             // Create a Dockerfile for the application
-            SpringDockerizer springDockerizer = getDockerizer(dockerizer, projectDirectory, outputDirectory, appArchive,
-                    springBootVersion, params, log);
+            SpringDockerizer springDockerizer = getDockerizer(dockerizer, dockerizerJVM, projectDirectory, outputDirectory, appArchive,
+                    javaVersion, springBootVersion, params, log);
             springDockerizer.createDockerFile();
             springDockerizer.createDockerIgnore();
 
@@ -56,8 +56,25 @@ public abstract interface DockerBuildI extends AbstractDockerI {
         }
     }
 
-    default public SpringDockerizer getDockerizer(String dockerizer, File projectDirectory, File outputDirectory,
-            File appArchive, String springBootVersion, DockerParameters params, BoostLoggerI log) {
+    default public SpringDockerizer getDockerizer(String dockerizer, String dockerizerJVM, File projectDirectory, File outputDirectory,
+            File appArchive, String javaVersion, String springBootVersion, DockerParameters params, BoostLoggerI log) {
+
+		// TODO: This is a bad ugly hack, need a real implementation!
+		// Things to be done:
+		// 1. Probably create an abstraction for the JVM type?
+		// 2. Definitely support more than just Java 8
+		if ("1.8".equalsIgnoreCase(javaVersion)) {
+			log.warn("Right now, boost dockerizer only supports Java 8");
+		}
+
+		// Set default to be openj9
+		String fromJVM = "FROM adoptopenjdk/openjdk8-openj9";
+		if ("graalvm".equalsIgnoreCase(dockerizerJVM)) {
+			fromJVM = "FROM oracle/graalvm-ce:1.0.0-rc9";
+		}
+		if ("hotspot".equalsIgnoreCase(dockerizerJVM)) {
+			fromJVM = "FROM openjdk:8-jdk-alpine";
+		}
 
         // TODO: Needed future enhancements:
         // 1. Is it Spring or something else? sense with
@@ -65,11 +82,11 @@ public abstract interface DockerBuildI extends AbstractDockerI {
         // 2. Use OpenJ9 or HotSpot? sense with property boost.docker.jvm
         if ("jar".equalsIgnoreCase(dockerizer)) {
             return new DockerizeSpringBootJar(projectDirectory, outputDirectory, appArchive, springBootVersion, params,
-                    log);
+                    log, fromJVM);
         }
         if ("classpath".equalsIgnoreCase(dockerizer)) {
             return new DockerizeSpringBootClasspath(projectDirectory, outputDirectory, appArchive, springBootVersion,
-                    params, log);
+                    params, log, fromJVM);
         }
         // TODO: Maybe don't make the Spring Boot dockerizer default after EE stuff is
         // added
@@ -78,7 +95,7 @@ public abstract interface DockerBuildI extends AbstractDockerI {
         // generic so that they can be applied irrespective of the project type (Spring
         // vs EE)
         return new DockerizeLibertySpringBootJar(projectDirectory, outputDirectory, appArchive, springBootVersion,
-                params, log);
+                params, log, fromJVM);
     }
 
     /**

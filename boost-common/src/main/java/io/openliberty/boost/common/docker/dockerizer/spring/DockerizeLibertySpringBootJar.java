@@ -32,9 +32,10 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
     private static final String COPY = "COPY ";
     private static final String RUN = "RUN ";
 
+    // This does not actually use fromJVM right now
     public DockerizeLibertySpringBootJar(File projectDirectory, File outputDirectory, File appArchive,
-            String springBootVersion, DockerParameters params, BoostLoggerI log) {
-        super(projectDirectory, outputDirectory, appArchive, springBootVersion, params, log);
+            String springBootVersion, DockerParameters params, BoostLoggerI log, String fromJVM) {
+        super(projectDirectory, outputDirectory, appArchive, springBootVersion, params, log, fromJVM);
     }
 
     public Map<String, String> getBuildArgs() {
