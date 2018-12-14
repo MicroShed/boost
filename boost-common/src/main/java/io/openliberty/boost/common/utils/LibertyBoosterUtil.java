@@ -39,8 +39,8 @@ public class LibertyBoosterUtil {
     }
 
     /**
-     * take a list of pom boost dependency strings and map to liberty features
-     * for config. return a list of feature configuration objects for each found
+     * take a list of pom boost dependency strings and map to liberty features for
+     * config. return a list of feature configuration objects for each found
      * dependency.
      * 
      * @param dependencies

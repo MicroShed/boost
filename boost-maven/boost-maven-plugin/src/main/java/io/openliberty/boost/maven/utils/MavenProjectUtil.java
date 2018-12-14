@@ -40,8 +40,8 @@ public class MavenProjectUtil {
 
     /**
      * Get all dependencies with "org.springframework" as the groupId. These
-     * dependencies will be used to determine which additional Liberty features
-     * need to be enabled.
+     * dependencies will be used to determine which additional Liberty features need
+     * to be enabled.
      * 
      */
     public static List<String> getSpringFrameworkDependencies(MavenProject project) {
