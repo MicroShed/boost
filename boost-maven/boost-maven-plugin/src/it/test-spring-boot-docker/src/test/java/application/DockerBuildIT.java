@@ -156,7 +156,7 @@ public class DockerBuildIT {
     }
 
     public void testAppRunningOnEndpoint() throws Exception {
-        URL requestUrl = new URL("http://" + getTestDockerHost() + ":" + port + "/spring/");
+        URL requestUrl = new URL("http://" + getTestDockerHost() + ":" + port + "/spring");
         HttpURLConnection conn = (HttpURLConnection) requestUrl.openConnection();
 
         if (conn != null) {
