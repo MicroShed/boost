@@ -37,7 +37,7 @@ statusFile=status.$RANDOM
 fileCommand="git status --porcelain 2>&1 > $statusFile"
 $(eval $fileCommand)
 
-newlist=Y
+newList=Y
 while read -r
 do
     line="$REPLY"
@@ -64,11 +64,11 @@ do
         #  We had some inconsistencies with Git versions and sed versions, so hopefully this covers all cases.
         newFileCmd="echo \"$line\" | sed 's/.* //'"
         newFile=$(eval "$newFileCmd")
-        if [ $newlist == "Y" ] ; then
+        if [ $newList == "Y" ] ; then
           # formatFiles are input to the eclipse formatter
           formatFiles=$PROJECT_LOCATION/$newFile  
           checkIfFormatted=$newFile
-          newlist=N
+          newList=N
         else
           formatFiles="$formatFiles $PROJECT_LOCATION/$newFile"
           checkIfFormatted="$checkIfFormatted $newFile"
@@ -78,7 +78,7 @@ do
         # Note the sed output is an absolute path including project location
         newFileCmd="echo $line | cut -c 3- | sed -e 's|^|$PROJECT_LOCATION/|'"
         newFile=$(eval "$newFileCmd")
-        if [ $newlist == "Y" ] ; then
+        if [ $newList == "Y" ] ; then
           formatFiles="$newFile"
           checkIfFormatted=$newFile
           newList=N
