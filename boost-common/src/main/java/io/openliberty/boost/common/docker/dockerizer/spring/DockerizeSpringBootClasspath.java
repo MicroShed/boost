@@ -21,7 +21,7 @@ import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.docker.DockerParameters;
 
 public class DockerizeSpringBootClasspath extends SpringDockerizer {
-    
+
     public DockerizeSpringBootClasspath(File projectDirectory, File outputDirectory, File appArchive,
             String springBootVersion, DockerParameters params, BoostLoggerI log) {
         super(projectDirectory, outputDirectory, appArchive, springBootVersion, params, log);

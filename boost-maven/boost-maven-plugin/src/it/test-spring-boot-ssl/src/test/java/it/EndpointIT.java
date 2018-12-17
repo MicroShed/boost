@@ -39,22 +39,20 @@ public class EndpointIT {
 
     @Test
     public void testServlet() throws Exception {
- 
-        SSLContext sslContext = new SSLContextBuilder()
-                .loadTrustMaterial(null, (certificate, authType) -> true).build();
-           
-        CloseableHttpClient client = HttpClients.custom()
-                        .setSSLContext(sslContext)
-                        .setSSLHostnameVerifier(new NoopHostnameVerifier())
-                        .build();
-        
+
+        SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (certificate, authType) -> true)
+                .build();
+
+        CloseableHttpClient client = HttpClients.custom().setSSLContext(sslContext)
+                .setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+
         HttpGet httpGet = new HttpGet(URL);
         httpGet.setHeader("Accept", "application/xml");
-            
+
         HttpResponse response = client.execute(httpGet);
-        
+
         assertEquals("HTTP GET failed", HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        
+
         ResponseHandler<String> handler = new BasicResponseHandler();
         String body = handler.handleResponse(response);
 

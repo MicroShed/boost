@@ -24,8 +24,8 @@ import org.w3c.dom.NodeList;
 public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
 
     /**
-     * The artifactId of the dependency for this booster that needs to be copied
-     * to the server
+     * The artifactId of the dependency for this booster that needs to be copied to
+     * the server
      */
     private final String DEPENDENCY_ARTIFACT = "org.apache.derby:derby:10.14.2.0";
 
@@ -39,8 +39,8 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
     }
 
     /**
-     * writes out jdbc default config data when selected by the presence of a
-     * jdbc boost dependency
+     * writes out jdbc default config data when selected by the presence of a jdbc
+     * boost dependency
      */
     public void addServerConfig(Document doc) {
 

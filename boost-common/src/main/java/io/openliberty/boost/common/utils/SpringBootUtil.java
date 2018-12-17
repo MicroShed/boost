@@ -64,10 +64,9 @@ public class SpringBootUtil {
     private static final String SPRING_WEBSOCKET = "spring-websocket";
 
     /**
-     * Get the expected path of the Spring Boot Uber JAR (with .spring
-     * extension) that was preserved during the Boost packaging process. No
-     * guarantee that the path exists or the artifact is indeed a Spring Boot
-     * Uber JAR.
+     * Get the expected path of the Spring Boot Uber JAR (with .spring extension)
+     * that was preserved during the Boost packaging process. No guarantee that the
+     * path exists or the artifact is indeed a Spring Boot Uber JAR.
      * 
      * @param artifact
      * @return the canonical path
@@ -115,8 +114,8 @@ public class SpringBootUtil {
     }
 
     /**
-     * Add the Spring Boot Version property to the Manifest file in the Liberty
-     * Uber JAR. This is to trick Spring Boot into not repackaging it.
+     * Add the Spring Boot Version property to the Manifest file in the Liberty Uber
+     * JAR. This is to trick Spring Boot into not repackaging it.
      * 
      * @param artifact
      * @param springBootVersion

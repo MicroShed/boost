@@ -19,8 +19,9 @@ import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 
 public interface DockerPushI extends AbstractDockerI {
-    
-    default public void dockerPush(DockerClient dockerClient, String artifactId, String repository, String tag, BoostLoggerI log) throws BoostException {
+
+    default public void dockerPush(DockerClient dockerClient, String artifactId, String repository, String tag,
+            BoostLoggerI log) throws BoostException {
         final DockerLoggingProgressHandler progressHandler = new DockerLoggingProgressHandler(log);
         final String currentImage = getImageName(repository, tag);
         String newImage = null;

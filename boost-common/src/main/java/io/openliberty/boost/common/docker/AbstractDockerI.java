@@ -21,13 +21,13 @@ import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 
 public interface AbstractDockerI {
-    
+
     public void execute(DockerClient dockerClient) throws BoostException;
-    
+
     public RegistryAuthSupplier createRegistryAuthSupplier() throws BoostException;
-    
+
     // Default methods
-    
+
     default public String getImageName(String repository, String tag) {
         return repository + ":" + tag;
     }
@@ -45,7 +45,7 @@ public interface AbstractDockerI {
 
         return Pattern.matches(repositoryRegExp, repository);
     }
-    
+
     default public DockerClient getDockerClient(boolean useProxy) throws BoostException {
         final RegistryAuthSupplier authSupplier = createRegistryAuthSupplier();
         try {
@@ -55,7 +55,8 @@ public interface AbstractDockerI {
         }
     }
 
-    default public boolean isValidDockerConfig(BoostLoggerI log, String repository, String tag, String artifactId) throws BoostException {
+    default public boolean isValidDockerConfig(BoostLoggerI log, String repository, String tag, String artifactId)
+            throws BoostException {
         if (repository.equals(artifactId) && !repository.equals(repository.toLowerCase())) {
             repository = artifactId.toLowerCase();
             log.debug(
