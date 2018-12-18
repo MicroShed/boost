@@ -8,34 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.GradleRunner
-
-import static org.gradle.testkit.runner.TaskOutcome.*
-
-import static org.junit.Assert.*
-
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-
 import org.junit.Test
-import org.junit.BeforeClass
+
 import org.junit.AfterClass
-import java.util.List
+
 
 import com.github.dockerjava.api.DockerClient
 import com.github.dockerjava.api.command.CreateContainerResponse
 import com.github.dockerjava.api.model.Container
 import com.github.dockerjava.api.model.PortBinding
-import com.github.dockerjava.core.DockerClientBuilder
 import com.github.dockerjava.api.model.ExposedPort
 
 import io.openliberty.boost.common.docker.dockerizer.Dockerizer
+
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
     protected static final String OL_SPRING_15_IMAGE = "open-liberty:springBoot1"
@@ -45,18 +33,12 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
 
     protected static File dockerFile
     protected static DockerClient dockerClient
-    protected static BuildResult result
 
     protected static String containerId
 
     protected static String repository
     protected static String libertyImage
     protected static String dockerPort
-        
-    protected static File resourceDir
-    protected static File testProjectDir
-    protected static String buildFilename
-
 
     @AfterClass
     public static void cleanup() throws Exception {
@@ -135,4 +117,5 @@ public abstract class AbstractBoostDockerTest extends AbstractBoostTest {
 				return dockerHostURI.getHost();
 		}
 	}
+
 }

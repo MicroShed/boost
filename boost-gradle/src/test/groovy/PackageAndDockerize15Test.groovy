@@ -8,27 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import static org.gradle.testkit.runner.TaskOutcome.*
-
 import org.junit.Test
 import org.junit.BeforeClass
-import static org.junit.Assert.*
+import static org.junit.Assert.assertTrue
 
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
-
-import com.github.dockerjava.api.command.CreateContainerResponse
-import com.github.dockerjava.api.model.Container
-import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.core.DockerClientBuilder
 
 public class PackageAndDockerize15Test extends AbstractBoostDockerTest {
-
-    private static final String SPRING_BOOT_15_FEATURE = "<feature>springBoot-1.5</feature>"
-    private static String SERVER_XML = "build/wlp/usr/servers/BoostServer/server.xml"
 
     @BeforeClass
     public static void setup() {
@@ -54,40 +41,12 @@ public class PackageAndDockerize15Test extends AbstractBoostDockerTest {
 
     @Test
     public void testBuildSuccess() throws IOException {
-        assertEquals(SUCCESS, result.task(":installLiberty").getOutcome())
-        assertEquals(SUCCESS, result.task(":libertyCreate").getOutcome())
-        assertEquals(SUCCESS, result.task(":boostDockerBuild").getOutcome())
-        assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
-        assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
-        assertEquals(SUCCESS, result.task(":boostStop").getOutcome())
-
+        testDockerPackageTask()
         assertTrue(new File(testProjectDir, "build/libs/${repository}.jar").exists())
     }
 
-    @Test //Testing that springBoot-1.5 feature was added to the packaged server.xml
+    @Test
     public void testPackageContents() throws IOException {
-        File targetFile = new File(testProjectDir, SERVER_XML)
-        assertTrue(targetFile.getCanonicalFile().toString() + "does not exist.", targetFile.exists())
-        
-        // Check contents of file for springBoot-20 feature
-        boolean found = false
-        BufferedReader br = null
-        
-        try {
-            br = new BufferedReader(new FileReader(targetFile));
-            String line
-            while ((line = br.readLine()) != null) {
-                if (line.contains(SPRING_BOOT_15_FEATURE)) {
-                    found = true
-                    break
-                }
-            }
-        } finally {
-            if (br != null) {
-                br.close()
-            }
-        }
-        
-        assertTrue("The "+SPRING_BOOT_15_FEATURE+" feature was not found in the server configuration", found);    
+        testPackageContentsforSpring15()
     }
 }

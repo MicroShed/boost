@@ -103,6 +103,9 @@
                 <groupId>io.openliberty.boost</groupId>
                 <artifactId>boost-maven-plugin</artifactId>
                 <version>@pom.version@</version>
+                <configuration>
+                	<usedefaultHost>true</usedefaultHost>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>

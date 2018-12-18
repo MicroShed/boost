@@ -9,15 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import static org.gradle.testkit.runner.TaskOutcome.*
-
 import org.junit.BeforeClass
-import static org.junit.Assert.*
-
-import java.io.File
-
 import com.github.dockerjava.core.DockerClientBuilder
 
 public class DockerBuild20Test extends AbstractBoostDockerTest {
