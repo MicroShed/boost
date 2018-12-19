@@ -341,6 +341,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         executeMojo(getPlugin(), goal("package-server"),
                 configuration(element(name("isInstall"), "false"), element(name("include"), "minify,runnable"),
                         element(name("attach"), Boolean.toString(attach)),
+                        element(name("outputDirectory"), "target/liberty-alt-output-dir"),
                         element(name("packageFile"), packageFilePath), element(name("serverName"), libertyServerName)),
                 getExecutionEnvironment());
     }
