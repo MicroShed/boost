@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     compile localGroovy()
-    compile 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6'
+    compile 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     compile 'io.openliberty.boost:boost-common:0.1.3-SNAPSHOT'
     compile 'com.spotify:docker-client:8.11.7'
