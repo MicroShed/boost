@@ -22,18 +22,19 @@ import org.w3c.dom.Document;
  *
  */
 public abstract class BoosterPackConfigurator {
-
-    protected String EE_7_VERSION = "0.1-SNAPSHOT";
+    
+	protected BoosterDependencyInfo dependencyInfo;
+	protected LibertyServerConfigGenerator serverXML;
+	
+	protected String EE_7_VERSION = "0.1-SNAPSHOT";
     protected String EE_8_VERSION = "0.2-SNAPSHOT";
     protected String MP_20_VERSION = "0.2-SNAPSHOT";
-
-    /**
-     * Return the Liberty feature name
-     * 
-     * @return
-     */
-    public abstract String getFeature();
-
+	
+	public BoosterPackConfigurator(BoosterDependencyInfo depInfo, LibertyServerConfigGenerator srvrXML){
+		dependencyInfo = depInfo;
+		serverXML = srvrXML;
+	}
+	
     /**
      * method to write out the default config for a particular feature into
      * server.xml
@@ -43,17 +44,11 @@ public abstract class BoosterPackConfigurator {
     public abstract void addServerConfig(Document doc);
 
     /**
-     * Set the Liberty feature based on the booster dependency version
-     * 
-     * @param version
-     */
-    public abstract void setFeature(String version);
-
-    /**
      * Return the artifactId of the dependency jar to copy to the server
      * 
      * @return
      */
-    public abstract String getDependencyToCopy();
-
+    public String getDependencyToCopy(){
+    	return null;
+    }
 }

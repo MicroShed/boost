@@ -10,39 +10,28 @@
  *******************************************************************************/
 package io.openliberty.boost.common.config;
 
-import org.w3c.dom.Document;
 import io.openliberty.boost.common.config.BoosterPackConfigurator;
 import static io.openliberty.boost.common.config.ConfigConstants.*;
 
-import java.util.Map;
+import org.w3c.dom.Document;
 
 public class JAXRSBoosterPackConfigurator extends BoosterPackConfigurator {
+	
+    public JAXRSBoosterPackConfigurator(BoosterDependencyInfo depInfo, LibertyServerConfigGenerator srvrXML) {
+		super(depInfo, srvrXML);
+		// TODO Auto-generated constructor stub
+	}
 
-    String libertyFeature = null;
-
-    @Override
-    public void setFeature(String version) {
-        // if it is the 1.0 version = EE7 feature level
-        if (version.equals(EE_7_VERSION)) {
-            libertyFeature = JAXRS_20;
-        } else if (version.equals(EE_8_VERSION)) {
-            libertyFeature = JAXRS_21;
-        }
-    }
-
-    @Override
-    public String getFeature() {
-        return libertyFeature;
-    }
-
-    @Override
+	@Override
     public void addServerConfig(Document doc) {
-        // No config to write
-
+        // write out the feature Manager stanza
+		if (dependencyInfo.getVersion().equals(EE_7_VERSION)) {
+			serverXML.addFeature(JAXRS_20);
+        } else if (dependencyInfo.getVersion().equals(EE_8_VERSION)) {
+        	serverXML.addFeature(JAXRS_20);
+        }
+		
+		// no further config needed for jaxrs
     }
 
-    @Override
-    public String getDependencyToCopy() {
-        return null;
-    }
 }

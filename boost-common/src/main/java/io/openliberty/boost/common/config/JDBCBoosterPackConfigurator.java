@@ -14,8 +14,6 @@ import io.openliberty.boost.common.config.BoosterPackConfigurator;
 
 import static io.openliberty.boost.common.config.ConfigConstants.*;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,27 +21,33 @@ import org.w3c.dom.NodeList;
 
 public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
 
-    /**
+    public JDBCBoosterPackConfigurator(BoosterDependencyInfo depInfo, LibertyServerConfigGenerator srvrXML) {
+		super(depInfo, srvrXML);
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
      * The artifactId of the dependency for this booster that needs to be copied
      * to the server
      */
     private final String DEPENDENCY_ARTIFACT = "org.apache.derby:derby:10.14.2.0";
 
-    String libertyFeature = null;
-
-    /**
-     * retrieves the default boost feature string for the jdbc dependency
-     */
-    public String getFeature() {
-        return libertyFeature;
-    }
-
     /**
      * writes out jdbc default config data when selected by the presence of a
      * jdbc boost dependency
      */
+	@Override
     public void addServerConfig(Document doc) {
+        
+		// write out the feature Manager stanza
+		if (dependencyInfo.getVersion().equals(EE_7_VERSION)) {
+			serverXML.addFeature(JDBC_41);
+        } else if (dependencyInfo.getVersion().equals(EE_8_VERSION)) {
+        	serverXML.addFeature(JDBC_42);
+        }
 
+		//write out config stanzas
+		
         Element serverRoot = doc.getDocumentElement();
 
         // Find the root server element
@@ -79,17 +83,6 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
         jdbcDriver.setAttribute("id", "DerbyEmbedded");
         jdbcDriver.setAttribute(LIBRARY_REF, "DerbyLib");
         serverRoot.appendChild(jdbcDriver);
-    }
-
-    @Override
-    public void setFeature(String version) {
-
-        if (version.equals(EE_7_VERSION)) {
-            libertyFeature = JDBC_41;
-        } else if (version.equals(EE_8_VERSION)) {
-            libertyFeature = JDBC_42;
-        }
-
     }
 
     @Override

@@ -69,6 +69,7 @@ public interface ConfigConstants {
     public String MPRESTCLIENT_11 = "mpRestClient-1.1";
     public String JSONP_11 = "jsonp-1.1";
     public String MPCONFIG_13 = "mpConfig-1.3";
+    public String MPOPENTRACING_10 = "mpOpenTracing-1.0";
 
     public String SHARED_RESOURCES_DIR = "${shared.resource.dir}";
     public String SERVER_OUTPUT_DIR = "${server.output.dir}";

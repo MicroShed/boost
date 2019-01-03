@@ -16,29 +16,16 @@ import org.w3c.dom.Document;
 
 public class CDIBoosterPackConfigurator extends BoosterPackConfigurator {
 
-    String libertyFeature = null;
+    public CDIBoosterPackConfigurator(BoosterDependencyInfo depInfo, LibertyServerConfigGenerator srvrXML) {
+		super(depInfo, srvrXML);
+		// TODO Auto-generated constructor stub
+	}
 
-    @Override
-    public void setFeature(String version) {
-        // if it is the 1.0 version = EE7 feature level
-        if (version.equals(MP_20_VERSION)) {
-            libertyFeature = CDI_20;
-        } 
-    }
+	public void addServerConfig(Document doc) {
+		// write out the feature Manager stanza
+		if (dependencyInfo.getVersion().equals(MP_20_VERSION)) {
+			serverXML.addFeature(CDI_20);
+		}
+	}
 
-    @Override
-    public String getFeature() {
-        return libertyFeature;
-    }
-
-    @Override
-    public void addServerConfig(Document doc) {
-        // No config to write
-
-    }
-
-    @Override
-    public String getDependencyToCopy() {
-        return null;
-    }
 }

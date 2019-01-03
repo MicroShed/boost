@@ -22,6 +22,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.apache.maven.plugins.annotations.*;
 
 import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.config.BoosterDependencyInfo;
 import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.config.ConfigConstants;
 import io.openliberty.boost.common.utils.SpringBootUtil;
@@ -118,7 +119,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         } else { // Dealing with an EE based app
 
             // Get booster dependencies from project
-            Map<String, String> boosterDependencies = MavenProjectUtil.getBoosterDependencies(project,
+            List<BoosterDependencyInfo> boosterDependencies = MavenProjectUtil.getBoosterDependencies(project,
                     BoostLogger.getInstance());
 
             boosterUtil = new LibertyBoosterUtil(libertyServerPath, boosterDependencies, BoostLogger.getInstance());
@@ -127,6 +128,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
             copyBoosterDependencies();
 
+            System.out.println("AJM: going to process the features");
             generateServerConfigEE();
 
             installMissingFeatures();
@@ -182,6 +184,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
         try {
             // Generate server config
+        	System.out.println("AJM: gernerating the srv cfg");
             boosterUtil.generateLibertyServerConfig(warName);
 
         } catch (Exception e) {

@@ -16,29 +16,15 @@ import org.w3c.dom.Document;
 
 public class MPHealthBoosterPackConfigurator extends BoosterPackConfigurator {
 
-    String libertyFeature = null;
+    public MPHealthBoosterPackConfigurator(BoosterDependencyInfo depInfo, LibertyServerConfigGenerator srvrXML) {
+		super(depInfo, srvrXML);
+		// TODO Auto-generated constructor stub
+	}
 
-    @Override
-    public void setFeature(String version) {
-        // if it is the 2.0 version = MP2.0 feature level
-        if (version.equals(MP_20_VERSION)) {
-            libertyFeature = MPHEALTH_10;
-        } 
-    }
-
-    @Override
-    public String getFeature() {
-        return libertyFeature;
-    }
-
-    @Override
-    public void addServerConfig(Document doc) {
-        // No config to write
-
-    }
-
-    @Override
-    public String getDependencyToCopy() {
-        return null;
-    }
+	public void addServerConfig(Document doc) {
+		// write out the feature Manager stanza
+		if (dependencyInfo.getVersion().equals(MP_20_VERSION)) {
+			serverXML.addFeature(MPHEALTH_10);
+		}
+	}
 }

@@ -19,6 +19,8 @@ import java.util.Set;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 
+import io.openliberty.boost.common.config.BoosterDependencyInfo;
+
 public class MavenProjectUtil {
 
     /**
@@ -59,9 +61,9 @@ public class MavenProjectUtil {
         return springFrameworkDependencies;
     }
 
-    public static Map<String, String> getBoosterDependencies(MavenProject project, BoostLogger logger) {
+    public static List<BoosterDependencyInfo> getBoosterDependencies(MavenProject project, BoostLogger logger) {
 
-        Map<String, String> boosterDependencies = new HashMap<String, String>();
+        List<BoosterDependencyInfo> boosterDependencies = new ArrayList<BoosterDependencyInfo>();
         logger.debug("Processing project for dependencies.");
 
         for (Artifact artifact : project.getArtifacts()) {
@@ -69,7 +71,9 @@ public class MavenProjectUtil {
                     + artifact.getArtifactId() + ":" + artifact.getVersion());
 
             if (artifact.getGroupId().equals("io.openliberty.boosters")) {
-                boosterDependencies.put(artifact.getArtifactId(), artifact.getVersion());
+                BoosterDependencyInfo currBooster = new BoosterDependencyInfo(artifact.getGroupId(),
+                        artifact.getArtifactId(), artifact.getVersion());
+                boosterDependencies.add(currBooster);
             }
         }
 
