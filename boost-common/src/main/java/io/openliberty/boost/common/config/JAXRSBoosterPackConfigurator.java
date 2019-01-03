@@ -16,22 +16,22 @@ import static io.openliberty.boost.common.config.ConfigConstants.*;
 import org.w3c.dom.Document;
 
 public class JAXRSBoosterPackConfigurator extends BoosterPackConfigurator {
-	
-    public JAXRSBoosterPackConfigurator(BoosterDependencyInfo depInfo, LibertyServerConfigGenerator srvrXML) {
-		super(depInfo, srvrXML);
-		// TODO Auto-generated constructor stub
-	}
 
-	@Override
+    public JAXRSBoosterPackConfigurator(BoosterDependencyInfo depInfo, LibertyServerConfigGenerator srvrXML) {
+        super(depInfo, srvrXML);
+        // TODO Auto-generated constructor stub
+    }
+
+    @Override
     public void addServerConfig(Document doc) {
         // write out the feature Manager stanza
-		if (dependencyInfo.getVersion().equals(EE_7_VERSION)) {
-			serverXML.addFeature(JAXRS_20);
+        if (dependencyInfo.getVersion().equals(EE_7_VERSION)) {
+            serverXML.addFeature(JAXRS_20);
         } else if (dependencyInfo.getVersion().equals(EE_8_VERSION)) {
-        	serverXML.addFeature(JAXRS_20);
+            serverXML.addFeature(JAXRS_21);
         }
-		
-		// no further config needed for jaxrs
+
+        // no further config needed for jaxrs
     }
 
 }
