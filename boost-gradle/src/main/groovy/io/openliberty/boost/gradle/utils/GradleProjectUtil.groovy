@@ -41,32 +41,17 @@ public class GradleProjectUtil {
         return version        
     }
     
-    public static List<String> getSpringFrameworkDependencies(Project project) {
-
-        List<String> springBootDependencies = new ArrayList<String>()
-
-        project.configurations.compile.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
-        
-            if ( id.group.equals("org.springframework") ) {
-                
-                springBootDependencies.add(id.name.toString())
-            }
-        }
-       
-        return springBootDependencies
-    }
-    
-    public static Map<String, String> getBoosterDependencies(Project project) {
-        Map<String, String> boosterDependencies = new HashMap<String, String>()
+    public static Map<String, String> getAllDependencies(Project project, BoostLogger logger) {
+        Map<String, String> dependencies = new HashMap<String, String>()
+		logger.debug("Processing project for dependencies.")
 
         project.configurations.compile.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
-        
-            if ( id.group.equals("io.openliberty.boosters") ) {
-                
-                boosterDependencies.put(id.name.toString(), id.version.toString())
-            }
+        	logger.debug("Found dependency while processing project: " + id.group.toString() + ":"
+                    + id.name.toString() + ":" + id.version.toString())
+                    
+            dependencies.put(id.group.toString() + ":" + id.name.toString(), id.version.toString())
         }
 
-        return boosterDependencies
+        return dependencies
     }
 }

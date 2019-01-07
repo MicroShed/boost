@@ -10,9 +10,7 @@
  *******************************************************************************/
 package io.openliberty.boost.maven.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,43 +35,20 @@ public class MavenProjectUtil {
 
         return version;
     }
+    
+    public static Map<String, String> getAllDependencies(MavenProject project, BoostLogger logger) {
 
-    /**
-     * Get all dependencies with "org.springframework" as the groupId. These
-     * dependencies will be used to determine which additional Liberty features need
-     * to be enabled.
-     * 
-     */
-    public static List<String> getSpringFrameworkDependencies(MavenProject project) {
-
-        List<String> springFrameworkDependencies = new ArrayList<String>();
-
-        Set<Artifact> artifacts = project.getArtifacts();
-        for (Artifact art : artifacts) {
-            String groupId = art.getGroupId();
-            if (groupId.equals("org.springframework")) {
-                springFrameworkDependencies.add(art.getArtifactId());
-            }
-        }
-
-        return springFrameworkDependencies;
-    }
-
-    public static Map<String, String> getBoosterDependencies(MavenProject project, BoostLogger logger) {
-
-        Map<String, String> boosterDependencies = new HashMap<String, String>();
+        Map<String, String> dependencies = new HashMap<String, String>();
         logger.debug("Processing project for dependencies.");
 
         for (Artifact artifact : project.getArtifacts()) {
             logger.debug("Found dependency while processing project: " + artifact.getGroupId() + ":"
                     + artifact.getArtifactId() + ":" + artifact.getVersion());
-
-            if (artifact.getGroupId().equals("io.openliberty.boosters")) {
-                boosterDependencies.put(artifact.getArtifactId(), artifact.getVersion());
-            }
+            
+            dependencies.put(artifact.getGroupId() + ":" + artifact.getArtifactId(), artifact.getVersion());
         }
 
-        return boosterDependencies;
+        return dependencies;
     }
 
 }

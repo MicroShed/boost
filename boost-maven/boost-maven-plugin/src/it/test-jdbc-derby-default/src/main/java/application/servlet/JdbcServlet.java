@@ -25,7 +25,7 @@ public class JdbcServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
      *      response)
      */
-    @Resource(name = "jdbc/exampleDS")
+    @Resource
     DataSource ds1;
 
     @Override

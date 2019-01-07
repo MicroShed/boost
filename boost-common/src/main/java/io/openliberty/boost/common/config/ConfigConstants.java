@@ -46,6 +46,12 @@ public interface ConfigConstants {
     public String FILESET = "fileset";
     public String PROPERTIES_DERBY_EMBEDDED = "properties.derby.embedded";
 
+    public String DEFAULT_DATASOURCE = "DefaultDataSource";
+    public String DERBY_EMBEDDED = "DerbyEmbedded";
+    public String DERBY_LIB = "DerbyLib";
+    public String CREATE_DATABASE = "createDatabase";
+    public String DERBY_DB = "DerbyDB";
+    
     // General purpose configuration values
     public String LOCATION = "location";
     public String PASSWORD = "password";
@@ -53,6 +59,7 @@ public interface ConfigConstants {
     public String PROVIDER = "provider";
     public String NAME = "name";
     public String CONTEXT_ROOT = "context-root";
+    public String RESOURCES = "resources";
 
     public String SPRING_BOOT_15 = "springBoot-1.5";
     public String SPRING_BOOT_20 = "springBoot-2.0";

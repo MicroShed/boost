@@ -14,8 +14,6 @@ import org.w3c.dom.Document;
 import io.openliberty.boost.common.config.BoosterPackConfigurator;
 import static io.openliberty.boost.common.config.ConfigConstants.*;
 
-import java.util.Map;
-
 public class JAXRSBoosterPackConfigurator extends BoosterPackConfigurator {
 
     String libertyFeature = null;
@@ -38,11 +36,16 @@ public class JAXRSBoosterPackConfigurator extends BoosterPackConfigurator {
     @Override
     public void addServerConfig(Document doc) {
         // No config to write
-
     }
 
-    @Override
-    public String getDependencyToCopy() {
-        return null;
-    }
+	@Override
+	public String getDependency() {
+		
+		return null;
+	}
+	
+	@Override
+	public void setDependency(String dependency) {
+		// No dependency is needed
+	}
 }

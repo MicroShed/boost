@@ -69,5 +69,113 @@ public class LibertyServerConfigGeneratorTest {
         List<Element> featureList = getDirectChildrenByTag(featureMgr, FEATURE);
         assertEquals("Didn't find empty list of features", 0, featureList.size());
     }
+    
+    /**
+     * Test that the EE8 JDBC version (jdbc-4.2) has been added by the JDBC booster
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterFeature_EE8() throws ParserConfigurationException, TransformerException, IOException {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath());
+        
+        JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator();
+        configurator.setFeature("0.2-SNAPSHOT");
+        
+        serverConfig.addFeature(configurator.getFeature());
+        
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+
+        boolean featureFound = findStringInServerXml(serverXML, "<feature>" + JDBC_42 + "</feature>");
+
+        assertTrue("The " + JDBC_42 + " feature was not found in the server configuration", featureFound);
+
+    }
+    
+    /**
+     * Test that the EE8 JDBC version (jdbc-4.2) has been added by the JDBC booster
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterFeature_EE7() throws ParserConfigurationException, TransformerException, IOException {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath());
+        
+        JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator();
+        configurator.setFeature("0.1-SNAPSHOT");
+        
+        serverConfig.addFeature(configurator.getFeature());
+        
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+
+        boolean featureFound = findStringInServerXml(serverXML, "<feature>" + JDBC_41 + "</feature>");
+
+        assertTrue("The " + JDBC_41 + " feature was not found in the server configuration", featureFound);
+
+    }
+    
+    /**
+     * Test that the EE8 JDBC version (jdbc-4.2) has been added by the JDBC booster
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterConfig_Derby() throws ParserConfigurationException, TransformerException, IOException {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath());
+        
+        JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator();
+        configurator.setFeature("0.2-SNAPSHOT");
+        
+        serverConfig.addBoosterConfig(configurator);
+        
+        Element serverRoot = serverConfig.getServerDoc().getDocumentElement();
+        
+        // Check that the <library> element is correctly configured
+        List<Element> libraryList = getDirectChildrenByTag(serverRoot, LIBRARY);
+        assertEquals("Didn't find one and only one library", 1, libraryList.size());
+   
+        Element library = libraryList.get(0);
+        assertEquals("Library id is not correct", DERBY_LIB, library.getAttribute("id"));
+        
+        Element fileset = getDirectChildrenByTag(library, FILESET).get(0);
+        assertEquals("Fileset dir attribute is not correct", RESOURCES, fileset.getAttribute("dir"));
+        assertEquals("Fileset includes attribute is not correct", "derby*.jar", fileset.getAttribute("includes"));
+        
+        // Check that the <dataSource> element is correctly configured
+        List<Element> dataSourceList = getDirectChildrenByTag(serverRoot, DATASOURCE);
+        assertEquals("Didn't find one and only one dataSource", 1, dataSourceList.size());
+        
+        Element dataSource = dataSourceList.get(0);
+        assertEquals("DataSource id is not correct", DEFAULT_DATASOURCE, dataSource.getAttribute("id"));
+        assertEquals("DataSource jdbcDriverRef is not correct", DERBY_EMBEDDED, dataSource.getAttribute(JDBC_DRIVER_REF));
+        
+        Element propertiesDerbyEmbedded = getDirectChildrenByTag(dataSource, PROPERTIES_DERBY_EMBEDDED).get(0);
+        assertEquals("The createDatabase attribute is not correct", "create", propertiesDerbyEmbedded.getAttribute(CREATE_DATABASE));
+        assertEquals("The databaseName attribute is not correct", SERVER_OUTPUT_DIR + "/" + DERBY_DB, propertiesDerbyEmbedded.getAttribute(DATABASE_NAME));
+
+        // Check that the <jdbcDriver> element is correctly configured
+        List<Element> jdbcDriverList = getDirectChildrenByTag(serverRoot, JDBC_DRIVER);
+        assertEquals("Didn't find one and only one jdbcDriver", 1, jdbcDriverList.size());
+        
+        Element jdbcDriver = jdbcDriverList.get(0);
+        assertEquals("JdbcDriver id is not correct", DERBY_EMBEDDED, jdbcDriver.getAttribute("id"));
+        assertEquals("JdbcDriver libraryRef is not correct", DERBY_LIB, jdbcDriver.getAttribute(LIBRARY_REF));
+    }
 
 }

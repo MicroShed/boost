@@ -38,9 +38,10 @@ dependencyManagement {
 dependencies {
 	compile "io.openliberty.boosters:jaxrs"
 	compile "io.openliberty.boosters:jdbc"
+	compile "org.apache.derby:derby:10.11.1.1"
 	compile("org.apache.httpcomponents:httpclient:4.5.6")
     compile("org.apache.httpcomponents:httpcore:4.4.10")
-    compile "javax.servlet:javax.servlet-api:3.1.0"
+    compile "javax.servlet:javax.servlet-api:4.0.0"
 
     libertyRuntime "$runtimeGroup:$runtimeArtifactId:$runtimeVersion"
 }

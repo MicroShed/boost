@@ -14,22 +14,21 @@ import io.openliberty.boost.common.config.BoosterPackConfigurator;
 
 import static io.openliberty.boost.common.config.ConfigConstants.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
 
-    /**
-     * The artifactId of the dependency for this booster that needs to be copied to
-     * the server
-     */
-    private final String DEPENDENCY_ARTIFACT = "org.apache.derby:derby:10.14.2.0";
+    private static String DERBY_DEFAULT = "org.apache.derby:derby:10.14.2.0";
 
-    String libertyFeature = null;
+    String dependency;
+
+    String libertyFeature;
+
+    public JDBCBoosterPackConfigurator() {
+        this.dependency = DERBY_DEFAULT;
+    }
 
     /**
      * retrieves the default boost feature string for the jdbc dependency
@@ -56,28 +55,28 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
 
         // Add library
         Element lib = doc.createElement(LIBRARY);
-        lib.setAttribute("id", "DerbyLib");
+        lib.setAttribute("id", DERBY_LIB);
         Element fileLoc = doc.createElement(FILESET);
-        fileLoc.setAttribute("dir", "resources");
+        fileLoc.setAttribute("dir", RESOURCES);
         fileLoc.setAttribute("includes", "derby*.jar");
         lib.appendChild(fileLoc);
         serverRoot.appendChild(lib);
 
         // Add datasource
         Element dataSource = doc.createElement(DATASOURCE);
-        dataSource.setAttribute("id", "DefaultDataSource");
-        dataSource.setAttribute(JDBC_DRIVER_REF, "DerbyEmbedded");
+        dataSource.setAttribute("id", DEFAULT_DATASOURCE);
+        dataSource.setAttribute(JDBC_DRIVER_REF, DERBY_EMBEDDED);
 
         Element derbyProps = doc.createElement(PROPERTIES_DERBY_EMBEDDED);
-        derbyProps.setAttribute(DATABASE_NAME, "${server.output.dir}/DerbyDB");
-        derbyProps.setAttribute("createDatabase", "create");
+        derbyProps.setAttribute(DATABASE_NAME, SERVER_OUTPUT_DIR + "/" + DERBY_DB);
+        derbyProps.setAttribute(CREATE_DATABASE, "create");
         dataSource.appendChild(derbyProps);
 
         serverRoot.appendChild(dataSource);
 
         Element jdbcDriver = doc.createElement(JDBC_DRIVER);
-        jdbcDriver.setAttribute("id", "DerbyEmbedded");
-        jdbcDriver.setAttribute(LIBRARY_REF, "DerbyLib");
+        jdbcDriver.setAttribute("id", DERBY_EMBEDDED);
+        jdbcDriver.setAttribute(LIBRARY_REF, DERBY_LIB);
         serverRoot.appendChild(jdbcDriver);
     }
 
@@ -93,8 +92,14 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
     }
 
     @Override
-    public String getDependencyToCopy() {
+    public String getDependency() {
 
-        return DEPENDENCY_ARTIFACT;
+        return dependency;
+    }
+
+    @Override
+    public void setDependency(String dependency) {
+
+        this.dependency = dependency;
     }
 }

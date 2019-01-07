@@ -23,6 +23,7 @@ public class DockerClassifier15Test extends AbstractBoostDockerTest {
         buildFilename = "dockerClassifier15Test.gradle"
         libertyImage = OL_SPRING_15_IMAGE
         repository = "test-docker15-test"
+        dockerPort = "9080"
 
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)

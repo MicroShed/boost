@@ -60,9 +60,9 @@ public class SpringBootUtil {
     public static final String SERVER_SSL_KEY_ALIAS = "server.ssl.key-alias";
 
     private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
-
-    private static final String SPRING_WEBMVC = "spring-webmvc";
-    private static final String SPRING_WEBSOCKET = "spring-websocket";
+    
+    private static final String SPRING_WEBMVC = "org.springframework:spring-webmvc";
+    private static final String SPRING_WEBSOCKET = "org.springframework:spring-websocket";
 
     private static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
 
@@ -221,8 +221,9 @@ public class SpringBootUtil {
         return applicationProperties;
     }
 
-    public static List<String> getLibertyFeaturesForSpringBoot(String springBootVersion,
-            List<String> springFrameworkDependencies, Properties applicationProperties, BoostLoggerI logger) {
+    public static List<String> getLibertyFeaturesForSpringBoot(String springBootVersion, 
+    		Map<String, String> dependencies, Properties applicationProperties, BoostLoggerI logger) {
+
         List<String> featuresToAdd = new ArrayList<String>();
 
         if (springBootVersion != null) {
@@ -259,7 +260,7 @@ public class SpringBootUtil {
 
         // Add any other Liberty features needed depending on the spring framework
         // dependencies defined
-        for (String dependency : springFrameworkDependencies) {
+        for (String dependency : dependencies.keySet()) {
             if (dependency.equals(SPRING_WEBMVC)) {
                 // Add the servlet-4.0 feature
                 featuresToAdd.add(SERVLET_40);
@@ -291,10 +292,10 @@ public class SpringBootUtil {
      * @throws IOException
      * @throws TransformerException
      */
-    public static void generateLibertyServerConfig(String springBootProjectResources, String libertyServerPath,
-            String springBootVersion, List<String> springBootStarters, BoostLoggerI logger, Boolean useDefaultHost)
-            throws ParserConfigurationException, IOException, TransformerException {
-
+    public static void generateLibertyServerConfig(String springBootProjectResources, String libertyServerPath, 
+    		String springBootVersion, Map<String, String> dependencies, BoostLoggerI logger, Boolean useDefaultHost) 
+    				throws ParserConfigurationException, IOException, TransformerException {
+        
         logger.info("Generating Liberty server configuration");
 
         // Generate Liberty configuration
@@ -304,8 +305,8 @@ public class SpringBootUtil {
         Properties applicationProperties = getSpringBootApplicationProperties(springBootProjectResources);
 
         // Find and add appropriate springBoot features
-        List<String> featuresNeededForSpringBootApp = getLibertyFeaturesForSpringBoot(springBootVersion,
-                springBootStarters, applicationProperties, logger);
+        List<String> featuresNeededForSpringBootApp = getLibertyFeaturesForSpringBoot(springBootVersion, 
+        		dependencies, applicationProperties, logger);
 
         serverConfig.addFeatures(featuresNeededForSpringBootApp);
 

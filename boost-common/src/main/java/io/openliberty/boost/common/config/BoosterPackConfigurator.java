@@ -11,9 +11,6 @@
 
 package io.openliberty.boost.common.config;
 
-import java.io.IOException;
-import java.util.Map;
-
 import org.w3c.dom.Document;
 
 /**
@@ -22,37 +19,38 @@ import org.w3c.dom.Document;
  *
  */
 public abstract class BoosterPackConfigurator {
+		
+	protected String EE_7_VERSION = "0.1-SNAPSHOT";
+	protected String EE_8_VERSION = "0.2-SNAPSHOT";
+	
+	/**
+	 * Return the Liberty feature name
+	 * @return
+	 */
+	public abstract String getFeature();
+	
+	/**
+	 * method to write out the default config for a particular feature into server.xml
+	 * @param doc
+	 */
+	public abstract void addServerConfig(Document doc);
+	
+	/**
+	 * Set the Liberty feature based on the booster dependency version
+	 * @param version
+	 */
+	public abstract void setFeature(String version);
 
-    protected String EE_7_VERSION = "0.1-SNAPSHOT";
-    protected String EE_8_VERSION = "0.2-SNAPSHOT";
-
-    /**
-     * Return the Liberty feature name
-     * 
-     * @return
-     */
-    public abstract String getFeature();
-
-    /**
-     * method to write out the default config for a particular feature into
-     * server.xml
-     * 
-     * @param doc
-     */
-    public abstract void addServerConfig(Document doc);
-
-    /**
-     * Set the Liberty feature based on the booster dependency version
-     * 
-     * @param version
-     */
-    public abstract void setFeature(String version);
-
-    /**
-     * Return the artifactId of the dependency jar to copy to the server
-     * 
-     * @return
-     */
-    public abstract String getDependencyToCopy();
-
+	/**
+	 * Return the dependency that this booster requires
+	 * @return
+	 */
+	public abstract String getDependency();
+	
+	/**
+	 * Set the dependency that this booster requires
+	 * @param dependency
+	 */
+	public abstract void setDependency(String dependency);
+	
 }

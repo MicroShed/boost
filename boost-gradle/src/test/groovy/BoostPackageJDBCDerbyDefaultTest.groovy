@@ -40,11 +40,11 @@ import static org.junit.Assert.assertTrue
 
 import static org.gradle.testkit.runner.TaskOutcome.*
 
-public class BoostPackageJDBC42Test extends AbstractBoostTest {
+public class BoostPackageJdbcDerbyDefaultTest extends AbstractBoostTest {
 
     static File resourceDir = new File("build/resources/test/test-jdbc")
-    static File testProjectDir = new File(integTestDir, "PackageJDBCTest")
-    static String buildFilename = "build.gradle"
+    static File testProjectDir = new File(integTestDir, "BoostPackageJdbcDerbyDefaultTest")
+    static String buildFilename = "derby-default.gradle"
 
     private static String URL = "http://localhost:9080/"; 
 
@@ -81,7 +81,7 @@ public class BoostPackageJDBC42Test extends AbstractBoostTest {
     }
     
     @Test 
-    public void testPackageContents() throws IOException {
+    public void testFeatureVersion() throws IOException {
         File targetFile = new File(testProjectDir, SERVER_XML)
         assertTrue(targetFile.getCanonicalFile().toString() + "does not exist.", targetFile.exists())
         
