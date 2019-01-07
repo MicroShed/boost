@@ -1,0 +1,51 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+        maven { url 'https://repo.spring.io/plugins-snapshot' }
+    }
+    dependencies {
+        classpath("io.openliberty.boost:boost-gradle-plugin:$boostVersion")
+		classpath 'io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE'
+    }
+}
+
+apply plugin: 'war'
+apply plugin: 'boost'
+apply plugin: 'io.spring.dependency-management'
+
+war {
+    baseName = 'testWar'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencyManagement {
+    imports {
+          mavenBom "io.openliberty.boosters:mp20-bom:$boosterVersion"
+    }
+}
+
+dependencies {
+	compile "io.openliberty.boosters:jaxrs"
+	compile "io.openliberty.boosters:cdi"
+	compile "io.openliberty.boosters:mpConfig"
+	compile "io.openliberty.boosters:jsonp"
+	compile "io.openliberty.boosters:mpRestClient"
+	compile "io.openliberty.boosters:mpHealth"
+	compile("org.apache.httpcomponents:httpclient:4.5.6")
+    compile("org.apache.httpcomponents:httpcore:4.4.10")
+    compile("org.apache.commons:commons-lang3:3.0")
+    compile "javax.servlet:javax.servlet-api:3.1.0"
+
+    libertyRuntime "$runtimeGroup:$runtimeArtifactId:$runtimeVersion"
+}

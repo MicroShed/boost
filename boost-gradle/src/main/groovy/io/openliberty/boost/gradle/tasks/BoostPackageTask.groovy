@@ -36,6 +36,7 @@ import io.openliberty.boost.gradle.utils.GradleProjectUtil
 import io.openliberty.boost.common.utils.BoostUtil
 import io.openliberty.boost.common.utils.SpringBootUtil
 import io.openliberty.boost.common.utils.LibertyBoosterUtil
+import io.openliberty.boost.common.config.BoosterDependencyInfo
 
 import net.wasdev.wlp.gradle.plugins.extensions.PackageAndDumpExtension
 
@@ -146,7 +147,11 @@ public class BoostPackageTask extends AbstractBoostTask {
                     
                 } else if (project.plugins.hasPlugin('war')) {
                     // Get booster dependencies from project
-                    Map<String, String> boosterDependencies = GradleProjectUtil.getBoosterDependencies(project)
+					// Get booster dependencies from project
+					List<BoosterDependencyInfo> boosterDependencies = GradleProjectUtil.getBoosterDependencies(project,
+							BoostLogger.getInstance());
+					
+                    //Map<String, String> boosterDependencies = GradleProjectUtil.getBoosterDependencies(project)
         	        boosterUtil = new LibertyBoosterUtil(libertyServerPath, boosterDependencies, BoostLogger.getInstance())
         	        
                     copyBoosterDependencies()

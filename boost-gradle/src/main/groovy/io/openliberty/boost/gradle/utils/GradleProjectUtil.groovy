@@ -18,6 +18,8 @@ import org.gradle.api.artifacts.ModuleVersionIdentifier
 
 import groovy.lang.MissingPropertyException
 
+import io.openliberty.boost.common.config.BoosterDependencyInfo
+
 public class GradleProjectUtil {
 
     /**
@@ -56,14 +58,16 @@ public class GradleProjectUtil {
         return springBootDependencies
     }
     
-    public static Map<String, String> getBoosterDependencies(Project project) {
-        Map<String, String> boosterDependencies = new HashMap<String, String>()
+    public static List<BoosterDependencyInfo> getBoosterDependencies(Project project) {
+		List<BoosterDependencyInfo> boosterDependencies = new ArrayList<BoosterDependencyInfo>()
+        //Map<String, String> boosterDependencies = new HashMap<String, String>()
 
         project.configurations.compile.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
         
             if ( id.group.equals("io.openliberty.boosters") ) {
-                
-                boosterDependencies.put(id.name.toString(), id.version.toString())
+                BoosterDependencyInfo currBooster = new BoosterDependencyInfo(id.group.toString, id.name.toString, id.version.toString);
+				boosterDependencies.add(currBooster);
+                //boosterDependencies.put(id.name.toString(), id.version.toString())
             }
         }
 
