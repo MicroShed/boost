@@ -148,8 +148,7 @@ public class BoostPackageTask extends AbstractBoostTask {
                 } else if (project.plugins.hasPlugin('war')) {
                     // Get booster dependencies from project
 					// Get booster dependencies from project
-					List<BoosterDependencyInfo> boosterDependencies = GradleProjectUtil.getBoosterDependencies(project,
-							BoostLogger.getInstance());
+					List<BoosterDependencyInfo> boosterDependencies = GradleProjectUtil.getBoosterDependencies(project);
 					
                     //Map<String, String> boosterDependencies = GradleProjectUtil.getBoosterDependencies(project)
         	        boosterUtil = new LibertyBoosterUtil(libertyServerPath, boosterDependencies, BoostLogger.getInstance())

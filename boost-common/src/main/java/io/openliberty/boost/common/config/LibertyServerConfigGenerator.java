@@ -144,9 +144,7 @@ public class LibertyServerConfigGenerator {
      *            The full name of the Liberty feature to add.
      */
     public void addFeature(String featureName) {
-    	
-    	System.out.println("AJM: in LSCUtil - feature to be added: " + featureName);
-    	
+    	    	
         if (!featuresAdded.contains(featureName)) {
             Element feature = doc.createElement(FEATURE);
             feature.appendChild(doc.createTextNode(featureName));

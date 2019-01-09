@@ -71,7 +71,7 @@ public class BoostPackageMPHealth10Test extends AbstractBoostTest {
     public static void teardown() {
 		
 		HealthTestUtil.cleanUp()
-		
+			
         result = GradleRunner.create()
             .withProjectDir(testProjectDir)
             .forwardOutput()
@@ -149,8 +149,10 @@ public class BoostPackageMPHealth10Test extends AbstractBoostTest {
 		
 		  public static void changeInventoryProperty(String oldValue, String newValue) {
 			try {
-				String fileName = System.getProperty("user.dir").split("target")[0]
-						+ "target/it/test-mpHealth-1.0/src/main/resources/CustomConfigSource.json"
+				//String fileName = System.getProperty("user.dir").split("target")[0]
+				//		+ "target/it/test-mpHealth-1.0/src/main/resources/CustomConfigSource.json"
+				
+			  String fileName = new File("build/resources/test/test-mpHealth-1.0/src/main/resources/CustomConfigSource.json") 
 			  BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)))
 			  String line = ""
 			  String oldContent = "", newContent = ""

@@ -65,7 +65,7 @@ public class GradleProjectUtil {
         project.configurations.compile.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
         
             if ( id.group.equals("io.openliberty.boosters") ) {
-                BoosterDependencyInfo currBooster = new BoosterDependencyInfo(id.group.toString, id.name.toString, id.version.toString);
+                BoosterDependencyInfo currBooster = new BoosterDependencyInfo(id.group.toString(), id.name.toString(), id.version.toString());
 				boosterDependencies.add(currBooster);
                 //boosterDependencies.put(id.name.toString(), id.version.toString())
             }

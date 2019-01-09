@@ -128,7 +128,6 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
             copyBoosterDependencies();
 
-            System.out.println("AJM: going to process the features");
             generateServerConfigEE();
 
             installMissingFeatures();
@@ -184,7 +183,6 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
         try {
             // Generate server config
-        	System.out.println("AJM: gernerating the srv cfg");
             boosterUtil.generateLibertyServerConfig(warName);
 
         } catch (Exception e) {
