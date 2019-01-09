@@ -41,7 +41,7 @@ public class LibertyBoosterUtil {
     public static String BOOSTER_MPCONFIG = "mpConfig";
     public static String BOOSTER_MPRESTCLIENT = "mpRestClient";
     public static String BOOSTER_OPENTRACING = "mpOpenTracing";
-    
+
     protected String libertyServerPath;
     protected List<BoosterPackConfigurator> boosterPackConfigurators;
     protected BoostLoggerI logger;
@@ -52,12 +52,12 @@ public class LibertyBoosterUtil {
         this.logger = logger;
 
         try {
-			this.serverConfig = new LibertyServerConfigGenerator(libertyServerPath);
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
+            this.serverConfig = new LibertyServerConfigGenerator(libertyServerPath);
+        } catch (ParserConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         this.boosterPackConfigurators = getBoosterPackConfigurators(dependencies);
 
     }
@@ -74,7 +74,6 @@ public class LibertyBoosterUtil {
 
         List<BoosterPackConfigurator> boosterPackConfigList = new ArrayList<BoosterPackConfigurator>();
 
-        
         for (BoosterDependencyInfo dep : dependencies) {
             if (dep.getArtifact().equals(BOOSTER_JDBC)) {
                 JDBCBoosterPackConfigurator jdbcConfig = new JDBCBoosterPackConfigurator(dep, serverConfig);
@@ -82,25 +81,27 @@ public class LibertyBoosterUtil {
             } else if (dep.getArtifact().equals(BOOSTER_JAXRS)) {
                 JAXRSBoosterPackConfigurator jaxrsConfig = new JAXRSBoosterPackConfigurator(dep, serverConfig);
                 boosterPackConfigList.add(jaxrsConfig);
-			} else if (dep.getArtifact().equals(BOOSTER_MPHEALTH)) {
-				MPHealthBoosterPackConfigurator mpHealthConfig = new MPHealthBoosterPackConfigurator(dep, serverConfig);
-				boosterPackConfigList.add(mpHealthConfig);
-			} else if (dep.getArtifact().equals(BOOSTER_MPCONFIG)) {
-				MPConfigBoosterPackConfigurator mpConfigConfig = new MPConfigBoosterPackConfigurator(dep, serverConfig);
-				boosterPackConfigList.add(mpConfigConfig);
-			} else if (dep.getArtifact().equals(BOOSTER_CDI)) {
-				CDIBoosterPackConfigurator CDIConfig = new CDIBoosterPackConfigurator(dep, serverConfig);
-				boosterPackConfigList.add(CDIConfig);
-			} else if (dep.getArtifact().equals(BOOSTER_MPRESTCLIENT)) {
-				MPRestClientBoosterPackConfigurator mpRestClientConfig = new MPRestClientBoosterPackConfigurator(dep, serverConfig);
-				boosterPackConfigList.add(mpRestClientConfig);
-			} else if (dep.getArtifact().equals(BOOSTER_JSONP)) {
-				JSONPBoosterPackConfigurator jsonpConfig = new JSONPBoosterPackConfigurator(dep, serverConfig);
-				boosterPackConfigList.add(jsonpConfig);
-			} else if (dep.getArtifact().equals(BOOSTER_OPENTRACING)) {
-				MPOpenTracingBoosterPackConfigurator mpOpenTracingConfig = new MPOpenTracingBoosterPackConfigurator(dep, serverConfig);
-				boosterPackConfigList.add(mpOpenTracingConfig);
-			}
+            } else if (dep.getArtifact().equals(BOOSTER_MPHEALTH)) {
+                MPHealthBoosterPackConfigurator mpHealthConfig = new MPHealthBoosterPackConfigurator(dep, serverConfig);
+                boosterPackConfigList.add(mpHealthConfig);
+            } else if (dep.getArtifact().equals(BOOSTER_MPCONFIG)) {
+                MPConfigBoosterPackConfigurator mpConfigConfig = new MPConfigBoosterPackConfigurator(dep, serverConfig);
+                boosterPackConfigList.add(mpConfigConfig);
+            } else if (dep.getArtifact().equals(BOOSTER_CDI)) {
+                CDIBoosterPackConfigurator CDIConfig = new CDIBoosterPackConfigurator(dep, serverConfig);
+                boosterPackConfigList.add(CDIConfig);
+            } else if (dep.getArtifact().equals(BOOSTER_MPRESTCLIENT)) {
+                MPRestClientBoosterPackConfigurator mpRestClientConfig = new MPRestClientBoosterPackConfigurator(dep,
+                        serverConfig);
+                boosterPackConfigList.add(mpRestClientConfig);
+            } else if (dep.getArtifact().equals(BOOSTER_JSONP)) {
+                JSONPBoosterPackConfigurator jsonpConfig = new JSONPBoosterPackConfigurator(dep, serverConfig);
+                boosterPackConfigList.add(jsonpConfig);
+            } else if (dep.getArtifact().equals(BOOSTER_OPENTRACING)) {
+                MPOpenTracingBoosterPackConfigurator mpOpenTracingConfig = new MPOpenTracingBoosterPackConfigurator(dep,
+                        serverConfig);
+                boosterPackConfigList.add(mpOpenTracingConfig);
+            }
         }
 
         return boosterPackConfigList;
@@ -111,8 +112,7 @@ public class LibertyBoosterUtil {
         // Loop through configuration objects and get features and XML config
         // (if any)
         for (BoosterPackConfigurator configurator : boosterPackConfigurators) {
-        	        
-        	System.out.println("AJM: adding boostercfg");
+
             serverConfig.addBoosterConfig(configurator);
         }
 
@@ -128,7 +128,7 @@ public class LibertyBoosterUtil {
     }
 
     public List<String> getDependenciesToCopy() {
-    	
+
         List<String> dependenciesToCopy = new ArrayList<String>();
 
         for (BoosterPackConfigurator configurator : boosterPackConfigurators) {
