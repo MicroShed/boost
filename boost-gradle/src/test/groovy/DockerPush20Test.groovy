@@ -9,25 +9,19 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-
-import static org.gradle.testkit.runner.TaskOutcome.*
-
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertNull
-import static org.junit.Assert.assertNotNull
-
-import java.io.File
-import java.util.List
-import java.util.concurrent.TimeUnit
-
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.BeforeClass
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 
 import com.github.dockerjava.core.DockerClientBuilder
 import com.github.dockerjava.api.model.Image
 import com.github.dockerjava.core.command.PullImageResultCallback
+
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNull
+import static org.junit.Assert.assertNotNull
 
 public class DockerPush20Test extends AbstractBoostDockerTest {
 

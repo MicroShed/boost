@@ -69,7 +69,7 @@ public abstract class AbstractDockerMojo extends AbstractMojo implements Abstrac
     @Override
     public void execute() throws MojoExecutionException {
         try {
-            if(isValidDockerConfig(BoostLogger.getInstance(), repository, tag, project.getArtifactId())) {
+            if (isValidDockerConfig(BoostLogger.getInstance(), repository, tag, project.getArtifactId())) {
                 execute(getDockerClient(useProxy));
             }
         } catch (BoostException e) {

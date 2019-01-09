@@ -25,6 +25,9 @@
         <module>test-spring-boot-ssl</module>
         <module>test-jaxrs-2.0</module>
         <module>test-jaxrs-2.1</module>
+        <module>test-dynamic-update</module>
+        <module>test-jdbc-derby-default</module>
+        <module>test-jdbc-derby-defined</module>
         <module>test-context</module>
     </modules>
     

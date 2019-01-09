@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.openliberty.boost</groupId>
-	<artifactId>test-context</artifactId>
+	<artifactId>test-dynamic-update</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
 

@@ -29,7 +29,7 @@ public class DockerizeSpringBootJar extends SpringDockerizer {
 
     public Map<String, String> getBuildArgs() {
         Map<String, String> buildArgs = new HashMap<String, String>();
-        buildArgs.put("JAR_FILE", getAppPathString() + "/"  + appArchive.getName());
+        buildArgs.put("JAR_FILE", getAppPathString() + "/" + appArchive.getName());
         return buildArgs;
     }
 

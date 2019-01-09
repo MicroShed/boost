@@ -168,8 +168,7 @@ public class LibertyServerConfigGenerator {
     }
 
     /**
-     * Write the server.xml and bootstrap.properties to the server config
-     * directory
+     * Write the server.xml and bootstrap.properties to the server config directory
      *
      * @throws TransformerException
      * @throws IOException

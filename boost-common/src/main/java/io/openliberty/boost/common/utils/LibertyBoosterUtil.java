@@ -63,8 +63,8 @@ public class LibertyBoosterUtil {
     }
 
     /**
-     * take a list of pom boost dependency strings and map to liberty features
-     * for config. return a list of feature configuration objects for each found
+     * take a list of pom boost dependency strings and map to liberty features for
+     * config. return a list of feature configuration objects for each found
      * dependency.
      * 
      * @param dependencies
@@ -102,12 +102,14 @@ public class LibertyBoosterUtil {
                         serverConfig);
                 boosterPackConfigList.add(mpOpenTracingConfig);
             }
+
         }
+
 
         return boosterPackConfigList;
     }
 
-    public void generateLibertyServerConfig(String warName) throws Exception {
+    public static void generateLibertyServerConfig(String libertyServerPath, List<BoosterPackConfigurator> boosterPackConfigurators, String warName) throws Exception {
 
         // Loop through configuration objects and get features and XML config
         // (if any)

@@ -8,20 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.GradleRunner
-
-import static org.gradle.testkit.runner.TaskOutcome.*
-
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNull
 import static org.junit.Assert.assertNotNull
 
-import java.io.File
-import java.util.List
+import org.gradle.testkit.runner.GradleRunner
 import java.util.concurrent.TimeUnit
-
 import org.junit.BeforeClass
 import org.junit.Test
 

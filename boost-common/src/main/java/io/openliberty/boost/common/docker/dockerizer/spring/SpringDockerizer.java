@@ -28,11 +28,12 @@ import io.openliberty.boost.common.utils.BoostUtil;
 import net.wasdev.wlp.common.plugins.util.SpringBootUtil;
 
 public abstract class SpringDockerizer extends Dockerizer {
-    
+
     public final String SPRING_BOOT_VERSION;
     public final DockerParameters params;
 
-    public SpringDockerizer(File projectDirectory, File outputDirectory, File appArchive, String springBootVersion, DockerParameters params, BoostLoggerI log) {
+    public SpringDockerizer(File projectDirectory, File outputDirectory, File appArchive, String springBootVersion,
+            DockerParameters params, BoostLoggerI log) {
         super(projectDirectory, outputDirectory, appArchive, log);
         this.SPRING_BOOT_VERSION = springBootVersion;
         this.params = params;
@@ -62,7 +63,7 @@ public abstract class SpringDockerizer extends Dockerizer {
             throw new BoostException("Unable to create a Dockerfile because application type is not supported");
         }
     }
-    
+
     protected String getAppPathString() {
 
         Path projPath = projectDirectory.toPath();
@@ -82,12 +83,10 @@ public abstract class SpringDockerizer extends Dockerizer {
                 Attributes attributes = manifest.getMainAttributes();
                 return attributes.getValue("Start-Class");
             } else {
-                throw new BoostException(
-                        "Could not get Spring Boot start class due to error getting app manifest.");
+                throw new BoostException("Could not get Spring Boot start class due to error getting app manifest.");
             }
         } catch (IOException e) {
-            throw new BoostException("Could not get Spring Boot start class due to error opening app archive.",
-                    e);
+            throw new BoostException("Could not get Spring Boot start class due to error opening app archive.", e);
         }
     }
 

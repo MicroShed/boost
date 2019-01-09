@@ -24,6 +24,12 @@ bootJar {
     mainClassName = 'hello.Application'
 }
 
+boost {
+    packaging {
+        useDefaultHost = true
+    }
+}
+
 repositories {
     mavenCentral()
     mavenLocal()

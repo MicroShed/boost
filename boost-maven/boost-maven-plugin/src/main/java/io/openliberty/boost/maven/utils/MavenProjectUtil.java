@@ -10,9 +10,7 @@
  *******************************************************************************/
 package io.openliberty.boost.maven.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,6 +37,8 @@ public class MavenProjectUtil {
 
         return version;
     }
+    
+    public static Map<String, String> getAllDependencies(MavenProject project, BoostLogger logger) {
 
     /**
      * Get all dependencies with "org.springframework" as the groupId. These
@@ -77,7 +77,7 @@ public class MavenProjectUtil {
             }
         }
 
-        return boosterDependencies;
+        return dependencies;
     }
 
 }

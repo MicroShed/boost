@@ -71,6 +71,6 @@ public class GradleProjectUtil {
             }
         }
 
-        return boosterDependencies
+        return dependencies
     }
 }
