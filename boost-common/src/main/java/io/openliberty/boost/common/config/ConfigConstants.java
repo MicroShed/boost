@@ -11,67 +11,68 @@
 
 package io.openliberty.boost.common.config;
 
-public interface ConfigConstants {
+public final class ConfigConstants {
 
-    public String FEATURE = "feature";
-    public String DEPENDENCY = "dependency";
-    public String GROUPID = "groupId";
-    public String ARTIFACTID = "artifactId";
-    public String VERSION = "version";
-    public String WAR_PKG_TYPE = "war";
+    public static final String FEATURE = "feature";
+    public static final  String DEPENDENCY = "dependency";
+    public static final  String GROUPID = "groupId";
+    public static final  String ARTIFACTID = "artifactId";
+    public static final  String VERSION = "version";
+    public static final  String WAR_PKG_TYPE = "war";
 
-    public String SPRING_BOOT_PROJ = "spring-boot-project";
-    public String NORMAL_PROJ = "project";
+    public static final  String SPRING_BOOT_PROJ = "spring-boot-project";
+    public static final  String NORMAL_PROJ = "project";
 
-    public String FEATURE_MANAGER = "featureManager";
-    public String HTTP_ENDPOINT = "httpEndpoint";
-    public String DEFAULT_HTTP_ENDPOINT = "defaultHttpEndpoint";
+    public static final  String FEATURE_MANAGER = "featureManager";
+    public static final  String HTTP_ENDPOINT = "httpEndpoint";
+    public static final  String DEFAULT_HTTP_ENDPOINT = "defaultHttpEndpoint";
 
-    public String APPLICATION = "application";
+    public static final  String APPLICATION = "application";
 
     // KeyStore configuration values
-    public String KEYSTORE = "keyStore";
-    public String DEFAULT_KEYSTORE = "defaultKeyStore";
-    public String KEY_ENTRY = "keyEntry";
-    public String KEY_PASSWORD = "keyPassword";
+    public static final  String KEYSTORE = "keyStore";
+    public static final  String DEFAULT_KEYSTORE = "defaultKeyStore";
+    public static final  String KEY_ENTRY = "keyEntry";
+    public static final  String KEY_PASSWORD = "keyPassword";
 
     // Datasource configuration values
-    public String DATASOURCE = "dataSource";
-    public String DATABASE_NAME = "databaseName";
-    public String JNDI_NAME = "jndiName";
-    public String JDBC_DRIVER_REF = "jdbcDriverRef";
-    public String JDBC_DRIVER = "jdbcDriver";
-    public String LIBRARY_REF = "libraryRef";
-    public String LIBRARY = "library";
-    public String FILESET = "fileset";
-    public String PROPERTIES_DERBY_EMBEDDED = "properties.derby.embedded";
+    public static final  String DATASOURCE = "dataSource";
+    public static final  String DATABASE_NAME = "databaseName";
+    public static final  String JNDI_NAME = "jndiName";
+    public static final  String JDBC_DRIVER_REF = "jdbcDriverRef";
+    public static final  String JDBC_DRIVER = "jdbcDriver";
+    public static final  String LIBRARY_REF = "libraryRef";
+    public static final  String LIBRARY = "library";
+    public static final  String FILESET = "fileset";
+    public static final  String PROPERTIES_DERBY_EMBEDDED = "properties.derby.embedded";
 
-    public String DEFAULT_DATASOURCE = "DefaultDataSource";
-    public String DERBY_EMBEDDED = "DerbyEmbedded";
-    public String DERBY_LIB = "DerbyLib";
-    public String CREATE_DATABASE = "createDatabase";
-    public String DERBY_DB = "DerbyDB";
+    public static final  String DEFAULT_DATASOURCE = "DefaultDataSource";
+    public static final  String DERBY_EMBEDDED = "DerbyEmbedded";
+    public static final  String DERBY_LIB = "DerbyLib";
+    public static final  String CREATE_DATABASE = "createDatabase";
+    public static final  String DERBY_DB = "DerbyDB";
     
     // General purpose configuration values
-    public String LOCATION = "location";
-    public String PASSWORD = "password";
-    public String TYPE = "type";
-    public String PROVIDER = "provider";
-    public String NAME = "name";
-    public String CONTEXT_ROOT = "context-root";
-    public String RESOURCES = "resources";
+    public static final  String LOCATION = "location";
+    public static final  String PASSWORD = "password";
+    public static final  String TYPE = "type";
+    public static final  String PROVIDER = "provider";
+    public static final  String NAME = "name";
+    public static final  String CONTEXT_ROOT = "context-root";
+    public static final  String RESOURCES = "resources";
 
-    public String SPRING_BOOT_15 = "springBoot-1.5";
-    public String SPRING_BOOT_20 = "springBoot-2.0";
-    public String SERVLET_40 = "servlet-4.0";
+    public static final  String SPRING_BOOT_15 = "springBoot-1.5";
+    public static final  String SPRING_BOOT_20 = "springBoot-2.0";
+    public static final  String SERVLET_40 = "servlet-4.0";
 
-    public String WEBSOCKET_11 = "websocket-1.1";
-    public String TRANSPORT_SECURITY_10 = "transportSecurity-1.0";
-    public String JAXRS_20 = "jaxrs-2.0";
-    public String JAXRS_21 = "jaxrs-2.1";
-    public String JDBC_41 = "jdbc-4.1";
-    public String JDBC_42 = "jdbc-4.2";
+    public static final  String WEBSOCKET_11 = "websocket-1.1";
+    public static final  String TRANSPORT_SECURITY_10 = "transportSecurity-1.0";
+    public static final  String JAXRS_20 = "jaxrs-2.0";
+    public static final  String JAXRS_21 = "jaxrs-2.1";
+    public static final  String JDBC_41 = "jdbc-4.1";
+    public static final  String JDBC_42 = "jdbc-4.2";
 
-    public String SHARED_RESOURCES_DIR = "${shared.resource.dir}";
-    public String SERVER_OUTPUT_DIR = "${server.output.dir}";
+    public static final  String SHARED_RESOURCES_DIR = "${shared.resource.dir}";
+    public static final  String SERVER_OUTPUT_DIR = "${server.output.dir}";
+    
 }

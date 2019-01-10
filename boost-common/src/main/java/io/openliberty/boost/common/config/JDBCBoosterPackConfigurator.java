@@ -11,8 +11,11 @@
 package io.openliberty.boost.common.config;
 
 import io.openliberty.boost.common.config.BoosterPackConfigurator;
+import io.openliberty.boost.common.utils.BoostUtil;
 
 import static io.openliberty.boost.common.config.ConfigConstants.*;
+
+import java.util.Properties;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,26 +24,37 @@ import org.w3c.dom.NodeList;
 public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
 
     private static String DERBY_DEFAULT = "org.apache.derby:derby:10.14.2.0";
+    
+    public static String DEFAULT_DATABASE_NAME = SERVER_OUTPUT_DIR + "/" + DERBY_DB;
 
-    String dependency;
+    private String dependency;
+    private String libertyFeature;
+    
+    private Properties serverProperties;
 
-    String libertyFeature;
-
-    public JDBCBoosterPackConfigurator() {
+    public JDBCBoosterPackConfigurator(String version, Properties boostConfigProperties) {
+    	
+    	// Set the Liberty feature based on the booster version
+    	if (version.equals(EE_7_VERSION)) {
+            this.libertyFeature = JDBC_41;
+        } else if (version.equals(EE_8_VERSION)) {
+            this.libertyFeature = JDBC_42;
+        }
+    	
         this.dependency = DERBY_DEFAULT;
+        
+        // Set server properties
+        serverProperties = new Properties();
+        String databaseName = (String) boostConfigProperties.getOrDefault(BoostProperties.DATASOURCE_DATABASE_NAME, DEFAULT_DATABASE_NAME);
+        this.serverProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, databaseName);
     }
 
-    /**
-     * retrieves the default boost feature string for the jdbc dependency
-     */
+    @Override
     public String getFeature() {
         return libertyFeature;
     }
 
-    /**
-     * writes out jdbc default config data when selected by the presence of a jdbc
-     * boost dependency
-     */
+    @Override
     public void addServerConfig(Document doc) {
 
         Element serverRoot = doc.getDocumentElement();
@@ -68,7 +82,7 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
         dataSource.setAttribute(JDBC_DRIVER_REF, DERBY_EMBEDDED);
 
         Element derbyProps = doc.createElement(PROPERTIES_DERBY_EMBEDDED);
-        derbyProps.setAttribute(DATABASE_NAME, SERVER_OUTPUT_DIR + "/" + DERBY_DB);
+        derbyProps.setAttribute(DATABASE_NAME, BoostUtil.makeVariable(BoostProperties.DATASOURCE_DATABASE_NAME));
         derbyProps.setAttribute(CREATE_DATABASE, "create");
         dataSource.appendChild(derbyProps);
 
@@ -79,16 +93,11 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
         jdbcDriver.setAttribute(LIBRARY_REF, DERBY_LIB);
         serverRoot.appendChild(jdbcDriver);
     }
-
+    
     @Override
-    public void setFeature(String version) {
-
-        if (version.equals(EE_7_VERSION)) {
-            libertyFeature = JDBC_41;
-        } else if (version.equals(EE_8_VERSION)) {
-            libertyFeature = JDBC_42;
-        }
-
+    public Properties getServerProperties() {
+    	
+    	return serverProperties;
     }
 
     @Override
@@ -97,7 +106,6 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
         return dependency;
     }
 
-    @Override
     public void setDependency(String dependency) {
 
         this.dependency = dependency;

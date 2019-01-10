@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -119,8 +120,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
             // Get booster dependencies from project
             Map<String, String> dependencies = MavenProjectUtil.getAllDependencies(project, BoostLogger.getInstance());
-
-            this.boosterPackConfigurators = LibertyBoosterUtil.getBoosterPackConfigurators(dependencies);
+            
+            this.boosterPackConfigurators = LibertyBoosterUtil.getBoosterPackConfigurators(dependencies, BoostLogger.getInstance());
 
             attach = false;
 

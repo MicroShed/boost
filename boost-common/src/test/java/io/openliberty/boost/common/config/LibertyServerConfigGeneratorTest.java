@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -24,10 +25,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Element;
 
+import io.openliberty.boost.common.config.ConfigFileUtils;
 import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
+import io.openliberty.boost.common.utils.BoostUtil;
 
 import static io.openliberty.boost.common.config.ConfigConstants.*;
-import static io.openliberty.boost.common.config.ConfigFileUtils.findStringInServerXml;
 import static io.openliberty.boost.common.config.DOMUtils.getDirectChildrenByTag;
 
 public class LibertyServerConfigGeneratorTest {
@@ -52,7 +54,7 @@ public class LibertyServerConfigGeneratorTest {
 
         String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
 
-        boolean featureFound = findStringInServerXml(serverXML, "<feature>" + SPRING_BOOT_15 + "</feature>");
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + SPRING_BOOT_15 + "</feature>");
 
         assertTrue("The " + SPRING_BOOT_15 + " feature was not found in the server configuration", featureFound);
 
@@ -83,8 +85,7 @@ public class LibertyServerConfigGeneratorTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath());
         
-        JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator();
-        configurator.setFeature("0.2-SNAPSHOT");
+        JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator("0.2-SNAPSHOT", new Properties());
         
         serverConfig.addFeature(configurator.getFeature());
         
@@ -92,7 +93,7 @@ public class LibertyServerConfigGeneratorTest {
 
         String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
 
-        boolean featureFound = findStringInServerXml(serverXML, "<feature>" + JDBC_42 + "</feature>");
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JDBC_42 + "</feature>");
 
         assertTrue("The " + JDBC_42 + " feature was not found in the server configuration", featureFound);
 
@@ -111,8 +112,7 @@ public class LibertyServerConfigGeneratorTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath());
         
-        JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator();
-        configurator.setFeature("0.1-SNAPSHOT");
+        JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator("0.1-SNAPSHOT", new Properties());
         
         serverConfig.addFeature(configurator.getFeature());
         
@@ -120,14 +120,14 @@ public class LibertyServerConfigGeneratorTest {
 
         String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
 
-        boolean featureFound = findStringInServerXml(serverXML, "<feature>" + JDBC_41 + "</feature>");
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JDBC_41 + "</feature>");
 
         assertTrue("The " + JDBC_41 + " feature was not found in the server configuration", featureFound);
 
     }
     
     /**
-     * Test that the EE8 JDBC version (jdbc-4.2) has been added by the JDBC booster
+     * Test that the server is configured with the default Derby datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -139,8 +139,7 @@ public class LibertyServerConfigGeneratorTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath());
         
-        JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator();
-        configurator.setFeature("0.2-SNAPSHOT");
+        JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator("0.2-SNAPSHOT", new Properties());
         
         serverConfig.addBoosterConfig(configurator);
         
@@ -167,7 +166,7 @@ public class LibertyServerConfigGeneratorTest {
         
         Element propertiesDerbyEmbedded = getDirectChildrenByTag(dataSource, PROPERTIES_DERBY_EMBEDDED).get(0);
         assertEquals("The createDatabase attribute is not correct", "create", propertiesDerbyEmbedded.getAttribute(CREATE_DATABASE));
-        assertEquals("The databaseName attribute is not correct", SERVER_OUTPUT_DIR + "/" + DERBY_DB, propertiesDerbyEmbedded.getAttribute(DATABASE_NAME));
+        assertEquals("The databaseName attribute is not correct", BoostUtil.makeVariable(BoostProperties.DATASOURCE_DATABASE_NAME), propertiesDerbyEmbedded.getAttribute(DATABASE_NAME));
 
         // Check that the <jdbcDriver> element is correctly configured
         List<Element> jdbcDriverList = getDirectChildrenByTag(serverRoot, JDBC_DRIVER);
@@ -176,6 +175,34 @@ public class LibertyServerConfigGeneratorTest {
         Element jdbcDriver = jdbcDriverList.get(0);
         assertEquals("JdbcDriver id is not correct", DERBY_EMBEDDED, jdbcDriver.getAttribute("id"));
         assertEquals("JdbcDriver libraryRef is not correct", DERBY_LIB, jdbcDriver.getAttribute(LIBRARY_REF));
+    }
+    
+    /**
+     * Test that the databaseName property is correctly written to bootstrap.properties
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterConfig_with_databaseName() throws ParserConfigurationException, TransformerException, IOException {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath());
+        
+        Properties properties = new Properties();
+        properties.put(BoostProperties.DATASOURCE_DATABASE_NAME, "myDatabase");
+        JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator("0.2-SNAPSHOT", properties);
+        
+        serverConfig.addBoosterConfig(configurator);
+        
+        serverConfig.writeToServer();
+
+        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+
+        String propertyFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties, BoostProperties.DATASOURCE_DATABASE_NAME);
+
+        assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_DATABASE_NAME + " is not correct", "myDatabase", propertyFound);
     }
 
 }

@@ -71,5 +71,9 @@ public class BoostUtil {
         }
 
     }
+    
+    public static String makeVariable(String propertyName) {
+        return "${" + propertyName + "}";
+    }
 
 }

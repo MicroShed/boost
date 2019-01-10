@@ -203,14 +203,19 @@ public class LibertyServerConfigGenerator {
 
     public void addBootstrapProperties(Properties properties) throws IOException {
 
-        for (String key : properties.stringPropertyNames()) {
-            String value = properties.getProperty(key);
-            bootstrapProperties.put(key, value);
-        }
+    	if (properties != null) {
+	        for (String key : properties.stringPropertyNames()) {
+	            String value = properties.getProperty(key);
+	            bootstrapProperties.put(key, value);
+	        }
+    	}
     }
 
-    public void addBoosterConfig(BoosterPackConfigurator configurator) {
+    public void addBoosterConfig(BoosterPackConfigurator configurator) throws IOException {
         configurator.addServerConfig(getServerDoc());
+        
+        Properties properties = configurator.getServerProperties();
+        addBootstrapProperties(properties);
     }
 
     public void addApplication(String appName) {
