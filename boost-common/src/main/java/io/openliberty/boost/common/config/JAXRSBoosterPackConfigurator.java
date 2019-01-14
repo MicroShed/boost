@@ -14,18 +14,19 @@ import org.w3c.dom.Document;
 import io.openliberty.boost.common.config.BoosterPackConfigurator;
 import static io.openliberty.boost.common.config.ConfigConstants.*;
 
+import java.util.Properties;
+
 public class JAXRSBoosterPackConfigurator extends BoosterPackConfigurator {
 
     String libertyFeature = null;
 
-    @Override
-    public void setFeature(String version) {
-        // if it is the 1.0 version = EE7 feature level
-        if (version.equals(EE_7_VERSION)) {
+    public JAXRSBoosterPackConfigurator(String version) {
+    	if (version.equals(EE_7_VERSION)) {
             libertyFeature = JAXRS_20;
         } else if (version.equals(EE_8_VERSION)) {
             libertyFeature = JAXRS_21;
         }
+    	
     }
 
     @Override
@@ -43,9 +44,10 @@ public class JAXRSBoosterPackConfigurator extends BoosterPackConfigurator {
 		
 		return null;
 	}
-	
+
 	@Override
-	public void setDependency(String dependency) {
-		// No dependency is needed
+	public Properties getServerProperties() {
+		
+		return null;
 	}
 }

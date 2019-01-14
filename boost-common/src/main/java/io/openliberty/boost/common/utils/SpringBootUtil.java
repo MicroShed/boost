@@ -326,33 +326,33 @@ public class SpringBootUtil {
                 // Spring Boot property.
                 // The Spring Boot properties will then be added to the server's
                 // bootstrap.properties file.
-                keystoreProperties.put(ConfigConstants.LOCATION, makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE));
+                keystoreProperties.put(ConfigConstants.LOCATION, BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE));
 
                 if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD)) {
                     keystoreProperties.put(ConfigConstants.PASSWORD,
-                            makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD));
+                    		BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD));
                 }
                 if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE)) {
-                    keystoreProperties.put(ConfigConstants.TYPE, makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE));
+                    keystoreProperties.put(ConfigConstants.TYPE, BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE));
                 }
                 if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER)) {
                     keystoreProperties.put(ConfigConstants.PROVIDER,
-                            makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER));
+                    		BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER));
                 }
 
                 // Add any key properties to the separate key map.
                 if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_PASSWORD)) {
                     keyProperties.put(ConfigConstants.KEY_PASSWORD,
-                            makeVariable(SpringBootUtil.SERVER_SSL_KEY_PASSWORD));
+                    		BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEY_PASSWORD));
                 }
                 if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_ALIAS)) {
-                    keyProperties.put(ConfigConstants.NAME, makeVariable(SpringBootUtil.SERVER_SSL_KEY_ALIAS));
+                    keyProperties.put(ConfigConstants.NAME, BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEY_ALIAS));
                 }
 
                 // Create keystore element in server.xml and endpoint with http disabled.
                 serverConfig.addKeystore(keystoreProperties, keyProperties);
-                serverConfig.addHttpEndpoint(makeVariable(SpringBootUtil.SERVER_ADDRESS), "-1",
-                        makeVariable(SpringBootUtil.SERVER_PORT));
+                serverConfig.addHttpEndpoint(BoostUtil.makeVariable(SpringBootUtil.SERVER_ADDRESS), "-1",
+                		BoostUtil.makeVariable(SpringBootUtil.SERVER_PORT));
 
                 // Since the keystore for the Spring Boot app is created manually and already
                 // exists,
@@ -377,8 +377,8 @@ public class SpringBootUtil {
                 }
 
             } else {
-                serverConfig.addHttpEndpoint(makeVariable(SpringBootUtil.SERVER_ADDRESS),
-                        makeVariable(SpringBootUtil.SERVER_PORT), null);
+                serverConfig.addHttpEndpoint(BoostUtil.makeVariable(SpringBootUtil.SERVER_ADDRESS),
+                        BoostUtil.makeVariable(SpringBootUtil.SERVER_PORT), null);
             }
 
         } else {
@@ -390,9 +390,5 @@ public class SpringBootUtil {
         serverConfig.addBootstrapProperties(springBootServerProps);
 
         serverConfig.writeToServer();
-    }
-
-    private static String makeVariable(String propertyName) {
-        return "${" + propertyName + "}";
     }
 }

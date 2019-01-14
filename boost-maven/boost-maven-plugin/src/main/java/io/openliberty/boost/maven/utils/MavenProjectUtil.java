@@ -12,10 +12,13 @@ package io.openliberty.boost.maven.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
+
+import io.openliberty.boost.common.utils.LibertyBoosterUtil;
 
 public class MavenProjectUtil {
 
@@ -35,7 +38,7 @@ public class MavenProjectUtil {
 
         return version;
     }
-    
+
     public static Map<String, String> getAllDependencies(MavenProject project, BoostLogger logger) {
 
         Map<String, String> dependencies = new HashMap<String, String>();
@@ -44,7 +47,7 @@ public class MavenProjectUtil {
         for (Artifact artifact : project.getArtifacts()) {
             logger.debug("Found dependency while processing project: " + artifact.getGroupId() + ":"
                     + artifact.getArtifactId() + ":" + artifact.getVersion());
-            
+
             dependencies.put(artifact.getGroupId() + ":" + artifact.getArtifactId(), artifact.getVersion());
         }
 

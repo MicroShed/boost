@@ -152,7 +152,7 @@ public class BoostPackageTask extends AbstractBoostTask {
                 } else if (project.plugins.hasPlugin('war')) {
                     // Get booster dependencies from project
                     Map<String, String> dependencies = GradleProjectUtil.getAllDependencies(project, BoostLogger.getInstance())
-        	        boosterPackConfigurators = LibertyBoosterUtil.getBoosterPackConfigurators(dependencies)
+        	        boosterPackConfigurators = LibertyBoosterUtil.getBoosterPackConfigurators(dependencies, BoostLogger.getInstance())
         	        
                     copyBoosterDependencies()
         	

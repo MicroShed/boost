@@ -13,8 +13,10 @@ package io.openliberty.boost.common.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterPackConfigurator;
 import io.openliberty.boost.common.config.JAXRSBoosterPackConfigurator;
 import io.openliberty.boost.common.config.JDBCBoosterPackConfigurator;
@@ -35,29 +37,32 @@ public class LibertyBoosterUtil {
      * @param dependencies
      * @return
      */
-    public static List<BoosterPackConfigurator> getBoosterPackConfigurators(Map<String, String> dependencies) {
+    public static List<BoosterPackConfigurator> getBoosterPackConfigurators(Map<String, String> dependencies, BoostLoggerI logger) {
     	
     	List<BoosterPackConfigurator> boosterPackConfigList = new ArrayList<BoosterPackConfigurator>();
     	
+    	Properties configuredBoostProperties = getConfiguredBoostProperties(logger);
+    	
         if (dependencies.containsKey(BOOSTER_JDBC)) {
         	
-            JDBCBoosterPackConfigurator jdbcConfig = new JDBCBoosterPackConfigurator();
+        	String version = dependencies.get(BOOSTER_JDBC);
         	
-            String version = dependencies.get(BOOSTER_JDBC);
-            jdbcConfig.setFeature(version);
+        	JDBCBoosterPackConfigurator jdbcConfig = new JDBCBoosterPackConfigurator(version, configuredBoostProperties);
             
+            // Check for user defined derby dependency
             if (dependencies.containsKey(DERBY_DEPENDENCY)) {
             	String derbyVersion = dependencies.get(DERBY_DEPENDENCY);
             	jdbcConfig.setDependency(DERBY_DEPENDENCY + ":" + derbyVersion);
             }
+            
             boosterPackConfigList.add(jdbcConfig);
             
         }
-        if (dependencies.containsKey(BOOSTER_JAXRS)) {		
-            JAXRSBoosterPackConfigurator jaxrsConfig = new JAXRSBoosterPackConfigurator();
-            
-            String version = dependencies.get(BOOSTER_JAXRS);
-            jaxrsConfig.setFeature(version);
+        if (dependencies.containsKey(BOOSTER_JAXRS)) {	
+        	
+        	String version = dependencies.get(BOOSTER_JAXRS);
+        	
+            JAXRSBoosterPackConfigurator jaxrsConfig = new JAXRSBoosterPackConfigurator(version);
             
             boosterPackConfigList.add(jaxrsConfig);
         }
@@ -102,5 +107,26 @@ public class LibertyBoosterUtil {
     	}
     	
     	return dependenciesToCopy;
+    }
+    
+    private static Properties getConfiguredBoostProperties(BoostLoggerI logger) {
+
+    	List<String> supportedProps = BoostProperties.getAllSupportedProperties();
+    	Properties systemProperties = System.getProperties();
+    	
+    	Properties boostProperties = new Properties();
+    	
+    	for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
+    		
+    		if (supportedProps.contains(entry.getKey().toString())) {
+    			
+    			logger.info("Found boost property: " + entry.getKey() + ":" + entry.getValue());
+    			
+    			boostProperties.put(entry.getKey(), entry.getValue());
+    		}
+        }
+    	
+    	return boostProperties;
+    	
     }
 }

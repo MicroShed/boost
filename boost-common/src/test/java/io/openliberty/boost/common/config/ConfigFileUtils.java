@@ -13,9 +13,13 @@ package io.openliberty.boost.common.config;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.Properties;
 
 public class ConfigFileUtils {
 
@@ -42,6 +46,37 @@ public class ConfigFileUtils {
         }
 
         return found;
+    }
+    
+    public static String findPropertyInBootstrapProperties(String bootstrapPropertiesPath, String key) throws IOException {
+
+    	String foundProperty = null;
+    	
+        Properties properties = new Properties();
+        InputStream input = null;
+
+    	try {
+
+    		input = new FileInputStream(bootstrapPropertiesPath);
+
+    		// load a properties file
+    		properties.load(input);
+    		
+            foundProperty = properties.getProperty(key);
+
+    	} catch (IOException ex) {
+    		ex.printStackTrace();
+    	} finally {
+    		if (input != null) {
+    			try {
+    				input.close();
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}
+    		}
+    	}
+    	
+		return foundProperty;
     }
 
 }
