@@ -26,8 +26,6 @@ public class LibertyBoosterUtil {
 
     public static String BOOSTER_JAXRS = "io.openliberty.boosters:jaxrs";
     public static String BOOSTER_JDBC = "io.openliberty.boosters:jdbc";
-    
-    public static String DERBY_DEPENDENCY = "org.apache.derby:derby";
 
     /**
      * take a list of pom boost dependency strings and map to liberty features for
@@ -47,13 +45,21 @@ public class LibertyBoosterUtil {
         	
         	String version = dependencies.get(BOOSTER_JDBC);
         	
-        	JDBCBoosterPackConfigurator jdbcConfig = new JDBCBoosterPackConfigurator(version, configuredBoostProperties);
-            
-            // Check for user defined derby dependency
-            if (dependencies.containsKey(DERBY_DEPENDENCY)) {
-            	String derbyVersion = dependencies.get(DERBY_DEPENDENCY);
-            	jdbcConfig.setDependency(DERBY_DEPENDENCY + ":" + derbyVersion);
+        	// Check for user defined database dependencies
+        	String configuredDatabaseDep = null;
+        	
+            if (dependencies.containsKey(JDBCBoosterPackConfigurator.DERBY_DEPENDENCY)) {
+            	String derbyVersion = dependencies.get(JDBCBoosterPackConfigurator.DERBY_DEPENDENCY);
+            	configuredDatabaseDep = JDBCBoosterPackConfigurator.DERBY_DEPENDENCY + ":" + derbyVersion;
+            	
+            } else if (dependencies.containsKey(JDBCBoosterPackConfigurator.DB2_DEPENDENCY)) {
+            	String db2Version = dependencies.get(JDBCBoosterPackConfigurator.DB2_DEPENDENCY);
+            	configuredDatabaseDep = JDBCBoosterPackConfigurator.DB2_DEPENDENCY + ":" + db2Version;
             }
+            
+        	JDBCBoosterPackConfigurator jdbcConfig = new JDBCBoosterPackConfigurator(version, configuredBoostProperties, configuredDatabaseDep);
+            
+            
             
             boosterPackConfigList.add(jdbcConfig);
             
@@ -119,8 +125,6 @@ public class LibertyBoosterUtil {
     	for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
     		
     		if (supportedProps.contains(entry.getKey().toString())) {
-    			
-    			logger.info("Found boost property: " + entry.getKey() + ":" + entry.getValue());
     			
     			boostProperties.put(entry.getKey(), entry.getValue());
     		}

@@ -29,13 +29,15 @@ public final class ConfigConstants {
 
     public static final  String APPLICATION = "application";
 
-    // KeyStore configuration values
+    // KeyStore configuration element/attribute names
     public static final  String KEYSTORE = "keyStore";
-    public static final  String DEFAULT_KEYSTORE = "defaultKeyStore";
     public static final  String KEY_ENTRY = "keyEntry";
     public static final  String KEY_PASSWORD = "keyPassword";
+    
+    // KeyStore configuration values
+    public static final  String DEFAULT_KEYSTORE = "defaultKeyStore";
 
-    // Datasource configuration values
+    // Datasource configuration element/attribute names
     public static final  String DATASOURCE = "dataSource";
     public static final  String DATABASE_NAME = "databaseName";
     public static final  String JNDI_NAME = "jndiName";
@@ -44,23 +46,40 @@ public final class ConfigConstants {
     public static final  String LIBRARY_REF = "libraryRef";
     public static final  String LIBRARY = "library";
     public static final  String FILESET = "fileset";
-    public static final  String PROPERTIES_DERBY_EMBEDDED = "properties.derby.embedded";
-
-    public static final  String DEFAULT_DATASOURCE = "DefaultDataSource";
-    public static final  String DERBY_EMBEDDED = "DerbyEmbedded";
-    public static final  String DERBY_LIB = "DerbyLib";
     public static final  String CREATE_DATABASE = "createDatabase";
+    public static final  String SERVER_NAME = "serverName";
+    public static final  String PORT_NUMBER = "portNumber";
+    public static final  String PROPERTIES_DERBY_EMBEDDED = "properties.derby.embedded";
+    public static final  String PROPERTIES_DB2_JCC = "properties.db2.jcc";
+    public static final  String CONTAINER_AUTH_DATA_REF = "containerAuthDataRef";
+
+    // Datasource configuration values
+    public static final  String DEFAULT_DATASOURCE = "DefaultDataSource";
+    public static final  String DERBY_EMBEDDED_DRIVER_REF = "DerbyEmbeddedDriverRef";
+    public static final  String DERBY_LIB = "DerbyLib";
     public static final  String DERBY_DB = "DerbyDB";
+    public static final  String DB2_DRIVER_REF = "Db2DriverRef";
+    public static final  String DB2_LIB = "Db2Lib";
+    public static final  String DB2_DB = "DB2DB";
+    public static final  String DATASOURCE_AUTH_DATA = "datasourceAuth";
     
-    // General purpose configuration values
+    // Authentication configuration element/attribute names
+    public static final  String AUTH_DATA = "authData";
+    
+    // General purpose configuration element/attribute names
     public static final  String LOCATION = "location";
+    public static final  String USER = "user";
     public static final  String PASSWORD = "password";
     public static final  String TYPE = "type";
     public static final  String PROVIDER = "provider";
     public static final  String NAME = "name";
     public static final  String CONTEXT_ROOT = "context-root";
     public static final  String RESOURCES = "resources";
+    
+    // General purpose configuration values
+    public static final  String LOCALHOST = "localhost";
 
+    // Liberty features
     public static final  String SPRING_BOOT_15 = "springBoot-1.5";
     public static final  String SPRING_BOOT_20 = "springBoot-2.0";
     public static final  String SERVLET_40 = "servlet-4.0";
