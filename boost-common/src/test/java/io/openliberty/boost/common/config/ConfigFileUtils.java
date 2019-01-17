@@ -58,7 +58,7 @@ public class ConfigFileUtils {
     	try {
 
     		input = new FileInputStream(bootstrapPropertiesPath);
-
+    		
     		// load a properties file
     		properties.load(input);
     		

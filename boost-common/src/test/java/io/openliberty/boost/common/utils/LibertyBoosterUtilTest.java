@@ -49,7 +49,7 @@ public class LibertyBoosterUtilTest {
                 booster instanceof JDBCBoosterPackConfigurator);
 
         // Check that the custom databaseName is set
-        assertEquals("Database name is not correct", JDBCBoosterPackConfigurator.DEFAULT_DATABASE_NAME,
+        assertEquals("Database name is not correct", JDBCBoosterPackConfigurator.DEFAULT_DERBY_DATABASE_NAME,
                 booster.getServerProperties().getProperty(BoostProperties.DATASOURCE_DATABASE_NAME));
 
     }

@@ -23,16 +23,19 @@ import org.w3c.dom.NodeList;
 
 public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
 
-    private static String DERBY_DEFAULT = "org.apache.derby:derby:10.14.2.0";
+	public static String DERBY_DEPENDENCY = "org.apache.derby:derby";
+    public static String DB2_DEPENDENCY = "com.ibm.db2.jcc:db2jcc";
     
-    public static String DEFAULT_DATABASE_NAME = SERVER_OUTPUT_DIR + "/" + DERBY_DB;
+    private static String DERBY_DEFAULT = "org.apache.derby:derby:10.14.2.0";
+    public static String DEFAULT_DERBY_DATABASE_NAME = DERBY_DB;
+    public static String DEFAULT_DB2_DATABASE_NAME = DB2_DB;
 
     private String dependency;
     private String libertyFeature;
     
     private Properties serverProperties;
 
-    public JDBCBoosterPackConfigurator(String version, Properties boostConfigProperties) {
+    public JDBCBoosterPackConfigurator(String version, Properties boostConfigProperties, String configuredDatabaseDep) {
     	
     	// Set the Liberty feature based on the booster version
     	if (version.equals(EE_7_VERSION)) {
@@ -41,23 +44,80 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
             this.libertyFeature = JDBC_42;
         }
     	
-        this.dependency = DERBY_DEFAULT;
+    	if (configuredDatabaseDep == null) {
+    		this.dependency = DERBY_DEFAULT;
+    	} else {
+    		this.dependency = configuredDatabaseDep;
+    	}
         
         // Set server properties
-        serverProperties = new Properties();
-        String databaseName = (String) boostConfigProperties.getOrDefault(BoostProperties.DATASOURCE_DATABASE_NAME, DEFAULT_DATABASE_NAME);
-        this.serverProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, databaseName);
+    	this.serverProperties = new Properties();
+    	
+    	if (this.dependency.startsWith(DERBY_DEPENDENCY)) {
+	        String databaseName = (String) boostConfigProperties.getOrDefault(BoostProperties.DATASOURCE_DATABASE_NAME, DEFAULT_DERBY_DATABASE_NAME);
+	        this.serverProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, databaseName);
+        
+    	} else if (this.dependency.startsWith(DB2_DEPENDENCY)) {
+	        
+    		// If serverName or portNumber are not provided, use DB2's default "localhost" and "50000"
+	        String serverName = (String) boostConfigProperties.getOrDefault(BoostProperties.DATASOURCE_SERVER_NAME, LOCALHOST);
+        	this.serverProperties.put(BoostProperties.DATASOURCE_SERVER_NAME, serverName);
+            
+            String portNumber = (String) boostConfigProperties.getOrDefault(BoostProperties.DATASOURCE_PORT_NUMBER, "50000");
+            this.serverProperties.put(BoostProperties.DATASOURCE_PORT_NUMBER, portNumber);
+            
+            // For databaseName, user, and password, there is no default that would serve any purpose. The variables
+            // will be configured in the server.xml, but no values will be set in bootstrap.properties. The values will 
+            // need to be passed by the user at runtime.
+            String databaseName = (String) boostConfigProperties.get(BoostProperties.DATASOURCE_DATABASE_NAME);
+	        if (databaseName != null) {
+	        	this.serverProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, databaseName);
+	        }
+            
+            String user = (String) boostConfigProperties.get(BoostProperties.DATASOURCE_USER);
+            if (user != null)
+            	this.serverProperties.put(BoostProperties.DATASOURCE_USER, user);
+            
+            String password = (String) boostConfigProperties.get(BoostProperties.DATASOURCE_PASSWORD);
+            if (password != null) {
+            	this.serverProperties.put(BoostProperties.DATASOURCE_PASSWORD, password);
+            }
+        }
     }
 
     @Override
     public String getFeature() {
         return libertyFeature;
     }
+    
+    @Override
+    public Properties getServerProperties() {
+    	
+    	return serverProperties;
+    }
 
+    @Override
+    public String getDependency() {
+
+        return dependency;
+    }
+    
     @Override
     public void addServerConfig(Document doc) {
 
-        Element serverRoot = doc.getDocumentElement();
+    	if (dependency.startsWith(DERBY_DEPENDENCY)) {
+    		
+    		addDerbyConfig(doc);
+    		
+    	} else if (dependency.startsWith(DB2_DEPENDENCY)) {
+    		
+    		addDb2Config(doc);
+    	}
+    }
+    
+    private void addDerbyConfig(Document doc) {
+    	
+    	Element serverRoot = doc.getDocumentElement();
 
         // Find the root server element
         NodeList list = doc.getChildNodes();
@@ -79,7 +139,7 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
         // Add datasource
         Element dataSource = doc.createElement(DATASOURCE);
         dataSource.setAttribute("id", DEFAULT_DATASOURCE);
-        dataSource.setAttribute(JDBC_DRIVER_REF, DERBY_EMBEDDED);
+        dataSource.setAttribute(JDBC_DRIVER_REF, DERBY_EMBEDDED_DRIVER_REF);
 
         Element derbyProps = doc.createElement(PROPERTIES_DERBY_EMBEDDED);
         derbyProps.setAttribute(DATABASE_NAME, BoostUtil.makeVariable(BoostProperties.DATASOURCE_DATABASE_NAME));
@@ -89,25 +149,54 @@ public class JDBCBoosterPackConfigurator extends BoosterPackConfigurator {
         serverRoot.appendChild(dataSource);
 
         Element jdbcDriver = doc.createElement(JDBC_DRIVER);
-        jdbcDriver.setAttribute("id", DERBY_EMBEDDED);
+        jdbcDriver.setAttribute("id", DERBY_EMBEDDED_DRIVER_REF);
         jdbcDriver.setAttribute(LIBRARY_REF, DERBY_LIB);
         serverRoot.appendChild(jdbcDriver);
     }
     
-    @Override
-    public Properties getServerProperties() {
+    private void addDb2Config(Document doc) {
     	
-    	return serverProperties;
-    }
+    	Element serverRoot = doc.getDocumentElement();
 
-    @Override
-    public String getDependency() {
+        // Find the root server element
+        NodeList list = doc.getChildNodes();
+        for (int i = 0; i < list.getLength(); i++) {
+            if (list.item(i).getNodeName().equals("server")) {
+                serverRoot = (Element) list.item(i);
+            }
+        }
 
-        return dependency;
-    }
+        // Add library
+        Element lib = doc.createElement(LIBRARY);
+        lib.setAttribute("id", DB2_LIB);
+        Element fileLoc = doc.createElement(FILESET);
+        fileLoc.setAttribute("dir", RESOURCES);
+        fileLoc.setAttribute("includes", "db2jcc*.jar"); 
+        lib.appendChild(fileLoc);
+        serverRoot.appendChild(lib);
 
-    public void setDependency(String dependency) {
+        // Add datasource
+        Element dataSource = doc.createElement(DATASOURCE);
+        dataSource.setAttribute("id", DEFAULT_DATASOURCE);
+        dataSource.setAttribute(JDBC_DRIVER_REF, DB2_DRIVER_REF);
+        dataSource.setAttribute(CONTAINER_AUTH_DATA_REF, DATASOURCE_AUTH_DATA);
 
-        this.dependency = dependency;
+        Element db2Props = doc.createElement(PROPERTIES_DB2_JCC);
+        db2Props.setAttribute(DATABASE_NAME, BoostUtil.makeVariable(BoostProperties.DATASOURCE_DATABASE_NAME));
+        db2Props.setAttribute(SERVER_NAME, BoostUtil.makeVariable(BoostProperties.DATASOURCE_SERVER_NAME));
+        db2Props.setAttribute(PORT_NUMBER, BoostUtil.makeVariable(BoostProperties.DATASOURCE_PORT_NUMBER));
+        dataSource.appendChild(db2Props);
+        serverRoot.appendChild(dataSource);
+
+        Element containerAuthData = doc.createElement(AUTH_DATA);
+        containerAuthData.setAttribute("id", DATASOURCE_AUTH_DATA);
+        containerAuthData.setAttribute(USER, BoostUtil.makeVariable(BoostProperties.DATASOURCE_USER));
+        containerAuthData.setAttribute(PASSWORD, BoostUtil.makeVariable(BoostProperties.DATASOURCE_PASSWORD));
+        serverRoot.appendChild(containerAuthData);
+        
+        Element jdbcDriver = doc.createElement(JDBC_DRIVER);
+        jdbcDriver.setAttribute("id", DB2_DRIVER_REF);
+        jdbcDriver.setAttribute(LIBRARY_REF, DB2_LIB);
+        serverRoot.appendChild(jdbcDriver);
     }
 }

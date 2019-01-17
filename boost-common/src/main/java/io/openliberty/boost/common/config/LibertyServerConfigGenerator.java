@@ -35,6 +35,8 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import io.openliberty.boost.common.utils.BoostUtil;
+
 /**
  * Create a Liberty server.xml
  *
@@ -42,6 +44,7 @@ import org.w3c.dom.Element;
 public class LibertyServerConfigGenerator {
 
     private String serverPath;
+    private String libertyInstallPath;
 
     private Document doc;
     private Element featureManager;
@@ -52,7 +55,10 @@ public class LibertyServerConfigGenerator {
     private Properties bootstrapProperties;
 
     public LibertyServerConfigGenerator(String serverPath) throws ParserConfigurationException {
+    	
         this.serverPath = serverPath;
+        this.libertyInstallPath = serverPath + "/../../..";  // Three directories back from 'wlp/usr/servers/BoostServer'
+        		
         generateDocument();
 
         featuresAdded = new HashSet<String>();
@@ -204,8 +210,18 @@ public class LibertyServerConfigGenerator {
     public void addBootstrapProperties(Properties properties) throws IOException {
 
     	if (properties != null) {
+    		
+    		List<String> propertiesToEncrypt = BoostProperties.getPropertiesToEncrypt();
+    		
 	        for (String key : properties.stringPropertyNames()) {
-	            String value = properties.getProperty(key);
+	        	String value;
+	        	
+	        	if (propertiesToEncrypt.contains(key)) {
+	        		value = BoostUtil.encrypt(libertyInstallPath, properties.getProperty(key));
+	        	} else {
+	                value = properties.getProperty(key);
+	        	}
+	        	
 	            bootstrapProperties.put(key, value);
 	        }
     	}

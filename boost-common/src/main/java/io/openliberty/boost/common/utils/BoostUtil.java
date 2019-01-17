@@ -11,14 +11,17 @@
 
 package io.openliberty.boost.common.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 
 public class BoostUtil {
@@ -74,6 +77,39 @@ public class BoostUtil {
     
     public static String makeVariable(String propertyName) {
         return "${" + propertyName + "}";
+    }
+    
+    public static String encrypt(String libertyInstallPath, String password) throws IOException {
+    	
+    	Runtime rt = Runtime.getRuntime();
+    	String[] commands = { libertyInstallPath + "/bin/securityUtility", "encode", password };
+    	Process proc = rt.exec(commands);
+
+    	BufferedReader stdInput = new BufferedReader(new 
+    	     InputStreamReader(proc.getInputStream()));
+
+    	BufferedReader stdError = new BufferedReader(new 
+    	     InputStreamReader(proc.getErrorStream()));
+
+    	String s = null;
+    	
+    	StringBuilder out = new StringBuilder();
+    	while ((s = stdInput.readLine()) != null) {
+    	    out.append(s);
+    	}
+    	
+    	StringBuilder error = new StringBuilder();
+    	while ((s = stdError.readLine()) != null) {
+    	    error.append(s);
+    	}
+    	
+    	if (error.length() != 0) {
+    		throw new IOException("Password encryption failed: " + error);
+    	}
+    	
+    	System.out.println("Error: " + error.toString());
+    	System.out.println("ENCRYPTED PASSWORD: " + out.toString());
+    	return out.toString();
     }
 
 }
