@@ -55,10 +55,10 @@ public class LibertyServerConfigGenerator {
     private Properties bootstrapProperties;
 
     public LibertyServerConfigGenerator(String serverPath) throws ParserConfigurationException {
-    	
+
         this.serverPath = serverPath;
-        this.libertyInstallPath = serverPath + "/../../..";  // Three directories back from 'wlp/usr/servers/BoostServer'
-        		
+        this.libertyInstallPath = serverPath + "/../../.."; // Three directories back from 'wlp/usr/servers/BoostServer'
+
         generateDocument();
 
         featuresAdded = new HashSet<String>();
@@ -150,7 +150,6 @@ public class LibertyServerConfigGenerator {
      *            The full name of the Liberty feature to add.
      */
     public void addFeature(String featureName) {
-
         if (!featuresAdded.contains(featureName)) {
             Element feature = doc.createElement(FEATURE);
             feature.appendChild(doc.createTextNode(featureName));
@@ -180,7 +179,6 @@ public class LibertyServerConfigGenerator {
      * @throws IOException
      */
     public void writeToServer() throws TransformerException, IOException {
-
         // Replace auto-generated server.xml
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
@@ -209,27 +207,27 @@ public class LibertyServerConfigGenerator {
 
     public void addBootstrapProperties(Properties properties) throws IOException {
 
-    	if (properties != null) {
-    		
-    		List<String> propertiesToEncrypt = BoostProperties.getPropertiesToEncrypt();
-    		
-	        for (String key : properties.stringPropertyNames()) {
-	        	String value;
-	        	
-	        	if (propertiesToEncrypt.contains(key)) {
-	        		value = BoostUtil.encrypt(libertyInstallPath, properties.getProperty(key));
-	        	} else {
-	                value = properties.getProperty(key);
-	        	}
-	        	
-	            bootstrapProperties.put(key, value);
-	        }
-    	}
+        if (properties != null) {
+
+            List<String> propertiesToEncrypt = BoostProperties.getPropertiesToEncrypt();
+
+            for (String key : properties.stringPropertyNames()) {
+                String value;
+
+                if (propertiesToEncrypt.contains(key)) {
+                    value = BoostUtil.encrypt(libertyInstallPath, properties.getProperty(key));
+                } else {
+                    value = properties.getProperty(key);
+                }
+
+                bootstrapProperties.put(key, value);
+            }
+        }
     }
 
     public void addBoosterConfig(BoosterPackConfigurator configurator) throws IOException {
         configurator.addServerConfig(getServerDoc());
-        
+
         Properties properties = configurator.getServerProperties();
         addBootstrapProperties(properties);
     }
