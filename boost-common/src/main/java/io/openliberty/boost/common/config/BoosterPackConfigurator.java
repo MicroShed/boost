@@ -21,31 +21,35 @@ import org.w3c.dom.Document;
  *
  */
 public abstract class BoosterPackConfigurator {
-		
-	protected String EE_7_VERSION = "0.1-SNAPSHOT";
-	protected String EE_8_VERSION = "0.2-SNAPSHOT";
-	
-	/**
-	 * Return the Liberty feature name
-	 * @return
-	 */
-	public abstract String getFeature();
-	
-	/**
-	 * Add the server.xml configuration for this booster
-	 * @param doc
-	 */
-	public abstract void addServerConfig(Document doc);
 
-	/**
-	 * Return the properties required by this booster
-	 */
-	public abstract Properties getServerProperties();
+    protected String EE_7_VERSION = "0.1-SNAPSHOT";
+    protected String EE_8_VERSION = "0.2-SNAPSHOT";
+    protected String MP_20_VERSION = "0.2-SNAPSHOT";
 
-	/**
-	 * Return the dependency that this booster requires
-	 * @return
-	 */
-	public abstract String getDependency();
-	
+    /**
+     * Return the Liberty feature name
+     * 
+     * @return
+     */
+    public abstract String getFeature();
+
+    /**
+     * Add the server.xml configuration for this booster
+     * 
+     * @param doc
+     */
+    public abstract void addServerConfig(Document doc);
+
+    /**
+     * Return the properties required by this booster
+     */
+    public abstract Properties getServerProperties();
+
+    /**
+     * Return the dependency that this booster requires
+     * 
+     * @return
+     */
+    public abstract String getDependency();
+
 }
