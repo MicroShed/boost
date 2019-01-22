@@ -43,6 +43,11 @@
 				<artifactId>jdbc</artifactId>
 				<version>0.1-SNAPSHOT</version>
 			</dependency>
+			<dependency>
+				<groupId>io.openliberty.boosters</groupId>
+				<artifactId>jpa</artifactId>
+				<version>0.1-SNAPSHOT</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
