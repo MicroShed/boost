@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -153,9 +153,9 @@ public class LibertyBoosterUtil {
     }
 
     public static void generateLibertyServerConfig(String libertyServerPath,
-            List<BoosterPackConfigurator> boosterPackConfigurators, String warName) throws Exception {
+            List<BoosterPackConfigurator> boosterPackConfigurators, String warName, BoostLoggerI logger) throws Exception {
 
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath);
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath, logger);
 
         // Loop through configuration objects and get features and XML config
         // (if any)

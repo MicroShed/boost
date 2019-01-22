@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.utils.BoostUtil;
 
 /**
@@ -43,8 +44,10 @@ import io.openliberty.boost.common.utils.BoostUtil;
  */
 public class LibertyServerConfigGenerator {
 
-    private String serverPath;
-    private String libertyInstallPath;
+    private final String serverPath;
+    private final String libertyInstallPath;
+
+    private final BoostLoggerI logger;
 
     private Document doc;
     private Element featureManager;
@@ -54,10 +57,11 @@ public class LibertyServerConfigGenerator {
 
     private Properties bootstrapProperties;
 
-    public LibertyServerConfigGenerator(String serverPath) throws ParserConfigurationException {
+    public LibertyServerConfigGenerator(String serverPath, BoostLoggerI logger) throws ParserConfigurationException {
 
         this.serverPath = serverPath;
         this.libertyInstallPath = serverPath + "/../../.."; // Three directories back from 'wlp/usr/servers/BoostServer'
+        this.logger = logger;
 
         generateDocument();
 
@@ -215,7 +219,7 @@ public class LibertyServerConfigGenerator {
                 String value;
 
                 if (propertiesToEncrypt.contains(key)) {
-                    value = BoostUtil.encrypt(libertyInstallPath, properties.getProperty(key));
+                    value = BoostUtil.encrypt(libertyInstallPath, properties.getProperty(key), logger);
                 } else {
                     value = properties.getProperty(key);
                 }

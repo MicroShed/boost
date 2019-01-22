@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -299,7 +299,7 @@ public class SpringBootUtil {
         logger.info("Generating Liberty server configuration");
 
         // Generate Liberty configuration
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath);
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath, logger);
 
         // Get Properties from application.properties file
         Properties applicationProperties = getSpringBootApplicationProperties(springBootProjectResources);
