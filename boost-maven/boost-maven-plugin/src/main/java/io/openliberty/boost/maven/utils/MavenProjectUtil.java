@@ -12,13 +12,10 @@ package io.openliberty.boost.maven.utils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
-
-import io.openliberty.boost.common.utils.LibertyBoosterUtil;
 
 public class MavenProjectUtil {
 

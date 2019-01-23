@@ -51,11 +51,12 @@ public class LibertyBoosterUtil {
      * dependencies, BoostLoggerI logger) { this.libertyServerPath =
      * libertyServerPath; this.logger = logger;
      * 
-     * this.boosterPackConfigurators = getBoosterPackConfigurators(dependencies); }
+     * this.boosterPackConfigurators =
+     * getBoosterPackConfigurators(dependencies); }
      */
     /**
-     * take a list of pom boost dependency strings and map to liberty features for
-     * config. return a list of feature configuration objects for each found
+     * take a list of pom boost dependency strings and map to liberty features
+     * for config. return a list of feature configuration objects for each found
      * dependency.
      * 
      * @param dependencies
@@ -202,7 +203,8 @@ public class LibertyBoosterUtil {
 
             if (supportedProps.contains(entry.getKey().toString())) {
 
-                logger.debug("Found boost property: " + entry.getKey() + ":" + entry.getValue());
+                // logger.debug("Found boost property: " + entry.getKey() + ":"
+                // + entry.getValue());
 
                 boostProperties.put(entry.getKey(), entry.getValue());
             }

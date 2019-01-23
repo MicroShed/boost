@@ -104,11 +104,9 @@ public class BoostUtil {
     	}
     	
     	if (error.length() != 0) {
-    		throw new IOException("Password encryption failed: " + error);
+    		throw new IOException("Password encryption failed: " + error.toString());
     	}
     	
-    	System.out.println("Error: " + error.toString());
-    	System.out.println("ENCRYPTED PASSWORD: " + out.toString());
     	return out.toString();
     }
 
