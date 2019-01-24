@@ -41,3 +41,7 @@ apply plugin: 'boost'
 | boostPackage     | Packages the application and server.             |
 | boostDockerBuild | Creates a Docker file and image for the project. |
 | boostDockerPush  | Pushes Docker image to a Docker repository.      |
+
+### Spring Boot 1.5 Gradle plugin issues
+
+If you are building a project that uses the Spring Boot 1.5 Gradle plugin you must use a Gradle version lower than Gradle 5.0. The Spring Boot 1.5 Gradle plugin will not be updated to support Gradle 5.0 and up.
