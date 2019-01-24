@@ -13,6 +13,10 @@ package io.openliberty.boost.common.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import io.openliberty.boost.common.BoostLoggerI;
 
 public final class BoostProperties {
 
@@ -46,12 +50,29 @@ public final class BoostProperties {
      * @return
      */
     public static List<String> getPropertiesToEncrypt() {
-
         List<String> propertiesToEncrypt = new ArrayList<String>();
-
         propertiesToEncrypt.add(DATASOURCE_PASSWORD);
-
         return propertiesToEncrypt;
+    }
+    
+    public static Properties getConfiguredBoostProperties(BoostLoggerI logger) {
+        List<String> supportedProps = BoostProperties.getAllSupportedProperties();
+        Properties systemProperties = System.getProperties();
+
+        Properties boostProperties = new Properties();
+
+        for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
+
+            if (supportedProps.contains(entry.getKey().toString())) {
+
+                // logger.debug("Found boost property: " + entry.getKey() + ":"
+                // + entry.getValue());
+
+                boostProperties.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        return boostProperties;
     }
 
 }

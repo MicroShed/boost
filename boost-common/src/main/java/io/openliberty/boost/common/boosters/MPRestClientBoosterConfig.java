@@ -8,22 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
+package io.openliberty.boost.common.boosters;
 
-import static io.openliberty.boost.common.config.ConfigConstants.CDI_20;
+import static io.openliberty.boost.common.config.ConfigConstants.MPRESTCLIENT_11;
 
 import java.util.Properties;
 
 import org.w3c.dom.Document;
 
-public class CDIBoosterPackConfigurator extends BoosterPackConfigurator {
+public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
 
-    public CDIBoosterPackConfigurator(String version) {
+    public MPRestClientBoosterConfig(String version) {
         // if it is the 1.0 version = EE7 feature level
         if (version.equals(MP_20_VERSION)) {
-            libertyFeature = CDI_20;
+            libertyFeature = MPRESTCLIENT_11;
         }
     }
 

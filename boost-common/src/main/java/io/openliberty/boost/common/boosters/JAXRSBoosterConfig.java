@@ -8,22 +8,25 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
-
-import static io.openliberty.boost.common.config.ConfigConstants.MPOPENTRACING_11;
-
-import java.util.Properties;
+package io.openliberty.boost.common.boosters;
 
 import org.w3c.dom.Document;
 
-public class MPOpenTracingBoosterPackConfigurator extends BoosterPackConfigurator {
+import static io.openliberty.boost.common.config.ConfigConstants.*;
+
+import java.util.Properties;
+
+public class JAXRSBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
 
-    public MPOpenTracingBoosterPackConfigurator(String version) {
-        if (version.equals(MP_20_VERSION)) {
-            libertyFeature = MPOPENTRACING_11;
+    public JAXRSBoosterConfig(String version) {
+    	if (version.equals(EE_7_VERSION)) {
+            libertyFeature = JAXRS_20;
+        } else if (version.equals(EE_8_VERSION)) {
+            libertyFeature = JAXRS_21;
         }
+    	
     }
 
     @Override
@@ -34,17 +37,17 @@ public class MPOpenTracingBoosterPackConfigurator extends BoosterPackConfigurato
     @Override
     public void addServerConfig(Document doc) {
         // No config to write
-
     }
 
-    @Override
-    public String getDependency() {
-        return null;
-    }
+	@Override
+	public String getDependency() {
+		
+		return null;
+	}
 
-    @Override
-    public Properties getServerProperties() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	@Override
+	public Properties getServerProperties() {
+		
+		return null;
+	}
 }

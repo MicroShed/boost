@@ -8,23 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
+package io.openliberty.boost.common.boosters;
 
-import static io.openliberty.boost.common.config.ConfigConstants.MPCONFIG_13;
+import static io.openliberty.boost.common.config.ConfigConstants.JSONP_11;
 
 import java.util.Properties;
 
 import org.w3c.dom.Document;
 
-public class MPConfigBoosterPackConfigurator extends BoosterPackConfigurator {
+public class JSONPBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
 
-    public MPConfigBoosterPackConfigurator(String version) {
-        // if it is the 1.0 version = EE7 feature level
+    public JSONPBoosterConfig(String version) {
         if (version.equals(MP_20_VERSION)) {
-            libertyFeature = MPCONFIG_13;
+            libertyFeature = JSONP_11;
         }
+
     }
 
     @Override
@@ -40,6 +40,7 @@ public class MPConfigBoosterPackConfigurator extends BoosterPackConfigurator {
 
     @Override
     public String getDependency() {
+        // TODO Auto-generated method stub
         return null;
     }
 
@@ -48,4 +49,5 @@ public class MPConfigBoosterPackConfigurator extends BoosterPackConfigurator {
         // TODO Auto-generated method stub
         return null;
     }
+
 }

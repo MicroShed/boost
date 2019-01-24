@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
+package io.openliberty.boost.common.utils;
 
 import static org.junit.Assert.fail;
 
@@ -18,7 +18,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 import java.util.Properties;
 
 public class ConfigFileUtils {

@@ -8,23 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
+package io.openliberty.boost.common.boosters;
 
-import static io.openliberty.boost.common.config.ConfigConstants.JSONP_11;
+import static io.openliberty.boost.common.config.ConfigConstants.MPOPENTRACING_11;
 
 import java.util.Properties;
 
 import org.w3c.dom.Document;
 
-public class JSONPBoosterPackConfigurator extends BoosterPackConfigurator {
+public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
 
-    public JSONPBoosterPackConfigurator(String version) {
+    public MPOpenTracingBoosterConfig(String version) {
         if (version.equals(MP_20_VERSION)) {
-            libertyFeature = JSONP_11;
+            libertyFeature = MPOPENTRACING_11;
         }
-
     }
 
     @Override
@@ -40,7 +39,6 @@ public class JSONPBoosterPackConfigurator extends BoosterPackConfigurator {
 
     @Override
     public String getDependency() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -49,5 +47,4 @@ public class JSONPBoosterPackConfigurator extends BoosterPackConfigurator {
         // TODO Auto-generated method stub
         return null;
     }
-
 }

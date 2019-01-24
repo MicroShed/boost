@@ -8,22 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
+package io.openliberty.boost.common.boosters;
 
-import static io.openliberty.boost.common.config.ConfigConstants.MPHEALTH_10;
+import static io.openliberty.boost.common.config.ConfigConstants.MPCONFIG_13;
 
 import java.util.Properties;
 
 import org.w3c.dom.Document;
 
-public class MPHealthBoosterPackConfigurator extends BoosterPackConfigurator {
+public class MPConfigBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
 
-    public MPHealthBoosterPackConfigurator(String version) {
-        // if it is the 2.0 version = MP2.0 feature level
+    public MPConfigBoosterConfig(String version) {
+        // if it is the 1.0 version = EE7 feature level
         if (version.equals(MP_20_VERSION)) {
-            libertyFeature = MPHEALTH_10;
+            libertyFeature = MPCONFIG_13;
         }
     }
 
@@ -40,7 +40,6 @@ public class MPHealthBoosterPackConfigurator extends BoosterPackConfigurator {
 
     @Override
     public String getDependency() {
-        // TODO Auto-generated method stub
         return null;
     }
 

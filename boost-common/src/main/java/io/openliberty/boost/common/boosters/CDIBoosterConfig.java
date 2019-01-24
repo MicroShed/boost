@@ -8,25 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
+package io.openliberty.boost.common.boosters;
 
-import org.w3c.dom.Document;
-import io.openliberty.boost.common.config.BoosterPackConfigurator;
-import static io.openliberty.boost.common.config.ConfigConstants.*;
+import static io.openliberty.boost.common.config.ConfigConstants.CDI_20;
 
 import java.util.Properties;
 
-public class JAXRSBoosterPackConfigurator extends BoosterPackConfigurator {
+import org.w3c.dom.Document;
+
+public class CDIBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
 
-    public JAXRSBoosterPackConfigurator(String version) {
-    	if (version.equals(EE_7_VERSION)) {
-            libertyFeature = JAXRS_20;
-        } else if (version.equals(EE_8_VERSION)) {
-            libertyFeature = JAXRS_21;
+    public CDIBoosterConfig(String version) {
+        // if it is the 1.0 version = EE7 feature level
+        if (version.equals(MP_20_VERSION)) {
+            libertyFeature = CDI_20;
         }
-    	
     }
 
     @Override
@@ -37,17 +35,17 @@ public class JAXRSBoosterPackConfigurator extends BoosterPackConfigurator {
     @Override
     public void addServerConfig(Document doc) {
         // No config to write
+
     }
 
-	@Override
-	public String getDependency() {
-		
-		return null;
-	}
+    @Override
+    public String getDependency() {
+        return null;
+    }
 
-	@Override
-	public Properties getServerProperties() {
-		
-		return null;
-	}
+    @Override
+    public Properties getServerProperties() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

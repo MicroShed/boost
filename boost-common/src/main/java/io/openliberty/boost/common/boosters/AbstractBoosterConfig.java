@@ -9,18 +9,41 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.boost.common.config;
+package io.openliberty.boost.common.boosters;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Properties;
 
 import org.w3c.dom.Document;
+
+import io.openliberty.boost.common.BoostException;
 
 /**
  * Interface to describe common function across all technology Booster Pack
  * Config Objects
  *
  */
-public abstract class BoosterPackConfigurator {
+public abstract class AbstractBoosterConfig {
+    /*
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @Inherited
+    public @interface BoosterCoordinates {
+       String value();
+    }
+    
+    public static String getCoordindates(Class<?> klass) throws BoostException {
+        BoosterCoordinates coordinates = klass.getAnnotation(BoosterCoordinates.class);
+        if (coordinates == null) {
+            throw new BoostException(
+                    String.format("class '%s' must have a BoosterCoordinates annotation", klass.getName()));
+        }
+        return coordinates.value();
+    }*/
 
     protected String EE_7_VERSION = "0.1-SNAPSHOT";
     protected String EE_8_VERSION = "0.2-SNAPSHOT";

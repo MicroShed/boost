@@ -21,7 +21,6 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 
 public class BoostUtil {
