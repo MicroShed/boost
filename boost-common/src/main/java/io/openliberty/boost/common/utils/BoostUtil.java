@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,7 @@ public class BoostUtil {
         return "${" + propertyName + "}";
     }
     
-    public static String encrypt(String libertyInstallPath, String password) throws IOException {
+    public static String encrypt(String libertyInstallPath, String password, BoostLoggerI logger) throws IOException {
     	
     	Runtime rt = Runtime.getRuntime();
     	String[] commands = { libertyInstallPath + "/bin/securityUtility", "encode", password };
@@ -100,13 +100,18 @@ public class BoostUtil {
     	
     	StringBuilder error = new StringBuilder();
     	while ((s = stdError.readLine()) != null) {
-    	    error.append(s);
+    	    error.append(s + "\n");
     	}
     	
     	if (error.length() != 0) {
-    		throw new IOException("Password encryption failed: " + error.toString());
+            if (error.toString().contains("com.ibm.websphere.crypto.InvalidPasswordEncodingException")) {
+                logger.warn("The provided password will be used because it was already encrypted.");
+                return password;
+            } else {
+                throw new IOException("Password encryption failed: " + error);   
+            }
     	}
-    	
+
     	return out.toString();
     }
 

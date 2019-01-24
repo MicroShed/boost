@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import java.util.Properties;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.mockito.Mockito;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -28,6 +30,7 @@ import org.w3c.dom.Element;
 import io.openliberty.boost.common.config.ConfigFileUtils;
 import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
 import io.openliberty.boost.common.utils.BoostUtil;
+import io.openliberty.boost.common.BoostLoggerI;
 
 import static io.openliberty.boost.common.config.ConfigConstants.*;
 import static io.openliberty.boost.common.config.DOMUtils.getDirectChildrenByTag;
@@ -38,6 +41,9 @@ public class LibertyServerConfigGeneratorTest {
     public TemporaryFolder outputDir = new TemporaryFolder();
 
     private final String DB2_DEPENDENCY_VERSION = "db2jcc4";
+
+    // Get booster configurators
+    BoostLoggerI logger = Mockito.mock(BoostLoggerI.class);
 
     /**
      * Test adding feature
@@ -50,7 +56,7 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddSpringFeature() throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath());
+                outputDir.getRoot().getAbsolutePath(), logger);
         serverConfig.addFeature(SPRING_BOOT_15);
         serverConfig.writeToServer();
 
@@ -66,7 +72,7 @@ public class LibertyServerConfigGeneratorTest {
     @Test
     public void testZeroFeaturesInDefaultServerConfig()
             throws ParserConfigurationException, TransformerException, IOException {
-        LibertyServerConfigGenerator g = new LibertyServerConfigGenerator(outputDir.getRoot().getAbsolutePath());
+        LibertyServerConfigGenerator g = new LibertyServerConfigGenerator(outputDir.getRoot().getAbsolutePath(), logger);
         Element serverRoot = g.getServerDoc().getDocumentElement();
         List<Element> featureMgrList = getDirectChildrenByTag(serverRoot, FEATURE_MANAGER);
         assertEquals("Didn't find one and only one featureMgr", 1, featureMgrList.size());
@@ -87,7 +93,7 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddJdbcBoosterFeature_EE8() throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath());
+                outputDir.getRoot().getAbsolutePath(), logger);
 
         JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator("0.2-SNAPSHOT", new Properties(),
                 null);
@@ -116,7 +122,7 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddJdbcBoosterFeature_EE7() throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath());
+                outputDir.getRoot().getAbsolutePath(), logger);
 
         JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator("0.1-SNAPSHOT", new Properties(),
                 null);
@@ -145,7 +151,7 @@ public class LibertyServerConfigGeneratorTest {
             throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath());
+                outputDir.getRoot().getAbsolutePath(), logger);
 
         JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator("0.2-SNAPSHOT", new Properties(),
                 null);
@@ -201,7 +207,7 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddJdbcBoosterConfig_DB2() throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath());
+                outputDir.getRoot().getAbsolutePath(), logger);
 
         String db2Dependency = JDBCBoosterPackConfigurator.DB2_DEPENDENCY + ":" + DB2_DEPENDENCY_VERSION;
 
@@ -265,7 +271,7 @@ public class LibertyServerConfigGeneratorTest {
             throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath());
+                outputDir.getRoot().getAbsolutePath(), logger);
 
         Properties properties = new Properties();
         properties.put(BoostProperties.DATASOURCE_DATABASE_NAME, "myDatabase");
@@ -297,7 +303,7 @@ public class LibertyServerConfigGeneratorTest {
             throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath());
+                outputDir.getRoot().getAbsolutePath(), logger);
 
         Properties properties = new Properties();
         JDBCBoosterPackConfigurator configurator = new JDBCBoosterPackConfigurator("0.2-SNAPSHOT", properties, null);
@@ -328,7 +334,7 @@ public class LibertyServerConfigGeneratorTest {
             throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath());
+                outputDir.getRoot().getAbsolutePath(), logger);
 
         String db2Dependency = JDBCBoosterPackConfigurator.DB2_DEPENDENCY + ":" + DB2_DEPENDENCY_VERSION;
 
@@ -362,7 +368,7 @@ public class LibertyServerConfigGeneratorTest {
             throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath());
+                outputDir.getRoot().getAbsolutePath(), logger);
 
         String db2Dependency = JDBCBoosterPackConfigurator.DB2_DEPENDENCY + ":" + DB2_DEPENDENCY_VERSION;
 
@@ -397,7 +403,7 @@ public class LibertyServerConfigGeneratorTest {
             throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath());
+                outputDir.getRoot().getAbsolutePath(), logger);
 
         String db2Dependency = JDBCBoosterPackConfigurator.DB2_DEPENDENCY + ":" + DB2_DEPENDENCY_VERSION;
 
@@ -432,7 +438,7 @@ public class LibertyServerConfigGeneratorTest {
             throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath());
+                outputDir.getRoot().getAbsolutePath(), logger);
 
         String db2Dependency = JDBCBoosterPackConfigurator.DB2_DEPENDENCY + ":" + DB2_DEPENDENCY_VERSION;
 

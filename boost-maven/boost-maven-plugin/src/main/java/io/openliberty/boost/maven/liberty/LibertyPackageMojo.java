@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -182,7 +182,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
         try {
             // Generate server config
-            LibertyBoosterUtil.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warName);
+            LibertyBoosterUtil.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warName, BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
