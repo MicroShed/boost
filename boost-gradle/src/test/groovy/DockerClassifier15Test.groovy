@@ -34,6 +34,7 @@ public class DockerClassifier15Test extends AbstractBoostDockerTest {
             .withProjectDir(testProjectDir)
             .forwardOutput()
             .withArguments("build", "-i", "-s")
+            .withGradleDistribution(DISTRIBUTION_URI)
             .build()
     }
 }

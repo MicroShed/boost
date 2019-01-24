@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 import static org.junit.Assert.assertNotNull
 
+import java.net.URI
+
 public class AbstractBoostTest {
     private static final String SERVER_XML = "build/wlp/usr/servers/BoostServer/server.xml"
     private static final String BOOTSTRAP_PROPERTIES = "build/wlp/usr/servers/BoostServer/bootstrap.properties"
@@ -27,6 +29,8 @@ public class AbstractBoostTest {
     private static final String SPRING_BOOT_20_FEATURE = "<feature>springBoot-2.0</feature>"
 
     protected static File integTestDir = new File('build/testBuilds')
+
+    protected static final URI DISTRIBUTION_URI = URI.create("https://services.gradle.org/distributions/gradle-4.10-bin.zip")
 
     protected static File resourceDir
     protected static File testProjectDir

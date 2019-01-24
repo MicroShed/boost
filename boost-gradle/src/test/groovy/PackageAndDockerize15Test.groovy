@@ -36,6 +36,7 @@ public class PackageAndDockerize15Test extends AbstractBoostDockerTest {
             .withProjectDir(testProjectDir)
             .forwardOutput()
             .withArguments("boostDockerBuild", "boostPackage", "boostStart", "boostStop", "-i", "-s")
+            .withGradleDistribution(DISTRIBUTION_URI)
             .build()
     }
 

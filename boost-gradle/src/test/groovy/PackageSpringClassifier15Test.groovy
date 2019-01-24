@@ -28,6 +28,7 @@ public class PackageSpringClassifier15Test extends AbstractBoostTest {
                 .withProjectDir(testProjectDir)
                 .forwardOutput()
                 .withArguments("build", "boostStart", "boostStop", "-i", "-s")
+                .withGradleDistribution(DISTRIBUTION_URI)
                 .build()
     }
 
