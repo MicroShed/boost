@@ -12,15 +12,22 @@ package io.openliberty.boost.common.boosters;
 
 import static io.openliberty.boost.common.config.ConfigConstants.MPOPENTRACING_11;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.w3c.dom.Document;
 
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpOpenTracing")
 public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
 
-    public MPOpenTracingBoosterConfig(String version) {
+    public MPOpenTracingBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+        String version = dependencies.get(getCoordindates(this.getClass()));
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = MPOPENTRACING_11;
         }

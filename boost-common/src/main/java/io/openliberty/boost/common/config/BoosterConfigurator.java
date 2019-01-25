@@ -28,17 +28,6 @@ import io.openliberty.boost.common.boosters.MPRestClientBoosterConfig;
 
 public class BoosterConfigurator {
 
-    public static String BOOSTER_JAXRS = "io.openliberty.boosters:jaxrs";
-
-    public String BOOSTERS_GROUP_ID = "io.openliberty.boosters";
-
-    public static String BOOSTER_MPHEALTH = "io.openliberty.boosters:mpHealth";
-    public static String BOOSTER_JSONP = "io.openliberty.boosters:jsonp";
-    public static String BOOSTER_CDI = "io.openliberty.boosters:cdi";
-    public static String BOOSTER_MPCONFIG = "io.openliberty.boosters:mpConfig";
-    public static String BOOSTER_MPRESTCLIENT = "io.openliberty.boosters:mpRestClient";
-    public static String BOOSTER_OPENTRACING = "io.openliberty.boosters:mpOpenTracing";
-
     /**
      * take a list of pom boost dependency strings and map to liberty features
      * for config. return a list of feature configuration objects for each found
@@ -56,61 +45,32 @@ public class BoosterConfigurator {
             JDBCBoosterConfig jdbcConfig = new JDBCBoosterConfig(dependencies, logger);
             boosterPackConfigList.add(jdbcConfig);
         }
-        if (dependencies.containsKey(BOOSTER_JAXRS)) {
-
-            String version = dependencies.get(BOOSTER_JAXRS);
-
-            JAXRSBoosterConfig jaxrsConfig = new JAXRSBoosterConfig(version);
-
+        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(JAXRSBoosterConfig.class))) {
+            JAXRSBoosterConfig jaxrsConfig = new JAXRSBoosterConfig(dependencies, logger);
             boosterPackConfigList.add(jaxrsConfig);
         }
-        if (dependencies.containsKey(BOOSTER_MPHEALTH)) {
-
-            String version = dependencies.get(BOOSTER_MPHEALTH);
-
-            MPHealthBoosterConfig mpHealthConfig = new MPHealthBoosterConfig(version);
-
+        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(MPHealthBoosterConfig.class))) {
+            MPHealthBoosterConfig mpHealthConfig = new MPHealthBoosterConfig(dependencies, logger);
             boosterPackConfigList.add(mpHealthConfig);
         }
-        if (dependencies.containsKey(BOOSTER_MPCONFIG)) {
-
-            String version = dependencies.get(BOOSTER_MPCONFIG);
-
-            MPConfigBoosterConfig mpConfigConfig = new MPConfigBoosterConfig(version);
-
+        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(MPConfigBoosterConfig.class))) {
+            MPConfigBoosterConfig mpConfigConfig = new MPConfigBoosterConfig(dependencies, logger);
             boosterPackConfigList.add(mpConfigConfig);
         }
-        if (dependencies.containsKey(BOOSTER_CDI)) {
-
-            String version = dependencies.get(BOOSTER_CDI);
-
-            CDIBoosterConfig CDIConfig = new CDIBoosterConfig(version);
-
+        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(CDIBoosterConfig.class))) {
+            CDIBoosterConfig CDIConfig = new CDIBoosterConfig(dependencies, logger);
             boosterPackConfigList.add(CDIConfig);
         }
-        if (dependencies.containsKey(BOOSTER_MPRESTCLIENT)) {
-
-            String version = dependencies.get(BOOSTER_MPRESTCLIENT);
-
-            MPRestClientBoosterConfig mpRestClientConfig = new MPRestClientBoosterConfig(version);
-
+        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(MPRestClientBoosterConfig.class))) {
+            MPRestClientBoosterConfig mpRestClientConfig = new MPRestClientBoosterConfig(dependencies, logger);
             boosterPackConfigList.add(mpRestClientConfig);
         }
-        if (dependencies.containsKey(BOOSTER_JSONP)) {
-
-            String version = dependencies.get(BOOSTER_JSONP);
-
-            JSONPBoosterConfig jsonpConfig = new JSONPBoosterConfig(version);
-
+        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(JSONPBoosterConfig.class))) {
+            JSONPBoosterConfig jsonpConfig = new JSONPBoosterConfig(dependencies, logger);
             boosterPackConfigList.add(jsonpConfig);
         }
-        if (dependencies.containsKey(BOOSTER_OPENTRACING)) {
-
-            String version = dependencies.get(BOOSTER_OPENTRACING);
-
-            MPOpenTracingBoosterConfig mpOpenTracingConfig = new MPOpenTracingBoosterConfig(
-                    version);
-
+        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(MPOpenTracingBoosterConfig.class))) {
+            MPOpenTracingBoosterConfig mpOpenTracingConfig = new MPOpenTracingBoosterConfig(dependencies, logger);
             boosterPackConfigList.add(mpOpenTracingConfig);
         }
 

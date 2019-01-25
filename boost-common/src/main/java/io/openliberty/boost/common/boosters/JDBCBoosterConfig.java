@@ -25,7 +25,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-@BoosterCoordinates("io.openliberty.boosters:jdbc")
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jdbc")
 public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
     public static String DERBY_DEPENDENCY = "org.apache.derby:derby";

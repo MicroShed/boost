@@ -34,13 +34,13 @@ import javax.xml.transform.TransformerException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.Mockito;
 import org.w3c.dom.Element;
 
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
 import io.openliberty.boost.common.utils.BoostUtil;
+import io.openliberty.boost.common.utils.CommonLogger;
 import io.openliberty.boost.common.utils.ConfigFileUtils;
 
 public class JDBCBoosterTest {
@@ -50,7 +50,7 @@ public class JDBCBoosterTest {
     
     private final String DB2_DEPENDENCY_VERSION = "db2jcc4";
     
-    BoostLoggerI logger = Mockito.mock(BoostLoggerI.class);
+    BoostLoggerI logger = CommonLogger.getInstance();
 
     /**
      * Test that the EE8 JDBC version (jdbc-4.2) has been added by the JDBC

@@ -12,21 +12,27 @@ package io.openliberty.boost.common.boosters;
 
 import org.w3c.dom.Document;
 
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+
 import static io.openliberty.boost.common.config.ConfigConstants.*;
 
+import java.util.Map;
 import java.util.Properties;
 
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jaxrs")
 public class JAXRSBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
 
-    public JAXRSBoosterConfig(String version) {
-    	if (version.equals(EE_7_VERSION)) {
+    public JAXRSBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+        String version = dependencies.get(getCoordindates(this.getClass()));
+        if (version.equals(EE_7_VERSION)) {
             libertyFeature = JAXRS_20;
         } else if (version.equals(EE_8_VERSION)) {
             libertyFeature = JAXRS_21;
         }
-    	
     }
 
     @Override
@@ -39,15 +45,15 @@ public class JAXRSBoosterConfig extends AbstractBoosterConfig {
         // No config to write
     }
 
-	@Override
-	public String getDependency() {
-		
-		return null;
-	}
+    @Override
+    public String getDependency() {
 
-	@Override
-	public Properties getServerProperties() {
-		
-		return null;
-	}
+        return null;
+    }
+
+    @Override
+    public Properties getServerProperties() {
+
+        return null;
+    }
 }

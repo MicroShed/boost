@@ -12,15 +12,23 @@ package io.openliberty.boost.common.boosters;
 
 import static io.openliberty.boost.common.config.ConfigConstants.CDI_20;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.w3c.dom.Document;
 
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":cdi")
 public class CDIBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
 
-    public CDIBoosterConfig(String version) {
+    public CDIBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+        String version = dependencies.get(getCoordindates(this.getClass()));
+        
         // if it is the 1.0 version = EE7 feature level
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = CDI_20;

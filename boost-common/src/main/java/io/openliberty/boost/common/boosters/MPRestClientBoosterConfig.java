@@ -12,15 +12,23 @@ package io.openliberty.boost.common.boosters;
 
 import static io.openliberty.boost.common.config.ConfigConstants.MPRESTCLIENT_11;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.w3c.dom.Document;
 
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpRestClient")
 public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
 
-    public MPRestClientBoosterConfig(String version) {
+    public MPRestClientBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+        String version = dependencies.get(getCoordindates(this.getClass()));
+        
         // if it is the 1.0 version = EE7 feature level
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = MPRESTCLIENT_11;

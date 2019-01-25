@@ -20,7 +20,6 @@ import java.util.Properties;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
-import org.mockito.Mockito;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
@@ -29,6 +28,7 @@ import io.openliberty.boost.common.boosters.JDBCBoosterConfig;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterConfigurator;
 import io.openliberty.boost.common.utils.BoosterUtil;
+import io.openliberty.boost.common.utils.CommonLogger;
 
 public class BoosterConfiguratorTest {
     
@@ -48,7 +48,7 @@ public class BoosterConfiguratorTest {
     public void testGetBoosterPackConfigurators_jdbc_default() throws BoostException {
 
         // Get booster configurators
-        BoostLoggerI logger = Mockito.mock(BoostLoggerI.class);
+        BoostLoggerI logger = CommonLogger.getInstance();
         List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(), logger);
 
         // Check that the JDBCBoosterPackConfigurator was created
@@ -77,7 +77,7 @@ public class BoosterConfiguratorTest {
         System.setProperties(allProperties);
 
         // Get booster configurators
-        BoostLoggerI logger = Mockito.mock(BoostLoggerI.class);
+        BoostLoggerI logger = CommonLogger.getInstance();
         List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(), logger);
 
         // Check that the JDBCBoosterPackConfigurator was created
