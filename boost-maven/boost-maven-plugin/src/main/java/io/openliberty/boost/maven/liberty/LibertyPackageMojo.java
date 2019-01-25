@@ -122,7 +122,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             
             try {
                 this.boosterPackConfigurators = BoosterConfigurator.getBoosterPackConfigurators(dependencies, BoostLogger.getInstance());
-            } catch(BoostException e) {
+            } catch(Exception e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
 

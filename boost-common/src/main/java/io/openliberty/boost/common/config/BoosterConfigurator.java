@@ -10,21 +10,18 @@
  *******************************************************************************/
 package io.openliberty.boost.common.config;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.reflections.Reflections;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
-import io.openliberty.boost.common.boosters.CDIBoosterConfig;
-import io.openliberty.boost.common.boosters.JAXRSBoosterConfig;
-import io.openliberty.boost.common.boosters.JDBCBoosterConfig;
-import io.openliberty.boost.common.boosters.JSONPBoosterConfig;
-import io.openliberty.boost.common.boosters.MPConfigBoosterConfig;
-import io.openliberty.boost.common.boosters.MPHealthBoosterConfig;
-import io.openliberty.boost.common.boosters.MPOpenTracingBoosterConfig;
-import io.openliberty.boost.common.boosters.MPRestClientBoosterConfig;
 
 public class BoosterConfigurator {
 
@@ -32,48 +29,38 @@ public class BoosterConfigurator {
      * take a list of pom boost dependency strings and map to liberty features
      * for config. return a list of feature configuration objects for each found
      * dependency.
-     * 
      * @param dependencies
+     * @param logger
      * @return
+     * @throws BoostException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
      */
     public static List<AbstractBoosterConfig> getBoosterPackConfigurators(Map<String, String> dependencies,
-            BoostLoggerI logger) throws BoostException {
+            BoostLoggerI logger) throws BoostException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 
         List<AbstractBoosterConfig> boosterPackConfigList = new ArrayList<AbstractBoosterConfig>();
+        
+        Reflections reflections = new Reflections("io.openliberty.boost.common.boosters");
 
-        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(JDBCBoosterConfig.class))) {
-            JDBCBoosterConfig jdbcConfig = new JDBCBoosterConfig(dependencies, logger);
-            boosterPackConfigList.add(jdbcConfig);
+        Set<Class<? extends AbstractBoosterConfig>> allClasses = reflections.getSubTypesOf(AbstractBoosterConfig.class);
+        for(Class<? extends AbstractBoosterConfig> boosterClass : allClasses) {
+            if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(boosterClass))) {
+                Constructor<?> cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
+                Object o = cons.newInstance(dependencies, logger);
+                if(o instanceof AbstractBoosterConfig) {
+                    boosterPackConfigList.add((AbstractBoosterConfig)o);
+                }
+                else {
+                    throw new BoostException("Found a class in io.openliberty.boost.common.boosters that did not extend AbstractBoosterConfig. This should never happen.");
+                }
+            }
         }
-        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(JAXRSBoosterConfig.class))) {
-            JAXRSBoosterConfig jaxrsConfig = new JAXRSBoosterConfig(dependencies, logger);
-            boosterPackConfigList.add(jaxrsConfig);
-        }
-        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(MPHealthBoosterConfig.class))) {
-            MPHealthBoosterConfig mpHealthConfig = new MPHealthBoosterConfig(dependencies, logger);
-            boosterPackConfigList.add(mpHealthConfig);
-        }
-        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(MPConfigBoosterConfig.class))) {
-            MPConfigBoosterConfig mpConfigConfig = new MPConfigBoosterConfig(dependencies, logger);
-            boosterPackConfigList.add(mpConfigConfig);
-        }
-        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(CDIBoosterConfig.class))) {
-            CDIBoosterConfig CDIConfig = new CDIBoosterConfig(dependencies, logger);
-            boosterPackConfigList.add(CDIConfig);
-        }
-        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(MPRestClientBoosterConfig.class))) {
-            MPRestClientBoosterConfig mpRestClientConfig = new MPRestClientBoosterConfig(dependencies, logger);
-            boosterPackConfigList.add(mpRestClientConfig);
-        }
-        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(JSONPBoosterConfig.class))) {
-            JSONPBoosterConfig jsonpConfig = new JSONPBoosterConfig(dependencies, logger);
-            boosterPackConfigList.add(jsonpConfig);
-        }
-        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(MPOpenTracingBoosterConfig.class))) {
-            MPOpenTracingBoosterConfig mpOpenTracingConfig = new MPOpenTracingBoosterConfig(dependencies, logger);
-            boosterPackConfigList.add(mpOpenTracingConfig);
-        }
-
+        
         return boosterPackConfigList;
     }
 
@@ -94,7 +81,7 @@ public class BoosterConfigurator {
             serverConfig.addApplication(warName);
         } else {
             throw new Exception(
-                    "Unsupported Maven packaging type - Liberty Boost currently supports WAR packaging type only.");
+                    "Unsupported packaging type - Liberty Boost currently supports WAR packaging type only.");
         }
 
         serverConfig.writeToServer();

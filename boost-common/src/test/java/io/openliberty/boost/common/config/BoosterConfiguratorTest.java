@@ -45,7 +45,7 @@ public class BoosterConfiguratorTest {
      * 
      */
     @Test
-    public void testGetBoosterPackConfigurators_jdbc_default() throws BoostException {
+    public void testGetBoosterPackConfigurators_jdbc_default() throws Exception {
 
         // Get booster configurators
         BoostLoggerI logger = CommonLogger.getInstance();
@@ -68,7 +68,7 @@ public class BoosterConfiguratorTest {
      * 
      */
     @Test
-    public void testGetBoosterPackConfigurators_jdbc_with_databaseName() throws BoostException {
+    public void testGetBoosterPackConfigurators_jdbc_with_databaseName() throws Exception {
         String databaseName = "myCustomDatabaseName";
 
         // Set system properties
