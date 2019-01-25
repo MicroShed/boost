@@ -33,23 +33,23 @@ import org.gradle.api.tasks.Copy
 
 import io.openliberty.boost.gradle.utils.BoostLogger
 import io.openliberty.boost.gradle.utils.GradleProjectUtil
-import io.openliberty.boost.common.config.BoosterPackConfigurator
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
+import io.openliberty.boost.common.config.BoosterConfigurator
 import io.openliberty.boost.common.utils.BoostUtil
 import io.openliberty.boost.common.utils.SpringBootUtil
-import io.openliberty.boost.common.utils.LibertyBoosterUtil
 
 import net.wasdev.wlp.gradle.plugins.extensions.PackageAndDumpExtension
 
 public class BoostPackageTask extends AbstractBoostTask {
 
-    List<BoosterPackConfigurator> boosterPackConfigurators
-    
+    List<AbstractBoosterConfig> boosterPackConfigurators
+
     String springBootVersion = GradleProjectUtil.findSpringBootVersion(this.project)
 
     String libertyServerPath = null
 
     boolean useDefaultHost
-    
+
     BoostPackageTask() {
         configure({
             description 'Packages the application into an executable Liberty jar.'
@@ -91,9 +91,9 @@ public class BoostPackageTask extends AbstractBoostTask {
                         //Handle classifier
                         if (project.bootRepackage.classifier != null && !project.bootRepackage.classifier.isEmpty()) {
                             boostPackage.archive = //Adding classifier to the boost archiveName
-                                boostPackage.archive.substring(0, boostPackage.archive.lastIndexOf(".")) +
-                                '-' + project.bootRepackage.classifier.toString() +
-                                boostPackage.archive.substring(boostPackage.archive.lastIndexOf("."))
+                                    boostPackage.archive.substring(0, boostPackage.archive.lastIndexOf(".")) +
+                                    '-' + project.bootRepackage.classifier.toString() +
+                                    boostPackage.archive.substring(boostPackage.archive.lastIndexOf("."))
                         }
                         dependsOn 'bootRepackage'
 
@@ -148,16 +148,16 @@ public class BoostPackageTask extends AbstractBoostTask {
                     validateSpringBootUberJAR(springUberJar)
                     copySpringBootUberJar(springUberJar)
                     generateServerConfigSpringBoot()
-                    
+
                 } else if (project.plugins.hasPlugin('war')) {
                     // Get booster dependencies from project
                     Map<String, String> dependencies = GradleProjectUtil.getAllDependencies(project, BoostLogger.getInstance())
-        	        boosterPackConfigurators = LibertyBoosterUtil.getBoosterPackConfigurators(dependencies, BoostLogger.getInstance())
-        	        
+                    boosterPackConfigurators = BoosterConfigurator.getBoosterPackConfigurators(dependencies, BoostLogger.getInstance())
+
                     copyBoosterDependencies()
-        	
+
                     generateServerConfigEE()
-                    
+
                 } else {
                     throw new GradleException('Could not package the project with boostPackage. The boostPackage task must be used with a SpringBoot or Java EE project.')
                 }
@@ -165,7 +165,7 @@ public class BoostPackageTask extends AbstractBoostTask {
                 logger.info('Packaging the applicaiton.')
             }
         })
-    }   
+    }
 
     public boolean isSpringProject() {
         return springBootVersion != null && !springBootVersion.isEmpty()
@@ -187,28 +187,28 @@ public class BoostPackageTask extends AbstractBoostTask {
 
     protected void generateServerConfigEE() throws GradleException {
         String warName = null
-    	
-    	if (project.war != null) {
-    	
-    		if (project.war.version == null) {
-    			warName = project.war.baseName
-    		} else {
-    			warName = project.war.baseName + "-" + project.war.version
-    		}
-    	}
-    	
+
+        if (project.war != null) {
+
+            if (project.war.version == null) {
+                warName = project.war.baseName
+            } else {
+                warName = project.war.baseName + "-" + project.war.version
+            }
+        }
+
         try {
-        
-        	LibertyBoosterUtil.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warName, BoostLogger.getInstance());
-         
+
+            BoosterConfigurator.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warName, BoostLogger.getInstance());
+
         } catch (Exception e) {
             throw new GradleException("Unable to generate server configuration for the Liberty server.", e);
         }
     }
 
     protected void generateServerConfigSpringBoot() throws GradleException {
-    
-       try {
+
+        try {
             // Get Spring Boot starters from Maven project
             Map<String, String> dependencies = GradleProjectUtil.getAllDependencies(project, BoostLogger.getInstance());
 
@@ -234,7 +234,7 @@ public class BoostPackageTask extends AbstractBoostTask {
                 if (shouldReplaceProjectArchive()) {
                     if (!project.configurations.archives.allArtifacts.isEmpty()) {
                         File springJar = new File(
-                            SpringBootUtil.getBoostedSpringBootUberJarPath(project.configurations.archives.allArtifacts[0].getFile()))
+                                SpringBootUtil.getBoostedSpringBootUberJarPath(project.configurations.archives.allArtifacts[0].getFile()))
                         if (net.wasdev.wlp.common.plugins.util.SpringBootUtil.isSpringBootUberJar(springJar)) {
                             logger.info("Copying back Spring Boot Uber JAR as project artifact.")
                             FileUtils.copyFile(springJar, project.configurations.archives.allArtifacts[0].getFile())
@@ -247,15 +247,15 @@ public class BoostPackageTask extends AbstractBoostTask {
         } catch (BuildException | IOException e) {
             throw new GradleException(e.getMessage(), e)
         }
-        
+
     }
 
     protected void validateSpringBootUberJAR(File springBootUberJar) throws GradleException {
         if (!project.configurations.archives.allArtifacts.isEmpty()) {
             if (!BoostUtil.isLibertyJar(project.configurations.archives.allArtifacts[0].getFile(), BoostLogger.getInstance())
-                && springBootUberJar == null) {
-            throw new GradleException (
-                    "A valid Spring Boot Uber JAR was not found. Run the 'bootJar' task and try again.")
+            && springBootUberJar == null) {
+                throw new GradleException (
+                "A valid Spring Boot Uber JAR was not found. Run the 'bootJar' task and try again.")
             }
         }
     }
@@ -269,24 +269,24 @@ public class BoostPackageTask extends AbstractBoostTask {
         }
         return false
     }
-    
+
     protected void copyBoosterDependencies() {
-    	
-    	List<String> dependenciesToCopy = LibertyBoosterUtil.getDependenciesToCopy(boosterPackConfigurators, BoostLogger.getInstance());
-        
+
+        List<String> dependenciesToCopy = BoosterConfigurator.getDependenciesToCopy(boosterPackConfigurators, BoostLogger.getInstance());
+
         def boosterConfig = project.getConfigurations().create('boosterDependency')
-        
+
         dependenciesToCopy.each { dep ->
-            
-         	project.getDependencies().add(boosterConfig.name, dep) 
-            
-    	}
-    	
-    	project.copy {
-        	from project.configurations.boosterDependency
-    		into "${project.buildDir}/wlp/usr/servers/BoostServer/resources"
-    		include '*.jar'
-    	}
+
+            project.getDependencies().add(boosterConfig.name, dep)
+
+        }
+
+        project.copy {
+            from project.configurations.boosterDependency
+            into "${project.buildDir}/wlp/usr/servers/BoostServer/resources"
+            include '*.jar'
+        }
     }
-    
+
 }
