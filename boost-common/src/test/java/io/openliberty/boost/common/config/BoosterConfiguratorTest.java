@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.mockito.Mockito;
 
 import io.openliberty.boost.common.BoostException;
@@ -27,9 +29,11 @@ import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.boosters.JDBCBoosterConfig;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterConfigurator;
-import io.openliberty.boost.common.utils.BoosterUtil;
 
 public class BoosterConfiguratorTest {
+    
+    @Rule
+    public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
     
     private Map<String, String> getJDBCDependency() throws BoostException {
         //return BoosterUtil.createDependenciesWithBoosterAndVersion(JDBCBoosterConfig.class, "0.2-SNAPSHOT");
@@ -68,7 +72,6 @@ public class BoosterConfiguratorTest {
      */
     @Test
     public void testGetBoosterPackConfigurators_jdbc_with_databaseName() throws BoostException {
-
         String databaseName = "myCustomDatabaseName";
 
         // Set system properties

@@ -19,7 +19,7 @@ import java.util.Properties;
 import io.openliberty.boost.common.BoostLoggerI;
 
 public final class BoostProperties {
-
+   
     public static final String DATASOURCE_DATABASE_NAME = "boost.db.databaseName";
     public static final String DATASOURCE_SERVER_NAME = "boost.db.serverName";
     public static final String DATASOURCE_PORT_NUMBER = "boost.db.portNumber";
