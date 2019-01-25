@@ -28,7 +28,7 @@ import io.openliberty.boost.common.BoostException;
  *
  */
 public abstract class AbstractBoosterConfig {
-    /*
+    
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     @Inherited
@@ -43,7 +43,7 @@ public abstract class AbstractBoosterConfig {
                     String.format("class '%s' must have a BoosterCoordinates annotation", klass.getName()));
         }
         return coordinates.value();
-    }*/
+    }
 
     protected String EE_7_VERSION = "0.1-SNAPSHOT";
     protected String EE_8_VERSION = "0.2-SNAPSHOT";

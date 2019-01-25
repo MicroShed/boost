@@ -8,10 +8,10 @@ import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 
 public class BoosterUtil {
     
-    /*public static Map<String, String> createDependenciesWithBoosterAndVersion(Class<?> booster, String version) throws BoostException {
+    public static Map<String, String> createDependenciesWithBoosterAndVersion(Class<?> booster, String version) throws BoostException {
         Map<String, String> map = new HashMap<String, String>();
         map.put(AbstractBoosterConfig.getCoordindates(booster), version);
         return map;
-    }*/
+    }
     
 }

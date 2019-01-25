@@ -13,7 +13,7 @@ package io.openliberty.boost.common.boosters;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
-//import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 import io.openliberty.boost.common.utils.BoostUtil;
 
 import static io.openliberty.boost.common.config.ConfigConstants.*;
@@ -25,7 +25,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-//@BoosterCoordinates("io.openliberty.boosters:jdbc")
+@BoosterCoordinates("io.openliberty.boosters:jdbc")
 public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
     public static String DERBY_DEPENDENCY = "org.apache.derby:derby";
@@ -41,8 +41,7 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
     private Properties serverProperties;
 
     public JDBCBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {        
-//        String version = dependencies.get(getCoordindates(this.getClass()));
-        String version = "io.openliberty.boosters:jdbc";
+        String version = dependencies.get(getCoordindates(this.getClass()));
 
         // Check for user defined database dependencies
         String configuredDatabaseDep = null;

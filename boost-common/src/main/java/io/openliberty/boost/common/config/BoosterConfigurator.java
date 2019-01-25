@@ -52,9 +52,7 @@ public class BoosterConfigurator {
 
         List<AbstractBoosterConfig> boosterPackConfigList = new ArrayList<AbstractBoosterConfig>();
 
-//        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(JDBCBoosterConfig.class))) {
-        if (dependencies.containsKey("io.openliberty.boosters:jdbc")) {
-
+        if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(JDBCBoosterConfig.class))) {
             JDBCBoosterConfig jdbcConfig = new JDBCBoosterConfig(dependencies, logger);
             boosterPackConfigList.add(jdbcConfig);
         }

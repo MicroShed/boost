@@ -13,7 +13,6 @@ package io.openliberty.boost.common.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -29,6 +28,7 @@ import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.boosters.JDBCBoosterConfig;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterConfigurator;
+import io.openliberty.boost.common.utils.BoosterUtil;
 
 public class BoosterConfiguratorTest {
     
@@ -36,10 +36,7 @@ public class BoosterConfiguratorTest {
     public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
     
     private Map<String, String> getJDBCDependency() throws BoostException {
-        //return BoosterUtil.createDependenciesWithBoosterAndVersion(JDBCBoosterConfig.class, "0.2-SNAPSHOT");
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("io.openliberty.boosters:jdbc", "0.2-SNAPSHOT");
-        return map;
+        return BoosterUtil.createDependenciesWithBoosterAndVersion(JDBCBoosterConfig.class, "0.2-SNAPSHOT");
     }
 
     /**
