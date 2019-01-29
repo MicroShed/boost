@@ -30,8 +30,6 @@ public class AbstractBoostTest {
 
     protected static File integTestDir = new File('build/testBuilds')
 
-    protected static final URI DISTRIBUTION_URI = URI.create("https://services.gradle.org/distributions/gradle-4.10-bin.zip")
-
     protected static File resourceDir
     protected static File testProjectDir
     protected static String buildFilename

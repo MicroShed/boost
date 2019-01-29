@@ -85,6 +85,12 @@ test {
             }
         }
     }
+    if (project.hasProperty('test.exclude')){
+        exclude project.property('test.exclude')
+    }
+    if (project.hasProperty('test.include')){
+        include project.property('test.include')
+    }
 }
 
 compileJava {

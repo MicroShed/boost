@@ -45,7 +45,6 @@ public class DockerPush15Test extends AbstractBoostDockerTest {
             .withProjectDir(testProjectDir)
             .forwardOutput()
             .withArguments("boostDockerPush", "-i", "-s")
-            .withGradleDistribution(DISTRIBUTION_URI)
             .build()
     }
 

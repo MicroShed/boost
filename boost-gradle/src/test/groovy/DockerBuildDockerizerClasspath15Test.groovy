@@ -32,7 +32,6 @@ public class DockerBuildDockerizerClasspath15Test extends AbstractBoostDockerTes
             .withProjectDir(testProjectDir)
             .forwardOutput()
             .withArguments("build", "-i", "-s")
-            .withGradleDistribution(DISTRIBUTION_URI)
             .build()
     }
 }
