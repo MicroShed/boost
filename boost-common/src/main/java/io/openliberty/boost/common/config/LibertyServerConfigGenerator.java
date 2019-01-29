@@ -36,6 +36,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.utils.BoostUtil;
 
 /**
@@ -229,7 +230,7 @@ public class LibertyServerConfigGenerator {
         }
     }
 
-    public void addBoosterConfig(BoosterPackConfigurator configurator) throws IOException {
+    public void addBoosterConfig(AbstractBoosterConfig configurator) throws IOException {
         configurator.addServerConfig(getServerDoc());
 
         Properties properties = configurator.getServerProperties();

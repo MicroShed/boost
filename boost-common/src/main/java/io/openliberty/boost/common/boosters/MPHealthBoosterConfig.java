@@ -8,23 +8,30 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
+package io.openliberty.boost.common.boosters;
 
-import static io.openliberty.boost.common.config.ConfigConstants.JSONP_11;
+import static io.openliberty.boost.common.config.ConfigConstants.MPHEALTH_10;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.w3c.dom.Document;
 
-public class JSONPBoosterPackConfigurator extends BoosterPackConfigurator {
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpHealth")
+public class MPHealthBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
-
-    public JSONPBoosterPackConfigurator(String version) {
+    
+    public MPHealthBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+        String version = dependencies.get(getCoordindates(this.getClass()));
+        // if it is the 2.0 version = MP2.0 feature level
         if (version.equals(MP_20_VERSION)) {
-            libertyFeature = JSONP_11;
+            libertyFeature = MPHEALTH_10;
         }
-
     }
 
     @Override
@@ -49,5 +56,4 @@ public class JSONPBoosterPackConfigurator extends BoosterPackConfigurator {
         // TODO Auto-generated method stub
         return null;
     }
-
 }

@@ -8,22 +8,31 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
+package io.openliberty.boost.common.boosters;
 
-import static io.openliberty.boost.common.config.ConfigConstants.MPOPENTRACING_11;
+import static io.openliberty.boost.common.config.ConfigConstants.JSONP_11;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.w3c.dom.Document;
 
-public class MPOpenTracingBoosterPackConfigurator extends BoosterPackConfigurator {
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jsonp")
+public class JSONPBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
 
-    public MPOpenTracingBoosterPackConfigurator(String version) {
+    public JSONPBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+        String version = dependencies.get(getCoordindates(this.getClass()));
+        
         if (version.equals(MP_20_VERSION)) {
-            libertyFeature = MPOPENTRACING_11;
+            libertyFeature = JSONP_11;
         }
+
     }
 
     @Override
@@ -39,6 +48,7 @@ public class MPOpenTracingBoosterPackConfigurator extends BoosterPackConfigurato
 
     @Override
     public String getDependency() {
+        // TODO Auto-generated method stub
         return null;
     }
 
@@ -47,4 +57,5 @@ public class MPOpenTracingBoosterPackConfigurator extends BoosterPackConfigurato
         // TODO Auto-generated method stub
         return null;
     }
+
 }

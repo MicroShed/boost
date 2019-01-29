@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -23,11 +22,11 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.apache.maven.plugins.annotations.*;
 
 import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.utils.BoostUtil;
-import io.openliberty.boost.common.config.BoosterPackConfigurator;
+import io.openliberty.boost.common.config.BoosterConfigurator;
 import io.openliberty.boost.common.config.ConfigConstants;
 import io.openliberty.boost.common.utils.SpringBootUtil;
-import io.openliberty.boost.common.utils.LibertyBoosterUtil;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
 import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
@@ -43,7 +42,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class LibertyPackageMojo extends AbstractLibertyMojo {
 
-    protected List<BoosterPackConfigurator> boosterPackConfigurators;
+    protected List<AbstractBoosterConfig> boosterPackConfigurators;
 
     String springBootVersion = null;
 
@@ -121,7 +120,11 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             // Get booster dependencies from project
             Map<String, String> dependencies = MavenProjectUtil.getAllDependencies(project, BoostLogger.getInstance());
             
-            this.boosterPackConfigurators = LibertyBoosterUtil.getBoosterPackConfigurators(dependencies, BoostLogger.getInstance());
+            try {
+                this.boosterPackConfigurators = BoosterConfigurator.getBoosterPackConfigurators(dependencies, BoostLogger.getInstance());
+            } catch(Exception e) {
+                throw new MojoExecutionException(e.getMessage(), e);
+            }
 
             attach = false;
 
@@ -182,7 +185,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
         try {
             // Generate server config
-            LibertyBoosterUtil.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warName, BoostLogger.getInstance());
+            BoosterConfigurator.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warName, BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
@@ -308,7 +311,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      */
     private void copyBoosterDependencies() throws MojoExecutionException {
 
-        List<String> dependenciesToCopy = LibertyBoosterUtil.getDependenciesToCopy(boosterPackConfigurators,
+        List<String> dependenciesToCopy = BoosterConfigurator.getDependenciesToCopy(boosterPackConfigurators,
                 BoostLogger.getInstance());
 
         for (String dep : dependenciesToCopy) {

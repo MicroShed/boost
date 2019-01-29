@@ -8,19 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
+package io.openliberty.boost.common.boosters;
 
 import static io.openliberty.boost.common.config.ConfigConstants.MPCONFIG_13;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.w3c.dom.Document;
 
-public class MPConfigBoosterPackConfigurator extends BoosterPackConfigurator {
+import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpConfig")
+public class MPConfigBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
-
-    public MPConfigBoosterPackConfigurator(String version) {
+    
+    public MPConfigBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+        String version = dependencies.get(getCoordindates(this.getClass()));
         // if it is the 1.0 version = EE7 feature level
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = MPCONFIG_13;
