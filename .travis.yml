@@ -58,6 +58,6 @@ script:
       else
           export CD_COMMAND="cd boost-gradle";
           export TEST_COMMAND="./gradlew install check -Ptest.exclude="**/*15*" -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION --stacktrace --info --no-daemon";
-          export TEST_COMMAND_2="./gradlew wrapper --gradle-version 4.10; ./gradlew install check -Ptest.include="**/*15*" -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION --stacktrace --info --no-daemon"
+          export TEST_COMMAND_2="./gradlew wrapper --gradle-version 4.10; ./gradlew install check -Ptest.include="**/*15*" -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION --stacktrace --info --no-daemon";
       fi;
     - ./travis.sh
