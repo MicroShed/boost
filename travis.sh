@@ -31,6 +31,7 @@ $TEST_COMMAND >> $BUILD_OUTPUT 2>&1
 
 if [ -n "$TEST_COMMAND_2" ]
 then
+  $WRAPPER_COMMAND
   $TEST_COMMAND_2 >> $BUILD_OUTPUT 2>&1
 fi
 # The build finished without returning an error so dump a tail of the output

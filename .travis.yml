@@ -57,7 +57,8 @@ script:
           export TEST_COMMAND="mvn install -Pit -Dinvoker.streamLogs=true -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION";
       else
           export CD_COMMAND="cd boost-gradle";
+          export WRAPPER_COMMAND="./gradlew wrapper --gradle-version 4.10";
           export TEST_COMMAND="./gradlew install check -Ptest.exclude="**/*15*" -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION --stacktrace --info --no-daemon";
-          export TEST_COMMAND_2="./gradlew wrapper --gradle-version "4.10" ; ./gradlew install check -Ptest.include="**/*15*" -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION --stacktrace --info --no-daemon";
+          export TEST_COMMAND_2="./gradlew install check -Ptest.include="**/*15*" -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION --stacktrace --info --no-daemon";
       fi;
     - ./travis.sh
