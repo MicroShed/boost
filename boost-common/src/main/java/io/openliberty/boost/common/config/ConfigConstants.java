@@ -88,8 +88,10 @@ public final class ConfigConstants {
     public static final String TRANSPORT_SECURITY_10 = "transportSecurity-1.0";
     public static final String JAXRS_20 = "jaxrs-2.0";
     public static final String JAXRS_21 = "jaxrs-2.1";
+    public static final String JDBC_40 = "jdbc-4.0";
     public static final String JDBC_41 = "jdbc-4.1";
     public static final String JDBC_42 = "jdbc-4.2";
+    public static final String JDBC_43 = "jdbc-4.3";
     public static final String CDI_20 = "cdi-2.0";
     public static final String MPHEALTH_10 = "mpHealth-1.0";
     public static final String MPRESTCLIENT_11 = "mpRestClient-1.1";

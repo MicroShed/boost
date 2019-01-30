@@ -25,6 +25,7 @@ public final class BoostProperties {
     public static final String DATASOURCE_PORT_NUMBER = "boost.db.portNumber";
     public static final String DATASOURCE_USER = "boost.db.user";
     public static final String DATASOURCE_PASSWORD = "boost.db.password";
+    public static final String INTERNAL_COMPILER_TARGET = "boost.internal.compiler.target";
 
     /**
      * Return a list of all boost properties
@@ -40,6 +41,7 @@ public final class BoostProperties {
         supportedProperties.add(DATASOURCE_PORT_NUMBER);
         supportedProperties.add(DATASOURCE_USER);
         supportedProperties.add(DATASOURCE_PASSWORD);
+        supportedProperties.add(INTERNAL_COMPILER_TARGET);
 
         return supportedProperties;
     }

@@ -36,7 +36,7 @@ public class BoosterConfiguratorTest {
     public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
     
     private Map<String, String> getJDBCDependency() throws BoostException {
-        return BoosterUtil.createDependenciesWithBoosterAndVersion(JDBCBoosterConfig.class, "0.2-SNAPSHOT");
+        return BoosterUtil.createDependenciesWithBoosterAndVersion(JDBCBoosterConfig.class, "0.1-SNAPSHOT");
     }
 
     /**

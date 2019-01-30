@@ -35,6 +35,7 @@ import io.openliberty.boost.gradle.utils.BoostLogger
 import io.openliberty.boost.gradle.utils.GradleProjectUtil
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.config.BoosterConfigurator
+import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.utils.BoostUtil
 import io.openliberty.boost.common.utils.SpringBootUtil
 
@@ -154,6 +155,10 @@ public class BoostPackageTask extends AbstractBoostTask {
                 } else if (project.plugins.hasPlugin('war')) {
                     // Get booster dependencies from project
                     Map<String, String> dependencies = GradleProjectUtil.getAllDependencies(project, BoostLogger.getInstance())
+                    
+                    // Determine the Java compiler target version and set this internally 
+                    System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, project.findProperty("targetCompatibility").toString())
+            
                     boosterPackConfigurators = BoosterConfigurator.getBoosterPackConfigurators(dependencies, BoostLogger.getInstance())
 
                     copyBoosterDependencies()

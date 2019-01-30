@@ -40,8 +40,7 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
     private Properties serverProperties;
 
-    public JDBCBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {        
-        String version = dependencies.get(getCoordindates(this.getClass()));
+    public JDBCBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
 
         // Check for user defined database dependencies
         String configuredDatabaseDep = null;
@@ -56,22 +55,23 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
         }
 
         Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
-        init(version, boostConfigProperties, configuredDatabaseDep);
+        init(boostConfigProperties, configuredDatabaseDep);
     }
-    
-    /**
-     * For tests only
-     */
-    protected JDBCBoosterConfig(String version, Properties boostConfigProperties, String configuredDatabaseDep) {
-        init(version, boostConfigProperties, configuredDatabaseDep);
-    }
-    
-    private void init(String version, Properties boostConfigProperties, String configuredDatabaseDep) {
-        // Set the Liberty feature based on the booster version
-        if (version.equals(EE_7_VERSION)) {
-            this.libertyFeature = JDBC_41;
-        } else if (version.equals(EE_8_VERSION)) {
+
+    private void init(Properties boostConfigProperties, String configuredDatabaseDep) {
+
+        // Feature version is determined by the Java compiler target value.
+        String compilerVersion = boostConfigProperties.getProperty(BoostProperties.INTERNAL_COMPILER_TARGET);
+
+        if ("1.8".equals(compilerVersion) || "8".equals(compilerVersion) || "9".equals(compilerVersion)
+                || "10".equals(compilerVersion)) {
             this.libertyFeature = JDBC_42;
+        } else if ("11".equals(compilerVersion)) {
+            this.libertyFeature = JDBC_43;
+        } else {
+            this.libertyFeature = JDBC_41; // Default to the spec for Liberty's
+                                           // minimum supported JRE (version 7
+                                           // as of 17.0.0.3)
         }
 
         if (configuredDatabaseDep == null) {
@@ -90,7 +90,8 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
         } else if (this.dependency.startsWith(DB2_DEPENDENCY)) {
 
-            // If serverName or portNumber are not provided, use DB2's default "localhost"
+            // If serverName or portNumber are not provided, use DB2's default
+            // "localhost"
             // and "50000"
             String serverName = (String) boostConfigProperties.getOrDefault(BoostProperties.DATASOURCE_SERVER_NAME,
                     LOCALHOST);
@@ -100,9 +101,11 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
                     "50000");
             this.serverProperties.put(BoostProperties.DATASOURCE_PORT_NUMBER, portNumber);
 
-            // For databaseName, user, and password, there is no default that would serve
+            // For databaseName, user, and password, there is no default that
+            // would serve
             // any purpose. The variables
-            // will be configured in the server.xml, but no values will be set in
+            // will be configured in the server.xml, but no values will be set
+            // in
             // bootstrap.properties. The values will
             // need to be passed by the user at runtime.
             String databaseName = (String) boostConfigProperties.get(BoostProperties.DATASOURCE_DATABASE_NAME);
@@ -120,7 +123,7 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
             }
         }
     }
-    
+
     @Override
     public String getFeature() {
         return libertyFeature;

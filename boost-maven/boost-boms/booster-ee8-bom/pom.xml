@@ -42,8 +42,8 @@
 			<dependency>
 				<groupId>io.openliberty.boosters</groupId>
 				<artifactId>jdbc</artifactId>
-				<version>0.2-SNAPSHOT</version>
-		    </dependency>
+				<version>0.1-SNAPSHOT</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
