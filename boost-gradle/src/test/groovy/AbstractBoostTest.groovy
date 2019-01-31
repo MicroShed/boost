@@ -20,8 +20,6 @@ import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 import static org.junit.Assert.assertNotNull
 
-import java.net.URI
-
 public class AbstractBoostTest {
     private static final String SERVER_XML = "build/wlp/usr/servers/BoostServer/server.xml"
     private static final String BOOTSTRAP_PROPERTIES = "build/wlp/usr/servers/BoostServer/bootstrap.properties"
