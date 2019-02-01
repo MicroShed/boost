@@ -45,7 +45,7 @@ public class GradleProjectUtil {
         Map<String, String> dependencies = new HashMap<String, String>()
 		logger.debug("Processing project for dependencies.")
 
-        project.configurations.compile.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
+        project.configurations.compileClasspath.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
         	logger.debug("Found dependency while processing project: " + id.group.toString() + ":"
                     + id.name.toString() + ":" + id.version.toString())
                     
