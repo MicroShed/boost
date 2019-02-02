@@ -73,45 +73,43 @@ public class BoostUtil {
         }
 
     }
-    
+
     public static String makeVariable(String propertyName) {
         return "${" + propertyName + "}";
     }
-    
+
     public static String encrypt(String libertyInstallPath, String password, BoostLoggerI logger) throws IOException {
-    	
-    	Runtime rt = Runtime.getRuntime();
-    	String[] commands = { libertyInstallPath + "/bin/securityUtility", "encode", password };
-    	Process proc = rt.exec(commands);
 
-    	BufferedReader stdInput = new BufferedReader(new 
-    	     InputStreamReader(proc.getInputStream()));
+        Runtime rt = Runtime.getRuntime();
+        String[] commands = { libertyInstallPath + "/bin/securityUtility", "encode", password };
+        Process proc = rt.exec(commands);
 
-    	BufferedReader stdError = new BufferedReader(new 
-    	     InputStreamReader(proc.getErrorStream()));
+        BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 
-    	String s = null;
-    	
-    	StringBuilder out = new StringBuilder();
-    	while ((s = stdInput.readLine()) != null) {
-    	    out.append(s);
-    	}
-    	
-    	StringBuilder error = new StringBuilder();
-    	while ((s = stdError.readLine()) != null) {
-    	    error.append(s + "\n");
-    	}
-    	
-    	if (error.length() != 0) {
+        BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+
+        String s = null;
+
+        StringBuilder out = new StringBuilder();
+        while ((s = stdInput.readLine()) != null) {
+            out.append(s);
+        }
+
+        StringBuilder error = new StringBuilder();
+        while ((s = stdError.readLine()) != null) {
+            error.append(s + "\n");
+        }
+
+        if (error.length() != 0) {
             if (error.toString().contains("com.ibm.websphere.crypto.InvalidPasswordEncodingException")) {
                 logger.warn("The provided password will be used because it was already encrypted.");
                 return password;
             } else {
-                throw new IOException("Password encryption failed: " + error);   
+                throw new IOException("Password encryption failed: " + error);
             }
-    	}
+        }
 
-    	return out.toString();
+        return out.toString();
     }
 
 }
