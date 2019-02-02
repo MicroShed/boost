@@ -23,6 +23,8 @@ import java.util.zip.ZipInputStream;
 
 import io.openliberty.boost.common.BoostLoggerI;
 
+import net.wasdev.wlp.common.plugins.util.OSUtil;
+
 public class BoostUtil {
 
     public static boolean isNotNullOrEmpty(String s) {
@@ -78,10 +80,18 @@ public class BoostUtil {
         return "${" + propertyName + "}";
     }
 
+    private static String getSecurityUtilCmd(String libertyInstallPath) {
+        if (OSUtil.isWindows()) {
+            return libertyInstallPath + "/bin/securityUtility.bat";
+        } else {
+            return libertyInstallPath + "/bin/securityUtility";
+        }
+    }
+
     public static String encrypt(String libertyInstallPath, String password, BoostLoggerI logger) throws IOException {
 
         Runtime rt = Runtime.getRuntime();
-        String[] commands = { libertyInstallPath + "/bin/securityUtility", "encode", password };
+        String[] commands = { getSecurityUtilCmd(libertyInstallPath), "encode", password };
         Process proc = rt.exec(commands);
 
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
