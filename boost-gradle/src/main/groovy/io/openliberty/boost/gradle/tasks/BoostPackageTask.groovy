@@ -117,8 +117,10 @@ public class BoostPackageTask extends AbstractBoostTask {
                 //installFeature should check the server.xml in the server directory and install the missing feature
                 project.tasks.getByName('libertyPackage').dependsOn 'installApps', 'installFeature'
                 project.tasks.getByName('installApps').mustRunAfter 'installFeature'
-                finalizedBy 'libertyPackage'
                 boostPackage.include = "runnable, minify"
+                 if (!project.plugins.hasPlugin('war')) {
+                    finalizedBy 'libertyPackage'
+                }
             }
 
             //The task will perform this before any other task actions

@@ -59,7 +59,8 @@ public class BoostPackageJaxRS20Test extends AbstractBoostTest {
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
 
-        assertTrue(new File(testProjectDir, "testWar.jar").exists())
+        //Add back in with packaging option
+        //assertTrue(new File(testProjectDir, "testWar.jar").exists())
     }
 
     @Test

@@ -119,14 +119,13 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
             // Get booster dependencies from project
             Map<String, String> dependencies = MavenProjectUtil.getAllDependencies(project, BoostLogger.getInstance());
-            
+
             try {
-                this.boosterPackConfigurators = BoosterConfigurator.getBoosterPackConfigurators(dependencies, BoostLogger.getInstance());
-            } catch(Exception e) {
+                this.boosterPackConfigurators = BoosterConfigurator.getBoosterPackConfigurators(dependencies,
+                        BoostLogger.getInstance());
+            } catch (Exception e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
-
-            attach = false;
 
             copyBoosterDependencies();
 
@@ -140,7 +139,11 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             // would include a config-root setting set to the app name.
             installApp(ConfigConstants.NORMAL_PROJ);
 
-            createUberJar(null, attach);
+            // Not sure this works yet, the main idea is to NOT create this with a WAR
+            // package type.
+            if (project.getPackaging().equals("jar")) {
+                createUberJar(null, true);
+            }
         }
     }
 
@@ -185,7 +188,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
         try {
             // Generate server config
-            BoosterConfigurator.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warName, BoostLogger.getInstance());
+            BoosterConfigurator.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warName,
+                    BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
