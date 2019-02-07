@@ -25,6 +25,8 @@ public final class BoostProperties {
     public static final String DATASOURCE_PORT_NUMBER = "boost.db.portNumber";
     public static final String DATASOURCE_USER = "boost.db.user";
     public static final String DATASOURCE_PASSWORD = "boost.db.password";
+    public static final String PASSWORD_ENCRYPTION_METHOD = "boost.pkg.prop.encryption";
+    public static final String PASSWORD_ENCRYPTION_KEY = "boost.pkg.prop.encryption.key";
 
     /**
      * Return a list of all boost properties
@@ -40,6 +42,8 @@ public final class BoostProperties {
         supportedProperties.add(DATASOURCE_PORT_NUMBER);
         supportedProperties.add(DATASOURCE_USER);
         supportedProperties.add(DATASOURCE_PASSWORD);
+        supportedProperties.add(PASSWORD_ENCRYPTION_METHOD);
+        supportedProperties.add(PASSWORD_ENCRYPTION_KEY);
 
         return supportedProperties;
     }
