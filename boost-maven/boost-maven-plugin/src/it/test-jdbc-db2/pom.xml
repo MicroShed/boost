@@ -75,6 +75,27 @@
         </dependency>
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>xor</id>
+			<properties>
+				<it.includes>FeatureVersionIT,Db2VersionIT,Db2PropertiesIT</it.includes>
+			</properties>
+		</profile>
+		<profile>
+			<id>hash</id>
+			<properties>
+				<it.includes>Db2PasswordHashIT</it.includes>
+			</properties>
+		</profile>
+		<profile>
+			<id>aes</id>
+			<properties>
+				<it.includes>Db2PasswordAesIT</it.includes>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -115,8 +136,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>2.19.1</version>
+				<configuration>
+					<includes>
+						<include>${it.includes}</include>
+					</includes>
+				</configuration>
 				<executions>
 					<execution>
+						<phase>integration-test</phase>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>
