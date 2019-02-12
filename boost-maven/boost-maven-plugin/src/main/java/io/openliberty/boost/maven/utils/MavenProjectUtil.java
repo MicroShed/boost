@@ -12,6 +12,7 @@ package io.openliberty.boost.maven.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -49,6 +50,39 @@ public class MavenProjectUtil {
         }
 
         return dependencies;
+    }
+
+    public static String getJavaCompilerTargetVersion(MavenProject project) {
+
+        // Check maven compiler properties
+        Properties mavenProperties = project.getProperties();
+
+        for (Map.Entry<Object, Object> property : mavenProperties.entrySet()) {
+            String propertyKey = property.getKey().toString();
+            String propertyValue = property.getValue().toString();
+
+            if (propertyKey.equals("maven.compiler.target") || propertyKey.equals("maven.compiler.release")) {
+                return propertyValue;
+            }
+        }
+
+        // Check maven-compiler-plugin release value
+        String release = net.wasdev.wlp.maven.plugins.utils.MavenProjectUtil.getPluginConfiguration(project,
+                "org.apache.maven.plugins", "maven-compiler-plugin", "release");
+
+        if (release != null) {
+            return release;
+        }
+
+        // Check maven-compiler-plugin target value
+        String target = net.wasdev.wlp.maven.plugins.utils.MavenProjectUtil.getPluginConfiguration(project,
+                "org.apache.maven.plugins", "maven-compiler-plugin", "target");
+
+        if (target != null) {
+            return target;
+        }
+
+        return "";
     }
 
 }

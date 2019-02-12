@@ -1,31 +1,14 @@
 package io.openliberty.boost.common.boosters;
 
-import static io.openliberty.boost.common.config.ConfigConstants.CREATE_DATABASE;
-import static io.openliberty.boost.common.config.ConfigConstants.DATABASE_NAME;
-import static io.openliberty.boost.common.config.ConfigConstants.DATASOURCE;
-import static io.openliberty.boost.common.config.ConfigConstants.DB2_DRIVER_REF;
-import static io.openliberty.boost.common.config.ConfigConstants.DB2_LIB;
-import static io.openliberty.boost.common.config.ConfigConstants.DEFAULT_DATASOURCE;
-import static io.openliberty.boost.common.config.ConfigConstants.DERBY_EMBEDDED_DRIVER_REF;
-import static io.openliberty.boost.common.config.ConfigConstants.DERBY_LIB;
-import static io.openliberty.boost.common.config.ConfigConstants.FILESET;
-import static io.openliberty.boost.common.config.ConfigConstants.JDBC_41;
-import static io.openliberty.boost.common.config.ConfigConstants.JDBC_42;
-import static io.openliberty.boost.common.config.ConfigConstants.JDBC_DRIVER;
-import static io.openliberty.boost.common.config.ConfigConstants.JDBC_DRIVER_REF;
-import static io.openliberty.boost.common.config.ConfigConstants.LIBRARY;
-import static io.openliberty.boost.common.config.ConfigConstants.LIBRARY_REF;
-import static io.openliberty.boost.common.config.ConfigConstants.PORT_NUMBER;
-import static io.openliberty.boost.common.config.ConfigConstants.PROPERTIES_DB2_JCC;
-import static io.openliberty.boost.common.config.ConfigConstants.PROPERTIES_DERBY_EMBEDDED;
-import static io.openliberty.boost.common.config.ConfigConstants.RESOURCES;
-import static io.openliberty.boost.common.config.ConfigConstants.SERVER_NAME;
+import static io.openliberty.boost.common.config.ConfigConstants.*;
 import static io.openliberty.boost.common.utils.DOMUtils.getDirectChildrenByTag;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,48 +16,157 @@ import javax.xml.transform.TransformerException;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Element;
 
+import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.config.BoostProperties;
+import io.openliberty.boost.common.config.BoosterConfigurator;
 import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
 import io.openliberty.boost.common.utils.BoostUtil;
+import io.openliberty.boost.common.utils.BoosterUtil;
 import io.openliberty.boost.common.utils.CommonLogger;
 import io.openliberty.boost.common.utils.ConfigFileUtils;
 
 public class JDBCBoosterTest {
-    
+
     @Rule
     public TemporaryFolder outputDir = new TemporaryFolder();
-    
+
+    @Rule
+    public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
+
+    private Map<String, String> getJDBCDependency() throws BoostException {
+        return BoosterUtil.createDependenciesWithBoosterAndVersion(JDBCBoosterConfig.class, "0.1-SNAPSHOT");
+    }
+
     private final String DB2_DEPENDENCY_VERSION = "db2jcc4";
-    
+
     BoostLoggerI logger = CommonLogger.getInstance();
 
     /**
-     * Test that the EE8 JDBC version (jdbc-4.2) has been added by the JDBC
-     * booster
+     * Test that the jdbc-4.1 feature is added as the default when the Java
+     * compiler target is set to less than 7 (1.6)
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     * @throws BoostException
+     * @throws SecurityException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
+    @Test
+    public void testAddJdbcBoosterFeature_SE_16() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        // Set compiler target property
+        System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "1.6");
+
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
+
+        serverConfig.addFeature(boosters.get(0).getFeature());
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JDBC_41 + "</feature>");
+
+        assertTrue("The " + JDBC_41 + " feature was not found in the server configuration", featureFound);
+
+    }
+
+    /**
+     * Test that the jdbc-4.1 feature is added when the Java compiler target is
+     * 1.7 booster
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
      * @throws IOException
      */
     @Test
-    public void testAddJdbcBoosterFeature_EE8() throws ParserConfigurationException, TransformerException, IOException {
+    public void testAddJdbcBoosterFeature_SE_17() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        JDBCBoosterConfig configurator = new JDBCBoosterConfig("0.2-SNAPSHOT", new Properties(),
-                null);
+        // Set compiler target property
+        System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "1.7");
 
-        serverConfig.addFeature(configurator.getFeature());
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
 
+        serverConfig.addFeature(boosters.get(0).getFeature());
         serverConfig.writeToServer();
 
         String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JDBC_41 + "</feature>");
 
+        assertTrue("The " + JDBC_42 + " feature was not found in the server configuration", featureFound);
+
+    }
+
+    /**
+     * Test that the jdbc-4.1 feature is added when the Java compiler target is
+     * 7 booster
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterFeature_SE_7() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        // Set compiler target property
+        System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "7");
+
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
+
+        serverConfig.addFeature(boosters.get(0).getFeature());
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JDBC_41 + "</feature>");
+
+        assertTrue("The " + JDBC_42 + " feature was not found in the server configuration", featureFound);
+
+    }
+
+    /**
+     * Test that the jdbc-4.2 feature is added when the Java compiler target is
+     * 1.8 booster
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterFeature_SE_18() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        // Set compiler target property
+        System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "1.8");
+
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
+
+        serverConfig.addFeature(boosters.get(0).getFeature());
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
         boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JDBC_42 + "</feature>");
 
         assertTrue("The " + JDBC_42 + " feature was not found in the server configuration", featureFound);
@@ -82,31 +174,92 @@ public class JDBCBoosterTest {
     }
 
     /**
-     * Test that the EE8 JDBC version (jdbc-4.2) has been added by the JDBC
-     * booster
+     * Test that the jdbc-4.2 feature is added when the Java compiler target is
+     * 8 booster
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
      * @throws IOException
      */
     @Test
-    public void testAddJdbcBoosterFeature_EE7() throws ParserConfigurationException, TransformerException, IOException {
+    public void testAddJdbcBoosterFeature_SE_8() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        JDBCBoosterConfig configurator = new JDBCBoosterConfig("0.1-SNAPSHOT", new Properties(),
-                null);
+        // Set compiler target property
+        System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "8");
 
-        serverConfig.addFeature(configurator.getFeature());
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
 
+        serverConfig.addFeature(boosters.get(0).getFeature());
         serverConfig.writeToServer();
 
         String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JDBC_42 + "</feature>");
 
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JDBC_41 + "</feature>");
+        assertTrue("The " + JDBC_42 + " feature was not found in the server configuration", featureFound);
 
-        assertTrue("The " + JDBC_41 + " feature was not found in the server configuration", featureFound);
+    }
+
+    /**
+     * Test that the jdbc-4.2 feature is added when the Java compiler target is
+     * 9 booster
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterFeature_SE9() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        // Set compiler target property
+        System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "9");
+
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
+
+        serverConfig.addFeature(boosters.get(0).getFeature());
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JDBC_42 + "</feature>");
+
+        assertTrue("The " + JDBC_42 + " feature was not found in the server configuration", featureFound);
+
+    }
+
+    /**
+     * Test that the jdbc-4.3 feature is added when the Java compiler target is
+     * 11 booster
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterFeature_SE11() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        // Set compiler target property
+        System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "11");
+
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
+
+        serverConfig.addFeature(boosters.get(0).getFeature());
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JDBC_43 + "</feature>");
+
+        assertTrue("The " + JDBC_42 + " feature was not found in the server configuration", featureFound);
 
     }
 
@@ -118,16 +271,15 @@ public class JDBCBoosterTest {
      * @throws IOException
      */
     @Test
-    public void testAddJdbcBoosterConfig_Derby()
-            throws ParserConfigurationException, TransformerException, IOException {
+    public void testAddJdbcBoosterConfig_Derby() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        JDBCBoosterConfig configurator = new JDBCBoosterConfig("0.2-SNAPSHOT", new Properties(),
-                null);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
 
-        serverConfig.addBoosterConfig(configurator);
+        serverConfig.addBoosterConfig(boosters.get(0));
 
         Element serverRoot = serverConfig.getServerDoc().getDocumentElement();
 
@@ -175,17 +327,18 @@ public class JDBCBoosterTest {
      * @throws IOException
      */
     @Test
-    public void testAddJdbcBoosterConfig_DB2() throws ParserConfigurationException, TransformerException, IOException {
+    public void testAddJdbcBoosterConfig_DB2() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        String db2Dependency = JDBCBoosterConfig.DB2_DEPENDENCY + ":" + DB2_DEPENDENCY_VERSION;
+        // Add JDBC booster and DB2 to dependency map
+        Map<String, String> dependencies = getJDBCDependency();
+        dependencies.put(JDBCBoosterConfig.DB2_DEPENDENCY, DB2_DEPENDENCY_VERSION);
 
-        JDBCBoosterConfig configurator = new JDBCBoosterConfig("0.2-SNAPSHOT", new Properties(),
-                db2Dependency);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
 
-        serverConfig.addBoosterConfig(configurator);
+        serverConfig.addBoosterConfig(boosters.get(0));
 
         Element serverRoot = serverConfig.getServerDoc().getDocumentElement();
 
@@ -238,17 +391,18 @@ public class JDBCBoosterTest {
      * @throws IOException
      */
     @Test
-    public void testAddJdbcBoosterConfig_with_databaseName_configured()
-            throws ParserConfigurationException, TransformerException, IOException {
+    public void testAddJdbcBoosterConfig_with_databaseName_configured() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        Properties properties = new Properties();
-        properties.put(BoostProperties.DATASOURCE_DATABASE_NAME, "myDatabase");
-        JDBCBoosterConfig configurator = new JDBCBoosterConfig("0.2-SNAPSHOT", properties, null);
+        // Set database name property
+        System.setProperty(BoostProperties.DATASOURCE_DATABASE_NAME, "myDatabase");
 
-        serverConfig.addBoosterConfig(configurator);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
+
+        serverConfig.addBoosterConfig(boosters.get(0));
 
         serverConfig.writeToServer();
 
@@ -270,16 +424,15 @@ public class JDBCBoosterTest {
      * @throws IOException
      */
     @Test
-    public void testAddJdbcBoosterConfig_with_databaseName_derby_default()
-            throws ParserConfigurationException, TransformerException, IOException {
+    public void testAddJdbcBoosterConfig_with_databaseName_derby_default() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        Properties properties = new Properties();
-        JDBCBoosterConfig configurator = new JDBCBoosterConfig("0.2-SNAPSHOT", properties, null);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
 
-        serverConfig.addBoosterConfig(configurator);
+        serverConfig.addBoosterConfig(boosters.get(0));
 
         serverConfig.writeToServer();
 
@@ -301,19 +454,18 @@ public class JDBCBoosterTest {
      * @throws IOException
      */
     @Test
-    public void testAddJdbcBoosterConfig_with_portNumber_default()
-            throws ParserConfigurationException, TransformerException, IOException {
+    public void testAddJdbcBoosterConfig_with_portNumber_default() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        String db2Dependency = JDBCBoosterConfig.DB2_DEPENDENCY + ":" + DB2_DEPENDENCY_VERSION;
+        // Add JDBC booster and DB2 to dependency map
+        Map<String, String> dependencies = getJDBCDependency();
+        dependencies.put(JDBCBoosterConfig.DB2_DEPENDENCY, DB2_DEPENDENCY_VERSION);
 
-        Properties properties = new Properties();
-        JDBCBoosterConfig configurator = new JDBCBoosterConfig("0.2-SNAPSHOT", properties,
-                db2Dependency);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
 
-        serverConfig.addBoosterConfig(configurator);
+        serverConfig.addBoosterConfig(boosters.get(0));
 
         serverConfig.writeToServer();
 
@@ -335,20 +487,20 @@ public class JDBCBoosterTest {
      * @throws IOException
      */
     @Test
-    public void testAddJdbcBoosterConfig_with_portNumber_configured()
-            throws ParserConfigurationException, TransformerException, IOException {
+    public void testAddJdbcBoosterConfig_with_portNumber_configured() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        String db2Dependency = JDBCBoosterConfig.DB2_DEPENDENCY + ":" + DB2_DEPENDENCY_VERSION;
+        System.setProperty(BoostProperties.DATASOURCE_PORT_NUMBER, "55555");
 
-        Properties properties = new Properties();
-        properties.put(BoostProperties.DATASOURCE_PORT_NUMBER, "55555");
-        JDBCBoosterConfig configurator = new JDBCBoosterConfig("0.2-SNAPSHOT", properties,
-                db2Dependency);
+        // Add JDBC booster and DB2 to dependency map
+        Map<String, String> dependencies = getJDBCDependency();
+        dependencies.put(JDBCBoosterConfig.DB2_DEPENDENCY, DB2_DEPENDENCY_VERSION);
 
-        serverConfig.addBoosterConfig(configurator);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
+
+        serverConfig.addBoosterConfig(boosters.get(0));
 
         serverConfig.writeToServer();
 
@@ -370,20 +522,20 @@ public class JDBCBoosterTest {
      * @throws IOException
      */
     @Test
-    public void testAddJdbcBoosterConfig_with_serverName_configured()
-            throws ParserConfigurationException, TransformerException, IOException {
+    public void testAddJdbcBoosterConfig_with_serverName_configured() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        String db2Dependency = JDBCBoosterConfig.DB2_DEPENDENCY + ":" + DB2_DEPENDENCY_VERSION;
+        System.setProperty(BoostProperties.DATASOURCE_SERVER_NAME, "1.1.1.1");
 
-        Properties properties = new Properties();
-        properties.put(BoostProperties.DATASOURCE_SERVER_NAME, "1.1.1.1");
-        JDBCBoosterConfig configurator = new JDBCBoosterConfig("0.2-SNAPSHOT", properties,
-                db2Dependency);
+        // Add JDBC booster and DB2 to dependency map
+        Map<String, String> dependencies = getJDBCDependency();
+        dependencies.put(JDBCBoosterConfig.DB2_DEPENDENCY, DB2_DEPENDENCY_VERSION);
 
-        serverConfig.addBoosterConfig(configurator);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
+
+        serverConfig.addBoosterConfig(boosters.get(0));
 
         serverConfig.writeToServer();
 
@@ -405,19 +557,18 @@ public class JDBCBoosterTest {
      * @throws IOException
      */
     @Test
-    public void testAddJdbcBoosterConfig_with_serverName_default()
-            throws ParserConfigurationException, TransformerException, IOException {
+    public void testAddJdbcBoosterConfig_with_serverName_default() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        String db2Dependency = JDBCBoosterConfig.DB2_DEPENDENCY + ":" + DB2_DEPENDENCY_VERSION;
+        // Add JDBC booster and DB2 to dependency map
+        Map<String, String> dependencies = getJDBCDependency();
+        dependencies.put(JDBCBoosterConfig.DB2_DEPENDENCY, DB2_DEPENDENCY_VERSION);
 
-        Properties properties = new Properties();
-        JDBCBoosterConfig configurator = new JDBCBoosterConfig("0.2-SNAPSHOT", properties,
-                db2Dependency);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
 
-        serverConfig.addBoosterConfig(configurator);
+        serverConfig.addBoosterConfig(boosters.get(0));
 
         serverConfig.writeToServer();
 
@@ -429,5 +580,5 @@ public class JDBCBoosterTest {
         assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_SERVER_NAME
                 + " is not correct", "localhost", propertyFound);
     }
-    
+
 }
