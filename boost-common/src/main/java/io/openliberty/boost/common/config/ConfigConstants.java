@@ -92,6 +92,8 @@ public final class ConfigConstants {
     public static final String JDBC_41 = "jdbc-4.1";
     public static final String JDBC_42 = "jdbc-4.2";
     public static final String JDBC_43 = "jdbc-4.3";
+    public static final String JPA_21 = "jpa-2.1";
+    public static final String JPA_22 = "jpa-2.2";
     public static final String CDI_20 = "cdi-2.0";
     public static final String MPHEALTH_10 = "mpHealth-1.0";
     public static final String MPRESTCLIENT_11 = "mpRestClient-1.1";
