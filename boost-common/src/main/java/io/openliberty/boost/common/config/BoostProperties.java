@@ -26,8 +26,8 @@ public final class BoostProperties {
     public static final String DATASOURCE_USER = "boost.db.user";
     public static final String DATASOURCE_PASSWORD = "boost.db.password";
     public static final String INTERNAL_COMPILER_TARGET = "boost.internal.compiler.target";
-    public static final String PASSWORD_ENCRYPTION_METHOD = "boost.pkg.prop.encryption";
-    public static final String PASSWORD_ENCRYPTION_KEY = "boost.pkg.prop.encryption.key";
+    public static final String PASSWORD_ENCRYPTION_METHOD = "boost.db.password.encryption";
+    public static final String PASSWORD_ENCRYPTION_KEY = "boost.db.password.encryption.key";
 
     /**
      * Return a list of all boost properties
