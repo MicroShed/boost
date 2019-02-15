@@ -24,12 +24,14 @@ public class Boost implements Plugin<Project> {
 
     void apply(Project project) {
         project.extensions.create('boost', BoostExtension)
+        project.configurations.create('boostApp')
 
         BoostLogger.init(project)
 
         new BoostTaskFactory(project).createTasks()
 
         project.pluginManager.apply('net.wasdev.wlp.gradle.plugins.Liberty')
+        project.configurations.libertyApp.extendsFrom(project.configurations.boostApp)
 
         project.liberty.server = configureBoostServerProperties()
         configureRuntimeArtifact(project)

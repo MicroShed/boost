@@ -19,6 +19,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.FilenameUtils
 
 import javax.xml.parsers.ParserConfigurationException
 import javax.xml.transform.TransformerException
@@ -134,7 +135,7 @@ public class BoostPackageTask extends AbstractBoostTask {
                     copySpringBootUberJar(springBootUberJar)
                     generateServerConfigSpringBoot()
 
-                } else if (project.plugins.hasPlugin('war')) {
+                } else if (project.plugins.hasPlugin('war') || !project.configurations.boostApp.isEmpty()) {
                     // Get booster dependencies from project
                     Map<String, String> dependencies = GradleProjectUtil.getAllDependencies(project, BoostLogger.getInstance())
                     
@@ -216,13 +217,15 @@ public class BoostPackageTask extends AbstractBoostTask {
     protected void generateServerConfigEE() throws GradleException {
         String warName = null
 
-        if (project.war != null) {
+        if (project.plugins.hasPlugin('war')) {
 
             if (project.war.version == null) {
                 warName = project.war.baseName
             } else {
                 warName = project.war.baseName + "-" + project.war.version
             }
+        } else {
+            warName = getWarNameFromBoostApps()
         }
 
         try {
@@ -317,4 +320,13 @@ public class BoostPackageTask extends AbstractBoostTask {
         }
     }
 
+    //Runs through the dependencies in the boostApp configuration and pulls out the first war name.
+    protected String getWarNameFromBoostApps() {
+        for (def dep : project.configurations.boostApp) {
+            if (FilenameUtils.getExtension(dep.name).equals('war')) {
+                return dep.name.substring(0, dep.name.length() - 4)
+            }
+        }
+        return null
+    }
 }
