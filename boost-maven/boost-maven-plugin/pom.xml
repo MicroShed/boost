@@ -53,6 +53,11 @@
 			<version>8.11.7</version>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-api</artifactId>
+			<version>0.9.0.M2</version>
+		</dependency>
+		<dependency>
 			<groupId>org.codehaus.mojo</groupId>
 			<artifactId>plugin-support</artifactId>
 			<version>1.0-alpha-1</version>

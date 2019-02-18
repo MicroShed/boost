@@ -18,6 +18,8 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
+import java.util.List;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -27,6 +29,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.pluginsupport.MojoSupport;
 import org.codehaus.mojo.pluginsupport.util.ArtifactItem;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
@@ -51,9 +56,18 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
 
     @Parameter(defaultValue = "${session}", readonly = true)
     protected MavenSession session;
+    
+    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
+    protected RepositorySystemSession repoSession;
+    
+    @Parameter( defaultValue = "${project.remoteProjectRepositories}", readonly = true, required = true )
+    protected List<RemoteRepository> remoteRepos;
 
     @Component
     protected BuildPluginManager pluginManager;
+    
+    @Component
+    protected RepositorySystem repoSystem;
 
     @Parameter
     protected ArtifactItem runtimeArtifact;
@@ -95,8 +109,7 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     }
 
     @Override
-    public void execute() throws MojoExecutionException {
+    public void execute() throws MojoExecutionException {   	
         createDefaultRuntimeArtifactIfNeeded();
     }
-
 }

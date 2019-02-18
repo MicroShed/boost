@@ -10,13 +10,25 @@
  *******************************************************************************/
 package io.openliberty.boost.maven.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.resolution.DependencyRequest;
+import org.eclipse.aether.resolution.DependencyResolutionException;
+import org.eclipse.aether.resolution.DependencyResult;
 
 public class MavenProjectUtil {
 
@@ -37,16 +49,43 @@ public class MavenProjectUtil {
         return version;
     }
 
-    public static Map<String, String> getAllDependencies(MavenProject project, BoostLogger logger) {
-
-        Map<String, String> dependencies = new HashMap<String, String>();
+    public static Map<String, String> getAllDependencies(MavenProject project, RepositorySystem repoSystem,
+            RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, BoostLogger logger)
+            throws DependencyResolutionException {
         logger.debug("Processing project for dependencies.");
+        Map<String, String> dependencies = new HashMap<String, String>();
 
         for (Artifact artifact : project.getArtifacts()) {
             logger.debug("Found dependency while processing project: " + artifact.getGroupId() + ":"
-                    + artifact.getArtifactId() + ":" + artifact.getVersion());
+                    + artifact.getArtifactId() + ":" + artifact.getVersion() + ":" + artifact.getType());
 
-            dependencies.put(artifact.getGroupId() + ":" + artifact.getArtifactId(), artifact.getVersion());
+            if (artifact.getType().equals("war")) {
+                logger.debug("Resolving transitive booster dependencies for war");
+                org.eclipse.aether.artifact.Artifact pomArtifact = new DefaultArtifact(artifact.getGroupId(),
+                        artifact.getArtifactId(), "pom", artifact.getVersion());
+
+                List<org.eclipse.aether.artifact.Artifact> warArtifacts = resolveArtifact(pomArtifact, repoSystem,
+                        repoSession, remoteRepos);
+
+                for (org.eclipse.aether.artifact.Artifact warArtifact : warArtifacts) {
+                    // Only add booster dependencies for this war. Anything else
+                    // like datasource
+                    // dependencies must be explicitly defined by this project.
+                    // This is to allow the
+                    // current project to have full control over those optional
+                    // dependencies.
+                    if (warArtifact.getGroupId().equals("io.openliberty.boosters")) {
+                        BoostLogger.getInstance().debug("Found booster dependency: " + warArtifact.getGroupId() + ":"
+                                + warArtifact.getArtifactId() + ":" + warArtifact.getVersion());
+
+                        dependencies.put(warArtifact.getGroupId() + ":" + warArtifact.getArtifactId(),
+                                warArtifact.getVersion());
+                    }
+                }
+
+            } else {
+                dependencies.put(artifact.getGroupId() + ":" + artifact.getArtifactId(), artifact.getVersion());
+            }
         }
 
         return dependencies;
@@ -85,4 +124,26 @@ public class MavenProjectUtil {
         return "";
     }
 
+    private static List<org.eclipse.aether.artifact.Artifact> resolveArtifact(
+            org.eclipse.aether.artifact.Artifact artifact, RepositorySystem repoSystem,
+            RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos)
+            throws DependencyResolutionException {
+        CollectRequest collectRequest = new CollectRequest();
+        collectRequest.setRoot(new Dependency(artifact, "import"));
+        for (RemoteRepository remoteRepo : remoteRepos) {
+            collectRequest.addRepository(remoteRepo);
+        }
+
+        DependencyResult resolutionResult = repoSystem.resolveDependencies(repoSession,
+                new DependencyRequest(collectRequest, null));
+
+        List<ArtifactResult> artifactResults = resolutionResult.getArtifactResults();
+        ArrayList<org.eclipse.aether.artifact.Artifact> artifacts = new ArrayList<>(artifactResults.size());
+
+        for (ArtifactResult result : artifactResults) {
+            artifacts.add(result.getArtifact());
+        }
+
+        return artifacts;
+    }
 }
