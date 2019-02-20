@@ -19,32 +19,17 @@ import java.util.Properties;
 import io.openliberty.boost.common.BoostLoggerI;
 
 public final class BoostProperties {
-   
+
+    // Datasource default properties
+    public static final String DATASOURCE_PREFIX = "boost.db.";
     public static final String DATASOURCE_DATABASE_NAME = "boost.db.databaseName";
     public static final String DATASOURCE_SERVER_NAME = "boost.db.serverName";
     public static final String DATASOURCE_PORT_NUMBER = "boost.db.portNumber";
     public static final String DATASOURCE_USER = "boost.db.user";
     public static final String DATASOURCE_PASSWORD = "boost.db.password";
+    public static final String DATASOURCE_CREATE_DATABASE = "boost.db.createDatabase";
+
     public static final String INTERNAL_COMPILER_TARGET = "boost.internal.compiler.target";
-
-    /**
-     * Return a list of all boost properties
-     * 
-     * @return
-     */
-    public static List<String> getAllSupportedProperties() {
-
-        List<String> supportedProperties = new ArrayList<String>();
-
-        supportedProperties.add(DATASOURCE_DATABASE_NAME);
-        supportedProperties.add(DATASOURCE_SERVER_NAME);
-        supportedProperties.add(DATASOURCE_PORT_NUMBER);
-        supportedProperties.add(DATASOURCE_USER);
-        supportedProperties.add(DATASOURCE_PASSWORD);
-        supportedProperties.add(INTERNAL_COMPILER_TARGET);
-
-        return supportedProperties;
-    }
 
     /**
      * Return a list of all properties that need to be encrypted
@@ -56,16 +41,15 @@ public final class BoostProperties {
         propertiesToEncrypt.add(DATASOURCE_PASSWORD);
         return propertiesToEncrypt;
     }
-    
+
     public static Properties getConfiguredBoostProperties(BoostLoggerI logger) {
-        List<String> supportedProps = BoostProperties.getAllSupportedProperties();
         Properties systemProperties = System.getProperties();
 
         Properties boostProperties = new Properties();
 
         for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
 
-            if (supportedProps.contains(entry.getKey().toString())) {
+            if (entry.getKey().toString().startsWith("boost.")) {
 
                 // logger.debug("Found boost property: " + entry.getKey() + ":"
                 // + entry.getValue());

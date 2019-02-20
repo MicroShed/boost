@@ -40,28 +40,27 @@ public final class ConfigConstants {
     // Datasource configuration element/attribute names
     public static final String DATASOURCE = "dataSource";
     public static final String DATABASE_NAME = "databaseName";
+    public static final String CREATE_DATABASE = "createDatabase";
+    public static final String SERVER_NAME = "serverName";
+    public static final String PORT_NUMBER = "portNumber";
     public static final String JNDI_NAME = "jndiName";
     public static final String JDBC_DRIVER_REF = "jdbcDriverRef";
     public static final String JDBC_DRIVER = "jdbcDriver";
     public static final String LIBRARY_REF = "libraryRef";
     public static final String LIBRARY = "library";
     public static final String FILESET = "fileset";
-    public static final String CREATE_DATABASE = "createDatabase";
-    public static final String SERVER_NAME = "serverName";
-    public static final String PORT_NUMBER = "portNumber";
     public static final String PROPERTIES_DERBY_EMBEDDED = "properties.derby.embedded";
     public static final String PROPERTIES_DB2_JCC = "properties.db2.jcc";
     public static final String CONTAINER_AUTH_DATA_REF = "containerAuthDataRef";
 
     // Datasource configuration values
     public static final String DEFAULT_DATASOURCE = "DefaultDataSource";
-    public static final String DERBY_EMBEDDED_DRIVER_REF = "DerbyEmbeddedDriverRef";
-    public static final String DERBY_LIB = "DerbyLib";
+    public static final String JDBC_DRIVER_1 = "JdbcDriver1";
+    public static final String JDBC_LIBRARY_1 = "Library1";
     public static final String DERBY_DB = "DerbyDB";
-    public static final String DB2_DRIVER_REF = "Db2DriverRef";
-    public static final String DB2_LIB = "Db2Lib";
-    public static final String DB2_DB = "DB2DB";
     public static final String DATASOURCE_AUTH_DATA = "datasourceAuth";
+    public static final String DERBY_JAR = "derby*.jar";
+    public static final String DB2_JAR = "db2jcc*.jar";
 
     // Authentication configuration element/attribute names
     public static final String AUTH_DATA = "authData";

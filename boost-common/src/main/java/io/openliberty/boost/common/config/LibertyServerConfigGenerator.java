@@ -217,12 +217,10 @@ public class LibertyServerConfigGenerator {
             List<String> propertiesToEncrypt = BoostProperties.getPropertiesToEncrypt();
 
             for (String key : properties.stringPropertyNames()) {
-                String value;
+                String value = properties.getProperty(key);
 
-                if (propertiesToEncrypt.contains(key)) {
-                    value = BoostUtil.encrypt(libertyInstallPath, properties.getProperty(key), logger);
-                } else {
-                    value = properties.getProperty(key);
+                if (propertiesToEncrypt.contains(key) && value != null && !value.equals("")) {
+                    value = BoostUtil.encrypt(libertyInstallPath, value, logger);
                 }
 
                 bootstrapProperties.put(key, value);
