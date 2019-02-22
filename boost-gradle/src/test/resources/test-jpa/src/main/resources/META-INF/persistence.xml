@@ -9,7 +9,7 @@
     <jta-data-source>java:comp/env/jdbc/samplejpadatasource</jta-data-source>
     <non-jta-data-source>java:comp/env/jdbc/samplejpadatasourcenonjta</non-jta-data-source>
 
-    <class>application.servlet.Thing</class>
+    <class>application.Thing</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <!-- These properties are creating the database on the fly. We are using them to avoid users having

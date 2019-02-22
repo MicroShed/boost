@@ -25,11 +25,12 @@ public class ApplicationIT {
     @Test
     public void testDeployment() {
         testEndpoint("/", "Hello JPA World");
+        testEndpoint("/", "Created Thing 2");
+        testEndpoint("/", "Created Thing 3");
     }
     
     private void testEndpoint(String endpoint, String expectedOutput) {
         String url = "http://localhost:9080/";
-        System.out.println("Testing " + url);
         Response response = sendRequest(url, "GET");
         int responseCode = response.getStatus();
         assertTrue("Incorrect response code: " + responseCode, responseCode == 200);

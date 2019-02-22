@@ -22,7 +22,6 @@ public class BoostPackageJPA22Test extends AbstractBoostTest {
     private static String URL = "http://localhost:9080/"
 
     private static final String JPA_22_FEATURE = "<feature>jpa-2.2</feature>"
-    private static String SERVLET_RESPONSE = "Hello JPA World"
 
     @BeforeClass
     public static void setup() {
@@ -68,6 +67,8 @@ public class BoostPackageJPA22Test extends AbstractBoostTest {
 
     @Test
     public void testServletResponse() throws Exception {
-        testServlet(URL, SERVLET_RESPONSE)
+        testServlet(URL, "Hello JPA World")
+        testServlet(URL, "Created Thing 2")
+        testServlet(URL, "Created Thing 3")
     }
 }
