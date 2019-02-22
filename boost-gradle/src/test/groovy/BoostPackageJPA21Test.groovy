@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,22 +15,20 @@ import org.junit.Test
 
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
-
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
+public class BoostPackageJPA21Test extends AbstractBoostTest {
 
-public class BoostPackageJaxRS20Test extends AbstractBoostTest {
+    private static String URL = "http://localhost:9080/"
 
-    private static String URL = "http://localhost:9080/api/hello"
-
-    private static final String JAXRS_20_FEATURE = "<feature>jaxrs-2.0</feature>"
-    private static String SERVLET_RESPONSE = "Hello World From Your Friends at Liberty Boost EE!"
+    private static final String JPA_21_FEATURE = "<feature>jpa-2.1</feature>"
+    private static String SERVLET_RESPONSE = "Hello JPA World"
 
     @BeforeClass
     public static void setup() {
-        resourceDir = new File("build/resources/test/test-jaxrs")
-        testProjectDir = new File(integTestDir, "BoostPackageJaxRS20Test")
-        buildFilename = "testJaxrs20.gradle"
+        resourceDir = new File("build/resources/test/test-jpa")
+        testProjectDir = new File(integTestDir, "BoostPackageJPA21Test")
+        buildFilename = "testJPA21.gradle"
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
 
@@ -65,7 +63,7 @@ public class BoostPackageJaxRS20Test extends AbstractBoostTest {
 
     @Test
     public void testPackageContents() throws IOException {
-        testFeatureInServerXML(JAXRS_20_FEATURE);
+        testFeatureInServerXML(JPA_21_FEATURE);
     }
 
     @Test
