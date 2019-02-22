@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -264,7 +263,8 @@ public class JDBCBoosterTest {
     }
 
     /**
-     * Test that the server is configured with the default Derby datasource
+     * Test that the server.xml is fully configured with the default Derby
+     * datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -288,11 +288,11 @@ public class JDBCBoosterTest {
         assertEquals("Didn't find one and only one library", 1, libraryList.size());
 
         Element library = libraryList.get(0);
-        assertEquals("Library id is not correct", DERBY_LIB, library.getAttribute("id"));
+        assertEquals("Library id is not correct", JDBC_LIBRARY_1, library.getAttribute("id"));
 
         Element fileset = getDirectChildrenByTag(library, FILESET).get(0);
         assertEquals("Fileset dir attribute is not correct", RESOURCES, fileset.getAttribute("dir"));
-        assertEquals("Fileset includes attribute is not correct", "derby*.jar", fileset.getAttribute("includes"));
+        assertEquals("Fileset includes attribute is not correct", DERBY_JAR, fileset.getAttribute("includes"));
 
         // Check that the <dataSource> element is correctly configured
         List<Element> dataSourceList = getDirectChildrenByTag(serverRoot, DATASOURCE);
@@ -300,11 +300,15 @@ public class JDBCBoosterTest {
 
         Element dataSource = dataSourceList.get(0);
         assertEquals("DataSource id is not correct", DEFAULT_DATASOURCE, dataSource.getAttribute("id"));
-        assertEquals("DataSource jdbcDriverRef is not correct", DERBY_EMBEDDED_DRIVER_REF,
+        assertEquals("DataSource jdbcDriverRef is not correct", JDBC_DRIVER_1,
                 dataSource.getAttribute(JDBC_DRIVER_REF));
 
-        Element propertiesDerbyEmbedded = getDirectChildrenByTag(dataSource, PROPERTIES_DERBY_EMBEDDED).get(0);
-        assertEquals("The createDatabase attribute is not correct", "create",
+        List<Element> propertiesDerbyEmbeddedList = getDirectChildrenByTag(dataSource, PROPERTIES_DERBY_EMBEDDED);
+        assertEquals("Didn't find one and only one derby embedded properties", 1, propertiesDerbyEmbeddedList.size());
+
+        Element propertiesDerbyEmbedded = propertiesDerbyEmbeddedList.get(0);
+        assertEquals("The createDatabase attribute is not correct",
+                BoostUtil.makeVariable(BoostProperties.DATASOURCE_CREATE_DATABASE),
                 propertiesDerbyEmbedded.getAttribute(CREATE_DATABASE));
         assertEquals("The databaseName attribute is not correct",
                 BoostUtil.makeVariable(BoostProperties.DATASOURCE_DATABASE_NAME),
@@ -315,12 +319,12 @@ public class JDBCBoosterTest {
         assertEquals("Didn't find one and only one jdbcDriver", 1, jdbcDriverList.size());
 
         Element jdbcDriver = jdbcDriverList.get(0);
-        assertEquals("JdbcDriver id is not correct", DERBY_EMBEDDED_DRIVER_REF, jdbcDriver.getAttribute("id"));
-        assertEquals("JdbcDriver libraryRef is not correct", DERBY_LIB, jdbcDriver.getAttribute(LIBRARY_REF));
+        assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
+        assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
     }
 
     /**
-     * Test that the server is configured with the DB2 datasource
+     * Test that the server.xml is fully configured with the DB2 datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -347,11 +351,11 @@ public class JDBCBoosterTest {
         assertEquals("Didn't find one and only one library", 1, libraryList.size());
 
         Element library = libraryList.get(0);
-        assertEquals("Library id is not correct", DB2_LIB, library.getAttribute("id"));
+        assertEquals("Library id is not correct", JDBC_LIBRARY_1, library.getAttribute("id"));
 
         Element fileset = getDirectChildrenByTag(library, FILESET).get(0);
         assertEquals("Fileset dir attribute is not correct", RESOURCES, fileset.getAttribute("dir"));
-        assertEquals("Fileset includes attribute is not correct", "db2jcc*.jar", fileset.getAttribute("includes"));
+        assertEquals("Fileset includes attribute is not correct", DB2_JAR, fileset.getAttribute("includes"));
 
         // Check that the <dataSource> element is correctly configured
         List<Element> dataSourceList = getDirectChildrenByTag(serverRoot, DATASOURCE);
@@ -359,10 +363,15 @@ public class JDBCBoosterTest {
 
         Element dataSource = dataSourceList.get(0);
         assertEquals("DataSource id is not correct", DEFAULT_DATASOURCE, dataSource.getAttribute("id"));
-        assertEquals("DataSource jdbcDriverRef is not correct", DB2_DRIVER_REF,
+        assertEquals("DataSource jdbcDriverRef is not correct", JDBC_DRIVER_1,
                 dataSource.getAttribute(JDBC_DRIVER_REF));
+        assertEquals("DataSource containerAuthDataRef is not correct", DATASOURCE_AUTH_DATA,
+                dataSource.getAttribute(CONTAINER_AUTH_DATA_REF));
 
-        Element propertiesDb2Jcc = getDirectChildrenByTag(dataSource, PROPERTIES_DB2_JCC).get(0);
+        List<Element> propertiesDb2JccList = getDirectChildrenByTag(dataSource, PROPERTIES_DB2_JCC);
+        assertEquals("Didn't find one and only one derby embedded properties", 1, propertiesDb2JccList.size());
+
+        Element propertiesDb2Jcc = propertiesDb2JccList.get(0);
         assertEquals("The databaseName attribute is not correct",
                 BoostUtil.makeVariable(BoostProperties.DATASOURCE_DATABASE_NAME),
                 propertiesDb2Jcc.getAttribute(DATABASE_NAME));
@@ -378,8 +387,19 @@ public class JDBCBoosterTest {
         assertEquals("Didn't find one and only one jdbcDriver", 1, jdbcDriverList.size());
 
         Element jdbcDriver = jdbcDriverList.get(0);
-        assertEquals("JdbcDriver id is not correct", DB2_DRIVER_REF, jdbcDriver.getAttribute("id"));
-        assertEquals("JdbcDriver libraryRef is not correct", DB2_LIB, jdbcDriver.getAttribute(LIBRARY_REF));
+        assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
+        assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
+
+        // Check that the <containerAuthData> element is correctly configured
+        List<Element> authDataList = getDirectChildrenByTag(serverRoot, AUTH_DATA);
+        assertEquals("Didn't find one and only one authData", 1, authDataList.size());
+
+        Element authData = authDataList.get(0);
+        assertEquals("AuthData id is not correct", DATASOURCE_AUTH_DATA, authData.getAttribute("id"));
+        assertEquals("AuthData user is not correct", BoostUtil.makeVariable(BoostProperties.DATASOURCE_USER),
+                authData.getAttribute(USER));
+        assertEquals("AuthData password is not correct", BoostUtil.makeVariable(BoostProperties.DATASOURCE_PASSWORD),
+                authData.getAttribute(PASSWORD));
     }
 
     /**
@@ -442,7 +462,70 @@ public class JDBCBoosterTest {
                 BoostProperties.DATASOURCE_DATABASE_NAME);
 
         assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_DATABASE_NAME
-                + " is not correct", JDBCBoosterConfig.DEFAULT_DERBY_DATABASE_NAME, propertyFound);
+                + " is not correct", DERBY_DB, propertyFound);
+    }
+
+    /**
+     * Test that the configured createDatabase property is correctly written to
+     * bootstrap.properties
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterConfig_with_createDatabase_configured() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        // Set database name property
+        System.setProperty(BoostProperties.DATASOURCE_CREATE_DATABASE, "false");
+
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
+
+        serverConfig.addBoosterConfig(boosters.get(0));
+
+        serverConfig.writeToServer();
+
+        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+
+        String propertyFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+                BoostProperties.DATASOURCE_CREATE_DATABASE);
+
+        assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_CREATE_DATABASE
+                + " is not correct", "false", propertyFound);
+    }
+
+    /**
+     * Test that the default derby databaseName property is correctly written to
+     * bootstrap.properties
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterConfig_with_createDatabase_derby_default() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
+
+        serverConfig.addBoosterConfig(boosters.get(0));
+
+        serverConfig.writeToServer();
+
+        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+
+        String propertyFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+                BoostProperties.DATASOURCE_CREATE_DATABASE);
+
+        assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_CREATE_DATABASE
+                + " is not correct", "create", propertyFound);
     }
 
     /**
@@ -579,6 +662,47 @@ public class JDBCBoosterTest {
 
         assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_SERVER_NAME
                 + " is not correct", "localhost", propertyFound);
+    }
+
+    /**
+     * Test that a configured datasource property is correctly written to
+     * bootstrap.properties and server.xml
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterConfig_with_generic_property() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        // Set database name property
+        System.setProperty(BoostProperties.DATASOURCE_PREFIX + "randomProperty", "randomValue");
+
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+                logger);
+
+        serverConfig.addBoosterConfig(boosters.get(0));
+
+        serverConfig.writeToServer();
+
+        // Find property in bootstrap.properties
+        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+
+        String propertyFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+                BoostProperties.DATASOURCE_PREFIX + "randomProperty");
+
+        assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_PREFIX
+                + "randomProperty" + " is not correct", "randomValue", propertyFound);
+
+        // Find property in server.xml
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "randomProperty=\""
+                + BoostUtil.makeVariable(BoostProperties.DATASOURCE_PREFIX + "randomProperty") + "\"");
+
+        assertTrue("The property was not found in the server configuration", featureFound);
     }
 
 }
