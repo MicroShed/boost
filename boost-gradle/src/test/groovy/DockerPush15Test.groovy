@@ -29,7 +29,7 @@ public class DockerPush15Test extends AbstractBoostDockerTest {
     @BeforeClass
     public static void setup() {
 
-        resourceDir = new File("build/resources/test/springApp")
+        resourceDir = new File("build/resources/test/test-spring-boot")
         testProjectDir = new File(integTestDir, "DockerPush15Test")
         buildFilename = "docker15Test.gradle"
         libertyImage = OL_SPRING_15_IMAGE

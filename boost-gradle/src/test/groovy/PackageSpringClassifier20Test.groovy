@@ -18,7 +18,7 @@ public class PackageSpringClassifier20Test extends AbstractBoostTest {
 
     @BeforeClass
     public static void setup() {
-        resourceDir = new File("build/resources/test/springApp")
+        resourceDir = new File("build/resources/test/test-spring-boot")
         testProjectDir = new File(integTestDir, "PackageSpringClassifier20Test")
         buildFilename = "springAppClassifier-20.gradle"
         createDir(testProjectDir)

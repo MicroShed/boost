@@ -28,7 +28,7 @@ public class BoostPackageJaxRS20Test extends AbstractBoostTest {
 
     @BeforeClass
     public static void setup() {
-        resourceDir = new File("build/resources/test/jaxrsTestApp")
+        resourceDir = new File("build/resources/test/test-jaxrs")
         testProjectDir = new File(integTestDir, "BoostPackageJaxRS20Test")
         buildFilename = "testJaxrs20.gradle"
         createDir(testProjectDir)
