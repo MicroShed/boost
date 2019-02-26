@@ -42,6 +42,7 @@ public class JDBCBoosterTest {
     }
 
     private final String DB2_DEPENDENCY_VERSION = "db2jcc4";
+    private final String MYSQL_DEPENDENCY_VERSION = "8.0.15";
 
     BoostLoggerI logger = CommonLogger.getInstance();
 
@@ -304,7 +305,7 @@ public class JDBCBoosterTest {
                 dataSource.getAttribute(JDBC_DRIVER_REF));
 
         List<Element> propertiesDerbyEmbeddedList = getDirectChildrenByTag(dataSource, PROPERTIES_DERBY_EMBEDDED);
-        assertEquals("Didn't find one and only one derby embedded properties", 1, propertiesDerbyEmbeddedList.size());
+        assertEquals("Didn't find one and only one " + PROPERTIES_DERBY_EMBEDDED, 1, propertiesDerbyEmbeddedList.size());
 
         Element propertiesDerbyEmbedded = propertiesDerbyEmbeddedList.get(0);
         assertEquals("The createDatabase attribute is not correct",
@@ -369,7 +370,7 @@ public class JDBCBoosterTest {
                 dataSource.getAttribute(CONTAINER_AUTH_DATA_REF));
 
         List<Element> propertiesDb2JccList = getDirectChildrenByTag(dataSource, PROPERTIES_DB2_JCC);
-        assertEquals("Didn't find one and only one derby embedded properties", 1, propertiesDb2JccList.size());
+        assertEquals("Didn't find one and only one " + PROPERTIES_DB2_JCC, 1, propertiesDb2JccList.size());
 
         Element propertiesDb2Jcc = propertiesDb2JccList.get(0);
         assertEquals("The databaseName attribute is not correct",
@@ -381,6 +382,85 @@ public class JDBCBoosterTest {
         assertEquals("The portNumber attribute is not correct",
                 BoostUtil.makeVariable(BoostProperties.DATASOURCE_PORT_NUMBER),
                 propertiesDb2Jcc.getAttribute(PORT_NUMBER));
+
+        // Check that the <jdbcDriver> element is correctly configured
+        List<Element> jdbcDriverList = getDirectChildrenByTag(serverRoot, JDBC_DRIVER);
+        assertEquals("Didn't find one and only one jdbcDriver", 1, jdbcDriverList.size());
+
+        Element jdbcDriver = jdbcDriverList.get(0);
+        assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
+        assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
+
+        // Check that the <containerAuthData> element is correctly configured
+        List<Element> authDataList = getDirectChildrenByTag(serverRoot, AUTH_DATA);
+        assertEquals("Didn't find one and only one authData", 1, authDataList.size());
+
+        Element authData = authDataList.get(0);
+        assertEquals("AuthData id is not correct", DATASOURCE_AUTH_DATA, authData.getAttribute("id"));
+        assertEquals("AuthData user is not correct", BoostUtil.makeVariable(BoostProperties.DATASOURCE_USER),
+                authData.getAttribute(USER));
+        assertEquals("AuthData password is not correct", BoostUtil.makeVariable(BoostProperties.DATASOURCE_PASSWORD),
+                authData.getAttribute(PASSWORD));
+    }
+    
+    /**
+     * Test that the server.xml is fully configured with the MySQL datasource
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterConfig_MySQL() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        // Add JDBC booster and MySQL to dependency map
+        Map<String, String> dependencies = getJDBCDependency();
+        dependencies.put(JDBCBoosterConfig.MYSQL_DEPENDENCY, MYSQL_DEPENDENCY_VERSION);
+
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
+
+        serverConfig.addBoosterConfig(boosters.get(0));
+
+        Element serverRoot = serverConfig.getServerDoc().getDocumentElement();
+
+        // Check that the <library> element is correctly configured
+        List<Element> libraryList = getDirectChildrenByTag(serverRoot, LIBRARY);
+        assertEquals("Didn't find one and only one library", 1, libraryList.size());
+
+        Element library = libraryList.get(0);
+        assertEquals("Library id is not correct", JDBC_LIBRARY_1, library.getAttribute("id"));
+
+        Element fileset = getDirectChildrenByTag(library, FILESET).get(0);
+        assertEquals("Fileset dir attribute is not correct", RESOURCES, fileset.getAttribute("dir"));
+        assertEquals("Fileset includes attribute is not correct", MYSQL_JAR, fileset.getAttribute("includes"));
+
+        // Check that the <dataSource> element is correctly configured
+        List<Element> dataSourceList = getDirectChildrenByTag(serverRoot, DATASOURCE);
+        assertEquals("Didn't find one and only one dataSource", 1, dataSourceList.size());
+
+        Element dataSource = dataSourceList.get(0);
+        assertEquals("DataSource id is not correct", DEFAULT_DATASOURCE, dataSource.getAttribute("id"));
+        assertEquals("DataSource jdbcDriverRef is not correct", JDBC_DRIVER_1,
+                dataSource.getAttribute(JDBC_DRIVER_REF));
+        assertEquals("DataSource containerAuthDataRef is not correct", DATASOURCE_AUTH_DATA,
+                dataSource.getAttribute(CONTAINER_AUTH_DATA_REF));
+
+        List<Element> propertiesList = getDirectChildrenByTag(dataSource, PROPERTIES);
+        assertEquals("Didn't find one and only one properties", 1, propertiesList.size());
+
+        Element properties = propertiesList.get(0);
+        assertEquals("The databaseName attribute is not correct",
+                BoostUtil.makeVariable(BoostProperties.DATASOURCE_DATABASE_NAME),
+                properties.getAttribute(DATABASE_NAME));
+        assertEquals("The serverName attribute is not correct",
+                BoostUtil.makeVariable(BoostProperties.DATASOURCE_SERVER_NAME),
+                properties.getAttribute(SERVER_NAME));
+        assertEquals("The portNumber attribute is not correct",
+                BoostUtil.makeVariable(BoostProperties.DATASOURCE_PORT_NUMBER),
+                properties.getAttribute(PORT_NUMBER));
 
         // Check that the <jdbcDriver> element is correctly configured
         List<Element> jdbcDriverList = getDirectChildrenByTag(serverRoot, JDBC_DRIVER);
@@ -529,7 +609,7 @@ public class JDBCBoosterTest {
     }
 
     /**
-     * Test that the default portNumber property is correctly written to
+     * Test that the default portNumber property for db2 is correctly written to
      * bootstrap.properties
      * 
      * @throws ParserConfigurationException
@@ -537,7 +617,7 @@ public class JDBCBoosterTest {
      * @throws IOException
      */
     @Test
-    public void testAddJdbcBoosterConfig_with_portNumber_default() throws Exception {
+    public void testAddJdbcBoosterConfig_with_portNumber_db2_default() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
@@ -558,12 +638,45 @@ public class JDBCBoosterTest {
                 BoostProperties.DATASOURCE_PORT_NUMBER);
 
         assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_PORT_NUMBER
-                + " is not correct", "50000", propertyFound);
+                + " is not correct", DB2_DEFAULT_PORT_NUMBER, propertyFound);
+    }
+    
+    /**
+     * Test that the default portNumber property for mysql is correctly written to
+     * bootstrap.properties
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterConfig_with_portNumber_mysql_default() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        // Add JDBC booster and DB2 to dependency map
+        Map<String, String> dependencies = getJDBCDependency();
+        dependencies.put(JDBCBoosterConfig.MYSQL_DEPENDENCY, MYSQL_DEPENDENCY_VERSION);
+
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
+
+        serverConfig.addBoosterConfig(boosters.get(0));
+
+        serverConfig.writeToServer();
+
+        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+
+        String propertyFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+                BoostProperties.DATASOURCE_PORT_NUMBER);
+
+        assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_PORT_NUMBER
+                + " is not correct", MYSQL_DEFAULT_PORT_NUMBER, propertyFound);
     }
 
     /**
      * Test that the configured portNumber property is correctly written to
-     * bootstrap.properties
+     * bootstrap.properties (Using DB2 dependency for testing)
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
