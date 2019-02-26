@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -114,38 +113,6 @@ public class LibertyServerConfigGenerator {
         }
 
         serverRoot.appendChild(httpEndpoint);
-    }
-
-    /**
-     * Add a keystore definition for this server
-     * 
-     * @param keystore
-     *            The keystore file name.
-     * @param keystorePassword
-     *            The keystore password
-     * @param keystoreType
-     *            The keystore type
-     */
-    public void addKeystore(Map<String, String> keystoreProps, Map<String, String> keyProps) {
-        Element keystore = doc.createElement(KEYSTORE);
-        keystore.setAttribute("id", DEFAULT_KEYSTORE);
-
-        for (String key : keystoreProps.keySet()) {
-            keystore.setAttribute(key, keystoreProps.get(key));
-        }
-
-        if (!keyProps.isEmpty()) {
-            Element keyEntry = doc.createElement(KEY_ENTRY);
-
-            for (String key : keyProps.keySet()) {
-                keyEntry.setAttribute(key, keyProps.get(key));
-            }
-
-            keystore.appendChild(keyEntry);
-        }
-
-        serverRoot.appendChild(keystore);
-
     }
 
     /**

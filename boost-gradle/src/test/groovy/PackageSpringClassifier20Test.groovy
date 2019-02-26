@@ -11,8 +11,8 @@
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.BeforeClass
 import org.junit.Test
-
 import static org.junit.Assert.assertTrue
+
 
 public class PackageSpringClassifier20Test extends AbstractBoostTest {
 
@@ -34,7 +34,9 @@ public class PackageSpringClassifier20Test extends AbstractBoostTest {
     @Test
     public void testPackageSuccess() throws IOException {
         testPackageTask()
-        assertTrue(new File(testProjectDir, "build/libs/gs-spring-boot-0.1.0-test.jar").exists())
+        File packagedJar = new File(testProjectDir, "build/libs/gs-spring-boot-0.1.0-test.jar")
+        assertTrue(packagedJar.exists())
+        testSpringBootEndpoint(packagedJar)
     }
 
     @Test

@@ -34,11 +34,14 @@ public class PackageSpringClassifier15Test extends AbstractBoostTest {
     @Test
     public void testPackageSuccess() throws IOException {
         testPackageTask()
-        assertTrue(new File(testProjectDir, "build/libs/PackageSpringClassifier15Test-test.jar").exists())
+        File packagedJar = new File(testProjectDir, "build/libs/PackageSpringClassifier15Test-test.jar")
+        assertTrue(packagedJar.exists())
+        testSpringBootEndpoint(packagedJar)
     }
 
     @Test
     public void testPackageContents() throws IOException {
         testPackageContentsforSpring15()
     }
+
 }

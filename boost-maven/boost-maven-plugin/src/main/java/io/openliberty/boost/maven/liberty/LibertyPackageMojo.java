@@ -60,16 +60,15 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         createServer();
 
         /**
-         * Whether the packaged Liberty Uber JAR will be the project artifact.
-         * This should be the case in Spring Boot scenarios since Spring Boot
-         * developers expect a runnable JAR.
+         * Whether the packaged Liberty Uber JAR will be the project artifact. This
+         * should be the case in Spring Boot scenarios since Spring Boot developers
+         * expect a runnable JAR.
          */
         boolean attach;
 
         /**
-         * Use the classifier to determine whether we need to set the Liberty
-         * Uber JAR as the project artifact, and add Spring-Boot-Version to the
-         * manifest
+         * Use the classifier to determine whether we need to set the Liberty Uber JAR
+         * as the project artifact, and add Spring-Boot-Version to the manifest
          */
         String springBootClassifier = null;
 
@@ -169,7 +168,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
             // Generate server config
             SpringBootUtil.generateLibertyServerConfig(projectBuildDir + "/classes", libertyServerPath,
-                    springBootVersion, dependencies, BoostLogger.getInstance(), useDefaultHost);
+                    springBootVersion, dependencies, BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
@@ -205,8 +204,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     }
 
     /**
-     * Manipulate the manifest so that Spring Boot will not attempt to repackage
-     * a Liberty Uber JAR.
+     * Manipulate the manifest so that Spring Boot will not attempt to repackage a
+     * Liberty Uber JAR.
      * 
      * @param springBootVersion
      * @throws MojoExecutionException
@@ -227,8 +226,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
     /**
      * Check that we either have a Liberty Uber JAR (in which case this is a
-     * re-execution) or a Spring Boot Uber JAR (from which we will create a
-     * Liberty Uber JAR) when we begin the packaging for Spring Boot projects.
+     * re-execution) or a Spring Boot Uber JAR (from which we will create a Liberty
+     * Uber JAR) when we begin the packaging for Spring Boot projects.
      * 
      * @throws MojoExecutionException
      */
@@ -241,8 +240,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     }
 
     /**
-     * Copy the Spring Boot uber JAR back as the project artifact, only if
-     * Spring Boot didn't create it already
+     * Copy the Spring Boot uber JAR back as the project artifact, only if Spring
+     * Boot didn't create it already
      * 
      * @throws MojoExecutionException
      */
@@ -315,8 +314,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     }
 
     /**
-     * Get all booster dependencies and invoke the maven-dependency-plugin to
-     * copy them to the Liberty server.
+     * Get all booster dependencies and invoke the maven-dependency-plugin to copy
+     * them to the Liberty server.
      * 
      * @throws MojoExecutionException
      *
@@ -341,15 +340,14 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
     }
 
     /**
-     * Invoke the liberty-maven-plugin to package the server into a runnable
-     * Liberty JAR
+     * Invoke the liberty-maven-plugin to package the server into a runnable Liberty
+     * JAR
      * 
      * @param packageFilePath
      *            the Spring Boot Uber JAR file path, whose contents will be
      *            replaced by the Liberty Uber JAR
      * @param attach
-     *            whether or not to make the packaged server the project
-     *            artifact
+     *            whether or not to make the packaged server the project artifact
      * @throws MojoExecutionException
      */
     private void createUberJar(String packageFilePath, boolean attach) throws MojoExecutionException {

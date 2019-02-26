@@ -24,10 +24,8 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -41,30 +39,18 @@ import org.apache.commons.io.FileUtils;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
-import io.openliberty.boost.common.config.ConfigConstants;
 import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
 import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
 
 public class SpringBootUtil {
 
-    public static final String SERVER_PORT = "server.port";
-    public static final String DEFAULT_SERVER_PORT = "8080";
-    public static final String SERVER_ADDRESS = "server.address";
-    public static final String DEFAULT_SERVER_ADDRESS = "localhost";
-
     public static final String SERVER_SSL_KEYSTORE = "server.ssl.key-store";
     public static final String SERVER_SSL_KEYSTORE_PASSWORD = "server.ssl.key-store-password";
-    public static final String SERVER_SSL_KEYSTORE_TYPE = "server.ssl.key-store-type";
-    public static final String SERVER_SSL_KEYSTORE_PROVIDER = "server.ssl.key-store-provider";
-    public static final String SERVER_SSL_KEY_PASSWORD = "server.ssl.key-password";
-    public static final String SERVER_SSL_KEY_ALIAS = "server.ssl.key-alias";
 
     private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
-    
+
     private static final String SPRING_WEBMVC = "org.springframework:spring-webmvc";
     private static final String SPRING_WEBSOCKET = "org.springframework:spring-websocket";
-
-    private static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
 
     /**
      * Get the expected path of the Spring Boot Uber JAR (with .spring extension)
@@ -156,49 +142,6 @@ public class SpringBootUtil {
         }
     }
 
-    public static Properties getSpringBootServerProperties(Properties applicationProperties, Boolean useDefaultHost)
-            throws IOException {
-        Properties serverProperties = new Properties();
-
-        if (!useDefaultHost) {
-            serverProperties.setProperty(LIBERTY_USE_DEFAULT_HOST, Boolean.FALSE.toString());
-            return serverProperties;
-        }
-
-        String serverPort = (String) applicationProperties.getOrDefault(SERVER_PORT, DEFAULT_SERVER_PORT);
-        String serverAddress = (String) applicationProperties.getOrDefault(SERVER_ADDRESS, DEFAULT_SERVER_ADDRESS);
-        serverProperties.setProperty(SERVER_PORT, serverPort);
-        serverProperties.setProperty(SERVER_ADDRESS, serverAddress);
-
-        String serverSslKeystore = (String) applicationProperties.getProperty(SERVER_SSL_KEYSTORE);
-        String serverSslKeystorePassword = (String) applicationProperties.getProperty(SERVER_SSL_KEYSTORE_PASSWORD);
-
-        if (serverSslKeystore != null && serverSslKeystorePassword != null) {
-            serverProperties.setProperty(SERVER_SSL_KEYSTORE, serverSslKeystore);
-            serverProperties.setProperty(SERVER_SSL_KEYSTORE_PASSWORD, serverSslKeystorePassword);
-
-            // Add any additional SSL properties
-            String serverSslKeystoreType = (String) applicationProperties.getProperty(SERVER_SSL_KEYSTORE_TYPE);
-            String serverSslKeystoreProvider = (String) applicationProperties.getProperty(SERVER_SSL_KEYSTORE_PROVIDER);
-            String serverSslKeyAlias = (String) applicationProperties.getOrDefault(SERVER_SSL_KEY_ALIAS, "default");
-            String serverSslKeyPassword = (String) applicationProperties.getProperty(SERVER_SSL_KEY_PASSWORD);
-
-            if (serverSslKeystoreType != null) {
-                serverProperties.setProperty(SERVER_SSL_KEYSTORE_TYPE, serverSslKeystoreType);
-            }
-            if (serverSslKeystoreProvider != null) {
-                serverProperties.setProperty(SERVER_SSL_KEYSTORE_PROVIDER, serverSslKeystoreProvider);
-            }
-
-            if (serverSslKeyPassword != null) {
-                serverProperties.setProperty(SERVER_SSL_KEY_PASSWORD, serverSslKeyPassword);
-                serverProperties.setProperty(SERVER_SSL_KEY_ALIAS, serverSslKeyAlias);
-            }
-        }
-
-        return serverProperties;
-    }
-
     private static Properties getSpringBootApplicationProperties(String springBootProjectResources)
             throws FileNotFoundException, IOException {
         Properties applicationProperties = new Properties();
@@ -221,8 +164,8 @@ public class SpringBootUtil {
         return applicationProperties;
     }
 
-    public static List<String> getLibertyFeaturesForSpringBoot(String springBootVersion, 
-    		Map<String, String> dependencies, Properties applicationProperties, BoostLoggerI logger) {
+    public static List<String> getLibertyFeaturesForSpringBoot(String springBootVersion,
+            Map<String, String> dependencies, Properties applicationProperties, BoostLoggerI logger) {
 
         List<String> featuresToAdd = new ArrayList<String>();
 
@@ -287,15 +230,14 @@ public class SpringBootUtil {
      *            - List of Spring Boot starters used by this application
      * @param logger
      *            - BoostLogger for information logging
-     * @param useDefaultHost
      * @throws ParserConfigurationException
      * @throws IOException
      * @throws TransformerException
      */
-    public static void generateLibertyServerConfig(String springBootProjectResources, String libertyServerPath, 
-    		String springBootVersion, Map<String, String> dependencies, BoostLoggerI logger, Boolean useDefaultHost) 
-    				throws ParserConfigurationException, IOException, TransformerException {
-        
+    public static void generateLibertyServerConfig(String springBootProjectResources, String libertyServerPath,
+            String springBootVersion, Map<String, String> dependencies, BoostLoggerI logger)
+            throws ParserConfigurationException, IOException, TransformerException {
+
         logger.info("Generating Liberty server configuration");
 
         // Generate Liberty configuration
@@ -305,89 +247,13 @@ public class SpringBootUtil {
         Properties applicationProperties = getSpringBootApplicationProperties(springBootProjectResources);
 
         // Find and add appropriate springBoot features
-        List<String> featuresNeededForSpringBootApp = getLibertyFeaturesForSpringBoot(springBootVersion, 
-        		dependencies, applicationProperties, logger);
+        List<String> featuresNeededForSpringBootApp = getLibertyFeaturesForSpringBoot(springBootVersion, dependencies,
+                applicationProperties, logger);
 
         serverConfig.addFeatures(featuresNeededForSpringBootApp);
 
-        // Get Spring Boot server properties
-        Properties springBootServerProps = getSpringBootServerProperties(applicationProperties, useDefaultHost);
-
-        // Configure SSL and endpoints (only when useDefaultHost=true)
-        if (useDefaultHost) {
-            if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE)) {
-
-                Map<String, String> keystoreProperties = new HashMap<String, String>();
-                Map<String, String> keyProperties = new HashMap<String, String>();
-
-                // For each Spring Boot keystore property, add an entry to the keystore map
-                // which maps our
-                // Liberty keystore attribute to a bootstrap variable with the same name as the
-                // Spring Boot property.
-                // The Spring Boot properties will then be added to the server's
-                // bootstrap.properties file.
-                keystoreProperties.put(ConfigConstants.LOCATION, BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE));
-
-                if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD)) {
-                    keystoreProperties.put(ConfigConstants.PASSWORD,
-                    		BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD));
-                }
-                if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE)) {
-                    keystoreProperties.put(ConfigConstants.TYPE, BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE));
-                }
-                if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER)) {
-                    keystoreProperties.put(ConfigConstants.PROVIDER,
-                    		BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER));
-                }
-
-                // Add any key properties to the separate key map.
-                if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_PASSWORD)) {
-                    keyProperties.put(ConfigConstants.KEY_PASSWORD,
-                    		BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEY_PASSWORD));
-                }
-                if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_ALIAS)) {
-                    keyProperties.put(ConfigConstants.NAME, BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEY_ALIAS));
-                }
-
-                // Create keystore element in server.xml and endpoint with http disabled.
-                serverConfig.addKeystore(keystoreProperties, keyProperties);
-                serverConfig.addHttpEndpoint(BoostUtil.makeVariable(SpringBootUtil.SERVER_ADDRESS), "-1",
-                		BoostUtil.makeVariable(SpringBootUtil.SERVER_PORT));
-
-                // Since the keystore for the Spring Boot app is created manually and already
-                // exists,
-                // if it is specified on the classpath, we need to copy it to the Liberty
-                // server. Otherwise,
-                // we can just reference the external location without needing to copy the file.
-                String keystoreFile = springBootServerProps.getProperty(SpringBootUtil.SERVER_SSL_KEYSTORE);
-
-                if (keystoreFile.startsWith("classpath:")) {
-                    // Keystore is in resources directory of spring boot application
-                    keystoreFile = keystoreFile.replace("classpath:", "");
-                    springBootServerProps.put(SpringBootUtil.SERVER_SSL_KEYSTORE, keystoreFile);
-
-                    // Copy keystore to Liberty
-                    Path springBootKeystorePath = Paths.get(springBootProjectResources, keystoreFile);
-                    Path libertyKeystorePath = Paths.get(libertyServerPath + "/resources/security/" + keystoreFile);
-                    Path libertySecurityPath = Paths.get(libertyServerPath + "/resources/security");
-
-                    Files.createDirectories(libertySecurityPath);
-                    Files.copy(springBootKeystorePath, libertyKeystorePath, StandardCopyOption.COPY_ATTRIBUTES,
-                            StandardCopyOption.REPLACE_EXISTING);
-                }
-
-            } else {
-                serverConfig.addHttpEndpoint(BoostUtil.makeVariable(SpringBootUtil.SERVER_ADDRESS),
-                        BoostUtil.makeVariable(SpringBootUtil.SERVER_PORT), null);
-            }
-
-        } else {
-            // Disable any other ports on the host
-            serverConfig.addHttpEndpoint("*", "-1", "-1");
-        }
-
-        // Add properties to bootstrap properties
-        serverConfig.addBootstrapProperties(springBootServerProps);
+        // Disable any other ports on the host and to use application configured port
+        serverConfig.addHttpEndpoint("*", "-1", "-1");
 
         serverConfig.writeToServer();
     }

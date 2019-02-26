@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull
 
 public class AbstractBoostTest {
     private static final String SERVER_XML = "build/wlp/usr/servers/BoostServer/server.xml"
-    private static final String BOOTSTRAP_PROPERTIES = "build/wlp/usr/servers/BoostServer/bootstrap.properties"
     private static final String SPRING_BOOT_15_FEATURE = "<feature>springBoot-1.5</feature>"
     private static final String SPRING_BOOT_20_FEATURE = "<feature>springBoot-2.0</feature>"
 
@@ -139,12 +138,10 @@ public class AbstractBoostTest {
 
     protected void testPackageContentsforSpring15() throws IOException {
         testFeatureInServerXML(SPRING_BOOT_15_FEATURE)
-        testBoostStrapProperties()
     }
 
     protected void testPackageContentsforSpring20() throws IOException {
         testFeatureInServerXML(SPRING_BOOT_20_FEATURE)
-        testBoostStrapProperties()
     }
 
     protected void testFeatureInServerXML(String feature) {
@@ -170,30 +167,33 @@ public class AbstractBoostTest {
         assertTrue("The " + feature + " feature was not found in the server configuration", found);
     }
 
-    protected void testBoostStrapProperties() throws Exception {
-        File propertiesFile = new File(testProjectDir, BOOTSTRAP_PROPERTIES)
-        assertTrue(propertiesFile.getAbsolutePath() + " does not exist.", propertiesFile.exists())
-
-        FileReader fileReader;
-        BufferedReader bufferedReader;
-
+    /*
+     * Test the packaged Spring Boot liberty jar using java -jar command
+     */
+    public void testSpringBootEndpoint(File packagedJar) throws Exception{
+        Process proc = Runtime.getRuntime().exec("java -jar " + packagedJar.getAbsolutePath());
+        String line = null;
+        BufferedReader reader;
         try {
-            fileReader = new FileReader(propertiesFile)
-            bufferedReader = new BufferedReader(fileReader)
-            String line = bufferedReader.readLine()
-            assertNotNull(propertiesFile.getAbsolutePath() + " cannot be empty.", line)
-            assertTrue("Comment not found.", line.startsWith("#"))
-            line = bufferedReader.readLine()
-            assertEquals("Expected line not found.", "server.liberty.use-default-host=false", line)
-        } finally {
-            if (fileReader !=null) {
-                fileReader.close()
+            reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))
+            line = reader.readLine()
+            while (line != null) {
+                if (line.contains("CWWKT0016I")) {
+                    break
+                }
+                line = reader.readLine()
             }
-
-            if(bufferedReader != null) {
-                bufferedReader.close()
+        } finally {
+            if(reader !=null){
+                reader.close()
             }
         }
+        assertNotNull("The endpoint is not available", line)
+        assertTrue("Expected log not found", line.contains("CWWKT0016I") && line.contains("default_host"))
+        int start = line.indexOf("http");
+        String url = line.substring(start);
+        testServlet("http://localhost:8080/", "Greetings from Spring Boot!")
+        proc.destroy()
     }
 }
 
