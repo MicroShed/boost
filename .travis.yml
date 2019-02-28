@@ -5,35 +5,9 @@ jdk:
     - openjdk8
     - oraclejdk8
     - oraclejdk9
-matrix:
-    exclude:
-    # Exclude 18.0.0.3 with Java 9
-    - jdk: oraclejdk9
-      env: RUNTIME=ol RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
-    - jdk: oraclejdk9
-      env: RUNTIME=ol RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
-    - jdk: oraclejdk9
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
-    - jdk: oraclejdk9
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
-    # Exclude some other 18.0.0.3 WLP just to reduce overall build time
-    - jdk: oraclejdk8
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
-    - jdk: oraclejdk8
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
-    - jdk: oraclejdk9
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
-    - jdk: oraclejdk9
-      env: RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
 env:
-    - RUNTIME=ol RUNTIME_VERSION=18.0.0.4 BUILD_TOOL=maven
-    - RUNTIME=ol RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
-    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.4 BUILD_TOOL=maven
-    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=maven
-    - RUNTIME=ol RUNTIME_VERSION=18.0.0.4 BUILD_TOOL=gradle
-    - RUNTIME=ol RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
-    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.4 BUILD_TOOL=gradle
-    - RUNTIME=wlp RUNTIME_VERSION=18.0.0.3 BUILD_TOOL=gradle
+    - RUNTIME=ol RUNTIME_VERSION=19.0.0.2 BUILD_TOOL=maven
+    - RUNTIME=ol RUNTIME_VERSION=19.0.0.2 BUILD_TOOL=gradle
 cache:
     directories:
         - $HOME/.m2
@@ -41,8 +15,9 @@ services:
     - docker
 before_install:
      - echo "Deleting old .m2 artifacts..."
-     - rm -rf $HOME/.m2/repository/net/wasdev
      - rm -rf $HOME/.m2/repository/io/openliberty
+     - wget https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/nightly/2019-02-26_2202/openliberty-all-19.0.0.2-cl190220190226-1900.zip
+     - mvn install:install-file -Dfile=openliberty-all-19.0.0.2-cl190220190226-1900.zip -DgroupId=io.openliberty -DartifactId=openliberty-runtime -Dversion=19.0.0.2 -Dpackaging=zip
      - docker run -d -p 5000:5000 --restart=always --name registry registry:2
 install: true
 script:

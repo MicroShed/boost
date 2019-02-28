@@ -22,7 +22,7 @@ trap 'error_handler' ERR
 
 # Set up a repeating loop to send some output to Travis.
 
-bash -c "while true; do echo \$(date) - building ...; sleep $PING_SLEEP; done" &
+bash -c "while true; do echo \$(date) - building ...; $(dump_output); sleep $PING_SLEEP; done" &
 PING_LOOP_PID=$!
 
 # Run the build
