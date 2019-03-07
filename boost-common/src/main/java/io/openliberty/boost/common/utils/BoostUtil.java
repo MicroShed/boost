@@ -124,12 +124,7 @@ public class BoostUtil {
             }
 
             if (error.length() != 0) {
-                if (error.toString().contains("com.ibm.websphere.crypto.InvalidPasswordEncodingException")) {
-                    logger.warn("The provided password will be used because it was already encrypted.");
-                    return password;
-                } else {
-                    throw new IOException("Password encryption failed: " + error);
-                }
+                throw new IOException("Password encryption failed: " + error);
             }
 
             return out.toString();
