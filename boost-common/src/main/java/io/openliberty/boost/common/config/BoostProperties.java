@@ -29,6 +29,8 @@ public final class BoostProperties {
     public static final String DATASOURCE_PASSWORD = "boost.db.password";
     public static final String DATASOURCE_CREATE_DATABASE = "boost.db.createDatabase";
 
+    public static final String PASSWORD_ENCRYPTION_KEY = "boost.db.password.key";
+
     public static final String INTERNAL_COMPILER_TARGET = "boost.internal.compiler.target";
 
     /**

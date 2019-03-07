@@ -19,15 +19,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class Db2PropertiesIT {
+public class Db2PasswordAesIT {
 
     private final String DB_NAME = "myCustomDB";
     private final String DB_USER = "user";
-    private final String AES_HASHED_PASSWORD_FLAG = "{aes}";
+    private final String ENCODED_DB_PASS = "{aes}Lz4sLCgwLTs=";
 
     @Test
     public void checkPropertiesTest() {
-
+    
         Properties bootstrapProperties = new Properties();
         InputStream input = null;
 
@@ -37,9 +37,8 @@ public class Db2PropertiesIT {
             bootstrapProperties.load(input);
 
             assertEquals("Incorrect boost.db.user found in bootstrap.properties.", DB_USER, bootstrapProperties.getProperty("boost.db.user"));
+            assertEquals("Incorrect boost.db.password found in bootstrap.properties.", ENCODED_DB_PASS, bootstrapProperties.getProperty("boost.db.password"));
             assertEquals("Incorrect boost.db.databaseName found in bootstrap.properties.", DB_NAME, bootstrapProperties.getProperty("boost.db.databaseName"));
-            //AES hashed password changes so we're just going to look for the aes flag.
-            assertTrue("Incorrect boost.db.password found in bootstrap.properties.", bootstrapProperties.getProperty("boost.db.password").contains(AES_HASHED_PASSWORD_FLAG));
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -52,4 +51,4 @@ public class Db2PropertiesIT {
             }
         }
     }
-}
+} 

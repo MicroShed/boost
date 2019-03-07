@@ -17,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -88,38 +90,51 @@ public class BoostUtil {
         }
     }
 
-    public static String encrypt(String libertyInstallPath, String password, BoostLoggerI logger) throws IOException {
+    public static String encrypt(String libertyInstallPath, String password, String encryptionKey, BoostLoggerI logger) throws IOException {
+        //Won't encode the password if it contains the aes flag
+        if (!password.contains("{aes}")) {
+            Runtime rt = Runtime.getRuntime();
+            List<String> commands = new ArrayList<String>();
 
-        Runtime rt = Runtime.getRuntime();
-        String[] commands = { getSecurityUtilCmd(libertyInstallPath), "encode", password };
-        Process proc = rt.exec(commands);
+            commands.add(getSecurityUtilCmd(libertyInstallPath));
+            commands.add("encode");
+            commands.add(password);
+            commands.add("--encoding=aes");
 
-        BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-
-        String s = null;
-
-        StringBuilder out = new StringBuilder();
-        while ((s = stdInput.readLine()) != null) {
-            out.append(s);
-        }
-
-        StringBuilder error = new StringBuilder();
-        while ((s = stdError.readLine()) != null) {
-            error.append(s + "\n");
-        }
-
-        if (error.length() != 0) {
-            if (error.toString().contains("com.ibm.websphere.crypto.InvalidPasswordEncodingException")) {
-                logger.warn("The provided password will be used because it was already encrypted.");
-                return password;
-            } else {
-                throw new IOException("Password encryption failed: " + error);
+            if(encryptionKey != null && !encryptionKey.equals("")) {
+                commands.add("--key=" + encryptionKey);
             }
-        }
 
-        return out.toString();
+            Process proc = rt.exec(commands.toArray(new String[0]));
+
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+
+            String s = null;
+
+            StringBuilder out = new StringBuilder();
+            while ((s = stdInput.readLine()) != null) {
+                out.append(s);
+            }
+
+            StringBuilder error = new StringBuilder();
+            while ((s = stdError.readLine()) != null) {
+                error.append(s + "\n");
+            }
+
+            if (error.length() != 0) {
+                if (error.toString().contains("com.ibm.websphere.crypto.InvalidPasswordEncodingException")) {
+                    logger.warn("The provided password will be used because it was already encrypted.");
+                    return password;
+                } else {
+                    throw new IOException("Password encryption failed: " + error);
+                }
+            }
+
+            return out.toString();
+        }
+        return password;
     }
 
 }
