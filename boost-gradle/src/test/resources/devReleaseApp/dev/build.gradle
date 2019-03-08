@@ -8,7 +8,7 @@ buildscript {
         maven { url 'https://repo.spring.io/plugins-snapshot' }
     }
     dependencies {
-        classpath("io.openliberty.boost:boost-gradle-plugin:0.1.1-SNAPSHOT")
+        classpath("io.openliberty.boost:boost-gradle-plugin:${boostVersion}")
 		classpath 'io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE'
     }
 }
@@ -35,7 +35,7 @@ targetCompatibility = 1.8
 
 dependencyManagement {
     imports {
-          mavenBom "io.openliberty.boosters:ee8-bom:0.1.3-SNAPSHOT"
+          mavenBom "io.openliberty.boosters:ee8-bom:${boosterVersion}"
     }
 }
 

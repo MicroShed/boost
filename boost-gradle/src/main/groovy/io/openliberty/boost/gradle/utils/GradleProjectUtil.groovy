@@ -49,7 +49,13 @@ public class GradleProjectUtil {
 
         try {
             //Projects without the war/java plugin won't have this configuration
-            dependencies.putAll(project.configurations.getByName('compileClasspath'), logger)
+            //compileClasspath is not a regular Configuration object so we have to go through without using getAllDependenciesFromConfiguration()
+            project.configurations.getByName('compileClasspath').resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
+                logger.debug("Found dependency while processing project: " + id.group.toString() + ":"
+                        + id.name.toString() + ":" + id.version.toString())
+                        
+                dependencies.put(id.group.toString() + ":" + id.name.toString(), id.version.toString())
+            }
         } catch (UnknownConfigurationException ue) {
             logger.debug("The compileClasspath configuration was not found.")
         }

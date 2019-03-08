@@ -8,7 +8,7 @@ buildscript {
         maven { url 'https://repo.spring.io/plugins-snapshot' }
     }
     dependencies {
-        classpath("io.openliberty.boost:boost-gradle-plugin:0.1.1-SNAPSHOT")
+        classpath("io.openliberty.boost:boost-gradle-plugin:${boostVersion}")
     }
 }
 
