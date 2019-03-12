@@ -54,7 +54,7 @@ public class BoostPackageJDBCDB2Test extends AbstractBoostTest {
         BuildResult result = GradleRunner.create()
             .withProjectDir(testProjectDir)
             .forwardOutput()
-            .withArguments("clean", "boostPackage", "-Dboost.db.databaseName=myCustomDB", "-Dboost.db.user=user", "-Dboost.db.password=password", "-Dboost.db.password.key=test", "-i", "-s")
+            .withArguments("clean", "boostPackage", "-Dboost.db.databaseName=myCustomDB", "-Dboost.db.user=user", "-Dboost.db.password=password", "-Dboost.aes.key=test", "-i", "-s")
             .build()
             
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
@@ -92,7 +92,7 @@ public class BoostPackageJDBCDB2Test extends AbstractBoostTest {
         BuildResult result = GradleRunner.create()
             .withProjectDir(testProjectDir)
             .forwardOutput()
-            .withArguments("clean", "boostPackage", "-Dboost.db.databaseName=myCustomDB", "-Dboost.db.user=user", "-Dboost.db.password={aes}Lz4sLCgwLTs=", "-Dboost.db.password.key=test", "-i", "-s")
+            .withArguments("clean", "boostPackage", "-Dboost.db.databaseName=myCustomDB", "-Dboost.db.user=user", "-Dboost.db.password={aes}Lz4sLCgwLTs=", "-Dboost.aes.key=test", "-i", "-s")
             .build()
             
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())

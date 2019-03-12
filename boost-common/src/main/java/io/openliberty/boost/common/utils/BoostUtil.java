@@ -90,16 +90,21 @@ public class BoostUtil {
         }
     }
 
-    public static String encrypt(String libertyInstallPath, String password, String encryptionKey, BoostLoggerI logger) throws IOException {
-        //Won't encode the password if it contains the aes flag
-        if (!password.contains("{aes}")) {
+    public static String encrypt(String libertyInstallPath, String property, String encryptionType, String encryptionKey, BoostLoggerI logger) throws IOException {
+        //Won't encode the property if it contains the aes flag
+        if (!isEncoded(property)) {
             Runtime rt = Runtime.getRuntime();
             List<String> commands = new ArrayList<String>();
 
             commands.add(getSecurityUtilCmd(libertyInstallPath));
             commands.add("encode");
-            commands.add(password);
-            commands.add("--encoding=aes");
+            commands.add(property);
+
+            if(encryptionType != null && !encryptionType.equals("")) {
+                commands.add("--encoding=" + encryptionType);
+            } else {
+                commands.add("--encoding=aes");
+            }
 
             if(encryptionKey != null && !encryptionKey.equals("")) {
                 commands.add("--key=" + encryptionKey);
@@ -129,7 +134,11 @@ public class BoostUtil {
 
             return out.toString();
         }
-        return password;
+        return property;
+    }
+
+    public static boolean isEncoded(String property) {
+        return property.contains("{aes}") || property.contains("{hash}") || property.contains("{xor}");
     }
 
 }

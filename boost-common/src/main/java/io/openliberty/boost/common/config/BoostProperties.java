@@ -11,9 +11,8 @@
 
 package io.openliberty.boost.common.config;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Properties;
 
 import io.openliberty.boost.common.BoostLoggerI;
@@ -29,7 +28,7 @@ public final class BoostProperties {
     public static final String DATASOURCE_PASSWORD = "boost.db.password";
     public static final String DATASOURCE_CREATE_DATABASE = "boost.db.createDatabase";
 
-    public static final String PASSWORD_ENCRYPTION_KEY = "boost.db.password.key";
+    public static final String AES_ENCRYPTION_KEY = "boost.aes.key";
 
     public static final String INTERNAL_COMPILER_TARGET = "boost.internal.compiler.target";
 
@@ -38,9 +37,12 @@ public final class BoostProperties {
      * 
      * @return
      */
-    public static List<String> getPropertiesToEncrypt() {
-        List<String> propertiesToEncrypt = new ArrayList<String>();
-        propertiesToEncrypt.add(DATASOURCE_PASSWORD);
+    public static Map<String, String> getPropertiesToEncrypt() {
+        Map<String, String> propertiesToEncrypt = new HashMap<String, String>();
+
+        //Add default encryption types for properties we define
+        propertiesToEncrypt.put(DATASOURCE_PASSWORD, "aes");
+
         return propertiesToEncrypt;
     }
 

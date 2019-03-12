@@ -214,18 +214,20 @@ public class LibertyServerConfigGenerator {
 
         if (properties != null) {
 
-            List<String> propertiesToEncrypt = BoostProperties.getPropertiesToEncrypt();
+            //Using this to hold the properties we want to encrypt and the type of encryption we want to use
+            Map<String, String> propertiesToEncrypt = BoostProperties.getPropertiesToEncrypt();
 
             for (String key : properties.stringPropertyNames()) {
                 String value = properties.getProperty(key);
 
-                if (propertiesToEncrypt.contains(key) && value != null && !value.equals("")) {
+                if (propertiesToEncrypt.containsKey(key) && value != null && !value.equals("")) {
                     //Getting properties that might not have been passed with the other properties that will be written to boostrap.properties
                     //Don't want to add certain properties to the boostrap properties so we'll grab them here
                     Properties supportedProperties = BoostProperties.getConfiguredBoostProperties(logger);
                     value = BoostUtil.encrypt(libertyInstallPath,
                                               properties.getProperty(key),
-                                              supportedProperties.getProperty(BoostProperties.PASSWORD_ENCRYPTION_KEY), 
+                                              propertiesToEncrypt.get(key),
+                                              supportedProperties.getProperty(BoostProperties.AES_ENCRYPTION_KEY), 
                                               logger);
                 }
 
