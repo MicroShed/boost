@@ -30,6 +30,7 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
     public static String DERBY_DEPENDENCY = "org.apache.derby:derby";
     public static String DB2_DEPENDENCY = "com.ibm.db2.jcc:db2jcc";
+    public static String MYSQL_DEPENDENCY = "mysql:mysql-connector-java";
 
     private static String DERBY_DEFAULT = "org.apache.derby:derby:10.14.2.0";
 
@@ -50,6 +51,10 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
         } else if (dependencies.containsKey(JDBCBoosterConfig.DB2_DEPENDENCY)) {
             String db2Version = dependencies.get(JDBCBoosterConfig.DB2_DEPENDENCY);
             configuredDatabaseDep = JDBCBoosterConfig.DB2_DEPENDENCY + ":" + db2Version;
+            
+        } else if (dependencies.containsKey(JDBCBoosterConfig.MYSQL_DEPENDENCY)) {
+            String mysqlVersion = dependencies.get(JDBCBoosterConfig.MYSQL_DEPENDENCY);
+            configuredDatabaseDep = JDBCBoosterConfig.MYSQL_DEPENDENCY + ":" + mysqlVersion;
         }
 
         Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
@@ -83,8 +88,10 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
         // Initialize defaults and required properties for each datasource vendor
         if (this.dependency.startsWith(DERBY_DEPENDENCY)) {
+        	// Embedded Derby requires a database name. Set a default for this and create it. 
             this.serverProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, DERBY_DB);
             this.serverProperties.put(BoostProperties.DATASOURCE_CREATE_DATABASE, "create");
+            
         } else if (this.dependency.startsWith(DB2_DEPENDENCY)) {
         	// For DB2, since we are expecting the database to exist, there is no
         	// default value we can set for databaseName that would be of any use.
@@ -97,8 +104,16 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
         	this.serverProperties.put(BoostProperties.DATASOURCE_USER, "");
         	this.serverProperties.put(BoostProperties.DATASOURCE_PASSWORD, "");
             this.serverProperties.put(BoostProperties.DATASOURCE_SERVER_NAME, LOCALHOST);
-            this.serverProperties.put(BoostProperties.DATASOURCE_PORT_NUMBER, "50000");
-        }
+            this.serverProperties.put(BoostProperties.DATASOURCE_PORT_NUMBER, DB2_DEFAULT_PORT_NUMBER); 
+            
+        } else if (this.dependency.startsWith(MYSQL_DEPENDENCY)) {
+        	// Same set of minimum requirements for MySQL
+        	this.serverProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, "");
+        	this.serverProperties.put(BoostProperties.DATASOURCE_USER, "");
+        	this.serverProperties.put(BoostProperties.DATASOURCE_PASSWORD, "");
+            this.serverProperties.put(BoostProperties.DATASOURCE_SERVER_NAME, LOCALHOST);
+            this.serverProperties.put(BoostProperties.DATASOURCE_PORT_NUMBER, MYSQL_DEFAULT_PORT_NUMBER); 
+        } 
         
         // Find and add all "boost.db." properties. This will override any default values
         for (String key : boostConfigProperties.stringPropertyNames()) {
@@ -134,6 +149,10 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
         } else if (dependency.startsWith(DB2_DEPENDENCY)) {
         	addDatasourceConfig(doc, PROPERTIES_DB2_JCC, DB2_JAR);
+        	
+        } else if (dependency.startsWith(MYSQL_DEPENDENCY)) {
+        	// Use generic <properties> element for MySQL 
+        	addDatasourceConfig(doc, PROPERTIES, MYSQL_JAR);
         }
     }
 

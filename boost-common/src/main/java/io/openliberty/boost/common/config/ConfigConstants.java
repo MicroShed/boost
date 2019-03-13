@@ -51,6 +51,7 @@ public final class ConfigConstants {
     public static final String FILESET = "fileset";
     public static final String PROPERTIES_DERBY_EMBEDDED = "properties.derby.embedded";
     public static final String PROPERTIES_DB2_JCC = "properties.db2.jcc";
+    public static final String PROPERTIES = "properties";
     public static final String CONTAINER_AUTH_DATA_REF = "containerAuthDataRef";
 
     // Datasource configuration values
@@ -61,6 +62,9 @@ public final class ConfigConstants {
     public static final String DATASOURCE_AUTH_DATA = "datasourceAuth";
     public static final String DERBY_JAR = "derby*.jar";
     public static final String DB2_JAR = "db2jcc*.jar";
+    public static final String MYSQL_JAR = "mysql*.jar";
+    public static final String DB2_DEFAULT_PORT_NUMBER = "50000";
+    public static final String MYSQL_DEFAULT_PORT_NUMBER = "3306";
 
     // Authentication configuration element/attribute names
     public static final String AUTH_DATA = "authData";
