@@ -104,7 +104,7 @@
                 <artifactId>boost-maven-plugin</artifactId>
                 <version>@pom.version@</version>
                 <configuration>
-                    <useDefaultHost>true</useDefaultHost>
+                    <useDefaultHost>false</useDefaultHost>
                 </configuration>
                 <executions>
                     <execution>
