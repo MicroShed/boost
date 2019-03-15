@@ -29,9 +29,9 @@ import static org.gradle.testkit.runner.TaskOutcome.*
 
 public class BoostPackageJdbcDb2AesTest extends AbstractBoostTest {
 
-    static File resourceDir = new File("build/resources/test/test-jdbc-db2")
-    static File testProjectDir = new File(integTestDir, "BoostPackageJDBCDB2Test")
-    static String buildFilename = "jdbcDb2.gradle"
+    static File resourceDir = new File("build/resources/test/test-jdbc")
+    static File testProjectDir = new File(integTestDir, "BoostPackageJdbcDb2AesTest")
+    static String buildFilename = "db2.gradle"
 
     private static final String DB2_JAR = "build/wlp/usr/servers/BoostServer/resources/db2jcc-db2jcc4.jar";
     private static final String JDBC_42_FEATURE = "<feature>jdbc-4.2</feature>"
