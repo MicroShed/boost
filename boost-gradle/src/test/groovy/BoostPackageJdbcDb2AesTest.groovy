@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue
 
 import static org.gradle.testkit.runner.TaskOutcome.*
 
-public class BoostPackageJDBCDB2Test extends AbstractBoostTest {
+public class BoostPackageJdbcDb2AesTest extends AbstractBoostTest {
 
     static File resourceDir = new File("build/resources/test/test-jdbc-db2")
     static File testProjectDir = new File(integTestDir, "BoostPackageJDBCDB2Test")
