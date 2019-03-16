@@ -12,9 +12,11 @@ package io.openliberty.boost.maven.liberty;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.commons.io.FileUtils;
@@ -77,6 +79,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                                                              // with a
                                                              // spring
                                                              // boot app
+
             springBootClassifier = net.wasdev.wlp.maven.plugins.utils.SpringBootUtil
                     .getSpringBootMavenPluginClassifier(project, getLog());
 
@@ -99,7 +102,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             generateServerConfigSpringBoot();
 
             installMissingFeatures();
-            installApp(ConfigConstants.SPRING_BOOT_PROJ);
+            installApp(ConfigConstants.INSTALL_PACKAGE_SPRING);
 
             if (springBootUberJar != null) {
                 // Create the Liberty Uber JAR from the Spring Boot Uber JAR in
@@ -119,17 +122,17 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             }
         } else { // Dealing with an EE based app
 
-            // Get booster dependencies from project
-            Map<String, String> dependencies = MavenProjectUtil.getAllDependencies(project, BoostLogger.getInstance());
-
-            // Determine the Java compiler target version and set this
-            // internally
+            // Get the Java compiler target version
             String javaCompilerTargetVersion = MavenProjectUtil.getJavaCompilerTargetVersion(project);
             System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, javaCompilerTargetVersion);
 
             try {
+                Map<String, String> dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession,
+                        remoteRepos, BoostLogger.getInstance());
+
                 this.boosterPackConfigurators = BoosterConfigurator.getBoosterPackConfigurators(dependencies,
                         BoostLogger.getInstance());
+
             } catch (Exception e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
@@ -144,7 +147,15 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             // If we installed the app prior to server.xml configuration, then
             // the LMP would write out a webapp stanza into config dropins that
             // would include a config-root setting set to the app name.
-            installApp(ConfigConstants.NORMAL_PROJ);
+            if (project.getPackaging().equals("war")) {
+                installApp(ConfigConstants.INSTALL_PACKAGE_ALL);
+            } else {
+                // This is temporary. When packing type is "jar", if we
+                // set installAppPackages=all, the LMP will try to install
+                // the project jar and fail. Once this is fixed, we can always
+                // set installAppPackages=all.
+                installApp(ConfigConstants.INSTALL_PACKAGE_DEP);
+            }
 
             // Not sure this works yet, the main idea is to NOT create this with
             // a WAR
@@ -165,7 +176,8 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
 
         try {
             // Get Spring Boot starters from Maven project
-            Map<String, String> dependencies = MavenProjectUtil.getAllDependencies(project, BoostLogger.getInstance());
+            Map<String, String> dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession,
+                    remoteRepos, BoostLogger.getInstance());
 
             // Generate server config
             SpringBootUtil.generateLibertyServerConfig(projectBuildDir + "/classes", libertyServerPath,
@@ -184,24 +196,35 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
      */
     private void generateServerConfigEE() throws MojoExecutionException {
 
-        String warName = null;
-
-        if (project.getPackaging().equals(ConfigConstants.WAR_PKG_TYPE)) {
-            if (project.getVersion() == null) {
-                warName = project.getArtifactId();
-            } else {
-                warName = project.getArtifactId() + "-" + project.getVersion();
-            }
-        }
-
+        List<String> warNames = getWarNames();
         try {
             // Generate server config
-            BoosterConfigurator.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warName,
+            BoosterConfigurator.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warNames,
                     BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
         }
+    }
+
+    private List<String> getWarNames() {
+        List<String> warNames = new ArrayList<String>();
+
+        for (Artifact artifact : project.getArtifacts()) {
+            if (artifact.getType().equals("war")) {
+                warNames.add(artifact.getArtifactId() + "-" + artifact.getVersion());
+            }
+        }
+
+        if (project.getPackaging().equals(ConfigConstants.WAR_PKG_TYPE)) {
+            if (project.getVersion() == null) {
+                warNames.add(project.getArtifactId());
+            } else {
+                warNames.add(project.getArtifactId() + "-" + project.getVersion());
+            }
+        }
+
+        return warNames;
     }
 
     /**
@@ -293,7 +316,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         Element serverName = element(name("serverName"), libertyServerName);
 
         Xpp3Dom configuration = configuration(installAppPackages, serverName, getRuntimeArtifactElement());
-        if (ConfigConstants.NORMAL_PROJ.equals(installAppPackagesVal)) {
+        if (!ConfigConstants.INSTALL_PACKAGE_SPRING.equals(installAppPackagesVal)) {
             configuration.addChild(element(name("appsDirectory"), "apps").toDom());
             configuration.addChild(element(name("looseApplication"), "true").toDom());
         }
@@ -363,5 +386,4 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                         element(name("packageFile"), packageFilePath), element(name("serverName"), libertyServerName)),
                 getExecutionEnvironment());
     }
-
 }

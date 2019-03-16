@@ -29,6 +29,7 @@ public class BoosterConfigurator {
      * take a list of pom boost dependency strings and map to liberty features
      * for config. return a list of feature configuration objects for each found
      * dependency.
+     * 
      * @param dependencies
      * @param logger
      * @return
@@ -41,31 +42,33 @@ public class BoosterConfigurator {
      * @throws SecurityException
      */
     public static List<AbstractBoosterConfig> getBoosterPackConfigurators(Map<String, String> dependencies,
-            BoostLoggerI logger) throws BoostException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+            BoostLoggerI logger) throws BoostException, InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 
         List<AbstractBoosterConfig> boosterPackConfigList = new ArrayList<AbstractBoosterConfig>();
-        
+
         Reflections reflections = new Reflections("io.openliberty.boost.common.boosters");
 
         Set<Class<? extends AbstractBoosterConfig>> allClasses = reflections.getSubTypesOf(AbstractBoosterConfig.class);
-        for(Class<? extends AbstractBoosterConfig> boosterClass : allClasses) {
+        for (Class<? extends AbstractBoosterConfig> boosterClass : allClasses) {
             if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(boosterClass))) {
                 Constructor<?> cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
                 Object o = cons.newInstance(dependencies, logger);
-                if(o instanceof AbstractBoosterConfig) {
-                    boosterPackConfigList.add((AbstractBoosterConfig)o);
-                }
-                else {
-                    throw new BoostException("Found a class in io.openliberty.boost.common.boosters that did not extend AbstractBoosterConfig. This should never happen.");
+                if (o instanceof AbstractBoosterConfig) {
+                    boosterPackConfigList.add((AbstractBoosterConfig) o);
+                } else {
+                    throw new BoostException(
+                            "Found a class in io.openliberty.boost.common.boosters that did not extend AbstractBoosterConfig. This should never happen.");
                 }
             }
         }
-        
+
         return boosterPackConfigList;
     }
 
     public static void generateLibertyServerConfig(String libertyServerPath,
-            List<AbstractBoosterConfig> boosterPackConfigurators, String warName, BoostLoggerI logger) throws Exception {
+            List<AbstractBoosterConfig> boosterPackConfigurators, List<String> warNames, BoostLoggerI logger)
+            throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath, logger);
 
@@ -77,11 +80,13 @@ public class BoosterConfigurator {
         }
 
         // Add war configuration is necessary
-        if (warName != null) {
-            serverConfig.addApplication(warName);
+        if (!warNames.isEmpty()) {
+            for (String warName : warNames) {
+                serverConfig.addApplication(warName);
+            }
         } else {
             throw new Exception(
-                    "Unsupported packaging type - Liberty Boost currently supports WAR packaging type only.");
+                    "No war files were found. The project must have a war packaging type or specify war dependencies.");
         }
 
         serverConfig.writeToServer();
