@@ -8,12 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.boosters;
-
-import static io.openliberty.boost.common.config.ConfigConstants.JSONP_11;
-
-import java.util.Map;
-import java.util.Properties;
+package io.openliberty.boost.common.boosters.liberty;
 
 import org.w3c.dom.Document;
 
@@ -21,18 +16,23 @@ import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jsonp")
-public class JSONPBoosterConfig extends AbstractBoosterConfig {
+import static io.openliberty.boost.common.config.LibertyConfigConstants.*;
+
+import java.util.Map;
+import java.util.Properties;
+
+@BoosterCoordinates(AbstractBoosterLibertyConfig.BOOSTERS_GROUP_ID + ":jaxrs")
+public class JAXRSBoosterLibertyConfig extends AbstractBoosterLibertyConfig {
 
     String libertyFeature = null;
 
-    public JSONPBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+    public JAXRSBoosterLibertyConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
-        
-        if (version.equals(MP_20_VERSION)) {
-            libertyFeature = JSONP_11;
+        if (version.equals(EE_7_VERSION)) {
+            libertyFeature = JAXRS_20;
+        } else if (version.equals(EE_8_VERSION)) {
+            libertyFeature = JAXRS_21;
         }
-
     }
 
     @Override
@@ -43,19 +43,17 @@ public class JSONPBoosterConfig extends AbstractBoosterConfig {
     @Override
     public void addServerConfig(Document doc) {
         // No config to write
-
     }
 
     @Override
     public String getDependency() {
-        // TODO Auto-generated method stub
+
         return null;
     }
 
     @Override
     public Properties getServerProperties() {
-        // TODO Auto-generated method stub
+
         return null;
     }
-
 }

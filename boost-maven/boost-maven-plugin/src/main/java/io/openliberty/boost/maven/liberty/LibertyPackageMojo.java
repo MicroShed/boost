@@ -24,11 +24,11 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.apache.maven.plugins.annotations.*;
 
 import io.openliberty.boost.common.BoostException;
-import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
+import io.openliberty.boost.common.boosters.liberty.AbstractBoosterLibertyConfig;
 import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterConfigurator;
-import io.openliberty.boost.common.config.ConfigConstants;
+import io.openliberty.boost.common.config.LibertyConfigConstants;
 import io.openliberty.boost.common.utils.SpringBootUtil;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
@@ -42,10 +42,10 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  * the 'jar' packaging type).
  *
  */
-@Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "liberty-package", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class LibertyPackageMojo extends AbstractLibertyMojo {
 
-    protected List<AbstractBoosterConfig> boosterPackConfigurators;
+    protected List<AbstractBoosterLibertyConfig> boosterPackConfigurators;
 
     String springBootVersion = null;
 
@@ -102,7 +102,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             generateServerConfigSpringBoot();
 
             installMissingFeatures();
-            installApp(ConfigConstants.INSTALL_PACKAGE_SPRING);
+            installApp(LibertyConfigConstants.INSTALL_PACKAGE_SPRING);
 
             if (springBootUberJar != null) {
                 // Create the Liberty Uber JAR from the Spring Boot Uber JAR in
@@ -130,7 +130,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                 Map<String, String> dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession,
                         remoteRepos, BoostLogger.getInstance());
 
-                this.boosterPackConfigurators = BoosterConfigurator.getBoosterPackConfigurators(dependencies,
+                this.boosterPackConfigurators = BoosterConfigurator.getBoosterLibertyConfigurators(dependencies,
                         BoostLogger.getInstance());
 
             } catch (Exception e) {
@@ -148,13 +148,13 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             // the LMP would write out a webapp stanza into config dropins that
             // would include a config-root setting set to the app name.
             if (project.getPackaging().equals("war")) {
-                installApp(ConfigConstants.INSTALL_PACKAGE_ALL);
+                installApp(LibertyConfigConstants.INSTALL_PACKAGE_ALL);
             } else {
                 // This is temporary. When packing type is "jar", if we
                 // set installAppPackages=all, the LMP will try to install
                 // the project jar and fail. Once this is fixed, we can always
                 // set installAppPackages=all.
-                installApp(ConfigConstants.INSTALL_PACKAGE_DEP);
+                installApp(LibertyConfigConstants.INSTALL_PACKAGE_DEP);
             }
 
             // Not sure this works yet, the main idea is to NOT create this with
@@ -216,7 +216,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
             }
         }
 
-        if (project.getPackaging().equals(ConfigConstants.WAR_PKG_TYPE)) {
+        if (project.getPackaging().equals(LibertyConfigConstants.WAR_PKG_TYPE)) {
             if (project.getVersion() == null) {
                 warNames.add(project.getArtifactId());
             } else {
@@ -316,7 +316,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         Element serverName = element(name("serverName"), libertyServerName);
 
         Xpp3Dom configuration = configuration(installAppPackages, serverName, getRuntimeArtifactElement());
-        if (!ConfigConstants.INSTALL_PACKAGE_SPRING.equals(installAppPackagesVal)) {
+        if (!LibertyConfigConstants.INSTALL_PACKAGE_SPRING.equals(installAppPackagesVal)) {
             configuration.addChild(element(name("appsDirectory"), "apps").toDom());
             configuration.addChild(element(name("looseApplication"), "true").toDom());
         }

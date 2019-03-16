@@ -8,12 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.boosters;
-
-import static io.openliberty.boost.common.config.ConfigConstants.MPCONFIG_13;
-
-import java.util.Map;
-import java.util.Properties;
+package io.openliberty.boost.common.boosters.liberty;
 
 import org.w3c.dom.Document;
 
@@ -21,16 +16,22 @@ import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpConfig")
-public class MPConfigBoosterConfig extends AbstractBoosterConfig {
+import static io.openliberty.boost.common.config.LibertyConfigConstants.*;
+
+import java.util.Map;
+import java.util.Properties;
+
+@BoosterCoordinates(AbstractBoosterLibertyConfig.BOOSTERS_GROUP_ID + ":jpa")
+public class JPABoosterLibertyConfig extends AbstractBoosterLibertyConfig {
 
     String libertyFeature = null;
-    
-    public MPConfigBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+
+    public JPABoosterLibertyConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
-        // if it is the 1.0 version = EE7 feature level
-        if (version.equals(MP_20_VERSION)) {
-            libertyFeature = MPCONFIG_13;
+        if (version.equals(EE_7_VERSION)) {
+            libertyFeature = JPA_21;
+        } else if (version.equals(EE_8_VERSION)) {
+            libertyFeature = JPA_22;
         }
     }
 
@@ -42,7 +43,6 @@ public class MPConfigBoosterConfig extends AbstractBoosterConfig {
     @Override
     public void addServerConfig(Document doc) {
         // No config to write
-
     }
 
     @Override
@@ -52,7 +52,6 @@ public class MPConfigBoosterConfig extends AbstractBoosterConfig {
 
     @Override
     public Properties getServerProperties() {
-        // TODO Auto-generated method stub
         return null;
     }
 }

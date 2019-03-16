@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.boost.common.config;
 
-import static io.openliberty.boost.common.config.ConfigConstants.*;
+import static io.openliberty.boost.common.config.LibertyConfigConstants.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,7 +36,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import io.openliberty.boost.common.BoostLoggerI;
-import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
+import io.openliberty.boost.common.boosters.liberty.AbstractBoosterLibertyConfig;
 import io.openliberty.boost.common.utils.BoostUtil;
 
 /**
@@ -61,7 +61,9 @@ public class LibertyServerConfigGenerator {
     public LibertyServerConfigGenerator(String serverPath, BoostLoggerI logger) throws ParserConfigurationException {
 
         this.serverPath = serverPath;
-        this.libertyInstallPath = serverPath + "/../../.."; // Three directories back from 'wlp/usr/servers/BoostServer'
+        this.libertyInstallPath = serverPath + "/../../.."; // Three directories
+                                                            // back from
+                                                            // 'wlp/usr/servers/BoostServer'
         this.logger = logger;
 
         generateDocument();
@@ -178,7 +180,8 @@ public class LibertyServerConfigGenerator {
     }
 
     /**
-     * Write the server.xml and bootstrap.properties to the server config directory
+     * Write the server.xml and bootstrap.properties to the server config
+     * directory
      *
      * @throws TransformerException
      * @throws IOException
@@ -228,7 +231,7 @@ public class LibertyServerConfigGenerator {
         }
     }
 
-    public void addBoosterConfig(AbstractBoosterConfig configurator) throws IOException {
+    public void addBoosterConfig(AbstractBoosterLibertyConfig configurator) throws IOException {
         configurator.addServerConfig(getServerDoc());
 
         Properties properties = configurator.getServerProperties();

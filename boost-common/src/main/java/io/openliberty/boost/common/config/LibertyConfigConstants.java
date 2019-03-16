@@ -11,7 +11,7 @@
 
 package io.openliberty.boost.common.config;
 
-public final class ConfigConstants {
+public final class LibertyConfigConstants {
 
     public static final String FEATURE = "feature";
     public static final String DEPENDENCY = "dependency";
@@ -21,8 +21,8 @@ public final class ConfigConstants {
     public static final String WAR_PKG_TYPE = "war";
 
     public static final String INSTALL_PACKAGE_SPRING = "spring-boot-project";
-    public static final String INSTALL_PACKAGE_ALL= "all";
-    public static final String INSTALL_PACKAGE_DEP= "dependencies";
+    public static final String INSTALL_PACKAGE_ALL = "all";
+    public static final String INSTALL_PACKAGE_DEP = "dependencies";
 
     public static final String FEATURE_MANAGER = "featureManager";
     public static final String HTTP_ENDPOINT = "httpEndpoint";

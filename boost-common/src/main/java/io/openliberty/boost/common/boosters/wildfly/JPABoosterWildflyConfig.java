@@ -8,52 +8,29 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.boosters;
-
-import org.w3c.dom.Document;
+package io.openliberty.boost.common.boosters.wildfly;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 
-import static io.openliberty.boost.common.config.ConfigConstants.*;
-
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jaxrs")
-public class JAXRSBoosterConfig extends AbstractBoosterConfig {
+@BoosterCoordinates(AbstractBoosterWildflyConfig.BOOSTERS_GROUP_ID + ":jpa")
+public class JPABoosterWildflyConfig extends AbstractBoosterWildflyConfig {
 
-    String libertyFeature = null;
-
-    public JAXRSBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+    public JPABoosterWildflyConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
-        if (version.equals(EE_7_VERSION)) {
-            libertyFeature = JAXRS_20;
-        } else if (version.equals(EE_8_VERSION)) {
-            libertyFeature = JAXRS_21;
-        }
     }
-
+    
     @Override
-    public String getFeature() {
-        return libertyFeature;
-    }
-
-    @Override
-    public void addServerConfig(Document doc) {
-        // No config to write
-    }
-
-    @Override
-    public String getDependency() {
-
+    public List<String> getCliCommands() {
         return null;
     }
 
     @Override
-    public Properties getServerProperties() {
-
+    public String getDependency() {
         return null;
     }
 }

@@ -11,7 +11,7 @@
 
 package io.openliberty.boost.common.utils;
 
-import static io.openliberty.boost.common.config.ConfigConstants.*;
+import static io.openliberty.boost.common.config.LibertyConfigConstants.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,7 +41,7 @@ import org.apache.commons.io.FileUtils;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
-import io.openliberty.boost.common.config.ConfigConstants;
+import io.openliberty.boost.common.config.LibertyConfigConstants;
 import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
 import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
 
@@ -60,16 +60,17 @@ public class SpringBootUtil {
     public static final String SERVER_SSL_KEY_ALIAS = "server.ssl.key-alias";
 
     private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
-    
+
     private static final String SPRING_WEBMVC = "org.springframework:spring-webmvc";
     private static final String SPRING_WEBSOCKET = "org.springframework:spring-websocket";
 
     private static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
 
     /**
-     * Get the expected path of the Spring Boot Uber JAR (with .spring extension)
-     * that was preserved during the Boost packaging process. No guarantee that the
-     * path exists or the artifact is indeed a Spring Boot Uber JAR.
+     * Get the expected path of the Spring Boot Uber JAR (with .spring
+     * extension) that was preserved during the Boost packaging process. No
+     * guarantee that the path exists or the artifact is indeed a Spring Boot
+     * Uber JAR.
      * 
      * @param artifact
      * @return the canonical path
@@ -117,8 +118,8 @@ public class SpringBootUtil {
     }
 
     /**
-     * Add the Spring Boot Version property to the Manifest file in the Liberty Uber
-     * JAR. This is to trick Spring Boot into not repackaging it.
+     * Add the Spring Boot Version property to the Manifest file in the Liberty
+     * Uber JAR. This is to trick Spring Boot into not repackaging it.
      * 
      * @param artifact
      * @param springBootVersion
@@ -221,8 +222,8 @@ public class SpringBootUtil {
         return applicationProperties;
     }
 
-    public static List<String> getLibertyFeaturesForSpringBoot(String springBootVersion, 
-    		Map<String, String> dependencies, Properties applicationProperties, BoostLoggerI logger) {
+    public static List<String> getLibertyFeaturesForSpringBoot(String springBootVersion,
+            Map<String, String> dependencies, Properties applicationProperties, BoostLoggerI logger) {
 
         List<String> featuresToAdd = new ArrayList<String>();
 
@@ -258,7 +259,8 @@ public class SpringBootUtil {
             featuresToAdd.add(TRANSPORT_SECURITY_10);
         }
 
-        // Add any other Liberty features needed depending on the spring framework
+        // Add any other Liberty features needed depending on the spring
+        // framework
         // dependencies defined
         for (String dependency : dependencies.keySet()) {
             if (dependency.equals(SPRING_WEBMVC)) {
@@ -292,10 +294,10 @@ public class SpringBootUtil {
      * @throws IOException
      * @throws TransformerException
      */
-    public static void generateLibertyServerConfig(String springBootProjectResources, String libertyServerPath, 
-    		String springBootVersion, Map<String, String> dependencies, BoostLoggerI logger, Boolean useDefaultHost) 
-    				throws ParserConfigurationException, IOException, TransformerException {
-        
+    public static void generateLibertyServerConfig(String springBootProjectResources, String libertyServerPath,
+            String springBootVersion, Map<String, String> dependencies, BoostLoggerI logger, Boolean useDefaultHost)
+            throws ParserConfigurationException, IOException, TransformerException {
+
         logger.info("Generating Liberty server configuration");
 
         // Generate Liberty configuration
@@ -305,8 +307,8 @@ public class SpringBootUtil {
         Properties applicationProperties = getSpringBootApplicationProperties(springBootProjectResources);
 
         // Find and add appropriate springBoot features
-        List<String> featuresNeededForSpringBootApp = getLibertyFeaturesForSpringBoot(springBootVersion, 
-        		dependencies, applicationProperties, logger);
+        List<String> featuresNeededForSpringBootApp = getLibertyFeaturesForSpringBoot(springBootVersion, dependencies,
+                applicationProperties, logger);
 
         serverConfig.addFeatures(featuresNeededForSpringBootApp);
 
@@ -320,49 +322,59 @@ public class SpringBootUtil {
                 Map<String, String> keystoreProperties = new HashMap<String, String>();
                 Map<String, String> keyProperties = new HashMap<String, String>();
 
-                // For each Spring Boot keystore property, add an entry to the keystore map
+                // For each Spring Boot keystore property, add an entry to the
+                // keystore map
                 // which maps our
-                // Liberty keystore attribute to a bootstrap variable with the same name as the
+                // Liberty keystore attribute to a bootstrap variable with the
+                // same name as the
                 // Spring Boot property.
                 // The Spring Boot properties will then be added to the server's
                 // bootstrap.properties file.
-                keystoreProperties.put(ConfigConstants.LOCATION, BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE));
+                keystoreProperties.put(LibertyConfigConstants.LOCATION,
+                        BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE));
 
                 if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD)) {
-                    keystoreProperties.put(ConfigConstants.PASSWORD,
-                    		BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD));
+                    keystoreProperties.put(LibertyConfigConstants.PASSWORD,
+                            BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PASSWORD));
                 }
                 if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE)) {
-                    keystoreProperties.put(ConfigConstants.TYPE, BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE));
+                    keystoreProperties.put(LibertyConfigConstants.TYPE,
+                            BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_TYPE));
                 }
                 if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER)) {
-                    keystoreProperties.put(ConfigConstants.PROVIDER,
-                    		BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER));
+                    keystoreProperties.put(LibertyConfigConstants.PROVIDER,
+                            BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEYSTORE_PROVIDER));
                 }
 
                 // Add any key properties to the separate key map.
                 if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_PASSWORD)) {
-                    keyProperties.put(ConfigConstants.KEY_PASSWORD,
-                    		BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEY_PASSWORD));
+                    keyProperties.put(LibertyConfigConstants.KEY_PASSWORD,
+                            BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEY_PASSWORD));
                 }
                 if (springBootServerProps.containsKey(SpringBootUtil.SERVER_SSL_KEY_ALIAS)) {
-                    keyProperties.put(ConfigConstants.NAME, BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEY_ALIAS));
+                    keyProperties.put(LibertyConfigConstants.NAME,
+                            BoostUtil.makeVariable(SpringBootUtil.SERVER_SSL_KEY_ALIAS));
                 }
 
-                // Create keystore element in server.xml and endpoint with http disabled.
+                // Create keystore element in server.xml and endpoint with http
+                // disabled.
                 serverConfig.addKeystore(keystoreProperties, keyProperties);
                 serverConfig.addHttpEndpoint(BoostUtil.makeVariable(SpringBootUtil.SERVER_ADDRESS), "-1",
-                		BoostUtil.makeVariable(SpringBootUtil.SERVER_PORT));
+                        BoostUtil.makeVariable(SpringBootUtil.SERVER_PORT));
 
-                // Since the keystore for the Spring Boot app is created manually and already
+                // Since the keystore for the Spring Boot app is created
+                // manually and already
                 // exists,
-                // if it is specified on the classpath, we need to copy it to the Liberty
+                // if it is specified on the classpath, we need to copy it to
+                // the Liberty
                 // server. Otherwise,
-                // we can just reference the external location without needing to copy the file.
+                // we can just reference the external location without needing
+                // to copy the file.
                 String keystoreFile = springBootServerProps.getProperty(SpringBootUtil.SERVER_SSL_KEYSTORE);
 
                 if (keystoreFile.startsWith("classpath:")) {
-                    // Keystore is in resources directory of spring boot application
+                    // Keystore is in resources directory of spring boot
+                    // application
                     keystoreFile = keystoreFile.replace("classpath:", "");
                     springBootServerProps.put(SpringBootUtil.SERVER_SSL_KEYSTORE, keystoreFile);
 

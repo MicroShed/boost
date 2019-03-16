@@ -16,9 +16,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Properties;
-
-import org.w3c.dom.Document;
 
 import io.openliberty.boost.common.BoostException;
 
@@ -45,30 +42,12 @@ public abstract class AbstractBoosterConfig {
         return coordinates.value();
     }
 
-    protected static final String BOOSTERS_GROUP_ID = "io.openliberty.boosters";
+    public static final String BOOSTERS_GROUP_ID = "io.openliberty.boosters";
     protected String EE_7_VERSION = "0.1-SNAPSHOT";
     protected String EE_8_VERSION = "0.2-SNAPSHOT";
     protected String MP_20_VERSION = "0.2-SNAPSHOT";
 
-    /**
-     * Return the Liberty feature name
-     * 
-     * @return
-     */
-    public abstract String getFeature();
-
-    /**
-     * Add the server.xml configuration for this booster
-     * 
-     * @param doc
-     */
-    public abstract void addServerConfig(Document doc);
-
-    /**
-     * Return the properties required by this booster
-     */
-    public abstract Properties getServerProperties();
-
+    
     /**
      * Return the dependency that this booster requires
      * 

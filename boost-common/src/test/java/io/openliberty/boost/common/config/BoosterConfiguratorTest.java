@@ -23,8 +23,8 @@ import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
-import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
-import io.openliberty.boost.common.boosters.JDBCBoosterConfig;
+import io.openliberty.boost.common.boosters.liberty.AbstractBoosterLibertyConfig;
+import io.openliberty.boost.common.boosters.liberty.JDBCBoosterLibertyConfig;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterConfigurator;
 import io.openliberty.boost.common.utils.BoosterUtil;
@@ -36,7 +36,7 @@ public class BoosterConfiguratorTest {
     public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
 
     private Map<String, String> getJDBCDependency() throws BoostException {
-        return BoosterUtil.createDependenciesWithBoosterAndVersion(JDBCBoosterConfig.class, "0.1-SNAPSHOT");
+        return BoosterUtil.createDependenciesWithBoosterAndVersion(JDBCBoosterLibertyConfig.class, "0.1-SNAPSHOT");
     }
 
     /**
@@ -46,19 +46,20 @@ public class BoosterConfiguratorTest {
      * 
      */
     @Test
-    public void testGetBoosterPackConfigurators_jdbc_default() throws Exception {
+    public void testGetBoosterLibertyConfigurators_jdbc_default() throws Exception {
 
         // Get booster configurators
         BoostLoggerI logger = CommonLogger.getInstance();
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
-                logger);
+        List<AbstractBoosterLibertyConfig> boosters = BoosterConfigurator
+                .getBoosterLibertyConfigurators(getJDBCDependency(), logger);
 
         // Check that the JDBCBoosterPackConfigurator was created
-        AbstractBoosterConfig booster = boosters.get(0);
-        assertTrue("JDBC booster was not found in booster configurator list", booster instanceof JDBCBoosterConfig);
+        AbstractBoosterLibertyConfig booster = boosters.get(0);
+        assertTrue("JDBC booster was not found in booster configurator list",
+                booster instanceof JDBCBoosterLibertyConfig);
 
         // Check that the custom databaseName is set
-        assertEquals("Database name is not correct", ConfigConstants.DERBY_DB,
+        assertEquals("Database name is not correct", LibertyConfigConstants.DERBY_DB,
                 booster.getServerProperties().getProperty(BoostProperties.DATASOURCE_DATABASE_NAME));
 
     }
@@ -80,12 +81,13 @@ public class BoosterConfiguratorTest {
 
         // Get booster configurators
         BoostLoggerI logger = CommonLogger.getInstance();
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
-                logger);
+        List<AbstractBoosterLibertyConfig> boosters = BoosterConfigurator
+                .getBoosterLibertyConfigurators(getJDBCDependency(), logger);
 
         // Check that the JDBCBoosterPackConfigurator was created
-        AbstractBoosterConfig booster = boosters.get(0);
-        assertTrue("JDBC booster was not found in booster configurator list", booster instanceof JDBCBoosterConfig);
+        AbstractBoosterLibertyConfig booster = boosters.get(0);
+        assertTrue("JDBC booster was not found in booster configurator list",
+                booster instanceof JDBCBoosterLibertyConfig);
 
         // Check that the custom databaseName is set
         assertEquals("Database name is not correct", databaseName,

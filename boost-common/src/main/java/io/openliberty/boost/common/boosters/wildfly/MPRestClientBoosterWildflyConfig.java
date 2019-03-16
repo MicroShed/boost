@@ -8,50 +8,30 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.boosters;
+package io.openliberty.boost.common.boosters.wildfly;
 
-import static io.openliberty.boost.common.config.ConfigConstants.MPOPENTRACING_11;
-
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-
-import org.w3c.dom.Document;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpOpenTracing")
-public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
+@BoosterCoordinates(AbstractBoosterWildflyConfig.BOOSTERS_GROUP_ID + ":mpRestClient")
+public class MPRestClientBoosterWildflyConfig extends AbstractBoosterWildflyConfig {
 
-    String libertyFeature = null;
-
-    public MPOpenTracingBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+    public MPRestClientBoosterWildflyConfig(Map<String, String> dependencies, BoostLoggerI logger)
+            throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
-        if (version.equals(MP_20_VERSION)) {
-            libertyFeature = MPOPENTRACING_11;
-        }
     }
 
     @Override
-    public String getFeature() {
-        return libertyFeature;
-    }
-
-    @Override
-    public void addServerConfig(Document doc) {
-        // No config to write
-
-    }
-
-    @Override
-    public String getDependency() {
+    public List<String> getCliCommands() {
         return null;
     }
 
     @Override
-    public Properties getServerProperties() {
-        // TODO Auto-generated method stub
+    public String getDependency() {
         return null;
     }
 }

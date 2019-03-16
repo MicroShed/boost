@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.boosters;
+package io.openliberty.boost.common.boosters.liberty;
 
-import static io.openliberty.boost.common.config.ConfigConstants.CDI_20;
+import static io.openliberty.boost.common.config.LibertyConfigConstants.MPOPENTRACING_11;
 
 import java.util.Map;
 import java.util.Properties;
@@ -21,17 +21,16 @@ import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":cdi")
-public class CDIBoosterConfig extends AbstractBoosterConfig {
+@BoosterCoordinates(AbstractBoosterLibertyConfig.BOOSTERS_GROUP_ID + ":mpOpenTracing")
+public class MPOpenTracingBoosterLibertyConfig extends AbstractBoosterLibertyConfig {
 
     String libertyFeature = null;
 
-    public CDIBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+    public MPOpenTracingBoosterLibertyConfig(Map<String, String> dependencies, BoostLoggerI logger)
+            throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
-        
-        // if it is the 1.0 version = EE7 feature level
         if (version.equals(MP_20_VERSION)) {
-            libertyFeature = CDI_20;
+            libertyFeature = MPOPENTRACING_11;
         }
     }
 
