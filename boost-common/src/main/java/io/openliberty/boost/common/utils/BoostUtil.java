@@ -17,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -88,38 +90,55 @@ public class BoostUtil {
         }
     }
 
-    public static String encrypt(String libertyInstallPath, String password, BoostLoggerI logger) throws IOException {
+    public static String encrypt(String libertyInstallPath, String property, String encryptionType, String encryptionKey, BoostLoggerI logger) throws IOException {
+        //Won't encode the property if it contains the aes flag
+        if (!isEncoded(property)) {
+            Runtime rt = Runtime.getRuntime();
+            List<String> commands = new ArrayList<String>();
 
-        Runtime rt = Runtime.getRuntime();
-        String[] commands = { getSecurityUtilCmd(libertyInstallPath), "encode", password };
-        Process proc = rt.exec(commands);
+            commands.add(getSecurityUtilCmd(libertyInstallPath));
+            commands.add("encode");
+            commands.add(property);
 
-        BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-
-        String s = null;
-
-        StringBuilder out = new StringBuilder();
-        while ((s = stdInput.readLine()) != null) {
-            out.append(s);
-        }
-
-        StringBuilder error = new StringBuilder();
-        while ((s = stdError.readLine()) != null) {
-            error.append(s + "\n");
-        }
-
-        if (error.length() != 0) {
-            if (error.toString().contains("com.ibm.websphere.crypto.InvalidPasswordEncodingException")) {
-                logger.warn("The provided password will be used because it was already encrypted.");
-                return password;
+            if(encryptionType != null && !encryptionType.equals("")) {
+                commands.add("--encoding=" + encryptionType);
             } else {
+                commands.add("--encoding=aes");
+            }
+
+            if(encryptionKey != null && !encryptionKey.equals("")) {
+                commands.add("--key=" + encryptionKey);
+            }
+
+            Process proc = rt.exec(commands.toArray(new String[0]));
+
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+
+            String s = null;
+
+            StringBuilder out = new StringBuilder();
+            while ((s = stdInput.readLine()) != null) {
+                out.append(s);
+            }
+
+            StringBuilder error = new StringBuilder();
+            while ((s = stdError.readLine()) != null) {
+                error.append(s + "\n");
+            }
+
+            if (error.length() != 0) {
                 throw new IOException("Password encryption failed: " + error);
             }
-        }
 
-        return out.toString();
+            return out.toString();
+        }
+        return property;
+    }
+
+    public static boolean isEncoded(String property) {
+        return property.contains("{aes}") || property.contains("{hash}") || property.contains("{xor}");
     }
 
 }
