@@ -45,6 +45,9 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     protected String mavenDependencyPluginGroupId = "org.apache.maven.plugins";
     protected String mavenDependencyPluginArtifactId = "maven-dependency-plugin";
 
+    protected String tomeeMavenPluginGroupId = "org.apache.tomee.maven";
+    protected String tomeeMavenPluginArtifactId = "tomee-maven-plugin";
+
     @Parameter(defaultValue = "2.6.3", readonly = true)
     protected String libertyMavenPluginVersion;
 
@@ -56,16 +59,16 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
 
     @Parameter(defaultValue = "${session}", readonly = true)
     protected MavenSession session;
-    
+
     @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
     protected RepositorySystemSession repoSession;
-    
-    @Parameter( defaultValue = "${project.remoteProjectRepositories}", readonly = true, required = true )
+
+    @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true, required = true)
     protected List<RemoteRepository> remoteRepos;
 
     @Component
     protected BuildPluginManager pluginManager;
-    
+
     @Component
     protected RepositorySystem repoSystem;
 
@@ -82,6 +85,10 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
 
     protected Plugin getMavenDependencyPlugin() throws MojoExecutionException {
         return plugin(groupId(mavenDependencyPluginGroupId), artifactId(mavenDependencyPluginArtifactId));
+    }
+
+    protected Plugin getTOMEEPlugin() throws MojoExecutionException {
+        return plugin(groupId(tomeeMavenPluginGroupId), artifactId(tomeeMavenPluginArtifactId), version("8.0.0-M2"));
     }
 
     protected Element getRuntimeArtifactElement() {
@@ -109,7 +116,7 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     }
 
     @Override
-    public void execute() throws MojoExecutionException {   	
+    public void execute() throws MojoExecutionException {
         createDefaultRuntimeArtifactIfNeeded();
     }
 }

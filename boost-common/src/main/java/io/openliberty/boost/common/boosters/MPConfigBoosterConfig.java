@@ -12,6 +12,8 @@ package io.openliberty.boost.common.boosters;
 
 import static io.openliberty.boost.common.config.ConfigConstants.MPCONFIG_13;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -25,13 +27,18 @@ import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordin
 public class MPConfigBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
-    
+    List<String> tomeeDependencyStrings = new ArrayList<String>();
+
     public MPConfigBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
         // if it is the 1.0 version = EE7 feature level
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = MPCONFIG_13;
         }
+
+        tomeeDependencyStrings.add("org.apache.geronimo.config:geronimo-config-impl:1.2.1");
+        tomeeDependencyStrings.add("org.eclipse.microprofile.config:microprofile-config-api:1.3");
+        tomeeDependencyStrings.add("org.osgi:org.osgi.annotation.versioning:1.0.0");
     }
 
     @Override
@@ -48,6 +55,11 @@ public class MPConfigBoosterConfig extends AbstractBoosterConfig {
     @Override
     public String getDependency() {
         return null;
+    }
+
+    @Override
+    public List<String> getTomEEDependency() {
+        return tomeeDependencyStrings;
     }
 
     @Override

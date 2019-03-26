@@ -12,6 +12,8 @@ package io.openliberty.boost.common.boosters;
 
 import static io.openliberty.boost.common.config.ConfigConstants.CDI_20;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -25,10 +27,11 @@ import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordin
 public class CDIBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
+    List<String> tomeeDependencyStrings = new ArrayList<String>();
 
     public CDIBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
-        
+
         // if it is the 1.0 version = EE7 feature level
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = CDI_20;
@@ -55,5 +58,11 @@ public class CDIBoosterConfig extends AbstractBoosterConfig {
     public Properties getServerProperties() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public List<String> getTomEEDependency() {
+        // TODO Auto-generated method stub
+        return tomeeDependencyStrings;
     }
 }

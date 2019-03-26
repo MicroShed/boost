@@ -12,6 +12,8 @@ package io.openliberty.boost.common.boosters;
 
 import static io.openliberty.boost.common.config.ConfigConstants.JSONP_11;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -25,10 +27,11 @@ import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordin
 public class JSONPBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
+    List<String> tomeeDependencyStrings = new ArrayList<String>();
 
     public JSONPBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
-        
+
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = JSONP_11;
         }
@@ -56,6 +59,11 @@ public class JSONPBoosterConfig extends AbstractBoosterConfig {
     public Properties getServerProperties() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public List<String> getTomEEDependency() {
+        return tomeeDependencyStrings;
     }
 
 }

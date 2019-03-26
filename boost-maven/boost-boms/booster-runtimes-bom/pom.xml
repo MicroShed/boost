@@ -17,41 +17,19 @@
 	</parent>
 
 	<groupId>io.openliberty.boosters</groupId>
-	<artifactId>ee8-bom</artifactId>
+	<artifactId>runtimes-bom</artifactId>
 	<packaging>pom</packaging>
 
-	<description>Booster EE8 Feature Bom</description>
+	<description>Booster Supported Runtimes Bom</description>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>io.openliberty.boost</groupId>
-				<artifactId>boost-ee8-apis-bom</artifactId>
-				<version>0.1-SNAPSHOT</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
-			<dependency>
 				<groupId>io.openliberty.boosters</groupId>
-				<artifactId>jaxrs</artifactId>
-				<!-- Booster version distinct from the BOM, boost-maven-plugin version -->
-				<!-- Could also use 7.0, 8.0 for EE7, 8 -->
-				<!-- Probably will be 1.0 for initial GA -->
+				<artifactId>tomee</artifactId>
 				<version>0.2-SNAPSHOT</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.openliberty.boosters</groupId>
-				<artifactId>jdbc</artifactId>
-				<version>0.1-SNAPSHOT</version>
 				<scope>provided</scope>
 		    </dependency>
-		    <dependency>
-				<groupId>io.openliberty.boosters</groupId>
-				<artifactId>jpa</artifactId>
-				<version>0.2-SNAPSHOT</version>
-				<scope>provided</scope>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

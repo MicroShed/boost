@@ -24,6 +24,7 @@
 		<module>booster-ee8-bom</module>
 		<module>boost-mp20-apis-bom</module>
 		<module>booster-mp20-bom</module>
+		<module>booster-runtimes-bom</module>
 	</modules>
 
 

@@ -18,6 +18,8 @@ import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordin
 
 import static io.openliberty.boost.common.config.ConfigConstants.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -25,6 +27,7 @@ import java.util.Properties;
 public class JPABoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
+    List<String> tomeeDependencyStrings = new ArrayList<String>();
 
     public JPABoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
@@ -53,5 +56,10 @@ public class JPABoosterConfig extends AbstractBoosterConfig {
     @Override
     public Properties getServerProperties() {
         return null;
+    }
+
+    @Override
+    public List<String> getTomEEDependency() {
+        return tomeeDependencyStrings;
     }
 }

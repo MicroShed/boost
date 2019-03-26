@@ -12,6 +12,8 @@ package io.openliberty.boost.common.boosters;
 
 import static io.openliberty.boost.common.config.ConfigConstants.MPRESTCLIENT_11;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -25,14 +27,18 @@ import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordin
 public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
+    List<String> tomeeDependencyStrings = new ArrayList<String>();
 
     public MPRestClientBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
-        
+
         // if it is the 1.0 version = EE7 feature level
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = MPRESTCLIENT_11;
         }
+
+        tomeeDependencyStrings.add("org.apache.cxf:cxf-rt-rs-mp-client:3.2.7");
+        tomeeDependencyStrings.add("org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1");
     }
 
     @Override
@@ -55,5 +61,11 @@ public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
     public Properties getServerProperties() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public List<String> getTomEEDependency() {
+        // TODO Auto-generated method stub
+        return tomeeDependencyStrings;
     }
 }

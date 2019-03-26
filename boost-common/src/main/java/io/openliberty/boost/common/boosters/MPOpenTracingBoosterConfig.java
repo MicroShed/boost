@@ -12,6 +12,8 @@ package io.openliberty.boost.common.boosters;
 
 import static io.openliberty.boost.common.config.ConfigConstants.MPOPENTRACING_11;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -25,6 +27,7 @@ import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordin
 public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
+    List<String> tomeeDependencyStrings = new ArrayList<String>();
 
     public MPOpenTracingBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
@@ -53,5 +56,10 @@ public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
     public Properties getServerProperties() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public List<String> getTomEEDependency() {
+        return tomeeDependencyStrings;
     }
 }

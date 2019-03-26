@@ -16,6 +16,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.List;
 import java.util.Properties;
 
 import org.w3c.dom.Document;
@@ -28,14 +29,14 @@ import io.openliberty.boost.common.BoostException;
  *
  */
 public abstract class AbstractBoosterConfig {
-    
+
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     @Inherited
     public @interface BoosterCoordinates {
-       String value();
+        String value();
     }
-    
+
     public static String getCoordindates(Class<?> klass) throws BoostException {
         BoosterCoordinates coordinates = klass.getAnnotation(BoosterCoordinates.class);
         if (coordinates == null) {
@@ -75,5 +76,7 @@ public abstract class AbstractBoosterConfig {
      * @return
      */
     public abstract String getDependency();
+
+    public abstract List<String> getTomEEDependency();
 
 }
