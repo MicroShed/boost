@@ -117,38 +117,6 @@ public class LibertyServerConfigGenerator {
     }
 
     /**
-     * Add a keystore definition for this server
-     * 
-     * @param keystore
-     *            The keystore file name.
-     * @param keystorePassword
-     *            The keystore password
-     * @param keystoreType
-     *            The keystore type
-     */
-    public void addKeystore(Map<String, String> keystoreProps, Map<String, String> keyProps) {
-        Element keystore = doc.createElement(KEYSTORE);
-        keystore.setAttribute("id", DEFAULT_KEYSTORE);
-
-        for (String key : keystoreProps.keySet()) {
-            keystore.setAttribute(key, keystoreProps.get(key));
-        }
-
-        if (!keyProps.isEmpty()) {
-            Element keyEntry = doc.createElement(KEY_ENTRY);
-
-            for (String key : keyProps.keySet()) {
-                keyEntry.setAttribute(key, keyProps.get(key));
-            }
-
-            keystore.appendChild(keyEntry);
-        }
-
-        serverRoot.appendChild(keystore);
-
-    }
-
-    /**
      * Add a Liberty feature to the server configuration
      *
      * @param featureName
@@ -219,21 +187,22 @@ public class LibertyServerConfigGenerator {
 
         if (properties != null) {
 
-            //Using this to hold the properties we want to encrypt and the type of encryption we want to use
+            // Using this to hold the properties we want to encrypt and the type of
+            // encryption we want to use
             Map<String, String> propertiesToEncrypt = BoostProperties.getPropertiesToEncrypt();
 
             for (String key : properties.stringPropertyNames()) {
                 String value = properties.getProperty(key);
 
                 if (propertiesToEncrypt.containsKey(key) && value != null && !value.equals("")) {
-                    //Getting properties that might not have been passed with the other properties that will be written to boostrap.properties
-                    //Don't want to add certain properties to the boostrap properties so we'll grab them here
+                    // Getting properties that might not have been passed with the other properties
+                    // that will be written to boostrap.properties
+                    // Don't want to add certain properties to the boostrap properties so we'll grab
+                    // them here
                     Properties supportedProperties = BoostProperties.getConfiguredBoostProperties(logger);
-                    value = BoostUtil.encrypt(libertyInstallPath,
-                                              properties.getProperty(key),
-                                              propertiesToEncrypt.get(key),
-                                              supportedProperties.getProperty(BoostProperties.AES_ENCRYPTION_KEY), 
-                                              logger);
+                    value = BoostUtil.encrypt(libertyInstallPath, properties.getProperty(key),
+                            propertiesToEncrypt.get(key),
+                            supportedProperties.getProperty(BoostProperties.AES_ENCRYPTION_KEY), logger);
                 }
 
                 bootstrapProperties.put(key, value);
