@@ -19,6 +19,11 @@ import io.openliberty.boost.common.BoostLoggerI;
 
 public final class BoostProperties {
 
+    // HTTP Endpoint properties
+    public static final String ENDPOINT_HOST = "boost.http.host";
+    public static final String ENDPOINT_HTTP_PORT = "boost.http.port";
+    public static final String ENDPOINT_HTTPS_PORT = "boost.http.securePort";
+
     // Datasource default properties
     public static final String DATASOURCE_PREFIX = "boost.db.";
     public static final String DATASOURCE_DATABASE_NAME = "boost.db.databaseName";
@@ -40,7 +45,7 @@ public final class BoostProperties {
     public static Map<String, String> getPropertiesToEncrypt() {
         Map<String, String> propertiesToEncrypt = new HashMap<String, String>();
 
-        //Add default encryption types for properties we define
+        // Add default encryption types for properties we define
         propertiesToEncrypt.put(DATASOURCE_PASSWORD, "aes");
 
         return propertiesToEncrypt;
@@ -55,8 +60,8 @@ public final class BoostProperties {
 
             if (entry.getKey().toString().startsWith("boost.")) {
 
-                // logger.debug("Found boost property: " + entry.getKey() + ":"
-                // + entry.getValue());
+                // logger.debug("Found boost property: " + 
+            	// entry.getKey() + ":" + entry.getValue());
 
                 boostProperties.put(entry.getKey(), entry.getValue());
             }

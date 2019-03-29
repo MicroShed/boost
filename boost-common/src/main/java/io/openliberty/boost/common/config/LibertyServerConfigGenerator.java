@@ -208,6 +208,11 @@ public class LibertyServerConfigGenerator {
                 }
             }
         }
+        
+        // Try setting all bootstrap properties to system properties for test purposes
+        for(String key : bootstrapProperties.stringPropertyNames()) {
+        	System.setProperty(key, bootstrapProperties.getProperty(key));
+        }
     }
 
     public void addBootstrapProperties(Properties properties) throws IOException {
