@@ -12,6 +12,7 @@ package io.openliberty.boost.common.config;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ import org.reflections.Reflections;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
+import io.openliberty.boost.common.boosters.liberty.AbstractBoosterLibertyConfig;
+import io.openliberty.boost.common.boosters.wildfly.AbstractBoosterWildflyConfig;
 
 public class BoosterConfigurator {
 
@@ -41,40 +44,67 @@ public class BoosterConfigurator {
      * @throws NoSuchMethodException
      * @throws SecurityException
      */
-    public static List<AbstractBoosterConfig> getBoosterPackConfigurators(Map<String, String> dependencies,
+    public static List<AbstractBoosterLibertyConfig> getBoosterLibertyConfigurators(Map<String, String> dependencies,
             BoostLoggerI logger) throws BoostException, InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 
-        List<AbstractBoosterConfig> boosterPackConfigList = new ArrayList<AbstractBoosterConfig>();
+        List<AbstractBoosterLibertyConfig> boosterConfigList = new ArrayList<AbstractBoosterLibertyConfig>();
 
-        Reflections reflections = new Reflections("io.openliberty.boost.common.boosters");
+        Reflections reflections = new Reflections("io.openliberty.boost.common.boosters.liberty");
 
-        Set<Class<? extends AbstractBoosterConfig>> allClasses = reflections.getSubTypesOf(AbstractBoosterConfig.class);
-        for (Class<? extends AbstractBoosterConfig> boosterClass : allClasses) {
-            if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(boosterClass))) {
+        Set<Class<? extends AbstractBoosterLibertyConfig>> allClasses = reflections
+                .getSubTypesOf(AbstractBoosterLibertyConfig.class);
+        for (Class<? extends AbstractBoosterLibertyConfig> boosterClass : allClasses) {
+            if (dependencies.containsKey(AbstractBoosterLibertyConfig.getCoordindates(boosterClass))) {
                 Constructor<?> cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
                 Object o = cons.newInstance(dependencies, logger);
-                if (o instanceof AbstractBoosterConfig) {
-                    boosterPackConfigList.add((AbstractBoosterConfig) o);
+                if (o instanceof AbstractBoosterLibertyConfig) {
+                    boosterConfigList.add((AbstractBoosterLibertyConfig) o);
                 } else {
                     throw new BoostException(
-                            "Found a class in io.openliberty.boost.common.boosters that did not extend AbstractBoosterConfig. This should never happen.");
+                            "Found a class in io.openliberty.boost.common.boosters that did not extend AbstractBoosterLibertyConfig. This should never happen.");
                 }
             }
         }
 
-        return boosterPackConfigList;
+        return boosterConfigList;
+    }
+
+    public static List<AbstractBoosterWildflyConfig> getBoosterWildflyConfigurators(Map<String, String> dependencies,
+            BoostLoggerI logger) throws BoostException, InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+
+        List<AbstractBoosterWildflyConfig> boosterConfigList = new ArrayList<AbstractBoosterWildflyConfig>();
+
+        Reflections reflections = new Reflections("io.openliberty.boost.common.boosters.wildfly");
+
+        Set<Class<? extends AbstractBoosterWildflyConfig>> allClasses = reflections
+                .getSubTypesOf(AbstractBoosterWildflyConfig.class);
+        for (Class<? extends AbstractBoosterWildflyConfig> boosterClass : allClasses) {
+            if (dependencies.containsKey(AbstractBoosterWildflyConfig.getCoordindates(boosterClass))) {
+                Constructor<?> cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
+                Object o = cons.newInstance(dependencies, logger);
+                if (o instanceof AbstractBoosterWildflyConfig) {
+                    boosterConfigList.add((AbstractBoosterWildflyConfig) o);
+                } else {
+                    throw new BoostException(
+                            "Found a class in io.openliberty.boost.common.boosters that did not extend AbstractBoosterWildflyConfig. This should never happen.");
+                }
+            }
+        }
+
+        return boosterConfigList;
     }
 
     public static void generateLibertyServerConfig(String libertyServerPath,
-            List<AbstractBoosterConfig> boosterPackConfigurators, List<String> warNames, BoostLoggerI logger)
+            List<AbstractBoosterLibertyConfig> boosterPackConfigurators, List<String> warNames, BoostLoggerI logger)
             throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(libertyServerPath, logger);
 
         // Loop through configuration objects and get features and XML config
         // (if any)
-        for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
+        for (AbstractBoosterLibertyConfig configurator : boosterPackConfigurators) {
             serverConfig.addFeature(configurator.getFeature());
             serverConfig.addBoosterConfig(configurator);
         }
@@ -91,13 +121,38 @@ public class BoosterConfigurator {
 
         serverConfig.writeToServer();
     }
+    
+    public static void generateWildflyServerConfig(String wildflyInstallPath,
+            List<AbstractBoosterWildflyConfig> boosterPackConfigurators, List<Path> warFiles, BoostLoggerI logger)
+            throws Exception {
 
-    public static List<String> getDependenciesToCopy(List<AbstractBoosterConfig> boosterPackConfigurators,
+    	WildflyServerConfigGenerator serverConfig = new WildflyServerConfigGenerator(wildflyInstallPath, logger);
+
+        // Loop through configuration objects and get features and XML config
+        // (if any)
+        for (AbstractBoosterWildflyConfig configurator : boosterPackConfigurators) {
+            serverConfig.addBoosterConfig(configurator);
+        }
+
+        // Add war configuration is necessary
+        if (!warFiles.isEmpty()) {
+            for (Path warFile : warFiles) {
+            	serverConfig.addApplication(warFile.toString());
+                
+            }
+        } else {
+            throw new Exception(
+                    "No war files were found. The project must have a war packaging type or specify war dependencies.");
+        }
+
+    }
+
+    public static <T extends AbstractBoosterConfig> List<String> getDependenciesToCopy(List<T> boosterConfigurators,
             BoostLoggerI logger) {
 
         List<String> dependenciesToCopy = new ArrayList<String>();
 
-        for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
+        for (AbstractBoosterConfig configurator : boosterConfigurators) {
             String dependencyToCopy = configurator.getDependency();
 
             if (dependencyToCopy != null) {

@@ -48,6 +48,19 @@ public class MavenProjectUtil {
 
         return version;
     }
+    
+    public static String getBoostRuntime(MavenProject project, BoostLogger logger) {
+    	logger.debug("Determining Boost runtime");
+    	for (Artifact artifact : project.getArtifacts()) {
+    		if ("io.openliberty.boosters".equals(artifact.getGroupId()) && "wildfly".equals(artifact.getArtifactId())) {
+    			logger.debug("Using Wildfly runtime");
+    			return "wildfly";
+    		}
+    	}
+    	
+    	logger.debug("Using Liberty runtime");
+    	return "liberty";
+    }
 
     public static Map<String, String> getAllDependencies(MavenProject project, RepositorySystem repoSystem,
             RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, BoostLogger logger)

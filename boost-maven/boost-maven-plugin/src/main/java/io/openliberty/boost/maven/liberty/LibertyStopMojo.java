@@ -23,7 +23,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * Stops the executable archive application started by the 'start' or 'run'
  * goals.
  */
-@Mojo(name = "stop")
+@Mojo(name = "liberty-stop")
 public class LibertyStopMojo extends AbstractLibertyMojo {
 
     @Override

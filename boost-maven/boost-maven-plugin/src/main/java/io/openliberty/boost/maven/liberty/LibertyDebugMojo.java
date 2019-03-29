@@ -25,7 +25,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * debugger connects to debug port <b>7777</b>.
  *
  */
-@Mojo(name = "debug")
+@Mojo(name = "liberty-debug")
 public class LibertyDebugMojo extends AbstractLibertyMojo {
 
     /**

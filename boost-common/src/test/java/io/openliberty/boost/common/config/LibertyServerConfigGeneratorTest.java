@@ -29,7 +29,7 @@ import io.openliberty.boost.common.utils.ConfigFileUtils;
 import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
 import io.openliberty.boost.common.BoostLoggerI;
 
-import static io.openliberty.boost.common.config.ConfigConstants.*;
+import static io.openliberty.boost.common.config.LibertyConfigConstants.*;
 import static io.openliberty.boost.common.utils.DOMUtils.getDirectChildrenByTag;
 
 public class LibertyServerConfigGeneratorTest {
@@ -66,7 +66,8 @@ public class LibertyServerConfigGeneratorTest {
     @Test
     public void testZeroFeaturesInDefaultServerConfig()
             throws ParserConfigurationException, TransformerException, IOException {
-        LibertyServerConfigGenerator g = new LibertyServerConfigGenerator(outputDir.getRoot().getAbsolutePath(), logger);
+        LibertyServerConfigGenerator g = new LibertyServerConfigGenerator(outputDir.getRoot().getAbsolutePath(),
+                logger);
         Element serverRoot = g.getServerDoc().getDocumentElement();
         List<Element> featureMgrList = getDirectChildrenByTag(serverRoot, FEATURE_MANAGER);
         assertEquals("Didn't find one and only one featureMgr", 1, featureMgrList.size());

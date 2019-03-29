@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.boosters;
+package io.openliberty.boost.common.boosters.liberty;
 
-import static io.openliberty.boost.common.config.ConfigConstants.MPHEALTH_10;
+import static io.openliberty.boost.common.config.LibertyConfigConstants.MPCONFIG_13;
 
 import java.util.Map;
 import java.util.Properties;
@@ -21,16 +21,16 @@ import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpHealth")
-public class MPHealthBoosterConfig extends AbstractBoosterConfig {
+@BoosterCoordinates(AbstractBoosterLibertyConfig.BOOSTERS_GROUP_ID + ":mpConfig")
+public class MPConfigBoosterLibertyConfig extends AbstractBoosterLibertyConfig {
 
     String libertyFeature = null;
-    
-    public MPHealthBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+
+    public MPConfigBoosterLibertyConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
-        // if it is the 2.0 version = MP2.0 feature level
+        // if it is the 1.0 version = EE7 feature level
         if (version.equals(MP_20_VERSION)) {
-            libertyFeature = MPHEALTH_10;
+            libertyFeature = MPCONFIG_13;
         }
     }
 
@@ -47,7 +47,6 @@ public class MPHealthBoosterConfig extends AbstractBoosterConfig {
 
     @Override
     public String getDependency() {
-        // TODO Auto-generated method stub
         return null;
     }
 
