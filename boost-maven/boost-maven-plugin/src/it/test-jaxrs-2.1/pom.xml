@@ -106,6 +106,11 @@
 							<goal>integration-test</goal>
 							<goal>verify</goal>
 						</goals>
+						<configuration>
+							<systemPropertyVariables>
+                                <test.port>${boost.http.port}</test.port>
+                            </systemPropertyVariables>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

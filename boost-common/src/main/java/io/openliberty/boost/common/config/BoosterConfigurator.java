@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,6 +26,7 @@ import org.reflections.Reflections;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
+import io.openliberty.boost.common.utils.BoostUtil;
 
 public class BoosterConfigurator {
 
@@ -81,7 +83,26 @@ public class BoosterConfigurator {
             serverConfig.addFeature(configurator.getFeature());
             serverConfig.addBoosterConfig(configurator);
         }
-
+        
+        // Add default http endpoint configurtion and properties
+        serverConfig.addHttpEndpoint(BoostUtil.makeVariable(BoostProperties.ENDPOINT_HOST), 
+        		BoostUtil.makeVariable(BoostProperties.ENDPOINT_HTTP_PORT), 
+        		BoostUtil.makeVariable(BoostProperties.ENDPOINT_HTTPS_PORT));
+        
+        Properties endpointProperties = new Properties();
+        Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
+        
+        String host = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "*");
+        endpointProperties.put(BoostProperties.ENDPOINT_HOST, host);
+        
+        String http_port = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "9080");
+        endpointProperties.put(BoostProperties.ENDPOINT_HTTP_PORT, http_port);
+        
+        String https_port = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTPS_PORT, "9443");
+        endpointProperties.put(BoostProperties.ENDPOINT_HTTPS_PORT, https_port);
+        
+        serverConfig.addBootstrapProperties(endpointProperties);
+        
         // Add war configuration is necessary
         if (!warNames.isEmpty()) {
             for (String warName : warNames) {
