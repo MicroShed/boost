@@ -61,18 +61,21 @@ public class GradleProjectUtil {
         }
 
         //Will always have the boostApp configuration since we create it in apply()
-        dependencies.putAll(getAllDependenciesFromConfiguration(project.configurations.boostApp, logger))
+        //Just pulling in the transitive booster dependencies for the apps
+        dependencies.putAll(getAllBoosterDependenciesFromConfiguration(project.configurations.boostApp, logger))
 
         return dependencies
     }
 
-    public static Map<String, String> getAllDependenciesFromConfiguration(Configuration configuration, BoostLogger logger) {
+    private static Map<String, String> getAllBoosterDependenciesFromConfiguration(Configuration configuration, BoostLogger logger) {
         Map<String, String> dependencies = new HashMap<String, String>()
         configuration.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
         	logger.debug("Found dependency while processing project: " + id.group.toString() + ":"
                     + id.name.toString() + ":" + id.version.toString())
                     
-            dependencies.put(id.group.toString() + ":" + id.name.toString(), id.version.toString())
+            if (id.group.toString().equals('io.openliberty.boosters')) {
+                dependencies.put(id.group.toString() + ":" + id.name.toString(), id.version.toString())
+            }
         }
         return dependencies
     }

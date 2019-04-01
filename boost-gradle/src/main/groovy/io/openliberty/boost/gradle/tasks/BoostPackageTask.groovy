@@ -215,22 +215,22 @@ public class BoostPackageTask extends AbstractBoostTask {
     }
 
     protected void generateServerConfigEE() throws GradleException {
-        String warName = null
+        List<String> warNames = new ArrayList<String>()
 
         if (project.plugins.hasPlugin('war')) {
 
             if (project.war.version == null) {
-                warName = project.war.baseName
+                warNames.add(project.war.baseName)
             } else {
-                warName = project.war.baseName + "-" + project.war.version
+                warNames.add(project.war.baseName + "-" + project.war.version)
             }
         } else {
-            warName = getWarNameFromBoostApps()
+            warNames = getWarNameFromBoostApps()
         }
 
         try {
 
-            BoosterConfigurator.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, Arrays.asList(warName), BoostLogger.getInstance());
+            BoosterConfigurator.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warNames, BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new GradleException("Unable to generate server configuration for the Liberty server.", e);
@@ -321,12 +321,13 @@ public class BoostPackageTask extends AbstractBoostTask {
     }
 
     //Runs through the dependencies in the boostApp configuration and pulls out the first war name.
-    protected String getWarNameFromBoostApps() {
+    protected List<String> getWarNameFromBoostApps() {
+        List<String> warNames = new ArrayList<String>()
         for (def dep : project.configurations.boostApp) {
             if (FilenameUtils.getExtension(dep.name).equals('war')) {
-                return dep.name.substring(0, dep.name.length() - 4)
+                warNames.add(dep.name.substring(0, dep.name.length() - 4))
             }
         }
-        return null
+        return warNames
     }
 }
