@@ -19,11 +19,14 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+
+import io.openliberty.boost.common.config.ConfigConstants;
 
 /**
  * Runs the executable archive application (in the console foreground).
  */
-@Mojo(name = "run")
+@Mojo(name = "run", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class LibertyRunMojo extends AbstractLibertyMojo {
 
     /**
@@ -35,10 +38,24 @@ public class LibertyRunMojo extends AbstractLibertyMojo {
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
-
+        
+        if (this.targetRuntime.equals(ConfigConstants.TOMEE_RUNTIME)) {
+            runTomee();
+        } else {
+            runLiberty();
+        }
+    }
+    
+    private void runLiberty() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("run"),
                 configuration(element(name("serverName"), libertyServerName),
                         element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
+                getExecutionEnvironment());
+    }
+    
+    private void runTomee() throws MojoExecutionException {
+        executeMojo(getTOMEEPlugin(), goal("run"),
+                configuration(element(name("tomeeAlreadyInstalled"), "true"), element(name("context"), "ROOT"), element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")),
                 getExecutionEnvironment());
     }
 

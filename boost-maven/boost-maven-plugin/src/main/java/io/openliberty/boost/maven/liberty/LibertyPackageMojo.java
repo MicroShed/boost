@@ -24,7 +24,6 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.apache.maven.plugins.annotations.*;
 
 import io.openliberty.boost.common.BoostException;
-import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterConfigurator;
@@ -45,34 +44,13 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class LibertyPackageMojo extends AbstractLibertyMojo {
 
-    protected List<AbstractBoosterConfig> boosterPackConfigurators;
-    protected String targetRuntime;
-
     String springBootVersion = null;
-
-    String libertyServerPath = null;
-    String tomeeInstallPath = null;
-    String tomeeConfigPath = null;
 
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
 
         springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
-
-        libertyServerPath = projectBuildDir + "/liberty/wlp/usr/servers/" + libertyServerName;
-        tomeeInstallPath = projectBuildDir + "/apache-tomee/";
-        tomeeConfigPath = tomeeInstallPath + "conf";
-
-        try {
-            Map<String, String> dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession,
-                    remoteRepos, BoostLogger.getInstance());
-            this.targetRuntime = BoosterConfigurator.getTargetRuntime(dependencies, BoostLogger.getInstance());
-            this.boosterPackConfigurators = BoosterConfigurator.getBoosterPackConfigurators(dependencies,
-                    BoostLogger.getInstance());
-        } catch (Exception e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-        }
 
         if (this.targetRuntime.equals(ConfigConstants.TOMEE_RUNTIME)) {
             createTomEEServer();
@@ -222,24 +200,6 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
         }
     }
 
-    /**
-     * Generate config for the Liberty server based on the Maven Spring Boot
-     * project.
-     * 
-     * @throws MojoExecutionException
-     */
-    private void updateTOMEEClasspath() throws MojoExecutionException {
-
-        try {
-            // update server config
-            BoosterConfigurator.addTOMEEDependencyJarsToClasspath(tomeeConfigPath, boosterPackConfigurators,
-                    BoostLogger.getInstance());
-
-        } catch (Exception e) {
-            throw new MojoExecutionException("Unable to update server configuration for the tomee server.", e);
-        }
-    }
-
     private List<String> getWarNames() {
         List<String> warNames = new ArrayList<String>();
 
@@ -339,7 +299,7 @@ public class LibertyPackageMojo extends AbstractLibertyMojo {
                 .getTomEEDependencyJarsToCopy(boosterPackConfigurators, BoostLogger.getInstance());
 
         executeMojo(getTOMEEPlugin(), goal("build"),
-                configuration(element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")),
+                configuration(element(name("context"), "ROOT"), element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")),
                 getExecutionEnvironment());
     }
 
