@@ -69,7 +69,8 @@ public class DockerizeLibertySpringBootJar extends SpringDockerizer {
 
         lines.add("");
         lines.add("# Stage the fat JAR");
-        lines.add(COPY + getAppPathString() + "/" + "${APP_FILE}" + " " + "/staging/" + "${APP_FILE}");
+        lines.add(COPY + " --chown=1001:0 " + getAppPathString() + "/" + "${APP_FILE}" + " " + "/staging/"
+                + "${APP_FILE}");
 
         lines.add("");
         lines.add("# Thin the fat application; stage the thin app output and the library cache");
