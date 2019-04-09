@@ -88,8 +88,6 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
 
     protected Map<String, String> dependencies;
     
-    protected List<AbstractBoosterConfig> boosterPackConfigurators;
-    
     protected String libertyServerPath = null;
     protected String tomeeInstallPath = null;
     protected String tomeeConfigPath = null;
@@ -143,27 +141,9 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
             this.dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession,
                         remoteRepos, BoostLogger.getInstance());
             this.targetRuntime = BoosterConfigurator.getTargetRuntime(this.dependencies, BoostLogger.getInstance());
-            this.boosterPackConfigurators = BoosterConfigurator.getBoosterPackConfigurators(this.dependencies,
-                    BoostLogger.getInstance());
+            
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
-        }
-    }
-    
-    /**
-     * Generate config for the Liberty server based on the Maven Spring Boot
-     * project.
-     * 
-     * @throws MojoExecutionException
-     */
-    protected void updateTOMEEClasspath() throws MojoExecutionException {
-        try {
-            // update server config
-            BoosterConfigurator.addTOMEEDependencyJarsToClasspath(tomeeConfigPath, boosterPackConfigurators,
-                    BoostLogger.getInstance());
-
-        } catch (Exception e) {
-            throw new MojoExecutionException("Unable to update server configuration for the tomee server.", e);
         }
     }
 }

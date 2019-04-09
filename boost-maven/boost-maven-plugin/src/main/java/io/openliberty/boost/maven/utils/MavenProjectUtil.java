@@ -22,13 +22,11 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactResult;
-import org.eclipse.aether.resolution.DependencyRequest;
-import org.eclipse.aether.resolution.DependencyResolutionException;
-import org.eclipse.aether.resolution.DependencyResult;
+import org.eclipse.aether.resolution.ArtifactDescriptorException;
+import org.eclipse.aether.resolution.ArtifactDescriptorRequest;
+import org.eclipse.aether.resolution.ArtifactDescriptorResult;
 
 public class MavenProjectUtil {
 
@@ -51,7 +49,7 @@ public class MavenProjectUtil {
 
     public static Map<String, String> getAllDependencies(MavenProject project, RepositorySystem repoSystem,
             RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, BoostLogger logger)
-            throws DependencyResolutionException {
+            throws ArtifactDescriptorException {
         logger.debug("Processing project for dependencies.");
         Map<String, String> dependencies = new HashMap<String, String>();
 
@@ -64,7 +62,7 @@ public class MavenProjectUtil {
                 org.eclipse.aether.artifact.Artifact pomArtifact = new DefaultArtifact(artifact.getGroupId(),
                         artifact.getArtifactId(), "pom", artifact.getVersion());
 
-                List<org.eclipse.aether.artifact.Artifact> warArtifacts = resolveArtifact(pomArtifact, repoSystem,
+                List<org.eclipse.aether.artifact.Artifact> warArtifacts = getWarArtifacts(pomArtifact, repoSystem,
                         repoSession, remoteRepos);
 
                 for (org.eclipse.aether.artifact.Artifact warArtifact : warArtifacts) {
@@ -75,7 +73,7 @@ public class MavenProjectUtil {
                     // current project to have full control over those optional
                     // dependencies.
                     if (warArtifact.getGroupId().equals("io.openliberty.boosters")) {
-                        BoostLogger.getInstance().debug("Found booster dependency: " + warArtifact.getGroupId() + ":"
+                        logger.debug("Found booster dependency: " + warArtifact.getGroupId() + ":"
                                 + warArtifact.getArtifactId() + ":" + warArtifact.getVersion());
 
                         dependencies.put(warArtifact.getGroupId() + ":" + warArtifact.getArtifactId(),
@@ -124,24 +122,23 @@ public class MavenProjectUtil {
         return "";
     }
 
-    private static List<org.eclipse.aether.artifact.Artifact> resolveArtifact(
+    private static List<org.eclipse.aether.artifact.Artifact> getWarArtifacts(
             org.eclipse.aether.artifact.Artifact artifact, RepositorySystem repoSystem,
             RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos)
-            throws DependencyResolutionException {
-        CollectRequest collectRequest = new CollectRequest();
-        collectRequest.setRoot(new Dependency(artifact, "import"));
+            throws ArtifactDescriptorException {
+
+        List<org.eclipse.aether.artifact.Artifact> artifacts = new ArrayList<>();
+
+        ArtifactDescriptorRequest descriptorRequest = new ArtifactDescriptorRequest();
+        descriptorRequest.setArtifact(artifact);
         for (RemoteRepository remoteRepo : remoteRepos) {
-            collectRequest.addRepository(remoteRepo);
+            descriptorRequest.addRepository(remoteRepo);
         }
 
-        DependencyResult resolutionResult = repoSystem.resolveDependencies(repoSession,
-                new DependencyRequest(collectRequest, null));
+        ArtifactDescriptorResult descriptorResult = repoSystem.readArtifactDescriptor(repoSession, descriptorRequest);
 
-        List<ArtifactResult> artifactResults = resolutionResult.getArtifactResults();
-        ArrayList<org.eclipse.aether.artifact.Artifact> artifacts = new ArrayList<>(artifactResults.size());
-
-        for (ArtifactResult result : artifactResults) {
-            artifacts.add(result.getArtifact());
+        for (Dependency dependency : descriptorResult.getDependencies()) {
+            artifacts.add(dependency.getArtifact());
         }
 
         return artifacts;

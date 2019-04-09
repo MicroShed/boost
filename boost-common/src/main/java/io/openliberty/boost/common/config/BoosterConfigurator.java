@@ -19,8 +19,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.reflections.Reflections;
 
 import io.openliberty.boost.common.BoostException;
@@ -143,27 +141,21 @@ public class BoosterConfigurator {
             return ConfigConstants.LIBERTY_RUNTIME;
         }
     }
+    
+    public static void configureTomeeServer(String tomeeConfigPath,
+            List<AbstractBoosterConfig> boosterPackConfigurators, BoostLoggerI logger) throws Exception {
 
-    public static void addTOMEEDependencyJarsToClasspath(String tomeeServerPath,
-            List<AbstractBoosterConfig> boosterPackConfigurators, BoostLoggerI logger) {
-
-        // first get the dependency coordinate strings for each booster
-
-        TomEEServerConfigGenerator tomeeConfig = null;
-        try {
-            tomeeConfig = new TomEEServerConfigGenerator(tomeeServerPath, logger);
-        } catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        try {
-            tomeeConfig.addJarsDirToSharedLoader();
-        } catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
+        TomEEServerConfigGenerator tomeeConfig = new TomEEServerConfigGenerator(tomeeConfigPath, logger);
+        tomeeConfig.addJarsDirToSharedLoader();
+        
+        // Configure HTTP endpoint
+        Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
+        
+        String hostname = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "localhost");
+        tomeeConfig.setHostname(hostname);
+        
+        String httpPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "8080");
+        tomeeConfig.setHttpPort(httpPort);
     }
 
     public static List<String> getTomEEDependencyJarsToCopy(List<AbstractBoosterConfig> boosterPackConfigurators,
