@@ -103,7 +103,6 @@ public abstract class AbstractMojo extends MojoSupport {
             
             this.dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession,
                         remoteRepos, BoostLogger.getInstance());
-
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
@@ -125,5 +124,5 @@ public abstract class AbstractMojo extends MojoSupport {
         
         return runtime;
     }
-    
+
 }

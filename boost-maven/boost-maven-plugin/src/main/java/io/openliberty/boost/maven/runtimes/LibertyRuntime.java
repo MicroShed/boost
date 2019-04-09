@@ -31,11 +31,11 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
+import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterConfigurator;
 import io.openliberty.boost.common.config.ConfigConstants;
 import io.openliberty.boost.common.runtimes.LibertyRuntimeI;
-import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.utils.SpringBootUtil;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
@@ -88,6 +88,8 @@ public class LibertyRuntime implements LibertyRuntimeI {
     public void doPackage() throws BoostException {
         List<AbstractBoosterConfig> boosterConfigs;
         try {
+            String javaCompilerTargetVersion = MavenProjectUtil.getJavaCompilerTargetVersion(project);
+            System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, javaCompilerTargetVersion);
             boosterConfigs = BoosterConfigurator.getBoosterConfigs(deps, BoostLogger.getInstance());
         } catch(Exception e) {
             throw new BoostException("Error copying booster dependencies", e);
@@ -101,20 +103,19 @@ public class LibertyRuntime implements LibertyRuntimeI {
     }
     
     private void packageLiberty(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
-        
-
         createLibertyServer();
 
         /**
-         * Whether the packaged Liberty Uber JAR will be the project artifact. This
-         * should be the case in Spring Boot scenarios since Spring Boot developers
-         * expect a runnable JAR.
+         * Whether the packaged Liberty Uber JAR will be the project artifact.
+         * This should be the case in Spring Boot scenarios since Spring Boot
+         * developers expect a runnable JAR.
          */
         boolean attach;
 
         /**
-         * Use the classifier to determine whether we need to set the Liberty Uber JAR
-         * as the project artifact, and add Spring-Boot-Version to the manifest
+         * Use the classifier to determine whether we need to set the Liberty
+         * Uber JAR as the project artifact, and add Spring-Boot-Version to the
+         * manifest
          */
         String springBootClassifier = null;
 
@@ -164,10 +165,6 @@ public class LibertyRuntime implements LibertyRuntimeI {
             }
         } else { // Dealing with an EE based app
 
-            // Get the Java compiler target version
-            String javaCompilerTargetVersion = MavenProjectUtil.getJavaCompilerTargetVersion(project);
-            System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, javaCompilerTargetVersion);
-
             // targeting a liberty install
             copyBoosterDependencies(boosterConfigs);
 
@@ -200,8 +197,8 @@ public class LibertyRuntime implements LibertyRuntimeI {
    
     /**
      * Check that we either have a Liberty Uber JAR (in which case this is a
-     * re-execution) or a Spring Boot Uber JAR (from which we will create a Liberty
-     * Uber JAR) when we begin the packaging for Spring Boot projects.
+     * re-execution) or a Spring Boot Uber JAR (from which we will create a
+     * Liberty Uber JAR) when we begin the packaging for Spring Boot projects.
      * 
      * @throws MojoExecutionException
      */
@@ -214,8 +211,8 @@ public class LibertyRuntime implements LibertyRuntimeI {
     }
     
     /**
-     * Copy the Spring Boot uber JAR back as the project artifact, only if Spring
-     * Boot didn't create it already
+     * Copy the Spring Boot uber JAR back as the project artifact, only if
+     * Spring Boot didn't create it already
      * 
      * @throws MojoExecutionException
      */
@@ -290,8 +287,8 @@ public class LibertyRuntime implements LibertyRuntimeI {
     }
     
     /**
-     * Get all booster dependencies and invoke the maven-dependency-plugin to copy
-     * them to the Liberty server.
+     * Get all booster dependencies and invoke the maven-dependency-plugin to
+     * copy them to the Liberty server.
      * 
      * @throws MojoExecutionException
      *
@@ -392,14 +389,15 @@ public class LibertyRuntime implements LibertyRuntimeI {
     }
     
     /**
-     * Invoke the liberty-maven-plugin to package the server into a runnable Liberty
-     * JAR
+     * Invoke the liberty-maven-plugin to package the server into a runnable
+     * Liberty JAR
      * 
      * @param packageFilePath
      *            the Spring Boot Uber JAR file path, whose contents will be
      *            replaced by the Liberty Uber JAR
      * @param attach
-     *            whether or not to make the packaged server the project artifact
+     *            whether or not to make the packaged server the project
+     *            artifact
      * @throws MojoExecutionException
      */
     private void createUberJar(String packageFilePath, boolean attach) throws MojoExecutionException {

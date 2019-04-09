@@ -20,7 +20,6 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.config.BoosterConfigurator;
-import io.openliberty.boost.common.config.TomEEServerConfigGenerator;
 import io.openliberty.boost.common.runtimes.TomeeRuntimeI;
 import io.openliberty.boost.maven.utils.BoostLogger;
 
@@ -55,7 +54,7 @@ public class TomeeRuntime implements TomeeRuntimeI {
         try {
             List<AbstractBoosterConfig> boosterConfigs = BoosterConfigurator.getBoosterConfigs(deps, BoostLogger.getInstance());
             createTomEEServer();
-            updateTOMEEClasspath(boosterConfigs);
+            configureTomeeServer(boosterConfigs);
             copyTomEEJarDependencies(boosterConfigs);
         }
         catch(Exception e) {
@@ -79,10 +78,9 @@ public class TomeeRuntime implements TomeeRuntimeI {
      * 
      * @throws MojoExecutionException
      */
-    private void updateTOMEEClasspath(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
+    private void configureTomeeServer(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
         try {
-            TomEEServerConfigGenerator tomeeConfig = new TomEEServerConfigGenerator(configDir, BoostLogger.getInstance());
-            tomeeConfig.addJarsDirToSharedLoader();
+            BoosterConfigurator.configureTomeeServer(configDir, boosterConfigs, BoostLogger.getInstance());
         } catch (Exception e) {
             throw new MojoExecutionException("Unable to update server configuration for the Tomee server.", e);
         }
