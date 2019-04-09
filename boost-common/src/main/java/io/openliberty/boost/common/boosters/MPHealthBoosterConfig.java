@@ -22,12 +22,12 @@ import org.w3c.dom.Document;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+import io.openliberty.boost.common.runtimes.RuntimeI;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpHealth")
 public class MPHealthBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
-    List<String> tomeeDependencyStrings = new ArrayList<String>();
 
     public MPHealthBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
@@ -49,19 +49,13 @@ public class MPHealthBoosterConfig extends AbstractBoosterConfig {
     }
 
     @Override
-    public String getDependency() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public Properties getServerProperties() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<String> getTomEEDependency() {
-        return tomeeDependencyStrings;
+    public List<String> getDependencies(RuntimeI runtime) {
+        return new ArrayList<String>();
     }
 }

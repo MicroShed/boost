@@ -70,7 +70,7 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "1.6");
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addFeature(boosters.get(0).getFeature());
@@ -100,7 +100,7 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "1.7");
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addFeature(boosters.get(0).getFeature());
@@ -130,7 +130,7 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "7");
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addFeature(boosters.get(0).getFeature());
@@ -160,7 +160,7 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "1.8");
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addFeature(boosters.get(0).getFeature());
@@ -190,7 +190,7 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "8");
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addFeature(boosters.get(0).getFeature());
@@ -220,7 +220,7 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "9");
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addFeature(boosters.get(0).getFeature());
@@ -250,7 +250,7 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "11");
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addFeature(boosters.get(0).getFeature());
@@ -277,7 +277,7 @@ public class JDBCBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
@@ -341,7 +341,7 @@ public class JDBCBoosterTest {
         Map<String, String> dependencies = getJDBCDependency();
         dependencies.put(JDBCBoosterConfig.DB2_DEPENDENCY, DB2_DEPENDENCY_VERSION);
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(dependencies, logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
 
@@ -420,7 +420,7 @@ public class JDBCBoosterTest {
         Map<String, String> dependencies = getJDBCDependency();
         dependencies.put(JDBCBoosterConfig.MYSQL_DEPENDENCY, MYSQL_DEPENDENCY_VERSION);
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(dependencies, logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
 
@@ -499,7 +499,7 @@ public class JDBCBoosterTest {
         // Set database name property
         System.setProperty(BoostProperties.DATASOURCE_DATABASE_NAME, "myDatabase");
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
@@ -529,7 +529,7 @@ public class JDBCBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
@@ -562,7 +562,7 @@ public class JDBCBoosterTest {
         // Set database name property
         System.setProperty(BoostProperties.DATASOURCE_CREATE_DATABASE, "false");
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
@@ -592,7 +592,7 @@ public class JDBCBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
@@ -626,7 +626,7 @@ public class JDBCBoosterTest {
         Map<String, String> dependencies = getJDBCDependency();
         dependencies.put(JDBCBoosterConfig.DB2_DEPENDENCY, DB2_DEPENDENCY_VERSION);
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(dependencies, logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
 
@@ -659,7 +659,7 @@ public class JDBCBoosterTest {
         Map<String, String> dependencies = getJDBCDependency();
         dependencies.put(JDBCBoosterConfig.MYSQL_DEPENDENCY, MYSQL_DEPENDENCY_VERSION);
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(dependencies, logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
 
@@ -694,7 +694,7 @@ public class JDBCBoosterTest {
         Map<String, String> dependencies = getJDBCDependency();
         dependencies.put(JDBCBoosterConfig.DB2_DEPENDENCY, DB2_DEPENDENCY_VERSION);
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(dependencies, logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
 
@@ -729,7 +729,7 @@ public class JDBCBoosterTest {
         Map<String, String> dependencies = getJDBCDependency();
         dependencies.put(JDBCBoosterConfig.DB2_DEPENDENCY, DB2_DEPENDENCY_VERSION);
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(dependencies, logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
 
@@ -762,7 +762,7 @@ public class JDBCBoosterTest {
         Map<String, String> dependencies = getJDBCDependency();
         dependencies.put(JDBCBoosterConfig.DB2_DEPENDENCY, DB2_DEPENDENCY_VERSION);
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(dependencies, logger);
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(dependencies, logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));
 
@@ -794,7 +794,7 @@ public class JDBCBoosterTest {
         // Set database name property
         System.setProperty(BoostProperties.DATASOURCE_PREFIX + "randomProperty", "randomValue");
 
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         serverConfig.addBoosterConfig(boosters.get(0));

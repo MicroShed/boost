@@ -20,9 +20,6 @@ public final class ConfigConstants {
     public static final String VERSION = "version";
     public static final String WAR_PKG_TYPE = "war";
 
-    public static final String TOMEE_RUNTIME = "tomeert";
-    public static final String LIBERTY_RUNTIME = "libertyrt";
-
     public static final String TOMEEBOOST_JAR_DIR = "boost";
 
     public static final String INSTALL_PACKAGE_SPRING = "spring-boot-project";

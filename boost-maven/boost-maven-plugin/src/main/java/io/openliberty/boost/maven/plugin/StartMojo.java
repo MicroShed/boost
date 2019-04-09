@@ -8,27 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.maven.liberty;
-
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
+package io.openliberty.boost.maven.plugin;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
-import io.openliberty.boost.common.config.ConfigConstants;
+import io.openliberty.boost.common.BoostException;
 
 /**
  * Starts the executable archive application as a background process.
  * 
  */
 @Mojo(name = "start", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class LibertyStartMojo extends AbstractLibertyMojo {
+public class StartMojo extends AbstractMojo {
 
     /**
      * Time in seconds to wait while verifying that the server has started.
@@ -52,26 +46,11 @@ public class LibertyStartMojo extends AbstractLibertyMojo {
     public void execute() throws MojoExecutionException {
         super.execute();
 
-        if (this.targetRuntime.equals(ConfigConstants.TOMEE_RUNTIME)) {
-            startTomee();
-        } else {
-            startLiberty();
+        try {
+            this.getRuntimeInstance().doStart(clean, verifyTimeout, serverStartTimeout);
+        } catch (BoostException e) {
+            throw new MojoExecutionException("Error starting server", e);
         }
-    }
-
-    private void startLiberty() throws MojoExecutionException {
-        executeMojo(getPlugin(), goal("start"),
-                configuration(element(name("serverName"), libertyServerName),
-                        element(name("verifyTimeout"), String.valueOf(verifyTimeout)),
-                        element(name("serverStartTimeout"), String.valueOf(serverStartTimeout)),
-                        element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
-                getExecutionEnvironment());
-    }
-
-    private void startTomee() throws MojoExecutionException {
-        executeMojo(getTOMEEPlugin(), goal("start"),
-                configuration(element(name("tomeeAlreadyInstalled"), "true"), element(name("context"), "ROOT"), element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")),
-                getExecutionEnvironment());
     }
 
 }

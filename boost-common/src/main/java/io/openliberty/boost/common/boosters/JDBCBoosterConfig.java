@@ -11,6 +11,8 @@
 package io.openliberty.boost.common.boosters;
 
 import io.openliberty.boost.common.config.BoostProperties;
+import io.openliberty.boost.common.runtimes.LibertyRuntimeI;
+import io.openliberty.boost.common.runtimes.RuntimeI;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
@@ -36,9 +38,8 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
     private static String DERBY_DEFAULT = "org.apache.derby:derby:10.14.2.0";
 
-    private String dependency;
+    private String libertyDependency;
     private String libertyFeature;
-    List<String> tomeeDependencyStrings = new ArrayList<String>();
 
     private Properties serverProperties;
 
@@ -81,22 +82,22 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
         }
 
         if (configuredDatabaseDep == null) {
-            this.dependency = DERBY_DEFAULT;
+            this.libertyDependency = DERBY_DEFAULT;
         } else {
-            this.dependency = configuredDatabaseDep;
+            this.libertyDependency = configuredDatabaseDep;
         }
 
         // Set server properties
         this.serverProperties = new Properties();
 
         // Initialize defaults and required properties for each datasource vendor
-        if (this.dependency.startsWith(DERBY_DEPENDENCY)) {
+        if (this.libertyDependency.startsWith(DERBY_DEPENDENCY)) {
             // Embedded Derby requires a database name. Set a default for this and create
             // it.
             this.serverProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, DERBY_DB);
             this.serverProperties.put(BoostProperties.DATASOURCE_CREATE_DATABASE, "create");
 
-        } else if (this.dependency.startsWith(DB2_DEPENDENCY)) {
+        } else if (this.libertyDependency.startsWith(DB2_DEPENDENCY)) {
             // For DB2, since we are expecting the database to exist, there is no
             // default value we can set for databaseName that would be of any use.
             // Likewise, for user and password, there isn't anything we could set
@@ -110,7 +111,7 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
             this.serverProperties.put(BoostProperties.DATASOURCE_SERVER_NAME, LOCALHOST);
             this.serverProperties.put(BoostProperties.DATASOURCE_PORT_NUMBER, DB2_DEFAULT_PORT_NUMBER);
 
-        } else if (this.dependency.startsWith(MYSQL_DEPENDENCY)) {
+        } else if (this.libertyDependency.startsWith(MYSQL_DEPENDENCY)) {
             // Same set of minimum requirements for MySQL
             this.serverProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, "");
             this.serverProperties.put(BoostProperties.DATASOURCE_USER, "");
@@ -136,26 +137,19 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
     @Override
     public Properties getServerProperties() {
-
         return serverProperties;
-    }
-
-    @Override
-    public String getDependency() {
-
-        return dependency;
     }
 
     @Override
     public void addServerConfig(Document doc) {
 
-        if (dependency.startsWith(DERBY_DEPENDENCY)) {
+        if (libertyDependency.startsWith(DERBY_DEPENDENCY)) {
             addDatasourceConfig(doc, PROPERTIES_DERBY_EMBEDDED, DERBY_JAR);
 
-        } else if (dependency.startsWith(DB2_DEPENDENCY)) {
+        } else if (libertyDependency.startsWith(DB2_DEPENDENCY)) {
             addDatasourceConfig(doc, PROPERTIES_DB2_JCC, DB2_JAR);
 
-        } else if (dependency.startsWith(MYSQL_DEPENDENCY)) {
+        } else if (libertyDependency.startsWith(MYSQL_DEPENDENCY)) {
             // Use generic <properties> element for MySQL
             addDatasourceConfig(doc, PROPERTIES, MYSQL_JAR);
         }
@@ -226,7 +220,11 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
     }
 
     @Override
-    public List<String> getTomEEDependency() {
-        return tomeeDependencyStrings;
+    public List<String> getDependencies(RuntimeI runtime) {
+        List<String> deps = new ArrayList<String>();
+        if(runtime instanceof LibertyRuntimeI) {
+            deps.add(libertyDependency);
+        }
+        return deps;
     }
 }

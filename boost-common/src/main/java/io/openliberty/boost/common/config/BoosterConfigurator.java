@@ -19,13 +19,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.reflections.Reflections;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
+import io.openliberty.boost.common.runtimes.RuntimeI;
 import io.openliberty.boost.common.utils.BoostUtil;
 
 public class BoosterConfigurator {
@@ -46,7 +45,7 @@ public class BoosterConfigurator {
      * @throws NoSuchMethodException
      * @throws SecurityException
      */
-    public static List<AbstractBoosterConfig> getBoosterPackConfigurators(Map<String, String> dependencies,
+    public static List<AbstractBoosterConfig> getBoosterConfigs(Map<String, String> dependencies,
             BoostLoggerI logger) throws BoostException, InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 
@@ -117,74 +116,24 @@ public class BoosterConfigurator {
     }
 
     public static List<String> getDependenciesToCopy(List<AbstractBoosterConfig> boosterPackConfigurators,
-            BoostLoggerI logger) {
+            RuntimeI runtime, BoostLoggerI logger) {
 
-        List<String> dependenciesToCopy = new ArrayList<String>();
-
-        for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
-            String dependencyToCopy = configurator.getDependency();
-
-            if (dependencyToCopy != null) {
-                logger.info(dependencyToCopy);
-                dependenciesToCopy.add(dependencyToCopy);
-            }
-        }
-
-        return dependenciesToCopy;
-    }
-
-    public static String getTargetRuntime(Map<String, String> dependencies, BoostLoggerI logger) {
-
-        if (dependencies.containsKey("io.openliberty.boosters:tomee")) {
-            logger.info("found tomee runtime target");
-            return ConfigConstants.TOMEE_RUNTIME;
-        } else {
-            logger.info("did not find  tomee runtime target, defaulting to liberty");
-            return ConfigConstants.LIBERTY_RUNTIME;
-        }
-    }
-
-    public static void addTOMEEDependencyJarsToClasspath(String tomeeServerPath,
-            List<AbstractBoosterConfig> boosterPackConfigurators, BoostLoggerI logger) {
-
-        // first get the dependency coordinate strings for each booster
-
-        TomEEServerConfigGenerator tomeeConfig = null;
-        try {
-            tomeeConfig = new TomEEServerConfigGenerator(tomeeServerPath, logger);
-        } catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        try {
-            tomeeConfig.addJarsDirToSharedLoader();
-        } catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
-
-    public static List<String> getTomEEDependencyJarsToCopy(List<AbstractBoosterConfig> boosterPackConfigurators,
-            BoostLoggerI logger) {
-
-        Set<String> allTomEEDependencyJarsNoDups;
-        List<String> tomeeDependencyJarsToCopy = new ArrayList<String>();
+        Set<String> allDependencyJarsNoDups;
+        List<String> dependencyJarsToCopy = new ArrayList<String>();
 
         for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
-            List<String> dependencyStringsToCopy = configurator.getTomEEDependency();
-            for (String tomeeDependecyStr : dependencyStringsToCopy) {
-                if (tomeeDependecyStr != null) {
-                    logger.info(tomeeDependecyStr);
-                    tomeeDependencyJarsToCopy.add(tomeeDependecyStr);
+            List<String> dependencyStringsToCopy = configurator.getDependencies(runtime);
+            for (String depStr : dependencyStringsToCopy) {
+                if (depStr != null) {
+                    logger.info(depStr);
+                    dependencyJarsToCopy.add(depStr);
                 }
             }
-
         }
-        allTomEEDependencyJarsNoDups = new HashSet<>(tomeeDependencyJarsToCopy);
-        tomeeDependencyJarsToCopy.clear();
-        tomeeDependencyJarsToCopy.addAll(allTomEEDependencyJarsNoDups);
-        return tomeeDependencyJarsToCopy;
+        
+        allDependencyJarsNoDups = new HashSet<>(dependencyJarsToCopy);
+        dependencyJarsToCopy.clear();
+        dependencyJarsToCopy.addAll(allDependencyJarsNoDups);
+        return dependencyJarsToCopy;
     }
 }

@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.w3c.dom.Document;
 
 import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.runtimes.RuntimeI;
 
 /**
  * Interface to describe common function across all technology Booster Pack
@@ -75,8 +76,6 @@ public abstract class AbstractBoosterConfig {
      * 
      * @return
      */
-    public abstract String getDependency();
-
-    public abstract List<String> getTomEEDependency();
+    public abstract List<String> getDependencies(RuntimeI runtime);
 
 }

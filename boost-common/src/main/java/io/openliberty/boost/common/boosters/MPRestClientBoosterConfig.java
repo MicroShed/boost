@@ -22,12 +22,13 @@ import org.w3c.dom.Document;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+import io.openliberty.boost.common.runtimes.RuntimeI;
+import io.openliberty.boost.common.runtimes.TomeeRuntimeI;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpRestClient")
 public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
-    List<String> tomeeDependencyStrings = new ArrayList<String>();
 
     public MPRestClientBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
@@ -36,9 +37,6 @@ public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = MPRESTCLIENT_11;
         }
-
-        tomeeDependencyStrings.add("org.apache.cxf:cxf-rt-rs-mp-client:3.2.7");
-        tomeeDependencyStrings.add("org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1");
     }
 
     @Override
@@ -51,12 +49,6 @@ public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
         // No config to write
 
     }
-
-    @Override
-    public String getDependency() {
-        return null;
-    }
-
     @Override
     public Properties getServerProperties() {
         // TODO Auto-generated method stub
@@ -64,8 +56,12 @@ public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
     }
 
     @Override
-    public List<String> getTomEEDependency() {
-        // TODO Auto-generated method stub
-        return tomeeDependencyStrings;
+    public List<String> getDependencies(RuntimeI runtime) {
+        List<String> deps = new ArrayList<String>();
+        if(runtime instanceof TomeeRuntimeI) {
+            deps.add("org.apache.cxf:cxf-rt-rs-mp-client:3.2.7");
+            deps.add("org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1");
+        }
+        return deps;
     }
 }

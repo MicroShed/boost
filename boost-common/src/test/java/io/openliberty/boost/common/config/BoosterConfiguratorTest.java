@@ -50,7 +50,7 @@ public class BoosterConfiguratorTest {
 
         // Get booster configurators
         BoostLoggerI logger = CommonLogger.getInstance();
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         // Check that the JDBCBoosterPackConfigurator was created
@@ -80,7 +80,7 @@ public class BoosterConfiguratorTest {
 
         // Get booster configurators
         BoostLoggerI logger = CommonLogger.getInstance();
-        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterPackConfigurators(getJDBCDependency(),
+        List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(getJDBCDependency(),
                 logger);
 
         // Check that the JDBCBoosterPackConfigurator was created
