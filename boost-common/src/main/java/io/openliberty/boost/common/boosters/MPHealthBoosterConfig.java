@@ -15,14 +15,13 @@ import static io.openliberty.boost.common.config.ConfigConstants.MPHEALTH_10;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-
-import org.w3c.dom.Document;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 import io.openliberty.boost.common.runtimes.RuntimeI;
+import io.openliberty.boost.common.runtimes.TomeeRuntimeI;
+import io.openliberty.boost.common.config.ServerConfigGenerator;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpHealth")
 public class MPHealthBoosterConfig extends AbstractBoosterConfig {
@@ -38,24 +37,23 @@ public class MPHealthBoosterConfig extends AbstractBoosterConfig {
     }
 
     @Override
-    public String getFeature() {
+    public String getLibertyFeature() {
         return libertyFeature;
     }
 
     @Override
-    public void addServerConfig(Document doc) {
+    public void addServerConfig(ServerConfigGenerator config) {
         // No config to write
-
-    }
-
-    @Override
-    public Properties getServerProperties() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
     public List<String> getDependencies(RuntimeI runtime) {
-        return new ArrayList<String>();
+    	List<String> deps = new ArrayList<String>();
+        if(runtime instanceof TomeeRuntimeI) {
+            deps.add("org.apache.geronimo:geronimo-health:1.0.1");
+            deps.add("org.apache.geronimo:geronimo-health-common:1.0.1");
+            deps.add("org.eclipse.microprofile.health:microprofile-health-api:1.0");
+        }
+        return deps;
     }
 }

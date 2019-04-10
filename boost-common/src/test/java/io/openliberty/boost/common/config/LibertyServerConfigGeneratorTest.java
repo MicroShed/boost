@@ -39,40 +39,48 @@ public class LibertyServerConfigGeneratorTest {
 
     BoostLoggerI logger = CommonLogger.getInstance();
 
-    /**
-     * Test adding feature
-     * 
-     * @throws ParserConfigurationException
-     * @throws TransformerException
-     * @throws IOException
-     */
-    @Test
-    public void testAddSpringFeature() throws ParserConfigurationException, TransformerException, IOException {
-
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
-        serverConfig.addFeature(SPRING_BOOT_15);
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + SPRING_BOOT_15 + "</feature>");
-
-        assertTrue("The " + SPRING_BOOT_15 + " feature was not found in the server configuration", featureFound);
-
-    }
-
-    @Test
-    public void testZeroFeaturesInDefaultServerConfig()
-            throws ParserConfigurationException, TransformerException, IOException {
-        LibertyServerConfigGenerator g = new LibertyServerConfigGenerator(outputDir.getRoot().getAbsolutePath(), logger);
-        Element serverRoot = g.getServerDoc().getDocumentElement();
-        List<Element> featureMgrList = getDirectChildrenByTag(serverRoot, FEATURE_MANAGER);
-        assertEquals("Didn't find one and only one featureMgr", 1, featureMgrList.size());
-        Element featureMgr = featureMgrList.get(0);
-        List<Element> featureList = getDirectChildrenByTag(featureMgr, FEATURE);
-        assertEquals("Didn't find empty list of features", 0, featureList.size());
-    }
+    // /**
+    // * Test adding feature
+    // *
+    // * @throws ParserConfigurationException
+    // * @throws TransformerException
+    // * @throws IOException
+    // */
+    // @Test
+    // public void testAddSpringFeature() throws ParserConfigurationException,
+    // TransformerException, IOException {
+    //
+    // LibertyServerConfigGenerator serverConfig = new
+    // LibertyServerConfigGenerator(
+    // outputDir.getRoot().getAbsolutePath(), logger);
+    // serverConfig.addFeature(SPRING_BOOT_15);
+    // serverConfig.writeToServer();
+    //
+    // String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+    //
+    // boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
+    // "<feature>" + SPRING_BOOT_15 + "</feature>");
+    //
+    // assertTrue("The " + SPRING_BOOT_15 + " feature was not found in the
+    // server configuration", featureFound);
+    //
+    // }
+    //
+    // @Test
+    // public void testZeroFeaturesInDefaultServerConfig()
+    // throws ParserConfigurationException, TransformerException, IOException {
+    // LibertyServerConfigGenerator g = new
+    // LibertyServerConfigGenerator(outputDir.getRoot().getAbsolutePath(),
+    // logger);
+    // Element serverRoot = g.getServerDoc().getDocumentElement();
+    // List<Element> featureMgrList = getDirectChildrenByTag(serverRoot,
+    // FEATURE_MANAGER);
+    // assertEquals("Didn't find one and only one featureMgr", 1,
+    // featureMgrList.size());
+    // Element featureMgr = featureMgrList.get(0);
+    // List<Element> featureList = getDirectChildrenByTag(featureMgr, FEATURE);
+    // assertEquals("Didn't find empty list of features", 0,
+    // featureList.size());
+    // }
 
 }
