@@ -13,6 +13,7 @@ package io.openliberty.boost.common.config;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -23,13 +24,14 @@ import org.reflections.Reflections;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
+import io.openliberty.boost.common.runtimes.RuntimeI;
 import io.openliberty.boost.common.utils.BoostUtil;
 
 public class BoosterConfigurator {
 
     /**
-     * take a list of pom boost dependency strings and map to liberty features
-     * for config. return a list of feature configuration objects for each found
+     * take a list of pom boost dependency strings and map to liberty features for
+     * config. return a list of feature configuration objects for each found
      * dependency.
      * 
      * @param dependencies
@@ -43,7 +45,7 @@ public class BoosterConfigurator {
      * @throws NoSuchMethodException
      * @throws SecurityException
      */
-    public static List<AbstractBoosterConfig> getBoosterPackConfigurators(Map<String, String> dependencies,
+    public static List<AbstractBoosterConfig> getBoosterConfigs(Map<String, String> dependencies,
             BoostLoggerI logger) throws BoostException, InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 
@@ -114,20 +116,40 @@ public class BoosterConfigurator {
     }
 
     public static List<String> getDependenciesToCopy(List<AbstractBoosterConfig> boosterPackConfigurators,
-            BoostLoggerI logger) {
+            RuntimeI runtime, BoostLoggerI logger) {
 
-        List<String> dependenciesToCopy = new ArrayList<String>();
+        Set<String> allDependencyJarsNoDups;
+        List<String> dependencyJarsToCopy = new ArrayList<String>();
 
         for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
-            String dependencyToCopy = configurator.getDependency();
-
-            if (dependencyToCopy != null) {
-                logger.info(dependencyToCopy);
-                dependenciesToCopy.add(dependencyToCopy);
+            List<String> dependencyStringsToCopy = configurator.getDependencies(runtime);
+            for (String depStr : dependencyStringsToCopy) {
+                if (depStr != null) {
+                    logger.info(depStr);
+                    dependencyJarsToCopy.add(depStr);
+                }
             }
         }
-
-        return dependenciesToCopy;
+        
+        allDependencyJarsNoDups = new HashSet<>(dependencyJarsToCopy);
+        dependencyJarsToCopy.clear();
+        dependencyJarsToCopy.addAll(allDependencyJarsNoDups);
+        return dependencyJarsToCopy;
     }
+    
+    public static void configureTomeeServer(String tomeeConfigPath,
+            List<AbstractBoosterConfig> boosterPackConfigurators, BoostLoggerI logger) throws Exception {
 
+        TomEEServerConfigGenerator tomeeConfig = new TomEEServerConfigGenerator(tomeeConfigPath, logger);
+        tomeeConfig.addJarsDirToSharedLoader();
+        
+        // Configure HTTP endpoint
+        Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
+        
+        String hostname = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "localhost");
+        tomeeConfig.setHostname(hostname);
+        
+        String httpPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "8080");
+        tomeeConfig.setHttpPort(httpPort);
+    }
 }

@@ -15,9 +15,12 @@ import org.w3c.dom.Document;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+import io.openliberty.boost.common.runtimes.RuntimeI;
 
 import static io.openliberty.boost.common.config.ConfigConstants.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -46,12 +49,12 @@ public class JPABoosterConfig extends AbstractBoosterConfig {
     }
 
     @Override
-    public String getDependency() {
+    public Properties getServerProperties() {
         return null;
     }
 
     @Override
-    public Properties getServerProperties() {
-        return null;
+    public List<String> getDependencies(RuntimeI runtime) {
+        return new ArrayList<String>();
     }
 }

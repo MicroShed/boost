@@ -12,6 +12,8 @@ package io.openliberty.boost.common.boosters;
 
 import static io.openliberty.boost.common.config.ConfigConstants.MPCONFIG_13;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -20,12 +22,14 @@ import org.w3c.dom.Document;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+import io.openliberty.boost.common.runtimes.RuntimeI;
+import io.openliberty.boost.common.runtimes.TomeeRuntimeI;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpConfig")
 public class MPConfigBoosterConfig extends AbstractBoosterConfig {
 
     String libertyFeature = null;
-    
+
     public MPConfigBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         String version = dependencies.get(getCoordindates(this.getClass()));
         // if it is the 1.0 version = EE7 feature level
@@ -46,13 +50,19 @@ public class MPConfigBoosterConfig extends AbstractBoosterConfig {
     }
 
     @Override
-    public String getDependency() {
+    public Properties getServerProperties() {
+        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Properties getServerProperties() {
-        // TODO Auto-generated method stub
-        return null;
+    public List<String> getDependencies(RuntimeI runtime) {
+        List<String> deps = new ArrayList<String>();
+        if(runtime instanceof TomeeRuntimeI) {
+            deps.add("org.apache.geronimo.config:geronimo-config-impl:1.2.1");
+            deps.add("org.eclipse.microprofile.config:microprofile-config-api:1.3");
+            deps.add("org.osgi:org.osgi.annotation.versioning:1.0.0");
+        }
+        return deps;
     }
 }

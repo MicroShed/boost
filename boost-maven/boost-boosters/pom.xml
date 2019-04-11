@@ -24,6 +24,7 @@
         <module>booster-mpHealth-20</module>
         <module>booster-mpOpenTracing-20</module>
         <module>booster-mpRestClient-20</module>
+        <module>booster-tomee</module>
     </modules>
 
 </project>

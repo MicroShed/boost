@@ -8,40 +8,36 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.maven.liberty;
-
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
+package io.openliberty.boost.maven.plugin;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+
+import io.openliberty.boost.common.BoostException;
 
 /**
- * Runs the executable archive application (in the console foreground) after a
- * debugger connects to debug port <b>7777</b>.
- *
+ * Runs the executable archive application (in the console foreground).
  */
-@Mojo(name = "debug")
-public class LibertyDebugMojo extends AbstractLibertyMojo {
+@Mojo(name = "run", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+public class RunMojo extends AbstractMojo {
 
     /**
      * Clean all cached information on server start up.
      */
     @Parameter(property = "clean", defaultValue = "false")
-    protected boolean clean;
+    private boolean clean;
 
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
-
-        executeMojo(getPlugin(), goal("debug"),
-                configuration(element(name("serverName"), libertyServerName),
-                        element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
-                getExecutionEnvironment());
+        
+        try {
+            this.getRuntimeInstance().doRun(clean);
+        } catch (BoostException e) {
+            throw new MojoExecutionException("Error running server", e);
+        }
     }
 
 }

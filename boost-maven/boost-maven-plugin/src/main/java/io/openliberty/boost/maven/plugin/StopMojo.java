@@ -8,31 +8,30 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.maven.liberty;
-
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
+package io.openliberty.boost.maven.plugin;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+
+import io.openliberty.boost.common.BoostException;
 
 /**
  * Stops the executable archive application started by the 'start' or 'run'
  * goals.
  */
-@Mojo(name = "stop")
-public class LibertyStopMojo extends AbstractLibertyMojo {
+@Mojo(name = "stop", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+public class StopMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
 
-        executeMojo(getPlugin(), goal("stop"),
-                configuration(element(name("serverName"), libertyServerName), getRuntimeArtifactElement()),
-                getExecutionEnvironment());
+        try {
+            this.getRuntimeInstance().doStop();
+        } catch (BoostException e) {
+            throw new MojoExecutionException("Error stopping server", e);
+        }
     }
 
 }

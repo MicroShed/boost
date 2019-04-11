@@ -38,6 +38,13 @@
 			<scope>import</scope>
 			<type>pom</type>
 		</dependency>
+		<dependency>
+			<groupId>io.openliberty.boosters</groupId>
+			<artifactId>runtimes-bom</artifactId>
+			<version>@pom.version@</version>
+			<scope>import</scope>
+			<type>pom</type>
+		</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -59,7 +66,28 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
+	
+	<profiles>
+		<profile>
+			<id>tomee</id>
+			<properties>
+				<it.includes>EndpointIT</it.includes>
+			</properties>
+			<dependencies>
+				<dependency>
+    				<groupId>io.openliberty.boosters</groupId>
+    				<artifactId>tomee</artifactId>
+    			</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>liberty</id>
+			<properties>
+				<it.includes>FeatureVersionIT,EndpointIT</it.includes>
+			</properties>
+		</profile>
+	</profiles>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -100,6 +128,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>2.19.1</version>
+				<configuration>
+					<includes>
+						<include>${it.includes}</include>
+					</includes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>

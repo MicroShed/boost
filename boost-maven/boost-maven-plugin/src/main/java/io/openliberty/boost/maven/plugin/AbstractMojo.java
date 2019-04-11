@@ -8,17 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.maven.liberty;
+package io.openliberty.boost.maven.plugin;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
@@ -32,21 +30,20 @@ import org.codehaus.mojo.pluginsupport.util.ArtifactItem;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
-public abstract class AbstractLibertyMojo extends MojoSupport {
+import io.openliberty.boost.common.runtimes.RuntimeI;
+import io.openliberty.boost.maven.runtimes.LibertyRuntime;
+import io.openliberty.boost.maven.runtimes.TomeeRuntime;
+import io.openliberty.boost.maven.utils.BoostLogger;
+import io.openliberty.boost.maven.utils.MavenProjectUtil;
 
-    protected String libertyServerName = "BoostServer";
-
-    protected String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
-    protected String libertyMavenPluginArtifactId = "liberty-maven-plugin";
+public abstract class AbstractMojo extends MojoSupport {
+    
+    private static RuntimeI runtime;
 
     protected String mavenDependencyPluginGroupId = "org.apache.maven.plugins";
     protected String mavenDependencyPluginArtifactId = "maven-dependency-plugin";
-
-    @Parameter(defaultValue = "2.6.3", readonly = true)
-    protected String libertyMavenPluginVersion;
 
     @Parameter(defaultValue = "${project.build.directory}", readonly = true)
     protected String projectBuildDir;
@@ -71,21 +68,11 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
 
     @Parameter
     protected ArtifactItem runtimeArtifact;
-
-    protected Plugin getPlugin() throws MojoExecutionException {
-        return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
-                version(libertyMavenPluginVersion));
-    }
+    
+    protected Map<String, String> dependencies;
 
     protected Plugin getMavenDependencyPlugin() throws MojoExecutionException {
         return plugin(groupId(mavenDependencyPluginGroupId), artifactId(mavenDependencyPluginArtifactId));
-    }
-
-    protected Element getRuntimeArtifactElement() {
-        return element(name("assemblyArtifact"), element(name("groupId"), runtimeArtifact.getGroupId()),
-                element(name("artifactId"), runtimeArtifact.getArtifactId()),
-                element(name("version"), runtimeArtifact.getVersion()),
-                element(name("type"), runtimeArtifact.getType()));
     }
 
     protected ExecutionEnvironment getExecutionEnvironment() {
@@ -94,6 +81,7 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
 
     /**
      * Create default runtime artifact, if one has not been provided by the user
+     * TODO REMOVE
      */
     private void createDefaultRuntimeArtifactIfNeeded() {
         if (runtimeArtifact == null) {
@@ -104,9 +92,34 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
             runtimeArtifact.setType("zip");
         }
     }
-
+    
     @Override
     public void execute() throws MojoExecutionException {
-        createDefaultRuntimeArtifactIfNeeded();
+        try {
+            createDefaultRuntimeArtifactIfNeeded();
+            
+            this.dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession,
+                        remoteRepos, BoostLogger.getInstance());
+        } catch (Exception e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
     }
+    
+    protected RuntimeI getRuntimeInstance() throws MojoExecutionException {
+        if(runtime == null) {
+            BoostLogger logger = BoostLogger.getInstance();
+            if (dependencies.containsKey("io.openliberty.boosters:tomee")) {
+                logger.info("Detected TomEE as target Boost runtime");
+                String tomeeInstallDir = projectBuildDir + "/apache-tomee/";
+                String tomeeConfigDir = tomeeInstallDir + "conf";
+                runtime = new TomeeRuntime(dependencies, getExecutionEnvironment(), tomeeInstallDir, tomeeConfigDir, getMavenDependencyPlugin());
+            } else {
+                logger.info("No target Boost runtime found, defaulting to Liberty");
+                runtime = new LibertyRuntime(dependencies, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
+            }
+        }
+        
+        return runtime;
+    }
+
 }

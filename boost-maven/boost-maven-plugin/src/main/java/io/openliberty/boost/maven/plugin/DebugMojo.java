@@ -8,38 +8,36 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.maven.liberty;
-
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
+package io.openliberty.boost.maven.plugin;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import io.openliberty.boost.common.BoostException;
+
 /**
- * Runs the executable archive application (in the console foreground).
+ * Runs the executable archive application (in the console foreground) after a
+ * debugger connects to debug port <b>7777</b>.
+ *
  */
-@Mojo(name = "run")
-public class LibertyRunMojo extends AbstractLibertyMojo {
+@Mojo(name = "debug")
+public class DebugMojo extends AbstractMojo {
 
     /**
      * Clean all cached information on server start up.
      */
     @Parameter(property = "clean", defaultValue = "false")
-    private boolean clean;
+    protected boolean clean;
 
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
-
-        executeMojo(getPlugin(), goal("run"),
-                configuration(element(name("serverName"), libertyServerName),
-                        element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
-                getExecutionEnvironment());
+        try {
+            this.getRuntimeInstance().doDebug(clean);
+        } catch (BoostException e) {
+            throw new MojoExecutionException("Error debugging server", e);
+        }
     }
 
 }

@@ -12,6 +12,8 @@ package io.openliberty.boost.common.boosters;
 
 import static io.openliberty.boost.common.config.ConfigConstants.MPOPENTRACING_11;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -20,6 +22,7 @@ import org.w3c.dom.Document;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+import io.openliberty.boost.common.runtimes.RuntimeI;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpOpenTracing")
 public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
@@ -45,13 +48,13 @@ public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
     }
 
     @Override
-    public String getDependency() {
+    public Properties getServerProperties() {
+        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Properties getServerProperties() {
-        // TODO Auto-generated method stub
-        return null;
+    public List<String> getDependencies(RuntimeI runtime) {
+        return new ArrayList<String>();
     }
 }
