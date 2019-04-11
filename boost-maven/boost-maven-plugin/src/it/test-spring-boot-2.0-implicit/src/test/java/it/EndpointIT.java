@@ -58,19 +58,4 @@ public class EndpointIT {
 
         int statusCode = client.executeMethod(method);
     }
-
-    @Test
-    public void testBoostStrapProperties() throws Exception {
-        File propertiesFile = new File("target/liberty/wlp/usr/servers/BoostServer/bootstrap.properties");
-        assertTrue(propertiesFile.getAbsolutePath() + " does not exist", propertiesFile.exists());
-        try (FileReader fileReader = new FileReader(propertiesFile)) {
-            try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-                String line = bufferedReader.readLine();
-                assertNotNull(propertiesFile.getAbsolutePath() + " cannot be empty", line);
-                assertTrue("Comment not found", line.startsWith("#"));
-                line = bufferedReader.readLine();
-                assertEquals("Expected line not found", "server.liberty.use-default-host=false", line);
-            }
-        }
-    }
 }

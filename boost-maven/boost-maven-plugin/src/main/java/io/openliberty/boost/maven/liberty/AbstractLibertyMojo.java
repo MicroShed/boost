@@ -56,24 +56,21 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
 
     @Parameter(defaultValue = "${session}", readonly = true)
     protected MavenSession session;
-    
+
     @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
     protected RepositorySystemSession repoSession;
-    
-    @Parameter( defaultValue = "${project.remoteProjectRepositories}", readonly = true, required = true )
+
+    @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true, required = true)
     protected List<RemoteRepository> remoteRepos;
 
     @Component
     protected BuildPluginManager pluginManager;
-    
+
     @Component
     protected RepositorySystem repoSystem;
 
     @Parameter
     protected ArtifactItem runtimeArtifact;
-
-    @Parameter(property = "useDefaultHost", defaultValue = "false", readonly = true)
-    protected boolean useDefaultHost;
 
     protected Plugin getPlugin() throws MojoExecutionException {
         return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
@@ -109,7 +106,7 @@ public abstract class AbstractLibertyMojo extends MojoSupport {
     }
 
     @Override
-    public void execute() throws MojoExecutionException {   	
+    public void execute() throws MojoExecutionException {
         createDefaultRuntimeArtifactIfNeeded();
     }
 }

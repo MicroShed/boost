@@ -14,13 +14,13 @@ import org.junit.Test
 
 import static org.junit.Assert.assertTrue
 
-public class PackageSpringClassifier20Test extends AbstractBoostTest {
+public class PackageSpringWar20Test extends AbstractBoostTest {
 
     @BeforeClass
     public static void setup() {
         resourceDir = new File("build/resources/test/test-spring-boot")
-        testProjectDir = new File(integTestDir, "PackageSpringClassifier20Test")
-        buildFilename = "springAppClassifier-20.gradle"
+        testProjectDir = new File(integTestDir, "PackageSpringWar20Test")
+        buildFilename = "springWarApp-20.gradle"
         createDir(testProjectDir)
         createTestProject(testProjectDir, resourceDir, buildFilename)
 
@@ -34,9 +34,7 @@ public class PackageSpringClassifier20Test extends AbstractBoostTest {
     @Test
     public void testPackageSuccess() throws IOException {
         testPackageTask()
-        File output = new File(testProjectDir, "build/libs/gs-spring-boot-0.1.0-test.jar")
-        assertTrue(output.exists())
-        testSpringBootEndpoint(output)
+        assertTrue(new File(testProjectDir, "build/libs/gs-spring-boot-0.1.0.war").exists())
     }
 
     @Test

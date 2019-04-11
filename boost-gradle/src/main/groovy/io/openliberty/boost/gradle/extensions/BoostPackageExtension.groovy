@@ -14,6 +14,5 @@ package io.openliberty.boost.gradle.extensions
 class BoostPackageExtension {
 
 	String packageName = null
-	boolean useDefaultHost = false
 
 }
