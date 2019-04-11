@@ -5,7 +5,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.openliberty.boost.test</groupId>
+	<groupId>boost.test</groupId>
 	<artifactId>test-dev-release</artifactId>
 	<version>@pom.version@</version>
 

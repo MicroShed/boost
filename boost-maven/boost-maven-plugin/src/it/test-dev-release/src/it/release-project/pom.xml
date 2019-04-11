@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.openliberty.boost</groupId>
+	<groupId>boost</groupId>
 	<artifactId>release-project</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
@@ -31,7 +31,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.openliberty.boost</groupId>
+			<groupId>boost</groupId>
 			<artifactId>dev-project</artifactId>
 			<type>war</type>
 			<version>1.0-SNAPSHOT</version>
@@ -59,7 +59,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>io.openliberty.boost</groupId>
+				<groupId>boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>@pom.version@</version>
 				<configuration>

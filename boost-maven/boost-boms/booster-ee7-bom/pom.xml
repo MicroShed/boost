@@ -9,13 +9,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.openliberty.boost</groupId>
+		<groupId>boost</groupId>
 		<artifactId>boost-maven-parent</artifactId>
 		<version>0.1.3-SNAPSHOT</version>
 		<relativePath>../..</relativePath>
 	</parent>
 
-	<groupId>io.openliberty.boosters</groupId>
+	<groupId>boost.boosters</groupId>
 	<artifactId>ee7-bom</artifactId>
 	<packaging>pom</packaging>
 
@@ -24,14 +24,14 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>io.openliberty.boost</groupId>
+				<groupId>boost</groupId>
 				<artifactId>boost-ee7-apis-bom</artifactId>
 				<version>0.1-SNAPSHOT</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
 			<dependency>
-				<groupId>io.openliberty.boosters</groupId>
+				<groupId>boost.boosters</groupId>
 				<artifactId>jaxrs</artifactId>
 				<!-- Booster version distinct from the BOM, boost-maven-plugin version -->
 				<!-- Could also use 7.0, 8.0 for EE7, 8 -->
@@ -39,12 +39,12 @@
 				<version>0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>io.openliberty.boosters</groupId>
+				<groupId>boost.boosters</groupId>
 				<artifactId>jdbc</artifactId>
 				<version>0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>io.openliberty.boosters</groupId>
+				<groupId>boost.boosters</groupId>
 				<artifactId>jpa</artifactId>
 				<version>0.1-SNAPSHOT</version>
 			</dependency>

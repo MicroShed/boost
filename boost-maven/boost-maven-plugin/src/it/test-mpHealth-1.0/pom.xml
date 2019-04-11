@@ -40,7 +40,7 @@
   <dependencyManagement>
       <dependencies>
           <dependency>
-              <groupId>io.openliberty.boosters</groupId>
+              <groupId>boost.boosters</groupId>
               <artifactId>mp20-bom</artifactId>
 			  <version>@pom.version@</version>
               <type>pom</type>
@@ -77,27 +77,27 @@
     </dependency>
     <!-- Open Liberty features -->
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>jaxrs</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>jsonp</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>cdi</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>mpConfig</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>mpRestClient</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>mpHealth</artifactId>
     </dependency>
 	<!-- Java utility classes -->
@@ -122,7 +122,7 @@
   <build>
     <plugins>
       <plugin>
-				<groupId>io.openliberty.boost</groupId>
+				<groupId>boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>@pom.version@</version>
 				<configuration>
