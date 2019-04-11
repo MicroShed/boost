@@ -68,9 +68,6 @@ public abstract class AbstractMojo extends MojoSupport {
 
     @Parameter
     protected ArtifactItem runtimeArtifact;
-
-    @Parameter(property = "useDefaultHost", defaultValue = "false", readonly = true)
-    protected boolean useDefaultHost;
     
     protected Map<String, String> dependencies;
 
@@ -118,7 +115,7 @@ public abstract class AbstractMojo extends MojoSupport {
                 runtime = new TomeeRuntime(dependencies, getExecutionEnvironment(), tomeeInstallDir, tomeeConfigDir, getMavenDependencyPlugin());
             } else {
                 logger.info("No target Boost runtime found, defaulting to Liberty");
-                runtime = new LibertyRuntime(dependencies, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin(), useDefaultHost);
+                runtime = new LibertyRuntime(dependencies, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
             }
         }
         

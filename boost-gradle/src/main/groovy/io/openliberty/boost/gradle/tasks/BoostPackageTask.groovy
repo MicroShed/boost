@@ -11,6 +11,8 @@
 
 package io.openliberty.boost.gradle.tasks
 
+import org.codehaus.groovy.GroovyException
+
 import java.util.ArrayList
 import java.io.OutputStream
 import java.io.FileOutputStream
@@ -38,6 +40,7 @@ import io.openliberty.boost.common.config.BoosterConfigurator
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.utils.BoostUtil
 import io.openliberty.boost.common.utils.SpringBootUtil
+import org.gradle.api.Task
 
 import net.wasdev.wlp.gradle.plugins.extensions.PackageAndDumpExtension
 
@@ -48,8 +51,6 @@ public class BoostPackageTask extends AbstractBoostTask {
     String springBootVersion = GradleProjectUtil.findSpringBootVersion(this.project)
 
     String libertyServerPath = null
-
-    boolean useDefaultHost
 
     BoostPackageTask() {
         configure({
@@ -69,40 +70,25 @@ public class BoostPackageTask extends AbstractBoostTask {
             project.afterEvaluate {
                 //Configuring spring plugin task dependencies
                 if (isSpringProject()) {
-                    if(springBootVersion.startsWith('2.')) {
-                        boostPackage.archive = project.bootJar.archivePath.toString()
-                        dependsOn 'bootJar'
+                    Task springBootTask = findSpringBootTask(springBootVersion)
 
-                        //Skipping if Docker is configured
-                        if (!isDockerConfigured() || isPackageConfigured()) {
-                            project.bootJar.finalizedBy 'boostPackage'
-                        }
-                    } else if(springBootVersion.startsWith('1.')) { //Assume 1.5?
-                        //No bootJar task so we have to get the archive name from the jar or war tasks
-                        if (project.plugins.hasPlugin('java')) {
-                            //Going to use the jar task archiveName for the boostRepackage name
-                            //bootRepackage can use any jar task, might need to check that too
-                            boostPackage.archive = project.jar.archivePath.toString()
-                        } else if (project.plugins.hasPlugin('war')) { //Might also need a case for wars
-                            boostPackage.archive = project.war.archivePath.toString()
-                        } else {
-                            throw new GradleException('Could not determine project artifact name.')
-                        }
+                    boostPackage.archive = getSpringBootArchivePath(springBootTask)
 
-                        //Handle classifier
-                        if (project.bootRepackage.classifier != null && !project.bootRepackage.classifier.isEmpty()) {
-                            boostPackage.archive = //Adding classifier to the boost archiveName
-                                    boostPackage.archive.substring(0, boostPackage.archive.lastIndexOf(".")) +
-                                    '-' + project.bootRepackage.classifier.toString() +
-                                    boostPackage.archive.substring(boostPackage.archive.lastIndexOf("."))
+                    if (springBootVersion.startsWith('2.')) {
+                        if (project.plugins.hasPlugin('war')) {
+                            dependsOn 'bootWar'
+                        } else if (project.plugins.hasPlugin('java')) {
+                            dependsOn 'bootJar'
                         }
+                    } else if (springBootVersion.startsWith('1.')){
                         dependsOn 'bootRepackage'
-
-                        //Skipping if Docker is configured
-                        if (!isDockerConfigured() || isPackageConfigured()) {
-                            project.bootRepackage.finalizedBy 'boostPackage'
-                        }
                     }
+
+                    //Skipping if Docker is configured
+                    if (!isDockerConfigured() || isPackageConfigured()) {
+                        springBootTask.finalizedBy 'boostPackage'
+                    }
+
                 } else {
                     if (project.plugins.hasPlugin('war')) {
                         boostPackage.archive = project.war.archiveName.substring(0, project.war.archiveName.lastIndexOf("."))
@@ -132,24 +118,20 @@ public class BoostPackageTask extends AbstractBoostTask {
                     if(project.boost.packaging.packageName != null && !project.boost.packaging.packageName.isEmpty()) {
                         boostPackage.archive = "${project.buildDir}/libs/${project.boost.packaging.packageName}"
                     }
-                    useDefaultHost = project.boost.packaging.useDefaultHost
                 }
 
                 project.liberty.server.packageLiberty = boostPackage
 
                 if (isSpringProject()) {
-                    File springUberJar
-                    if(springBootVersion.startsWith('2.')) {
-                        springUberJar = project.bootJar.archivePath
-                    } else if(springBootVersion.startsWith('1.')) {
-                        if (project.plugins.hasPlugin('java')) {
-                            springUberJar = project.jar.archivePath
-                        } else if (project.plugins.hasPlugin('war')) {
-                            springUberJar = project.war.archivePath
-                        }
+                    Task springBootTask = findSpringBootTask(springBootVersion)
+                    File springBootUberJar = new File(getSpringBootArchivePath(springBootTask))
+
+                    if (springBootUberJar != null && !springBootUberJar.exists()) {
+                        throw new GradleException(springBootUberJar.getAbsolutePath() + " Spring Boot Uber JAR does not exist");
                     }
-                    validateSpringBootUberJAR(springUberJar)
-                    copySpringBootUberJar(springUberJar)
+
+                    validateSpringBootUberJAR(springBootUberJar)
+                    copySpringBootUberJar(springBootUberJar)
                     generateServerConfigSpringBoot()
 
                 } else if (project.plugins.hasPlugin('war')) {
@@ -176,6 +158,45 @@ public class BoostPackageTask extends AbstractBoostTask {
 
     public boolean isSpringProject() {
         return springBootVersion != null && !springBootVersion.isEmpty()
+    }
+
+    public Task findSpringBootTask(String springBootVersion) {
+        Task task
+
+        if (springBootVersion == null) {
+            throw new GradleException("Spring Boot version cannot be null")
+        }
+
+        //Do not change the order of war and java
+        if (springBootVersion.startsWith('2.')) {
+            if (project.plugins.hasPlugin('war')) {
+                task = project.bootWar
+            } else if (project.plugins.hasPlugin('java')) {
+                task = project.bootJar
+            }
+        } else if (springBootVersion.startsWith('1.')) {
+            if (project.plugins.hasPlugin('war')) {
+                task = project.war
+            } else if (project.plugins.hasPlugin('java')) {
+                task = project.jar
+            }
+        }
+        return task
+    }
+
+    public String getSpringBootArchivePath(Task springBootTask) {
+        String archiveOutputPath;
+
+        if (springBootVersion.startsWith('2.')) {
+            archiveOutputPath = springBootTask.archivePath.getAbsolutePath()
+        }
+        else if(springBootVersion.startsWith('1.')) {
+            archiveOutputPath = springBootTask.archivePath.getAbsolutePath()
+            if (project.bootRepackage.classifier != null && !project.bootRepackage.classifier.isEmpty()) {
+                archiveOutputPath = archiveOutputPath.substring(0, archiveOutputPath.lastIndexOf(".")) + "-" + project.bootRepackage.classifier + "." + springBootTask.extension
+            }
+        }
+        return archiveOutputPath
     }
 
     public String getClassifier() {
@@ -206,7 +227,7 @@ public class BoostPackageTask extends AbstractBoostTask {
 
         try {
 
-            BoosterConfigurator.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, warName, BoostLogger.getInstance());
+            BoosterConfigurator.generateLibertyServerConfig(libertyServerPath, boosterPackConfigurators, Arrays.asList(warName), BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new GradleException("Unable to generate server configuration for the Liberty server.", e);
@@ -221,7 +242,7 @@ public class BoostPackageTask extends AbstractBoostTask {
 
             // Generate server config
             SpringBootUtil.generateLibertyServerConfig("${project.buildDir}/resources/main", libertyServerPath,
-                    springBootVersion, dependencies, BoostLogger.getInstance(), useDefaultHost);
+                    springBootVersion, dependencies, BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new GradleException("Unable to generate server configuration for the Liberty server.", e);

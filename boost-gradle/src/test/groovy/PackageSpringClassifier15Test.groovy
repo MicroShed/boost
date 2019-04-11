@@ -34,7 +34,9 @@ public class PackageSpringClassifier15Test extends AbstractBoostTest {
     @Test
     public void testPackageSuccess() throws IOException {
         testPackageTask()
-        assertTrue(new File(testProjectDir, "build/libs/PackageSpringClassifier15Test-test.jar").exists())
+        File output = new File(testProjectDir, "build/libs/PackageSpringClassifier15Test-test.jar")
+        assertTrue(output.exists())
+        testSpringBootEndpoint(output)
     }
 
     @Test

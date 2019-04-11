@@ -66,7 +66,6 @@ public class LibertyRuntime implements LibertyRuntimeI {
     private final String serverName = "BoostServer";
     private final String projectBuildDir;
     private final String libertyServerPath;
-    private final boolean useDefaultHost;
     private final String springBootVersion;
     
     private String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
@@ -74,7 +73,7 @@ public class LibertyRuntime implements LibertyRuntimeI {
     private String libertyMavenPluginVersion = "2.6.3";
     
     public LibertyRuntime(Map<String, String> deps, ExecutionEnvironment env, MavenProject project, Log log, 
-            RepositorySystem repoSystem, RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, Plugin mavenDepPlugin, boolean useDefaultHost) {
+            RepositorySystem repoSystem, RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, Plugin mavenDepPlugin) {
         this.log = log;
         this.deps = deps;
         this.env = env;
@@ -85,7 +84,6 @@ public class LibertyRuntime implements LibertyRuntimeI {
         this.repoSession = repoSession;
         this.remoteRepos = remoteRepos;
         this.mavenDepPlugin = mavenDepPlugin;
-        this.useDefaultHost = useDefaultHost;
         this.springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
     }
     
@@ -116,16 +114,15 @@ public class LibertyRuntime implements LibertyRuntimeI {
         createLibertyServer();
 
         /**
-         * Whether the packaged Liberty Uber JAR will be the project artifact.
-         * This should be the case in Spring Boot scenarios since Spring Boot
-         * developers expect a runnable JAR.
+         * Whether the packaged Liberty Uber JAR will be the project artifact. This
+         * should be the case in Spring Boot scenarios since Spring Boot developers
+         * expect a runnable JAR.
          */
         boolean attach;
 
         /**
-         * Use the classifier to determine whether we need to set the Liberty
-         * Uber JAR as the project artifact, and add Spring-Boot-Version to the
-         * manifest
+         * Use the classifier to determine whether we need to set the Liberty Uber JAR
+         * as the project artifact, and add Spring-Boot-Version to the manifest
          */
         String springBootClassifier = null;
 
@@ -268,7 +265,7 @@ public class LibertyRuntime implements LibertyRuntimeI {
 
             // Generate server config
             SpringBootUtil.generateLibertyServerConfig(projectBuildDir + "/classes", libertyServerPath,
-                    springBootVersion, dependencies, BoostLogger.getInstance(), useDefaultHost);
+                    springBootVersion, dependencies, BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
@@ -399,15 +396,14 @@ public class LibertyRuntime implements LibertyRuntimeI {
     }
     
     /**
-     * Invoke the liberty-maven-plugin to package the server into a runnable
-     * Liberty JAR
+     * Invoke the liberty-maven-plugin to package the server into a runnable Liberty
+     * JAR
      * 
      * @param packageFilePath
      *            the Spring Boot Uber JAR file path, whose contents will be
      *            replaced by the Liberty Uber JAR
      * @param attach
-     *            whether or not to make the packaged server the project
-     *            artifact
+     *            whether or not to make the packaged server the project artifact
      * @throws MojoExecutionException
      */
     private void createUberJar(String packageFilePath, boolean attach) throws MojoExecutionException {
