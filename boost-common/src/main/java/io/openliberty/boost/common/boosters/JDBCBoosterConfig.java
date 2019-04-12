@@ -33,7 +33,7 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 	
 	public static String DERBY_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
 	public static String DB2_DRIVER_CLASS_NAME = "com.ibm.db2.jcc.DB2Driver";
-	public static String MYSQL_DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
+	public static String MYSQL_DRIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
 	
     public static String DERBY_DEPENDENCY = "org.apache.derby:derby";
     public static String DB2_DEPENDENCY = "com.ibm.db2.jcc:db2jcc";

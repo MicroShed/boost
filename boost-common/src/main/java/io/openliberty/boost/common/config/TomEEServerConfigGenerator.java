@@ -36,6 +36,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
@@ -219,13 +220,13 @@ public class TomEEServerConfigGenerator implements ServerConfigGenerator {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(tomeeXml);
-        Element tomee = doc.getDocumentElement();
-        tomee.normalize();
+        Node tomee = doc.getFirstChild();
 
         // Create Resource element
         Element resource = doc.createElement(RESOURCE_ELEMENT);
         resource.setAttribute("id", "DefaultDataSource");
         resource.setAttribute("type", "DataSource");
+        resource.appendChild(doc.createTextNode(System.lineSeparator()));
         tomee.appendChild(resource);
 
         // Add driver class name
@@ -237,14 +238,15 @@ public class TomEEServerConfigGenerator implements ServerConfigGenerator {
         } else if (productName.equals(JDBCBoosterConfig.MYSQL)) {
             driverClassName = JDBCBoosterConfig.MYSQL_DRIVER_CLASS_NAME;
         }
-        Text jdbcDriverText = doc.createTextNode(JDBC_DRIVER_PROPERTY + " = " + driverClassName);
+        Text jdbcDriverText = doc.createTextNode(JDBC_DRIVER_PROPERTY + " = " + driverClassName + System.lineSeparator());
         resource.appendChild(jdbcDriverText);
+        
 
         // Add UserName if set. Remove from list to avoid adding it again below
         String username = (String) boostDbProperties.remove(BoostProperties.DATASOURCE_USER);
         if (username != null) {
             Text usernameText = doc.createTextNode(
-                    USERNAME_PROPERTY + " = " + BoostUtil.makeVariable(BoostProperties.DATASOURCE_USER));
+                    USERNAME_PROPERTY + " = " + BoostUtil.makeVariable(BoostProperties.DATASOURCE_USER) + System.lineSeparator());
             resource.appendChild(usernameText);
 
             addCatalinaProperty(BoostProperties.DATASOURCE_USER, username);
@@ -254,10 +256,10 @@ public class TomEEServerConfigGenerator implements ServerConfigGenerator {
         String password = (String) boostDbProperties.remove(BoostProperties.DATASOURCE_PASSWORD);
         if (password != null) {
             Text passwordText = doc.createTextNode(
-                    PASSWORD_PROPERTY + " = " + BoostUtil.makeVariable(BoostProperties.DATASOURCE_PASSWORD));
+                    PASSWORD_PROPERTY + " = " + BoostUtil.makeVariable(BoostProperties.DATASOURCE_PASSWORD) + System.lineSeparator());
             resource.appendChild(passwordText);
 
-            // TODO: excrypt password
+            
             addCatalinaProperty(BoostProperties.DATASOURCE_PASSWORD, password);
         }
 
@@ -268,7 +270,7 @@ public class TomEEServerConfigGenerator implements ServerConfigGenerator {
         String url = (String) boostDbProperties.remove(BoostProperties.DATASOURCE_URL);
         if (url != null) {
             Text jdbcUrlText = doc
-                    .createTextNode(JDBC_URL_PROPERTY + " = " + BoostUtil.makeVariable(BoostProperties.DATASOURCE_URL));
+                    .createTextNode(JDBC_URL_PROPERTY + " = " + BoostUtil.makeVariable(BoostProperties.DATASOURCE_URL) + System.lineSeparator());
             resource.appendChild(jdbcUrlText);
 
             addCatalinaProperty(BoostProperties.DATASOURCE_URL, url);
@@ -310,7 +312,7 @@ public class TomEEServerConfigGenerator implements ServerConfigGenerator {
                 }
             }
 
-            Text jdbcUrlText = doc.createTextNode(JDBC_URL_PROPERTY + " = " + jdbcUrl.toString());
+            Text jdbcUrlText = doc.createTextNode(JDBC_URL_PROPERTY + " = " + jdbcUrl.toString() + System.lineSeparator());
             resource.appendChild(jdbcUrlText);
         }
 
@@ -327,15 +329,18 @@ public class TomEEServerConfigGenerator implements ServerConfigGenerator {
         }
 
         Text connectionPropertiesText = doc
-                .createTextNode(CONNECTION_PROPERTIES_PROPERTY + " = [" + connectionProperties.toString() + "]");
+                .createTextNode(CONNECTION_PROPERTIES_PROPERTY + " = [" + connectionProperties.toString() + "]"   + System.lineSeparator());
         resource.appendChild(connectionPropertiesText);
 
         // Overwrite content
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         DOMSource source = new DOMSource(doc);
         StreamResult result = new StreamResult(tomeeXml);
+        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
         transformer.transform(source, result);
 
     }

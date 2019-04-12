@@ -238,8 +238,7 @@ public class SpringBootUtil {
      * @throws TransformerException
      */
     public static void generateLibertyServerConfig(String springBootProjectResources, String libertyServerPath,
-            String springBootVersion, Map<String, String> dependencies, BoostLoggerI logger, Boolean useDefaultHost)
-            throws Exception {
+            String springBootVersion, Map<String, String> dependencies, BoostLoggerI logger) throws Exception {
 
         logger.info("Generating Liberty server configuration");
 
