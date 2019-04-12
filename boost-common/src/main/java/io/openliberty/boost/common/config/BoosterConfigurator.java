@@ -55,7 +55,7 @@ public class BoosterConfigurator {
 
         Set<Class<? extends AbstractBoosterConfig>> allClasses = reflections.getSubTypesOf(AbstractBoosterConfig.class);
         for (Class<? extends AbstractBoosterConfig> boosterClass : allClasses) {
-            if (dependencies.containsKey(AbstractBoosterConfig.getCoordindates(boosterClass))) {
+            if (dependencies.containsKey(AbstractBoosterConfig.getCoordinates(boosterClass))) {
                 Constructor<?> cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
                 Object o = cons.newInstance(dependencies, logger);
                 if (o instanceof AbstractBoosterConfig) {

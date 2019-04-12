@@ -32,6 +32,7 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.runtimes.RuntimeI;
 import io.openliberty.boost.maven.runtimes.LibertyRuntime;
 import io.openliberty.boost.maven.runtimes.TomeeRuntime;
@@ -108,7 +109,7 @@ public abstract class AbstractMojo extends MojoSupport {
     protected RuntimeI getRuntimeInstance() throws MojoExecutionException {
         if(runtime == null) {
             BoostLogger logger = BoostLogger.getInstance();
-            if (dependencies.containsKey("io.openliberty.boosters:tomee")) {
+            if (dependencies.containsKey(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":tomee")) {
                 logger.info("Detected TomEE as target Boost runtime");
                 String tomeeInstallDir = projectBuildDir + "/apache-tomee/";
                 String tomeeConfigDir = tomeeInstallDir + "conf";

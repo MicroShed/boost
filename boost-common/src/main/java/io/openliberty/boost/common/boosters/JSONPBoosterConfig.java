@@ -30,7 +30,7 @@ public class JSONPBoosterConfig extends AbstractBoosterConfig {
     String libertyFeature = null;
 
     public JSONPBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        String version = dependencies.get(getCoordindates(this.getClass()));
+        String version = dependencies.get(getCoordinates(this.getClass()));
 
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = JSONP_11;

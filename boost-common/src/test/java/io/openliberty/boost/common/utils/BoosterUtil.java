@@ -10,7 +10,7 @@ public class BoosterUtil {
     
     public static Map<String, String> createDependenciesWithBoosterAndVersion(Class<?> booster, String version) throws BoostException {
         Map<String, String> map = new HashMap<String, String>();
-        map.put(AbstractBoosterConfig.getCoordindates(booster), version);
+        map.put(AbstractBoosterConfig.getCoordinates(booster), version);
         return map;
     }
     

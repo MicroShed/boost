@@ -30,7 +30,7 @@ public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
     String libertyFeature = null;
 
     public MPOpenTracingBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        String version = dependencies.get(getCoordindates(this.getClass()));
+        String version = dependencies.get(getCoordinates(this.getClass()));
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = MPOPENTRACING_11;
         }

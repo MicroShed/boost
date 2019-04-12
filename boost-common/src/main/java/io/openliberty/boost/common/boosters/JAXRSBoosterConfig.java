@@ -30,7 +30,7 @@ public class JAXRSBoosterConfig extends AbstractBoosterConfig {
     String libertyFeature = null;
 
     public JAXRSBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        String version = dependencies.get(getCoordindates(this.getClass()));
+        String version = dependencies.get(getCoordinates(this.getClass()));
         if (version.equals(EE_7_VERSION)) {
             libertyFeature = JAXRS_20;
         } else if (version.equals(EE_8_VERSION)) {

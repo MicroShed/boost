@@ -38,7 +38,7 @@ public abstract class AbstractBoosterConfig {
         String value();
     }
 
-    public static String getCoordindates(Class<?> klass) throws BoostException {
+    public static String getCoordinates(Class<?> klass) throws BoostException {
         BoosterCoordinates coordinates = klass.getAnnotation(BoosterCoordinates.class);
         if (coordinates == null) {
             throw new BoostException(
@@ -47,7 +47,7 @@ public abstract class AbstractBoosterConfig {
         return coordinates.value();
     }
 
-    protected static final String BOOSTERS_GROUP_ID = "io.openliberty.boosters";
+    public static final String BOOSTERS_GROUP_ID = "boost.boosters";
     protected String EE_7_VERSION = "0.1-SNAPSHOT";
     protected String EE_8_VERSION = "0.2-SNAPSHOT";
     protected String MP_20_VERSION = "0.2-SNAPSHOT";
