@@ -31,6 +31,7 @@
 		<dependency>
 			<groupId>io.openliberty.boosters</groupId>
 			<artifactId>jdbc</artifactId>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- API dependencies -->
