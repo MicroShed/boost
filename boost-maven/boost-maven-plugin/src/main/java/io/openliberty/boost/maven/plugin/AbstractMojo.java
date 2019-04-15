@@ -97,7 +97,16 @@ public abstract class AbstractMojo extends MojoSupport {
                 runtime = new TomeeRuntime(dependencies, getExecutionEnvironment(), tomeeInstallDir, tomeeConfigDir, getMavenDependencyPlugin());
             } else if (dependencies.containsKey(AbstractBoosterConfig.RUNTIMES_GROUP_ID + ":openliberty")) {
                 logger.info("Detected Open Liberty as target Boost runtime");
-                runtime = new LibertyRuntime(dependencies, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
+                String runtimeGroupId = "io.openliberty";
+                String runtimeArtifactId = "openliberty-runtime";
+                String runtimeVersion = "19.0.0.3";
+                runtime = new LibertyRuntime(dependencies, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin(), runtimeGroupId, runtimeArtifactId, runtimeVersion);
+            } else if (dependencies.containsKey(AbstractBoosterConfig.RUNTIMES_GROUP_ID + ":wlp")) {
+                logger.info("Detected WebSphere Liberty as target Boost runtime");
+                String runtimeGroupId = "com.ibm.websphere.appserver.runtime";
+                String runtimeArtifactId = "wlp-javaee7";
+                String runtimeVersion = "19.0.0.3";
+                runtime = new LibertyRuntime(dependencies, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin(), runtimeGroupId, runtimeArtifactId, runtimeVersion);
             }
             else {
                 throw new MojoExecutionException("No target Boost runtime was detected. Please add a runtime and restart the build.");
