@@ -35,9 +35,7 @@
 						<pomInclude>*/pom.xml</pomInclude>
 					</pomIncludes>
 					<properties>
-						<runtimeGroupId>${runtimeGroupId}</runtimeGroupId>
-						<runtimeArtifactId>${runtimeArtifactId}</runtimeArtifactId>
-						<runtimeVersion>${runtimeVersion}</runtimeVersion>
+						<boostRuntime>${boostRuntime}</boostRuntime>
 					</properties>
 				</configuration>
 				<executions>

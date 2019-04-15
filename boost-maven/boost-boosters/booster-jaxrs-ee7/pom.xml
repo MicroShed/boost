@@ -11,7 +11,7 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>boost</groupId>
+				<groupId>boost.boosters</groupId>
 				<artifactId>boost-ee7-apis-bom</artifactId>
 				<version>0.1-SNAPSHOT</version>
 				<scope>import</scope>

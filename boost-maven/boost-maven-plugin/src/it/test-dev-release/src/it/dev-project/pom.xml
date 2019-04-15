@@ -67,29 +67,4 @@
 		</dependency>
 
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>boost</groupId>
-				<artifactId>boost-maven-plugin</artifactId>
-				<version>@pom.version@</version>
-				<configuration>
-					<runtimeArtifact>
-						<groupId>${runtimeGroupId}</groupId>
-						<artifactId>${runtimeArtifactId}</artifactId>
-						<version>${runtimeVersion}</version>
-						<type>zip</type>
-					</runtimeArtifact>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>package</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 </project>

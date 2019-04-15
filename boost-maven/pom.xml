@@ -39,6 +39,7 @@
     <modules>
         <module>boost-boms</module>
         <module>boost-boosters</module>
+        <module>boost-runtimes</module>
         <module>boost-maven-plugin</module>
     </modules>
 

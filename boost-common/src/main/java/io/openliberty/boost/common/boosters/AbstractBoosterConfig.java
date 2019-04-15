@@ -47,6 +47,7 @@ public abstract class AbstractBoosterConfig {
         return coordinates.value();
     }
 
+    public static final String RUNTIMES_GROUP_ID = "boost.runtimes";
     public static final String BOOSTERS_GROUP_ID = "boost.boosters";
     protected String EE_7_VERSION = "0.1-SNAPSHOT";
     protected String EE_8_VERSION = "0.2-SNAPSHOT";
