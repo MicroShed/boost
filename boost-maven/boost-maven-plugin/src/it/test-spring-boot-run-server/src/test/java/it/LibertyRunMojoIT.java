@@ -29,9 +29,7 @@ public class LibertyRunMojoIT {
 
     private static Process process;
 
-    private static String runtimeGroupId;
-    private static String runtimeArtifactId;
-    private static String runtimeVersion;
+    private static String boostRuntime;
 
     private static String mvnCmd;
 
@@ -51,19 +49,15 @@ public class LibertyRunMojoIT {
 
         setupMvnPath();
 
-        runtimeGroupId = System.getProperty("runtimeGroupId");
-        runtimeArtifactId = System.getProperty("runtimeArtifactId");
-        runtimeVersion = System.getProperty("runtimeVersion");
+        boostRuntime = System.getProperty("boostRuntime");
 
-        String runCommand = mvnCmd + " boost:run -DruntimeGroupId=" + runtimeGroupId + " -DruntimeArtifactId="
-                + runtimeArtifactId + " -DruntimeVersion=" + runtimeVersion;
+        String runCommand = mvnCmd + " boost:run -DboostRuntime=" + boostRuntime;
         process = Runtime.getRuntime().exec(runCommand);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        String stopCommand = mvnCmd + " boost:stop -DruntimeGroupId=" + runtimeGroupId + " -DruntimeArtifactId="
-                + runtimeArtifactId + " -DruntimeVersion=" + runtimeVersion;
+        String stopCommand = mvnCmd + " boost:stop -DboostRuntime=" + boostRuntime;
         Runtime.getRuntime().exec(stopCommand);
         process.destroyForcibly();
     }
