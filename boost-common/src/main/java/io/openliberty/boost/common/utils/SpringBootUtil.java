@@ -53,9 +53,10 @@ public class SpringBootUtil {
     private static final String SPRING_WEBSOCKET = "org.springframework:spring-websocket";
 
     /**
-     * Get the expected path of the Spring Boot Uber JAR (with .spring extension)
-     * that was preserved during the Boost packaging process. No guarantee that the
-     * path exists or the artifact is indeed a Spring Boot Uber JAR.
+     * Get the expected path of the Spring Boot Uber JAR (with .spring
+     * extension) that was preserved during the Boost packaging process. No
+     * guarantee that the path exists or the artifact is indeed a Spring Boot
+     * Uber JAR.
      * 
      * @param artifact
      * @return the canonical path
@@ -103,8 +104,8 @@ public class SpringBootUtil {
     }
 
     /**
-     * Add the Spring Boot Version property to the Manifest file in the Liberty Uber
-     * JAR. This is to trick Spring Boot into not repackaging it.
+     * Add the Spring Boot Version property to the Manifest file in the Liberty
+     * Uber JAR. This is to trick Spring Boot into not repackaging it.
      * 
      * @param artifact
      * @param springBootVersion
@@ -201,7 +202,8 @@ public class SpringBootUtil {
             featuresToAdd.add(TRANSPORT_SECURITY_10);
         }
 
-        // Add any other Liberty features needed depending on the spring framework
+        // Add any other Liberty features needed depending on the spring
+        // framework
         // dependencies defined
         for (String dependency : dependencies.keySet()) {
             if (dependency.equals(SPRING_WEBMVC)) {
@@ -236,8 +238,7 @@ public class SpringBootUtil {
      * @throws TransformerException
      */
     public static void generateLibertyServerConfig(String springBootProjectResources, String libertyServerPath,
-            String springBootVersion, Map<String, String> dependencies, BoostLoggerI logger)
-            throws ParserConfigurationException, IOException, TransformerException {
+            String springBootVersion, Map<String, String> dependencies, BoostLoggerI logger) throws Exception {
 
         logger.info("Generating Liberty server configuration");
 
@@ -253,8 +254,10 @@ public class SpringBootUtil {
 
         serverConfig.addFeatures(featuresNeededForSpringBootApp);
 
-        // Disable any other ports on the host
-        serverConfig.addHttpEndpoint("*", "-1", "-1");
+        // Disable the defaultHttpEndpoint in Liberty
+        serverConfig.addHostname("*");
+        serverConfig.addHttpPort("-1");
+        serverConfig.addHttpsPort("-1");
 
         serverConfig.writeToServer();
     }

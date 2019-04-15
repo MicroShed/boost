@@ -56,6 +56,7 @@ public final class ConfigConstants {
     public static final String PROPERTIES_DB2_JCC = "properties.db2.jcc";
     public static final String PROPERTIES = "properties";
     public static final String CONTAINER_AUTH_DATA_REF = "containerAuthDataRef";
+    public static final String URL = "url";
 
     // Datasource configuration values
     public static final String DEFAULT_DATASOURCE = "DefaultDataSource";

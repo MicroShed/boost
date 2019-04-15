@@ -17,12 +17,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
-import java.util.Properties;
-
-import org.w3c.dom.Document;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.runtimes.RuntimeI;
+import io.openliberty.boost.common.config.ServerConfigGenerator;
 
 /**
  * Interface to describe common function across all technology Booster Pack
@@ -53,23 +51,16 @@ public abstract class AbstractBoosterConfig {
     protected String MP_20_VERSION = "0.2-SNAPSHOT";
 
     /**
-     * Return the Liberty feature name
-     * 
-     * @return
-     */
-    public abstract String getFeature();
-
-    /**
-     * Add the server.xml configuration for this booster
+     * Add the configuration for this booster
      * 
      * @param doc
      */
-    public abstract void addServerConfig(Document doc);
-
+    public abstract void addServerConfig(ServerConfigGenerator config) throws Exception;
+    
     /**
-     * Return the properties required by this booster
+     * Return the Liberty feature required for this booster
      */
-    public abstract Properties getServerProperties();
+    public abstract String getLibertyFeature();
 
     /**
      * Return the dependency that this booster requires

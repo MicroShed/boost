@@ -26,8 +26,8 @@
         <module>test-jaxrs-2.0</module>
         <module>test-jaxrs-2.1</module>
         <module>test-dynamic-update</module>
-        <module>test-jdbc-derby-default</module>
-        <module>test-jdbc-derby-defined</module>
+        <module>test-jdbc</module>
+        <module>test-jdbc-db2</module>
         <module>test-context</module>
     </modules>
     
