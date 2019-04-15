@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.openliberty.boost</groupId>
+		<groupId>boost</groupId>
 		<artifactId>boost-maven-parent</artifactId>
 		<version>0.1.3-SNAPSHOT</version>
 	</parent>
@@ -24,7 +24,6 @@
         <module>booster-mpHealth-20</module>
         <module>booster-mpOpenTracing-20</module>
         <module>booster-mpRestClient-20</module>
-        <module>booster-tomee</module>
     </modules>
 
 </project>

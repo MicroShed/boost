@@ -29,7 +29,7 @@ public class MPHealthBoosterConfig extends AbstractBoosterConfig {
     String libertyFeature = null;
 
     public MPHealthBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        String version = dependencies.get(getCoordindates(this.getClass()));
+        String version = dependencies.get(getCoordinates(this.getClass()));
         // if it is the 2.0 version = MP2.0 feature level
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = MPHEALTH_10;

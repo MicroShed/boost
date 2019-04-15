@@ -28,6 +28,8 @@ import org.eclipse.aether.resolution.ArtifactDescriptorException;
 import org.eclipse.aether.resolution.ArtifactDescriptorRequest;
 import org.eclipse.aether.resolution.ArtifactDescriptorResult;
 
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
+
 public class MavenProjectUtil {
 
     /**
@@ -73,7 +75,7 @@ public class MavenProjectUtil {
                     // This is to allow the
                     // current project to have full control over those optional
                     // dependencies.
-                    if (warArtifact.getGroupId().equals("io.openliberty.boosters")) {
+                    if (warArtifact.getGroupId().equals(AbstractBoosterConfig.BOOSTERS_GROUP_ID)) {
                         logger.debug("Found booster dependency: " + warArtifact.getGroupId() + ":"
                                 + warArtifact.getArtifactId() + ":" + warArtifact.getVersion());
 

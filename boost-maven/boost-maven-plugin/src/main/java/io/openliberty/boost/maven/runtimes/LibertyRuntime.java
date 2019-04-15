@@ -67,13 +67,18 @@ public class LibertyRuntime implements LibertyRuntimeI {
     private final String projectBuildDir;
     private final String libertyServerPath;
     private final String springBootVersion;
+
+    private final String runtimeGroupId;
+    private final String runtimeArtifactId;
+    private final String runtimeVersion;
     
     private String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
     private String libertyMavenPluginVersion = "2.6.3";
     
     public LibertyRuntime(Map<String, String> deps, ExecutionEnvironment env, MavenProject project, Log log, 
-            RepositorySystem repoSystem, RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, Plugin mavenDepPlugin) {
+            RepositorySystem repoSystem, RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, Plugin mavenDepPlugin, 
+            String runtimeGroupId, String runtimeArtifactId, String runtimeVersion) {
         this.log = log;
         this.deps = deps;
         this.env = env;
@@ -85,6 +90,9 @@ public class LibertyRuntime implements LibertyRuntimeI {
         this.remoteRepos = remoteRepos;
         this.mavenDepPlugin = mavenDepPlugin;
         this.springBootVersion = MavenProjectUtil.findSpringBootVersion(project);
+        this.runtimeGroupId = runtimeGroupId;
+        this.runtimeArtifactId = runtimeArtifactId;
+        this.runtimeVersion = runtimeVersion;
     }
     
     private Plugin getPlugin() throws MojoExecutionException {
@@ -419,15 +427,10 @@ public class LibertyRuntime implements LibertyRuntimeI {
     }
     
     private Element getRuntimeArtifactElement() {
-        String groupId = "io.openliberty";
-        String artifactId = "openliberty-runtime";
-        String version = "19.0.0.3";
-        String type = "zip";
-        
-        return element(name("assemblyArtifact"), element(name("groupId"), groupId),
-                element(name("artifactId"), artifactId),
-                element(name("version"), version),
-                element(name("type"), type));
+        return element(name("assemblyArtifact"), element(name("groupId"), runtimeGroupId),
+                element(name("artifactId"), runtimeArtifactId),
+                element(name("version"), runtimeVersion),
+                element(name("type"), "zip"));
     }
 
     @Override

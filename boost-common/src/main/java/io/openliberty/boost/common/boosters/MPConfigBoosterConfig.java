@@ -29,7 +29,7 @@ public class MPConfigBoosterConfig extends AbstractBoosterConfig {
     String libertyFeature = null;
 
     public MPConfigBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        String version = dependencies.get(getCoordindates(this.getClass()));
+        String version = dependencies.get(getCoordinates(this.getClass()));
         // if it is the 1.0 version = EE7 feature level
         if (version.equals(MP_20_VERSION)) {
             libertyFeature = MPCONFIG_13;

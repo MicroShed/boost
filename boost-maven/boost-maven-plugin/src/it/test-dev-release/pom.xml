@@ -5,7 +5,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.openliberty.boost.test</groupId>
+	<groupId>boost.test</groupId>
 	<artifactId>test-dev-release</artifactId>
 	<version>@pom.version@</version>
 
@@ -35,9 +35,7 @@
 						<pomInclude>*/pom.xml</pomInclude>
 					</pomIncludes>
 					<properties>
-						<runtimeGroupId>${runtimeGroupId}</runtimeGroupId>
-						<runtimeArtifactId>${runtimeArtifactId}</runtimeArtifactId>
-						<runtimeVersion>${runtimeVersion}</runtimeVersion>
+						<boostRuntime>${boostRuntime}</boostRuntime>
 					</properties>
 				</configuration>
 				<executions>

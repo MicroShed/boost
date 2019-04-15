@@ -10,26 +10,38 @@
 
 
 	<parent>
-		<groupId>io.openliberty.boost</groupId>
+		<groupId>boost</groupId>
 		<artifactId>boost-maven-parent</artifactId>
 		<version>0.1.3-SNAPSHOT</version>
 		<relativePath>../..</relativePath>
 	</parent>
 
-	<groupId>io.openliberty.boosters</groupId>
+	<groupId>boost.runtimes</groupId>
 	<artifactId>runtimes-bom</artifactId>
 	<packaging>pom</packaging>
 
-	<description>Booster Supported Runtimes Bom</description>
+	<description>Booster Supported Runtimes BOM</description>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>io.openliberty.boosters</groupId>
-				<artifactId>tomee</artifactId>
-				<version>0.2-SNAPSHOT</version>
+				<groupId>boost.runtimes</groupId>
+				<artifactId>openliberty</artifactId>
+				<version>0.1-SNAPSHOT</version>
 				<scope>provided</scope>
-		    </dependency>
+			</dependency>
+			<dependency>
+				<groupId>boost.runtimes</groupId>
+				<artifactId>wlp</artifactId>
+				<version>0.1-SNAPSHOT</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>boost.runtimes</groupId>
+				<artifactId>tomee</artifactId>
+				<version>0.1-SNAPSHOT</version>
+				<scope>provided</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

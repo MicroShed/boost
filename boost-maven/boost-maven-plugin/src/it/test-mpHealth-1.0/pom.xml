@@ -40,7 +40,7 @@
   <dependencyManagement>
       <dependencies>
           <dependency>
-              <groupId>io.openliberty.boosters</groupId>
+              <groupId>boost.boosters</groupId>
               <artifactId>mp20-bom</artifactId>
 			  <version>@pom.version@</version>
               <type>pom</type>
@@ -77,27 +77,27 @@
     </dependency>
     <!-- Open Liberty features -->
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>jaxrs</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>jsonp</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>cdi</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>mpConfig</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>mpRestClient</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.openliberty.boosters</groupId>
+        <groupId>boost.boosters</groupId>
         <artifactId>mpHealth</artifactId>
     </dependency>
 	<!-- Java utility classes -->
@@ -122,17 +122,9 @@
   <build>
     <plugins>
       <plugin>
-				<groupId>io.openliberty.boost</groupId>
+				<groupId>boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>@pom.version@</version>
-				<configuration>
-					<runtimeArtifact>
-						<groupId>${runtimeGroupId}</groupId>
-						<artifactId>${runtimeArtifactId}</artifactId>
-						<version>${runtimeVersion}</version>
-						<type>zip</type>
-					</runtimeArtifact>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -170,4 +162,38 @@
 			</plugin>
 		</plugins>
 	</build>
+
+  <profiles>
+		<profile>
+			<id>ol</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>ol</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>openliberty</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>wlp</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>wlp</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>wlp</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
 </project>

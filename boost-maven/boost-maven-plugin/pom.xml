@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.openliberty.boost</groupId>
+		<groupId>boost</groupId>
 		<artifactId>boost-maven-parent</artifactId>
 		<version>0.1.3-SNAPSHOT</version>
 	</parent>
@@ -20,7 +20,7 @@
 
 		<!-- Boost dependencies -->
 		<dependency>
-			<groupId>io.openliberty.boost</groupId>
+			<groupId>boost</groupId>
 			<artifactId>boost-common</artifactId>
 			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
@@ -96,9 +96,7 @@
 							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
 							<streamLogs>true</streamLogs>
 							<properties>
-								<runtimeGroupId>${runtimeGroupId}</runtimeGroupId>
-								<runtimeArtifactId>${runtimeArtifactId}</runtimeArtifactId>
-								<runtimeVersion>${runtimeVersion}</runtimeVersion>
+								<boostRuntime>${boostRuntime}</boostRuntime>
 							</properties>
 						</configuration>
 						<executions>
@@ -113,49 +111,6 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
-
-		<!-- Profiles for WLP vs OL -->
-		<profile>
-			<id>wlp-its</id>
-			<activation>
-				<property>
-					<name>runtime</name>
-					<value>wlp</value>
-				</property>
-			</activation>
-			<properties>
-				<runtimeGroupId>com.ibm.websphere.appserver.runtime</runtimeGroupId>
-				<runtimeArtifactId>wlp-javaee7</runtimeArtifactId>
-				<runtimeVersion>${runtimeVersion}</runtimeVersion>
-			</properties>
-		</profile>
-		<profile>
-			<id>ol-its</id>
-			<activation>
-				<property>
-					<name>runtime</name>
-					<value>ol</value>
-				</property>
-			</activation>
-			<properties>
-				<runtimeGroupId>io.openliberty</runtimeGroupId>
-				<runtimeArtifactId>openliberty-runtime</runtimeArtifactId>
-				<runtimeVersion>${runtimeVersion}</runtimeVersion>
-			</properties>
-		</profile>
-		<profile>
-			<id>default-its</id>
-			<activation>
-				<property>
-					<name>!runtime</name>
-				</property>
-			</activation>
-			<properties>
-				<runtimeGroupId>io.openliberty</runtimeGroupId>
-				<runtimeArtifactId>openliberty-runtime</runtimeArtifactId>
-				<runtimeVersion>[18.0.0.3,)</runtimeVersion>
-			</properties>
 		</profile>
 	</profiles>
 
