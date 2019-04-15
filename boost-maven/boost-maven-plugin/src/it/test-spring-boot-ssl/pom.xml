@@ -29,26 +29,17 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <!-- Define dependency version information -->
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.9</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.5.6</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>4.4.10</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>boost.runtimes</groupId>
+				<artifactId>runtimes-bom</artifactId>
+				<version>0.1.3-SNAPSHOT</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -67,14 +58,17 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>4.12</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
+            <version>4.5.6</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
+            <version>4.4.10</version>
         </dependency>
     </dependencies>
 
@@ -127,4 +121,38 @@
             </plugin>
         </plugins>
     </build>
+
+	<profiles>
+		<profile>
+			<id>ol</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>ol</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>openliberty</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>wlp</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>wlp</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>wlp</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+    
 </project>

@@ -7,14 +7,13 @@ jdk:
     - oraclejdk9
     
 env:
-    - RUNTIME=ol RUNTIME_VERSION=19.0.0.2 BUILD_TOOL=maven
-    - RUNTIME=wlp RUNTIME_VERSION=19.0.0.2 BUILD_TOOL=maven
-    - RUNTIME=ol RUNTIME_VERSION=19.0.0.2 BUILD_TOOL=gradle
-    - RUNTIME=wlp RUNTIME_VERSION=19.0.0.2 BUILD_TOOL=gradle
-    - RUNTIME=ol RUNTIME_VERSION=19.0.0.3 BUILD_TOOL=maven
-    - RUNTIME=wlp RUNTIME_VERSION=19.0.0.3 BUILD_TOOL=maven
-    - RUNTIME=ol RUNTIME_VERSION=19.0.0.3 BUILD_TOOL=gradle
-    - RUNTIME=wlp RUNTIME_VERSION=19.0.0.3 BUILD_TOOL=gradle
+    - RUNTIME=ol BUILD_TOOL=maven
+    - RUNTIME=wlp BUILD_TOOL=maven
+    - RUNTIME=tomee BUILD_TOOL=maven
+# - RUNTIME=ol RUNTIME_VERSION=19.0.0.2 BUILD_TOOL=gradle
+# - RUNTIME=wlp RUNTIME_VERSION=19.0.0.2 BUILD_TOOL=gradle
+# - RUNTIME=ol RUNTIME_VERSION=19.0.0.3 BUILD_TOOL=gradle
+# - RUNTIME=wlp RUNTIME_VERSION=19.0.0.3 BUILD_TOOL=gradle
 cache:
     directories:
         - $HOME/.m2
@@ -45,7 +44,7 @@ script:
     - |
       if [ "$BUILD_TOOL" = "maven" ]; then
           export CD_COMMAND="cd boost-maven";
-          export TEST_COMMAND="mvn install -Pit -Dinvoker.streamLogs=true -Druntime=$RUNTIME -DruntimeVersion=$RUNTIME_VERSION";
+          export TEST_COMMAND="mvn install -Pit -DboostRuntime=$RUNTIME";
       else
           export CD_COMMAND="cd boost-gradle";
           export TEST_COMMAND="./gradle-test.sh"

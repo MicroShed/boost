@@ -103,4 +103,38 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>ol</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>ol</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>openliberty</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>wlp</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>wlp</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>wlp</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+	
 </project>

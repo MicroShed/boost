@@ -35,14 +35,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>boost</groupId>
 			<artifactId>boost-maven-plugin</artifactId>
 			<version>@pom.version@</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.github.docker-java</groupId>
 			<artifactId>docker-java</artifactId>
@@ -89,12 +87,6 @@
 				<configuration>
 					<dockerizer>${dockerizer}</dockerizer>
 					<repository>localhost:5000/${project.artifactId}</repository>
-					<runtimeArtifact>
-						<groupId>${runtimeGroupId}</groupId>
-						<artifactId>${runtimeArtifactId}</artifactId>
-						<version>${runtimeVersion}</version>
-						<type>zip</type>
-					</runtimeArtifact>
 				</configuration>
 				<executions>
 					<execution>

@@ -31,20 +31,13 @@
 
 	<dependencyManagement>
 		<dependencies>
-		<dependency>
-			<groupId>boost.boosters</groupId>
-			<artifactId>ee8-bom</artifactId>
-			<version>@pom.version@</version>
-			<scope>import</scope>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>boost.boosters</groupId>
-			<artifactId>runtimes-bom</artifactId>
-			<version>@pom.version@</version>
-			<scope>import</scope>
-			<type>pom</type>
-		</dependency>
+			<dependency>
+				<groupId>boost.boosters</groupId>
+				<artifactId>ee8-bom</artifactId>
+				<version>@pom.version@</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -67,41 +60,12 @@
 		</dependency>
 	</dependencies>
 	
-	<profiles>
-		<profile>
-			<id>tomee</id>
-			<properties>
-				<it.includes>EndpointIT</it.includes>
-			</properties>
-			<dependencies>
-				<dependency>
-    				<groupId>boost.boosters</groupId>
-    				<artifactId>tomee</artifactId>
-    			</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>liberty</id>
-			<properties>
-				<it.includes>FeatureVersionIT,EndpointIT</it.includes>
-			</properties>
-		</profile>
-	</profiles>
-	
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>@pom.version@</version>
-				<configuration>
-					<runtimeArtifact>
-						<groupId>${runtimeGroupId}</groupId>
-						<artifactId>${runtimeArtifactId}</artifactId>
-						<version>${runtimeVersion}</version>
-						<type>zip</type>
-					</runtimeArtifact>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -149,4 +113,62 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>ol</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>ol</value>
+				</property>
+			</activation>
+			<properties>
+				<it.includes>FeatureVersionIT,EndpointIT</it.includes>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>openliberty</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>wlp</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>wlp</value>
+				</property>
+			</activation>
+			<properties>
+				<it.includes>FeatureVersionIT,EndpointIT</it.includes>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>wlp</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>tomee</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>tomee</value>
+				</property>
+			</activation>
+			<properties>
+				<it.includes>EndpointIT</it.includes>
+			</properties>
+			<dependencies>
+				<dependency>
+    				<groupId>boost.runtimes</groupId>
+    				<artifactId>tomee</artifactId>
+    			</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+	
 </project>
