@@ -10,19 +10,17 @@
  *******************************************************************************/
 package io.openliberty.boost.common.boosters;
 
-import org.w3c.dom.Document;
-
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 import io.openliberty.boost.common.runtimes.RuntimeI;
+import io.openliberty.boost.common.config.ServerConfigGenerator;
 
 import static io.openliberty.boost.common.config.ConfigConstants.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jaxrs")
 public class JAXRSBoosterConfig extends AbstractBoosterConfig {
@@ -39,19 +37,13 @@ public class JAXRSBoosterConfig extends AbstractBoosterConfig {
     }
 
     @Override
-    public String getFeature() {
+    public String getLibertyFeature() {
         return libertyFeature;
     }
 
     @Override
-    public void addServerConfig(Document doc) {
+    public void addServerConfig(ServerConfigGenerator config) {
         // No config to write
-    }
-
-    @Override
-    public Properties getServerProperties() {
-
-        return null;
     }
 
     @Override

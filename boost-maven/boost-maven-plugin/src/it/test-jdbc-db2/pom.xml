@@ -31,13 +31,13 @@
 
 	<dependencyManagement>
 		<dependencies>
-		<dependency>
-			<groupId>boost.boosters</groupId>
-			<artifactId>ee8-bom</artifactId>
-			<version>@pom.version@</version>
-			<scope>import</scope>
-			<type>pom</type>
-		</dependency>
+			<dependency>
+				<groupId>boost.boosters</groupId>
+				<artifactId>ee8-bom</artifactId>
+				<version>@pom.version@</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

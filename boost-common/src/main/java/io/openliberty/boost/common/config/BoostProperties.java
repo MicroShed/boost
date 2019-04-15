@@ -32,6 +32,7 @@ public final class BoostProperties {
     public static final String DATASOURCE_USER = "boost.db.user";
     public static final String DATASOURCE_PASSWORD = "boost.db.password";
     public static final String DATASOURCE_CREATE_DATABASE = "boost.db.createDatabase";
+    public static final String DATASOURCE_URL = "boost.db.url";
 
     public static final String AES_ENCRYPTION_KEY = "boost.aes.key";
 
