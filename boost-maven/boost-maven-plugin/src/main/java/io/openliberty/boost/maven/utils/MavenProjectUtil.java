@@ -55,7 +55,8 @@ public class MavenProjectUtil {
 
         for (Artifact artifact : project.getArtifacts()) {
             logger.debug("Found dependency while processing project: " + artifact.getGroupId() + ":"
-                    + artifact.getArtifactId() + ":" + artifact.getVersion() + ":" + artifact.getType());
+                    + artifact.getArtifactId() + ":" + artifact.getVersion() + ":" + artifact.getType() + ":"
+                    + artifact.getScope());
 
             if (artifact.getType().equals("war")) {
                 logger.debug("Resolving transitive booster dependencies for war");

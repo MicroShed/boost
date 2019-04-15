@@ -37,16 +37,19 @@
 				<!-- Could also use 7.0, 8.0 for EE7, 8 -->
 				<!-- Probably will be 1.0 for initial GA -->
 				<version>0.1-SNAPSHOT</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>io.openliberty.boosters</groupId>
 				<artifactId>jdbc</artifactId>
 				<version>0.1-SNAPSHOT</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>io.openliberty.boosters</groupId>
 				<artifactId>jpa</artifactId>
 				<version>0.1-SNAPSHOT</version>
+				<scope>provided</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
