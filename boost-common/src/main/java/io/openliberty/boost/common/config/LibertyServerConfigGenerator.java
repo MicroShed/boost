@@ -63,7 +63,9 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
     public LibertyServerConfigGenerator(String serverPath, BoostLoggerI logger) throws ParserConfigurationException {
 
         this.serverPath = serverPath;
-        this.libertyInstallPath = serverPath + "/../../.."; // Three directories back from 'wlp/usr/servers/BoostServer'
+        this.libertyInstallPath = serverPath + "/../../.."; // Three directories
+                                                            // back from
+                                                            // 'wlp/usr/servers/BoostServer'
         this.logger = logger;
 
         generateServerXml();
@@ -84,13 +86,13 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
         // Create featureManager config element
         featureManager = serverXml.createElement(FEATURE_MANAGER);
         serverRoot.appendChild(featureManager);
-        
+
         // Create httpEndpoint config element
         httpEndpoint = serverXml.createElement(HTTP_ENDPOINT);
         httpEndpoint.setAttribute("id", DEFAULT_HTTP_ENDPOINT);
         serverRoot.appendChild(httpEndpoint);
     }
-    
+
     /**
      * Add a Liberty feature to the server configuration
      *
@@ -103,7 +105,7 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
             featuresAdded.add(featureName);
         }
     }
-    
+
     /**
      * Add a list of features to the server configuration
      *
@@ -114,9 +116,10 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
             addFeature(featureName);
         }
     }
-    
+
     /**
-     * Write the server.xml and bootstrap.properties to the server config directory
+     * Write the server.xml and bootstrap.properties to the server config
+     * directory
      *
      * @throws TransformerException
      * @throws IOException
@@ -146,10 +149,11 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
                 }
             }
         }
-        
-        // Try setting all bootstrap properties to system properties for test purposes
-        for(String key : bootstrapProperties.stringPropertyNames()) {
-        	System.setProperty(key, bootstrapProperties.getProperty(key));
+
+        // Try setting all bootstrap properties to system properties for test
+        // purposes
+        for (String key : bootstrapProperties.stringPropertyNames()) {
+            System.setProperty(key, bootstrapProperties.getProperty(key));
         }
     }
 
@@ -163,26 +167,26 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
             }
         }
     }
-    
+
     private void addBoostrapProperty(String key, String value) throws IOException {
-    	
-    	//Using this to hold the properties we want to encrypt and the type of encryption we want to use
+
+        // Using this to hold the properties we want to encrypt and the type of
+        // encryption we want to use
         Map<String, String> propertiesToEncrypt = BoostProperties.getPropertiesToEncrypt();
-        
+
         if (propertiesToEncrypt.containsKey(key) && value != null && !value.equals("")) {
-            //Getting properties that might not have been passed with the other properties that will be written to boostrap.properties
-            //Don't want to add certain properties to the boostrap properties so we'll grab them here
+            // Getting properties that might not have been passed with the other
+            // properties that will be written to boostrap.properties
+            // Don't want to add certain properties to the boostrap properties
+            // so we'll grab them here
             Properties supportedProperties = BoostProperties.getConfiguredBoostProperties(logger);
-            value = BoostUtil.encrypt(libertyInstallPath,
-                                      value,
-                                      propertiesToEncrypt.get(key),
-                                      supportedProperties.getProperty(BoostProperties.AES_ENCRYPTION_KEY), 
-                                      logger);
+            value = BoostUtil.encrypt(libertyInstallPath, value, propertiesToEncrypt.get(key),
+                    supportedProperties.getProperty(BoostProperties.AES_ENCRYPTION_KEY), logger);
         }
 
         bootstrapProperties.put(key, value);
     }
-    
+
     @Override
     public void addKeystore(Map<String, String> keystoreProps, Map<String, String> keyProps) {
         Element keystore = serverXml.createElement(KEYSTORE);
@@ -215,44 +219,44 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
 
     }
 
-	@Override
-	public void addHostname(String hostname) throws Exception {
-		httpEndpoint.setAttribute("host", BoostUtil.makeVariable(BoostProperties.ENDPOINT_HOST));
-		
-		addBoostrapProperty(BoostProperties.ENDPOINT_HOST, hostname);
-	}
+    @Override
+    public void addHostname(String hostname) throws Exception {
+        httpEndpoint.setAttribute("host", BoostUtil.makeVariable(BoostProperties.ENDPOINT_HOST));
 
-	@Override
-	public void addHttpPort(String httpPort) throws Exception {
-		httpEndpoint.setAttribute("httpPort", BoostUtil.makeVariable(BoostProperties.ENDPOINT_HTTP_PORT));
-		
-		addBoostrapProperty(BoostProperties.ENDPOINT_HTTP_PORT, httpPort);
-	}
+        addBoostrapProperty(BoostProperties.ENDPOINT_HOST, hostname);
+    }
 
-	@Override
-	public void addHttpsPort(String httpsPort) throws Exception {
-		httpEndpoint.setAttribute("httpsPort", BoostUtil.makeVariable(BoostProperties.ENDPOINT_HTTPS_PORT));
-		
-		addBoostrapProperty(BoostProperties.ENDPOINT_HTTPS_PORT, httpsPort);
-	}
-	
-	@Override
-	public void addDataSource(String productName, Properties serverProperties) throws Exception {
+    @Override
+    public void addHttpPort(String httpPort) throws Exception {
+        httpEndpoint.setAttribute("httpPort", BoostUtil.makeVariable(BoostProperties.ENDPOINT_HTTP_PORT));
 
-		String driverJar = null;
-		String datasourcePropertiesElement = null;
-		
-		if (productName.equals(JDBCBoosterConfig.DERBY)) {
-			driverJar = DERBY_JAR;
-			datasourcePropertiesElement = PROPERTIES_DERBY_EMBEDDED;
-		} else if (productName.equals(JDBCBoosterConfig.DB2)) {
-			driverJar = DB2_JAR;
-			datasourcePropertiesElement = PROPERTIES_DB2_JCC;
-		} else if (productName.equals(JDBCBoosterConfig.MYSQL)) {
-			driverJar = MYSQL_JAR;
-			datasourcePropertiesElement = PROPERTIES;
-		}
-		
+        addBoostrapProperty(BoostProperties.ENDPOINT_HTTP_PORT, httpPort);
+    }
+
+    @Override
+    public void addHttpsPort(String httpsPort) throws Exception {
+        httpEndpoint.setAttribute("httpsPort", BoostUtil.makeVariable(BoostProperties.ENDPOINT_HTTPS_PORT));
+
+        addBoostrapProperty(BoostProperties.ENDPOINT_HTTPS_PORT, httpsPort);
+    }
+
+    @Override
+    public void addDataSource(String productName, Properties serverProperties) throws Exception {
+
+        String driverJar = null;
+        String datasourcePropertiesElement = null;
+
+        if (productName.equals(JDBCBoosterConfig.DERBY)) {
+            driverJar = DERBY_JAR;
+            datasourcePropertiesElement = PROPERTIES_DERBY_EMBEDDED;
+        } else if (productName.equals(JDBCBoosterConfig.DB2)) {
+            driverJar = DB2_JAR;
+            datasourcePropertiesElement = PROPERTIES_DB2_JCC;
+        } else if (productName.equals(JDBCBoosterConfig.MYSQL)) {
+            driverJar = MYSQL_JAR;
+            datasourcePropertiesElement = PROPERTIES;
+        }
+
         Element serverRoot = serverXml.getDocumentElement();
 
         // Find the root server element
@@ -290,31 +294,14 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
         jdbcDriver.setAttribute(LIBRARY_REF, JDBC_LIBRARY_1);
         serverRoot.appendChild(jdbcDriver);
 
-        // Add container authentication
-        if (serverProperties.containsKey(BoostProperties.DATASOURCE_USER)
-                && serverProperties.containsKey(BoostProperties.DATASOURCE_PASSWORD)) {
-            dataSource.setAttribute(CONTAINER_AUTH_DATA_REF, DATASOURCE_AUTH_DATA);
-
-            Element containerAuthData = serverXml.createElement(AUTH_DATA);
-            containerAuthData.setAttribute("id", DATASOURCE_AUTH_DATA);
-            containerAuthData.setAttribute(USER, BoostUtil.makeVariable(BoostProperties.DATASOURCE_USER));
-            containerAuthData.setAttribute(PASSWORD, BoostUtil.makeVariable(BoostProperties.DATASOURCE_PASSWORD));
-            serverRoot.appendChild(containerAuthData);
-        }
-        
         // Add properties to bootstrap.properties
         addBootstrapProperties(serverProperties);
     }
-	
-	private void addDatasourceProperties(Properties serverProperties, Element propertiesElement) {
-        for (String property : serverProperties.stringPropertyNames()) {
-            // We are using container authentication. Do not include user or password here
-            if (!property.equals(BoostProperties.DATASOURCE_USER)
-                    && !property.equals(BoostProperties.DATASOURCE_PASSWORD)) {
 
-                String attribute = property.replace(BoostProperties.DATASOURCE_PREFIX, "");
-                propertiesElement.setAttribute(attribute, BoostUtil.makeVariable(property));
-            }
+    private void addDatasourceProperties(Properties serverProperties, Element propertiesElement) {
+        for (String property : serverProperties.stringPropertyNames()) {
+            String attribute = property.replace(BoostProperties.DATASOURCE_PREFIX, "");
+            propertiesElement.setAttribute(attribute, BoostUtil.makeVariable(property));
         }
     }
 
