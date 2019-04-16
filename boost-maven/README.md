@@ -16,7 +16,6 @@ When added to your pom.xml, the plugin will
 
 1. `git clone git@github.com:OpenLiberty/boost.git`
 2. `boost-maven.sh`
-3. `mvn clean install`  (To run integration tests, add the -Pit parameter)
 
 ### Tutorial
 
