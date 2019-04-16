@@ -2,7 +2,7 @@
 
 ### What is Boost?
 
-This is a prototype Maven plugin to package a fully configured application with a target runtime.
+This is a prototype Maven plugin to package a fully configured Java EE or MicroProfile application with a target runtime.
 
 When added to your pom.xml, the plugin will
 
