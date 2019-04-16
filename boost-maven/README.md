@@ -25,7 +25,7 @@ When added to your pom.xml, the plugin will
 Kick the tires of Boost with zero configuration:
 
 * Produce a runnable uber jar for your app:
-    * `mvn clean package io.openliberty.boost:boost-maven-plugin:0.1:package`
+    * `mvn clean package boost:boost-maven-plugin:0.1:package`
     * `java -jar target/<application name>.jar`
 
 #### Quick start - uber jar
@@ -33,7 +33,7 @@ Kick the tires of Boost with zero configuration:
 1. Add the following to your project pom.xml
     ```xml
       <plugin>
-            <groupId>io.openliberty.boost</groupId>
+            <groupId>boost</groupId>
             <artifactId>boost-maven-plugin</artifactId>
             <version>0.1</version>
             <executions>
