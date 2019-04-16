@@ -20,7 +20,7 @@ When added to your pom.xml, the plugin will
 
 ### Tutorial
 
-For more detailed instructions, see [here](https://github.com/awisniew90/boosted-microprofile-rest-client/BoostTutorial.md).
+For more detailed instructions, see [here](https://github.com/awisniew90/boosted-microprofile-rest-client/blob/master/README.md).
 
 ### Building and Developing Boost
 
