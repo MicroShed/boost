@@ -38,7 +38,7 @@ Edit your project pom.xml and place the following plugin stanza into your build:
 
 ### Tutorial
 
-For more detailed instructions on using the boost plugin, see [here](https://github.com/awisniew90/boosted-microprofile-rest-client/blob/master/README.md).
+For more detailed instructions on using the boost plugin, see [here](https://github.com/OpenLiberty/boost/wiki/Boosted-MicroProfile-Rest-Client-sample-app).
 
 ### Building and Developing Boost
 
