@@ -179,7 +179,7 @@ public class LibertyRuntime implements LibertyRuntimeI {
                 addSpringBootVersionToManifest(springBootVersion);
             }
         } else { // Dealing with an EE based app
-
+        	
             // targeting a liberty install
             copyBoosterDependencies(boosterConfigs);
 
@@ -201,12 +201,8 @@ public class LibertyRuntime implements LibertyRuntimeI {
                 installApp(ConfigConstants.INSTALL_PACKAGE_DEP);
             }
 
-            // Not sure this works yet, the main idea is to NOT create this with
-            // a WAR
-            // package type.
-            if (project.getPackaging().equals("jar")) {
-                createUberJar(null, true);
-            }
+            // Create the Liberty runnable jar
+            createUberJar(null, true);
         }
     }
    
