@@ -94,9 +94,6 @@
 					<value>ol</value>
 				</property>
 			</activation>
-			<properties>
-				<runtime.includes>FeatureVersionIT,EndpointIT</runtime.includes>
-			</properties>
 			<dependencies>
 				<dependency>
 					<groupId>boost.runtimes</groupId>
@@ -112,9 +109,6 @@
 					<value>wlp</value>
 				</property>
 			</activation>
-			<properties>
-				<runtime.includes>FeatureVersionIT,EndpointIT</runtime.includes>
-			</properties>
 			<dependencies>
 				<dependency>
 					<groupId>boost.runtimes</groupId>
@@ -130,9 +124,6 @@
 					<value>tomee</value>
 				</property>
 			</activation>
-			<properties>
-				<runtime.includes>EndpointIT</runtime.includes>
-			</properties>
 			<dependencies>
 				<dependency>
 					<groupId>boost.runtimes</groupId>
@@ -270,10 +261,9 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.19.1</version>
+				<version>2.22.1</version>
 				<configuration>
 					<includes>
-						<include>${runtime.includes}</include>
 						<include>${db.includes}</include>
 					</includes>
 				</configuration>

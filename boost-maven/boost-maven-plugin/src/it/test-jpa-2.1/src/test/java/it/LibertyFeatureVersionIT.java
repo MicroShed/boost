@@ -16,21 +16,30 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FeatureVersionIT {
+public class LibertyFeatureVersionIT {
 
     private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";
 
     private static final String JPA_21_FEATURE = "<feature>jpa-2.1</feature>";
     private static final String JDBC_42_FEATURE = "<feature>jdbc-4.2</feature>";
 
+    @BeforeClass
+    public static void init() {
+        String runtime = System.getProperty("boostRuntime");
+        org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
+    }
+
     @Test
     public void testFeatureVersion() throws Exception {
-        assertTrue("The " + JPA_21_FEATURE + " feature was not found in the server configuration", countTextFoundInFile(SERVER_XML, JPA_21_FEATURE) == 1);
-        assertTrue("The " + JDBC_42_FEATURE + " feature was not found in the server configuration", countTextFoundInFile(SERVER_XML, JDBC_42_FEATURE) == 1);
+        assertTrue("The " + JPA_21_FEATURE + " feature was not found in the server configuration",
+                countTextFoundInFile(SERVER_XML, JPA_21_FEATURE) == 1);
+        assertTrue("The " + JDBC_42_FEATURE + " feature was not found in the server configuration",
+                countTextFoundInFile(SERVER_XML, JDBC_42_FEATURE) == 1);
     }
-    
+
     private int countTextFoundInFile(String filePath, String text) throws Exception {
         File targetFile = new File(filePath);
         assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
@@ -52,7 +61,7 @@ public class FeatureVersionIT {
                 br.close();
             }
         }
-        
+
         return found;
     }
 }

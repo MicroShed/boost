@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package application;
+package it;
 
 import static org.junit.Assert.*;
 

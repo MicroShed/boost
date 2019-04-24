@@ -16,12 +16,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FeatureVersionIT {
+public class LibertyFeatureVersionIT {
 
     private static final String JDBC_42_FEATURE = "<feature>jdbc-4.2</feature>";
     private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";
+
+    @BeforeClass
+    public static void init() {
+        String runtime = System.getProperty("boostRuntime");
+        org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
+    }
 
     @Test
     public void testFeatureVersion() throws Exception {

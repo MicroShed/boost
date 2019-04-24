@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package application;
+package it;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -50,7 +50,8 @@ public class DockerPushIT {
         // Remove the local image.
         removeImage(imageName);
 
-        // Pull the image from the local repository which got pushed by the plugin. This
+        // Pull the image from the local repository which got pushed by the
+        // plugin. This
         // is possible if the plugin successfully pushed to the registry.
         dockerClient.pullImageCmd("localhost:5000/test-spring-boot-docker").withTag("latest")
                 .exec(new PullImageResultCallback()).awaitCompletion(10, TimeUnit.SECONDS);

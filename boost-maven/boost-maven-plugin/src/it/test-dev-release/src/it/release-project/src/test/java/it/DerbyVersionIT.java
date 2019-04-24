@@ -16,12 +16,24 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DerbyVersionIT {
 
-    private static final String DERBY_JAR = "target/liberty/wlp/usr/servers/BoostServer/resources/derby-10.11.1.1.jar";
+    private static String DERBY_JAR;
 
+    @BeforeClass
+    public static void init() {
+    	String runtime = System.getProperty("boostRuntime");
+        
+    	if ("tomee".equals(runtime)) {
+    		DERBY_JAR = "target/apache-tomee/boost/derby-10.11.1.1.jar";
+    	} else if ("ol".equals(runtime) || "wlp".equals(runtime)) {
+    		DERBY_JAR = "target/liberty/wlp/usr/servers/BoostServer/resources/derby-10.11.1.1.jar";
+    	}
+    }
+    
     /**
      * Test that the release project is using the Derby version that it defined
      * in its own project

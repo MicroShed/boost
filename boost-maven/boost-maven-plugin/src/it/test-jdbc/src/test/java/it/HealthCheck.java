@@ -16,7 +16,6 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.Scanner;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.gson.JsonArray;
@@ -35,7 +34,7 @@ public class HealthCheck {
     @Test
     public void testServlet() throws Exception {
 
-        String port = System.getProperty("test.port");
+    	String port = System.getProperty("boost.http.port");
         String urlString = "http://localhost:" + port + "/health";
 
         URL url = new URL(urlString);

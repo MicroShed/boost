@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package it;
+package hello;
 
 import static org.junit.Assert.*;
 
@@ -18,9 +18,9 @@ import java.io.FileReader;
 
 import org.junit.Test;
 
-public class FeatureVersionIT {
+public class LibertyFeatureVerificationIT {
 
-    private static final String SPRING_BOOT_15_FEATURE = "<feature>springBoot-1.5</feature>";
+    private static final String WEBSOCKET_11_FEATURE = "<feature>websocket-1.1</feature>";
     private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";
 
     @Test
@@ -28,14 +28,14 @@ public class FeatureVersionIT {
         File targetFile = new File(SERVER_XML);
         assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
 
-        // Check contents of file for springBoot-15 feature
+        // Check contents of file for websocket-1.1 feature
         boolean found = false;
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(SERVER_XML));
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.contains(SPRING_BOOT_15_FEATURE)) {
+                if (line.contains(WEBSOCKET_11_FEATURE)) {
                     found = true;
                     break;
                 }
@@ -46,6 +46,6 @@ public class FeatureVersionIT {
             }
         }
 
-        assertTrue("The " + SPRING_BOOT_15_FEATURE + " feature was not found in the server configuration", found);
+        assertTrue("The " + WEBSOCKET_11_FEATURE + " feature was not found in the server configuration", found);
     }
 }

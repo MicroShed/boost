@@ -97,6 +97,9 @@
 							<streamLogs>true</streamLogs>
 							<properties>
 								<boostRuntime>${boostRuntime}</boostRuntime>
+								<!-- Explicitly set the boost port to 9000 for testing purposes 
+								     across multiple runtimes -->
+								<boost.http.port>9000</boost.http.port>
 							</properties>
 						</configuration>
 						<executions>

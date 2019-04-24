@@ -30,6 +30,18 @@
 	</pluginRepositories>
 
 
+    <dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>boost.runtimes</groupId>
+				<artifactId>runtimes-bom</artifactId>
+				<version>0.1.3-SNAPSHOT</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -101,7 +113,12 @@
 
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.22.0</version>
+				<version>2.22.1</version>
+				<configuration>
+					<excludes>
+						<exclude>${it.excludes}</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -114,5 +131,57 @@
 		</plugins>
 	</build>
 
+    <profiles>
+		<profile>
+			<id>ol</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>ol</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>openliberty</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>wlp</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>wlp</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>wlp</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>tomee</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>tomee</value>
+				</property>
+			</activation>
+			<properties>
+				<!-- Skip all tests when running on tomee -->
+				<it.excludes>*</it.excludes>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>tomee</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+	
 </project>
 

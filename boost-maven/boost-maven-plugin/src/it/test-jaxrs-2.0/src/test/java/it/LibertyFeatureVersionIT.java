@@ -16,35 +16,36 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FeatureVersionIT {
+public class LibertyFeatureVersionIT {
 
+    private static final String JAXRS_20_FEATURE = "<feature>jaxrs-2.0</feature>";
     private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";
 
-    private static final String JPA_22_FEATURE = "<feature>jpa-2.2</feature>";
-    private static final String JDBC_42_FEATURE = "<feature>jdbc-4.2</feature>";
+    @BeforeClass
+    public static void init() {
+        String runtime = System.getProperty("boostRuntime");
+        org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
+    }
 
     @Test
-    public void testFeatureVersion() throws Exception {
-        assertTrue("The " + JPA_22_FEATURE + " feature was not found in the server configuration", countTextFoundInFile(SERVER_XML, JPA_22_FEATURE) == 1);
-        assertTrue("The " + JDBC_42_FEATURE + " feature was not found in the server configuration", countTextFoundInFile(SERVER_XML, JDBC_42_FEATURE) == 1);
-    }
-    
-    private int countTextFoundInFile(String filePath, String text) throws Exception {
-        File targetFile = new File(filePath);
+    public void testLibertyFeatureVersion() throws Exception {
+        File targetFile = new File(SERVER_XML);
         assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
 
-        // Check contents of file for jpa feature
-        int found = 0;
+        // Check contents of file for jaxrs feature
+        boolean found = false;
         BufferedReader br = null;
 
         try {
-            br = new BufferedReader(new FileReader(filePath));
+            br = new BufferedReader(new FileReader(SERVER_XML));
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.contains(text)) {
-                    found++;
+                if (line.contains(JAXRS_20_FEATURE)) {
+                    found = true;
+                    break;
                 }
             }
         } finally {
@@ -52,7 +53,7 @@ public class FeatureVersionIT {
                 br.close();
             }
         }
-        
-        return found;
+
+        assertTrue("The " + JAXRS_20_FEATURE + " feature was not found in the server configuration", found);
     }
 }
