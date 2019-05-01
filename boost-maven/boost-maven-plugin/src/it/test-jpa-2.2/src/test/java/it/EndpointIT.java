@@ -18,20 +18,27 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ApplicationIT {
+public class EndpointIT {
+    private static String URL;
+
+    @BeforeClass
+    public static void init() {
+    	String port = System.getProperty("boost.http.port");
+        URL = "http://localhost:" + port;
+    }
 
     @Test
     public void testDeployment() {
-        testEndpoint("/", "Hello JPA World");
-        testEndpoint("/", "Created Thing 2");
-        testEndpoint("/", "Created Thing 3");
+        testEndpoint("Hello JPA World");
+        testEndpoint("Created Thing 2");
+        testEndpoint("Created Thing 3");
     }
-    
-    private void testEndpoint(String endpoint, String expectedOutput) {
-        String url = "http://localhost:9080/";
-        Response response = sendRequest(url, "GET");
+
+    private void testEndpoint(String expectedOutput) {
+        Response response = sendRequest(URL, "GET");
         int responseCode = response.getStatus();
         assertTrue("Incorrect response code: " + responseCode, responseCode == 200);
 

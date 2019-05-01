@@ -16,12 +16,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FeatureVersionIT {
+public class LibertyFeatureVersionIT {
 
-    private static final String JAXRS_20_FEATURE = "<feature>jaxrs-2.0</feature>";
+    private static final String JAXRS_21_FEATURE = "<feature>jaxrs-2.1</feature>";
     private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";
+
+    @BeforeClass
+    public static void init() {
+        String runtime = System.getProperty("boostRuntime");
+        org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
+    }
 
     @Test
     public void testFeatureVersion() throws Exception {
@@ -36,7 +43,7 @@ public class FeatureVersionIT {
             br = new BufferedReader(new FileReader(SERVER_XML));
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.contains(JAXRS_20_FEATURE)) {
+                if (line.contains(JAXRS_21_FEATURE)) {
                     found = true;
                     break;
                 }
@@ -47,6 +54,6 @@ public class FeatureVersionIT {
             }
         }
 
-        assertTrue("The " + JAXRS_20_FEATURE + " feature was not found in the server configuration", found);
+        assertTrue("The " + JAXRS_21_FEATURE + " feature was not found in the server configuration", found);
     }
 }

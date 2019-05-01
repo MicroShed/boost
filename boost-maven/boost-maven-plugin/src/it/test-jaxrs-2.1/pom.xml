@@ -91,23 +91,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.19.1</version>
-				<configuration>
-					<includes>
-						<include>${it.includes}</include>
-					</includes>
-				</configuration>
+				<version>2.22.1</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>
 						</goals>
-						<configuration>
-							<systemPropertyVariables>
-                                <test.port>${boost.http.port}</test.port>
-                            </systemPropertyVariables>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -123,9 +113,6 @@
 					<value>ol</value>
 				</property>
 			</activation>
-			<properties>
-				<it.includes>FeatureVersionIT,EndpointIT</it.includes>
-			</properties>
 			<dependencies>
 				<dependency>
 					<groupId>boost.runtimes</groupId>
@@ -141,9 +128,6 @@
 					<value>wlp</value>
 				</property>
 			</activation>
-			<properties>
-				<it.includes>FeatureVersionIT,EndpointIT</it.includes>
-			</properties>
 			<dependencies>
 				<dependency>
 					<groupId>boost.runtimes</groupId>
@@ -159,9 +143,6 @@
 					<value>tomee</value>
 				</property>
 			</activation>
-			<properties>
-				<it.includes>EndpointIT</it.includes>
-			</properties>
 			<dependencies>
 				<dependency>
     				<groupId>boost.runtimes</groupId>

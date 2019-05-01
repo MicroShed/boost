@@ -12,6 +12,7 @@ package it;
 
 import static org.junit.Assert.*;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.FileInputStream;
@@ -25,9 +26,17 @@ public class Db2PasswordAesIT {
     private final String DB_USER = "user";
     private final String ENCODED_DB_PASS = "{aes}Lz4sLCgwLTs=";
 
+    @BeforeClass
+    public static void init() {
+        // Liberty specific checking of bootstrap.properties file
+        // TODO: this should eventually be moved to a unit test
+        String runtime = System.getProperty("boostRuntime");
+        org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
+    }
+
     @Test
     public void checkPropertiesTest() {
-    
+
         Properties bootstrapProperties = new Properties();
         InputStream input = null;
 
@@ -36,9 +45,12 @@ public class Db2PasswordAesIT {
 
             bootstrapProperties.load(input);
 
-            assertEquals("Incorrect boost.db.user found in bootstrap.properties.", DB_USER, bootstrapProperties.getProperty("boost.db.user"));
-            assertEquals("Incorrect boost.db.password found in bootstrap.properties.", ENCODED_DB_PASS, bootstrapProperties.getProperty("boost.db.password"));
-            assertEquals("Incorrect boost.db.databaseName found in bootstrap.properties.", DB_NAME, bootstrapProperties.getProperty("boost.db.databaseName"));
+            assertEquals("Incorrect boost.db.user found in bootstrap.properties.", DB_USER,
+                    bootstrapProperties.getProperty("boost.db.user"));
+            assertEquals("Incorrect boost.db.password found in bootstrap.properties.", ENCODED_DB_PASS,
+                    bootstrapProperties.getProperty("boost.db.password"));
+            assertEquals("Incorrect boost.db.databaseName found in bootstrap.properties.", DB_NAME,
+                    bootstrapProperties.getProperty("boost.db.databaseName"));
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -51,4 +63,4 @@ public class Db2PasswordAesIT {
             }
         }
     }
-} 
+}

@@ -18,9 +18,9 @@ import java.io.FileReader;
 
 import org.junit.Test;
 
-public class FeatureVersionIT {
+public class LibertyFeatureVersionIT {
 
-    private static final String JAXRS_21_FEATURE = "<feature>jaxrs-2.1</feature>";
+    private static final String SPRING_BOOT_15_FEATURE = "<feature>springBoot-1.5</feature>";
     private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";
 
     @Test
@@ -28,15 +28,14 @@ public class FeatureVersionIT {
         File targetFile = new File(SERVER_XML);
         assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
 
-        // Check contents of file for jaxrs feature
+        // Check contents of file for springBoot-15 feature
         boolean found = false;
         BufferedReader br = null;
-
         try {
             br = new BufferedReader(new FileReader(SERVER_XML));
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.contains(JAXRS_21_FEATURE)) {
+                if (line.contains(SPRING_BOOT_15_FEATURE)) {
                     found = true;
                     break;
                 }
@@ -47,6 +46,6 @@ public class FeatureVersionIT {
             }
         }
 
-        assertTrue("The " + JAXRS_21_FEATURE + " feature was not found in the server configuration", found);
+        assertTrue("The " + SPRING_BOOT_15_FEATURE + " feature was not found in the server configuration", found);
     }
 }

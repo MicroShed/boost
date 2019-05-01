@@ -106,11 +106,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.19.1</version>
+				<version>2.22.1</version>
 				<configuration>
-					<includes>
-						<include>${it.includes}</include>
-					</includes>
+					<excludes>
+						<exclude>${it.excludes}</exclude>
+					</excludes>
 				</configuration>
 				<executions>
 					<execution>
@@ -128,13 +128,13 @@
 		<profile>
 			<id>noEncoding</id>
 			<properties>
-				<it.includes>FeatureVersionIT,Db2VersionIT,Db2PropertiesIT</it.includes>
+				<it.excludes>Db2PasswordAesIT</it.excludes>
 			</properties>
 		</profile>
 		<profile>
 			<id>aes</id>
 			<properties>
-				<it.includes>FeatureVersionIT,Db2VersionIT,Db2PasswordAesIT</it.includes>
+				<it.excludes>Db2PropertiesIT</it.excludes>
 			</properties>
 		</profile>
 		<!-- runtimes -->
@@ -165,6 +165,21 @@
 				<dependency>
 					<groupId>boost.runtimes</groupId>
 					<artifactId>wlp</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>tomee</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>tomee</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>tomee</artifactId>
 				</dependency>
 			</dependencies>
 		</profile>
