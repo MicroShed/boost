@@ -52,5 +52,4 @@ script:
       fi;
     - ./travis.sh
 after_failure:
-    - cat boost-maven/boost-maven-plugin/target/it/test-dev-release/build.log
     - cat boost-maven/boost-maven-plugin/target/it/test-spring-boot-docker/build.log
