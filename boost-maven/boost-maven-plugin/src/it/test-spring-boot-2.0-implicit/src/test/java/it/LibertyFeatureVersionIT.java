@@ -18,7 +18,7 @@ import java.io.FileReader;
 
 import org.junit.Test;
 
-public class FeatureVersionIT {
+public class LibertyFeatureVersionIT {
 
     private static final String SPRING_BOOT_20_FEATURE = "<feature>springBoot-2.0</feature>";
     private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";

@@ -36,6 +36,7 @@
 					</pomIncludes>
 					<properties>
 						<boostRuntime>${boostRuntime}</boostRuntime>
+						<boost.http.port>${boost.http.port}</boost.http.port>
 					</properties>
 				</configuration>
 				<executions>

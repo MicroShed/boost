@@ -22,7 +22,7 @@ public class EndpointIT {
 
     @BeforeClass
     public static void init() {
-        String port = System.getProperty("test.port");
+    	String port = System.getProperty("boost.http.port");
         URL = "http://localhost:" + port + "/population";
     }
 

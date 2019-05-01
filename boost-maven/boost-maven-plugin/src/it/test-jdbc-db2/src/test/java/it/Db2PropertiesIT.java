@@ -12,6 +12,7 @@ package it;
 
 import static org.junit.Assert.*;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.FileInputStream;
@@ -25,6 +26,14 @@ public class Db2PropertiesIT {
     private final String DB_USER = "user";
     private final String AES_HASHED_PASSWORD_FLAG = "{aes}";
 
+    @BeforeClass
+    public static void init() {
+        // Liberty specific checking of bootstrap.properties file
+        // TODO: this should eventually be moved to a unit test
+        String runtime = System.getProperty("boostRuntime");
+        org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
+    }
+
     @Test
     public void checkPropertiesTest() {
 
@@ -36,10 +45,14 @@ public class Db2PropertiesIT {
 
             bootstrapProperties.load(input);
 
-            assertEquals("Incorrect boost.db.user found in bootstrap.properties.", DB_USER, bootstrapProperties.getProperty("boost.db.user"));
-            assertEquals("Incorrect boost.db.databaseName found in bootstrap.properties.", DB_NAME, bootstrapProperties.getProperty("boost.db.databaseName"));
-            //AES hashed password changes so we're just going to look for the aes flag.
-            assertTrue("Incorrect boost.db.password found in bootstrap.properties.", bootstrapProperties.getProperty("boost.db.password").contains(AES_HASHED_PASSWORD_FLAG));
+            assertEquals("Incorrect boost.db.user found in bootstrap.properties.", DB_USER,
+                    bootstrapProperties.getProperty("boost.db.user"));
+            assertEquals("Incorrect boost.db.databaseName found in bootstrap.properties.", DB_NAME,
+                    bootstrapProperties.getProperty("boost.db.databaseName"));
+            // AES hashed password changes so we're just going to look for the
+            // aes flag.
+            assertTrue("Incorrect boost.db.password found in bootstrap.properties.",
+                    bootstrapProperties.getProperty("boost.db.password").contains(AES_HASHED_PASSWORD_FLAG));
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {

@@ -151,6 +151,21 @@
 				</dependency>
 			</dependencies>
 		</profile>
+		<profile>
+			<id>tomee</id>
+			<activation>
+				<property>
+					<name>boostRuntime</name>
+					<value>tomee</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>boost.runtimes</groupId>
+					<artifactId>tomee</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
 	</profiles>
 	
 </project>

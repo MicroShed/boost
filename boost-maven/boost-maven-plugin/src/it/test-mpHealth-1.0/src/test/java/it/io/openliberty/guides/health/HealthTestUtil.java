@@ -27,19 +27,18 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider;
+import org.junit.BeforeClass;
 
 public class HealthTestUtil {
 
-    private static String port;
     private static String baseUrl;
-    private final static String HEALTH_ENDPOINT = "health";
+    private final static String HEALTH_ENDPOINT = "/health";
     public static final String INV_MAINTENANCE_FALSE = "io_openliberty_guides_inventory_inMaintenance\":false";
     public static final String INV_MAINTENANCE_TRUE = "io_openliberty_guides_inventory_inMaintenance\":true";
 
     static {
-        // port = System.getProperty("liberty.test.port");
-        port = "9080";
-        baseUrl = "http://localhost:" + port + "/";
+        String port = System.getProperty("boost.http.port");
+        baseUrl = "http://localhost:" + port;
     }
 
     public static JsonArray connectToHealthEnpoint(int expectedResponseCode) {
