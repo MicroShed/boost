@@ -52,24 +52,23 @@
 				<artifactId>jdbc</artifactId>
 				<version>0.1-SNAPSHOT</version>
 				<scope>provided</scope>
-		    </dependency>
-		    <dependency>
+			</dependency>
+			<dependency>
 				<groupId>boost.boosters</groupId>
 				<artifactId>jpa</artifactId>
 				<version>0.2-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
-		    <dependency>
+			<dependency>
 				<groupId>io.openliberty.boosters</groupId>
 				<artifactId>cdi</artifactId>
 				<version>0.2-SNAPSHOT</version>
-		    </dependency>
-		    <dependency>
+			</dependency>
+			<dependency>
 				<groupId>io.openliberty.boosters</groupId>
 				<artifactId>jsonp</artifactId>
 				<version>0.2-SNAPSHOT</version>
-		    </dependency>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 </project>
