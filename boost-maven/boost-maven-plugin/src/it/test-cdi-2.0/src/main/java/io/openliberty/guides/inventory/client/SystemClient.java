@@ -27,7 +27,9 @@ import java.net.URI;
 public class SystemClient {
 
     // Constants for building URI to the system service.
-    private final int DEFAULT_PORT = Integer.valueOf(System.getProperty("default.http.port"));
+    // private final int DEFAULT_PORT =
+    // Integer.valueOf(System.getProperty("default.http.port"));
+    private final int DEFAULT_PORT = 9000;
     private final String SYSTEM_PROPERTIES = "/system/properties";
     private final String PROTOCOL = "http";
 

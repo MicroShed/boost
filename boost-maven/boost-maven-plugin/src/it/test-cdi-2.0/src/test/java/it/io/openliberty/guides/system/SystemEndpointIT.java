@@ -22,12 +22,12 @@ import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider;
 import org.junit.Test;
 
-public class SystemEndpointTest {
+public class SystemEndpointIT {
 
     @Test
     public void testGetProperties() {
         // String port = System.getProperty("liberty.test.port");
-        String port = "9080";
+        String port = "9000";
         String url = "http://localhost:" + port + "/";
 
         Client client = ClientBuilder.newClient();

@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class InventoryEndpointTest {
+public class InventoryEndpointIT {
 
     private static String port;
     private static String baseUrl;
@@ -41,7 +41,7 @@ public class InventoryEndpointTest {
     @BeforeClass
     public static void oneTimeSetup() {
         // port = System.getProperty("liberty.test.port");
-        String port = "9080";
+        String port = "9000";
         baseUrl = "http://localhost:" + port + "/";
     }
 
