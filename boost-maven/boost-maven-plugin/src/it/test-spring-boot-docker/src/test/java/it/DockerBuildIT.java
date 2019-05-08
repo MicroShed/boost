@@ -144,7 +144,7 @@ public class DockerBuildIT {
         Thread.sleep(3000);
         testDockerContainerRunning();
 
-        Thread.sleep(15000);
+        Thread.sleep(30000);
         testAppRunningOnEndpoint();
 
     }

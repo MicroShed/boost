@@ -2,9 +2,8 @@ sudo: required
 dist: trusty
 language: java
 jdk:
-    - openjdk8
     - oraclejdk8
-    - oraclejdk9
+    - oraclejdk11
     
 env:
     - RUNTIME=ol BUILD_TOOL=maven
@@ -52,3 +51,5 @@ script:
           export TEST_COMMAND="./gradle-test.sh"
       fi;
     - ./travis.sh
+after_failure:
+    - cat boost-maven/boost-maven-plugin/target/it/test-spring-boot-docker/build.log
