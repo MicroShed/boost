@@ -15,9 +15,19 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+
+import java.lang.reflect.Constructor;
+
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -33,10 +43,11 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.runtimes.RuntimeI;
-import io.openliberty.boost.maven.runtimes.LibertyRuntime;
-import io.openliberty.boost.maven.runtimes.TomeeRuntime;
+import io.openliberty.boost.common.utils.ClassFinderUtil;
+import io.openliberty.boost.maven.runtimes.RuntimeParams;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
+
 
 public abstract class AbstractMojo extends MojoSupport {
     
@@ -88,31 +99,34 @@ public abstract class AbstractMojo extends MojoSupport {
     }
     
     protected RuntimeI getRuntimeInstance() throws MojoExecutionException {
-        if(runtime == null) {
+        if (runtime == null) {
             BoostLogger logger = BoostLogger.getInstance();
-            if (dependencies.containsKey(AbstractBoosterConfig.RUNTIMES_GROUP_ID + ":tomee")) {
-                logger.info("Detected TomEE as target Boost runtime");
-                String tomeeInstallDir = projectBuildDir + "/apache-tomee/";
-                String tomeeConfigDir = tomeeInstallDir + "conf";
-                runtime = new TomeeRuntime(dependencies, getExecutionEnvironment(), tomeeInstallDir, tomeeConfigDir, getMavenDependencyPlugin());
-            } else if (dependencies.containsKey(AbstractBoosterConfig.RUNTIMES_GROUP_ID + ":openliberty")) {
-                logger.info("Detected Open Liberty as target Boost runtime");
-                String runtimeGroupId = "io.openliberty";
-                String runtimeArtifactId = "openliberty-runtime";
-                String runtimeVersion = "19.0.0.3";
-                runtime = new LibertyRuntime(dependencies, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin(), runtimeGroupId, runtimeArtifactId, runtimeVersion);
-            } else if (dependencies.containsKey(AbstractBoosterConfig.RUNTIMES_GROUP_ID + ":wlp")) {
-                logger.info("Detected WebSphere Liberty as target Boost runtime");
-                String runtimeGroupId = "com.ibm.websphere.appserver.runtime";
-                String runtimeArtifactId = "wlp-javaee7";
-                String runtimeVersion = "19.0.0.3";
-                runtime = new LibertyRuntime(dependencies, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin(), runtimeGroupId, runtimeArtifactId, runtimeVersion);
-            }
-            else {
-                throw new MojoExecutionException("No target Boost runtime was detected. Please add a runtime and restart the build.");
+            RuntimeParams params = new RuntimeParams(dependencies, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
+            try {
+                List<URL> pathUrls = new ArrayList<URL>();
+                for(String compilePathElement : project.getCompileClasspathElements()) {
+                    pathUrls.add(new File(compilePathElement).toURI().toURL());
+                }
+
+                URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);
+                ClassLoader compileClassLoader = new URLClassLoader(urlsForClassLoader, this.getClass().getClassLoader());
+                List<Class<?>> runtimes = ClassFinderUtil.findClassesImplementing(RuntimeI.class, "boost.runtimes", compileClassLoader, logger);
+
+                if (runtimes.size() == 1) {
+                    Object o = runtimes.get(0).getConstructor(params.getClass()).newInstance(params);
+                        if (o instanceof RuntimeI) {
+                            runtime = (RuntimeI)o;
+                        } else {
+                            throw new MojoExecutionException("No target Boost runtime was detected. Please add a runtime and restart the build. ");
+                        }
+                } else {
+                    throw new MojoExecutionException("Could not determine which Boost runtime to use. Configure the project to use one runtime and restart the build. ");
+                }
+            } catch (DependencyResolutionRequiredException | IllegalAccessException | InstantiationException | InvocationTargetException | MalformedURLException| NoSuchMethodException e) {
+                e.printStackTrace();
+                throw new MojoExecutionException("No target Boost runtime was detected. Please add a runtime and restart the build. ");
             }
         }
-        
         return runtime;
     }
 

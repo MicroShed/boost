@@ -7,8 +7,8 @@ jdk:
     
 env:
     - RUNTIME=ol BUILD_TOOL=maven
-    - RUNTIME=wlp BUILD_TOOL=maven
-    - RUNTIME=tomee BUILD_TOOL=maven
+#    - RUNTIME=wlp BUILD_TOOL=maven
+#    - RUNTIME=tomee BUILD_TOOL=maven
 # - RUNTIME=ol RUNTIME_VERSION=19.0.0.2 BUILD_TOOL=gradle
 # - RUNTIME=wlp RUNTIME_VERSION=19.0.0.2 BUILD_TOOL=gradle
 # - RUNTIME=ol RUNTIME_VERSION=19.0.0.3 BUILD_TOOL=gradle

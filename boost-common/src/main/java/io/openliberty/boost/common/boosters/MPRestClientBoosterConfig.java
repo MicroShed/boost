@@ -20,7 +20,7 @@ import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 import io.openliberty.boost.common.runtimes.RuntimeI;
-import io.openliberty.boost.common.runtimes.TomeeRuntimeI;
+// import io.openliberty.boost.common.runtimes.TomeeRuntimeI;
 import io.openliberty.boost.common.config.ServerConfigGenerator;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpRestClient")
@@ -50,10 +50,10 @@ public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
     @Override
     public List<String> getDependencies(RuntimeI runtime) {
         List<String> deps = new ArrayList<String>();
-        if(runtime instanceof TomeeRuntimeI) {
-            deps.add("org.apache.cxf:cxf-rt-rs-mp-client:3.2.7");
-            deps.add("org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1");
-        }
+        // if(runtime instanceof TomeeRuntimeI) {
+        //     deps.add("org.apache.cxf:cxf-rt-rs-mp-client:3.2.7");
+        //     deps.add("org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1");
+        // }
         return deps;
     }
 }

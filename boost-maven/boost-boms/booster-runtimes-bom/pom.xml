@@ -28,20 +28,20 @@
 				<groupId>boost.runtimes</groupId>
 				<artifactId>openliberty</artifactId>
 				<version>0.1-SNAPSHOT</version>
-				<scope>provided</scope>
+				<scope>compile</scope>
 			</dependency>
-			<dependency>
+			<!--<dependency>
 				<groupId>boost.runtimes</groupId>
 				<artifactId>wlp</artifactId>
 				<version>0.1-SNAPSHOT</version>
 				<scope>provided</scope>
-			</dependency>
-			<dependency>
+			</dependency>-->
+			<!--<dependency>
 				<groupId>boost.runtimes</groupId>
 				<artifactId>tomee</artifactId>
 				<version>0.1-SNAPSHOT</version>
 				<scope>provided</scope>
-			</dependency>
+			</dependency>-->
 		</dependencies>
 	</dependencyManagement>
 

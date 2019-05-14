@@ -20,7 +20,6 @@ import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 import io.openliberty.boost.common.runtimes.RuntimeI;
-import io.openliberty.boost.common.runtimes.TomeeRuntimeI;
 import io.openliberty.boost.common.config.ServerConfigGenerator;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpConfig")
@@ -49,11 +48,11 @@ public class MPConfigBoosterConfig extends AbstractBoosterConfig {
     @Override
     public List<String> getDependencies(RuntimeI runtime) {
         List<String> deps = new ArrayList<String>();
-        if(runtime instanceof TomeeRuntimeI) {
-            deps.add("org.apache.geronimo.config:geronimo-config-impl:1.2.1");
-            deps.add("org.eclipse.microprofile.config:microprofile-config-api:1.3");
-            deps.add("org.osgi:org.osgi.annotation.versioning:1.0.0");
-        }
+        // if(runtime instanceof TomeeRuntimeI) {
+        //     deps.add("org.apache.geronimo.config:geronimo-config-impl:1.2.1");
+        //     deps.add("org.eclipse.microprofile.config:microprofile-config-api:1.3");
+        //     deps.add("org.osgi:org.osgi.annotation.versioning:1.0.0");
+        // }
         return deps;
     }
 }
