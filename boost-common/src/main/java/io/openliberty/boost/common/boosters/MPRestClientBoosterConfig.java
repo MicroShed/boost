@@ -26,8 +26,6 @@ import io.openliberty.boost.common.config.ServerConfigGenerator;
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpRestClient")
 public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
 
-    String version;
-
     public MPRestClientBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         version = dependencies.get(getCoordinates(this.getClass()));
     }

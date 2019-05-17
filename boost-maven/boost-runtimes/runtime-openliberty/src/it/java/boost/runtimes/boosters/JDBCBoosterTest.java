@@ -15,11 +15,12 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TemporaryFolder;
 
+import boost.runtimes.LibertyServerConfigGenerator;
+
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterConfigurator;
-import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
 import io.openliberty.boost.common.utils.BoosterUtil;
 import io.openliberty.boost.common.utils.CommonLogger;
 import io.openliberty.boost.common.utils.ConfigFileUtils;

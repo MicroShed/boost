@@ -50,6 +50,8 @@ public abstract class AbstractBoosterConfig {
     public static final String EE_8_VERSION = "0.2-SNAPSHOT";
     public static final String MP_20_VERSION = "0.2-SNAPSHOT";
 
+    public String version;
+
     /**
      * Return the dependency that this booster requires
      * 

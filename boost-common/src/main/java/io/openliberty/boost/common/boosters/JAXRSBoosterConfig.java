@@ -25,8 +25,6 @@ import java.util.Map;
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jaxrs")
 public class JAXRSBoosterConfig extends AbstractBoosterConfig {
 
-    String version;
-
     public JAXRSBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         version = dependencies.get(getCoordinates(this.getClass()));
     }

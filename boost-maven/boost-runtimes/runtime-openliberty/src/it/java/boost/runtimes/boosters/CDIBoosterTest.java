@@ -20,17 +20,18 @@ import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Element;
 
+import boost.runtimes.LibertyServerConfigGenerator;
+
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterConfigurator;
-import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
 import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.utils.BoosterUtil;
 import io.openliberty.boost.common.utils.CommonLogger;
 import io.openliberty.boost.common.utils.ConfigFileUtils;
 
-public class MPConfigBoosterTest {
+public class CDIBoosterTest {
 
     @Rule
     public TemporaryFolder outputDir = new TemporaryFolder();
@@ -38,31 +39,37 @@ public class MPConfigBoosterTest {
     @Rule
     public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
 
+    // private Map<String, String> getCDIDependency(String version) throws
+    // BoostException {
+    // return
+    // BoosterUtil.createDependenciesWithBoosterAndVersion(CDIBoosterConfig.class,
+    // version);
+    // }
+
     BoostLoggerI logger = CommonLogger.getInstance();
 
     /**
-     * Test that the mpConfig-1.3 feature is added to server.xml when the MPConfig
-     * booster version is set to 0.2-SNAPSHOT
+     * Test that the cdi-2.0 feature is added to server.xml when the CDI booster
+     * version is set to 0.2-SNAPSHOT
      * 
      */
     @Test
-    public void testMPConfigBoosterFeature_MP20() throws Exception {
+    public void testCDIBoosterFeature_20() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
         List<AbstractBoosterConfig> boosters = BoosterConfigurator.getBoosterConfigs(
-                BoosterUtil.createDependenciesWithBoosterAndVersion(MPConfigBoosterConfig.class, "0.2-SNAPSHOT"),
-                logger);
+                BoosterUtil.createDependenciesWithBoosterAndVersion(CDIBoosterConfig.class, "0.2-SNAPSHOT"), logger);
 
+        System.out.println("AJM: lib feature: " + boosters.get(0).getLibertyFeature());
         serverConfig.addFeature(boosters.get(0).getLibertyFeature());
         serverConfig.writeToServer();
 
         String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + MPCONFIG_13 + "</feature>");
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + CDI_20 + "</feature>");
 
-        assertTrue("The " + MPCONFIG_13 + " feature was not found in the server configuration", featureFound);
+        assertTrue("The " + CDI_20 + " feature was not found in the server configuration", featureFound);
 
     }
 

@@ -25,8 +25,6 @@ import java.util.Map;
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jpa")
 public class JPABoosterConfig extends AbstractBoosterConfig {
 
-    String version;
-
     public JPABoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         version = dependencies.get(getCoordinates(this.getClass()));
     }

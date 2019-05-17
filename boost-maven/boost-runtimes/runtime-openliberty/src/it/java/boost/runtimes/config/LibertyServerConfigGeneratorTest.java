@@ -29,10 +29,11 @@ import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import boost.runtimes.LibertyServerConfigGenerator;
+
 import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.utils.CommonLogger;
 import io.openliberty.boost.common.utils.ConfigFileUtils;
-import io.openliberty.boost.common.config.LibertyServerConfigGenerator;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.JDBCBoosterConfig;
 

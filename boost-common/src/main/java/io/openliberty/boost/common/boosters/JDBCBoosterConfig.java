@@ -41,13 +41,13 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
     private static String DERBY_DEFAULT = "org.apache.derby:derby:10.14.2.0";
 
+    private Properties boostConfigProperties;
     private String dependency;
-    private Properties datasourceProperties;
     private String productName;
 
     public JDBCBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
 
-    	Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
+    	boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
     	
         // Determine JDBC driver dependency
         if (dependencies.containsKey(JDBCBoosterConfig.DERBY_DEPENDENCY)) {
@@ -69,13 +69,11 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
         	this.dependency = DERBY_DEFAULT;
         	this.productName = DERBY;
         }
-
-        initDatasourceProperties(boostConfigProperties);
     }
 
-    private void initDatasourceProperties(Properties boostConfigProperties) {
+    public Properties getDatasourceProperties() {
     	
-        datasourceProperties = new Properties();
+        Properties datasourceProperties = new Properties();
         
         // Find and add all "boost.db." properties. 
         for (String key : boostConfigProperties.stringPropertyNames()) {
@@ -101,11 +99,8 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
         	} else if (productName.equals(MYSQL)) {
         		datasourceProperties.put(BoostProperties.DATASOURCE_URL, "jdbc:mysql://localhost:" + MYSQL_DEFAULT_PORT_NUMBER);
         	}
-        }   
-    }
-
-    public void addServerConfig(ServerConfigGenerator config) throws Exception {
-        config.addDataSource(productName, datasourceProperties);
+        }
+        return datasourceProperties; 
     }
 
     @Override
@@ -114,5 +109,9 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
         deps.add(dependency);
         
         return deps;
+    }
+
+    public String getProductName() {
+        return productName;
     }
 }

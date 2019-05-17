@@ -38,6 +38,8 @@ import org.w3c.dom.NodeList;
 
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.*;
+import io.openliberty.boost.common.config.BoostProperties;
+import io.openliberty.boost.common.config.ConfigConstants;
 import io.openliberty.boost.common.config.ServerConfigGenerator;
 import io.openliberty.boost.common.utils.BoostUtil;
 
@@ -98,9 +100,9 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
         serverRoot.appendChild(httpEndpoint);
     }
 
-    public void addServerConfig(AbstractBoosterConfig boosterConfig) {
+    public void addServerConfig(AbstractBoosterConfig boosterConfig) throws Exception {
         if (boosterConfig instanceof JDBCBoosterConfig) {
-            boosterConfig.addServerConfig(this);
+            addDataSource(((JDBCBoosterConfig)boosterConfig).getProductName(), ((JDBCBoosterConfig)boosterConfig).getDatasourceProperties());
         }
     }
 
