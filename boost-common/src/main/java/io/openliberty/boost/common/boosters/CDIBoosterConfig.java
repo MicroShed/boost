@@ -25,25 +25,10 @@ import io.openliberty.boost.common.config.ServerConfigGenerator;
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":cdi")
 public class CDIBoosterConfig extends AbstractBoosterConfig {
 
-    String libertyFeature = null;
+    String version;
 
     public CDIBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        String version = dependencies.get(getCoordinates(this.getClass()));
-
-        // if it is the 1.0 version = EE7 feature level
-        if (version.equals(MP_20_VERSION)) {
-            libertyFeature = CDI_20;
-        }
-    }
-
-    @Override
-    public String getLibertyFeature() {
-        return libertyFeature;
-    }
-
-    @Override
-    public void addServerConfig(ServerConfigGenerator config) {
-        // No config to write
+        version = dependencies.get(getCoordinates(this.getClass()));
     }
 
     @Override

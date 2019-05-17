@@ -25,25 +25,10 @@ import io.openliberty.boost.common.config.ServerConfigGenerator;
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jsonp")
 public class JSONPBoosterConfig extends AbstractBoosterConfig {
 
-    String libertyFeature = null;
+    String version;
 
     public JSONPBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        String version = dependencies.get(getCoordinates(this.getClass()));
-
-        if (version.equals(MP_20_VERSION)) {
-            libertyFeature = JSONP_11;
-        }
-
-    }
-
-    @Override
-    public String getLibertyFeature() {
-        return libertyFeature;
-    }
-
-    @Override
-    public void addServerConfig(ServerConfigGenerator config) {
-        // No config to write
+        version = dependencies.get(getCoordinates(this.getClass()));
     }
 
     @Override

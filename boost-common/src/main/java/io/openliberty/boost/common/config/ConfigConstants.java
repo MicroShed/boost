@@ -22,7 +22,6 @@ public final class ConfigConstants {
 
     public static final String TOMEEBOOST_JAR_DIR = "boost";
 
-    public static final String INSTALL_PACKAGE_SPRING = "spring-boot-project";
     public static final String INSTALL_PACKAGE_ALL = "all";
     public static final String INSTALL_PACKAGE_DEP = "dependencies";
 

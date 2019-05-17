@@ -68,82 +68,35 @@ public class BoosterConfigurator {
 
         return boosterPackConfigList;
     }
-
-    /**
-     * Configure the Liberty runtime
-     * 
-     * @param libertyServerPath
-     * @param boosterPackConfigurators
-     * @param warNames
-     * @param logger
-     * @throws Exception
-     */
-    public static void generateLibertyServerConfig(String libertyServerPath,
-            List<AbstractBoosterConfig> boosterPackConfigurators, List<String> warNames, BoostLoggerI logger)
-            throws Exception {
-
-        LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, logger);
-        
-        // Add default http endpoint configuration
-        Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
-        
-        String host = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "*");
-        libertyConfig.addHostname(host);
-        
-        String httpPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "9080");
-        libertyConfig.addHttpPort(httpPort);
-        
-        String httpsPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTPS_PORT, "9443");
-        libertyConfig.addHttpsPort(httpsPort);
-        
-        // Add war configuration if necessary
-        if (!warNames.isEmpty()) {
-            for (String warName : warNames) {
-            	libertyConfig.addApplication(warName);
-            }
-        } else {
-            throw new Exception(
-                    "No war files were found. The project must have a war packaging type or specify war dependencies.");
-        }
-        
-        // Loop through configuration objects and add config and
-        // the corresponding Liberty feature
-        for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
-        	configurator.addServerConfig(libertyConfig);
-        	libertyConfig.addFeature(configurator.getLibertyFeature());
-        }
-
-        libertyConfig.writeToServer();
-    }
     
-    /**
-     * Configure the TomEE runtime
-     * 
-     * @param tomeeConfigPath
-     * @param boosterPackConfigurators
-     * @param logger
-     * @throws Exception
-     */
-    public static void configureTomeeServer(String tomeeConfigPath,
-            List<AbstractBoosterConfig> boosterPackConfigurators, BoostLoggerI logger) throws Exception {
+    // /**
+    //  * Configure the TomEE runtime
+    //  * 
+    //  * @param tomeeConfigPath
+    //  * @param boosterPackConfigurators
+    //  * @param logger
+    //  * @throws Exception
+    //  */
+    // public static void configureTomeeServer(String tomeeConfigPath,
+    //         List<AbstractBoosterConfig> boosterPackConfigurators, BoostLoggerI logger) throws Exception {
 
-        TomEEServerConfigGenerator tomeeConfig = new TomEEServerConfigGenerator(tomeeConfigPath, logger);
-        tomeeConfig.addJarsDirToSharedLoader();
+    //     TomEEServerConfigGenerator tomeeConfig = new TomEEServerConfigGenerator(tomeeConfigPath, logger);
+    //     tomeeConfig.addJarsDirToSharedLoader();
         
-        // Configure HTTP endpoint
-        Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
+    //     // Configure HTTP endpoint
+    //     Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
         
-        String hostname = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "localhost");
-        tomeeConfig.addHostname(hostname);
+    //     String hostname = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "localhost");
+    //     tomeeConfig.addHostname(hostname);
         
-        String httpPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "8080");
-        tomeeConfig.addHttpPort(httpPort);
+    //     String httpPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "8080");
+    //     tomeeConfig.addHttpPort(httpPort);
 
-        // Loop through configuration objects and add config
-        for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
-        	configurator.addServerConfig(tomeeConfig);
-        }
-    }
+    //     // Loop through configuration objects and add config
+    //     for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
+    //     	configurator.addServerConfig(tomeeConfig);
+    //     }
+    // }
 
     public static List<String> getDependenciesToCopy(List<AbstractBoosterConfig> boosterPackConfigurators,
             RuntimeI runtime, BoostLoggerI logger) {

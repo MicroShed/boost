@@ -40,13 +40,13 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import io.openliberty.boost.common.BoostException;
+import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterConfigurator;
 import io.openliberty.boost.common.config.ConfigConstants;
 import io.openliberty.boost.common.runtimes.RuntimeI;
-import io.openliberty.boost.common.utils.SpringBootUtil;
 import io.openliberty.boost.maven.runtimes.RuntimeParams;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
@@ -115,12 +115,10 @@ public class LibertyRuntime implements RuntimeI {
     private void packageLiberty(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
         createLibertyServer();
 
-         // Dealing with an EE based app
-
         // targeting a liberty install
         copyBoosterDependencies(boosterConfigs);
 
-        generateServerConfigEE(boosterConfigs);
+        generateServerConfig(boosterConfigs);
 
         installMissingFeatures();
         // we install the app now, after server.xml is configured. This is
@@ -136,13 +134,6 @@ public class LibertyRuntime implements RuntimeI {
             // the project jar and fail. Once this is fixed, we can always
             // set installAppPackages=all.
             installApp(ConfigConstants.INSTALL_PACKAGE_DEP);
-        }
-
-        // Not sure this works yet, the main idea is to NOT create this with
-        // a WAR
-        // package type.
-        if (project.getPackaging().equals("jar")) {
-            createUberJar(null, true);
         }
     }
     
@@ -171,17 +162,16 @@ public class LibertyRuntime implements RuntimeI {
     }
     
     /**
-     * Generate config for the Liberty server based on the Maven Spring Boot
-     * project.
+     * Generate config for the Liberty server based on the Maven project.
      * 
      * @throws MojoExecutionException
      */
-    private void generateServerConfigEE(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
+    private void generateServerConfig(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
 
         List<String> warNames = getWarNames();
         try {
             // Generate server config
-            BoosterConfigurator.generateLibertyServerConfig(libertyServerPath, boosterConfigs, warNames,
+            generateLibertyServerConfig(libertyServerPath, boosterConfigs, warNames,
                     BoostLogger.getInstance());
 
         } catch (Exception e) {
@@ -207,6 +197,53 @@ public class LibertyRuntime implements RuntimeI {
         }
 
         return warNames;
+    }
+
+    /**
+     * Configure the Liberty runtime
+     * 
+     * @param libertyServerPath
+     * @param boosterPackConfigurators
+     * @param warNames
+     * @param logger
+     * @throws Exception
+     */
+    public static void generateLibertyServerConfig(String libertyServerPath,
+            List<AbstractBoosterConfig> boosterPackConfigurators, List<String> warNames, BoostLoggerI logger)
+            throws Exception {
+
+        LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, logger);
+        
+        // Add default http endpoint configuration
+        Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
+        
+        String host = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "*");
+        libertyConfig.addHostname(host);
+        
+        String httpPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "9080");
+        libertyConfig.addHttpPort(httpPort);
+        
+        String httpsPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTPS_PORT, "9443");
+        libertyConfig.addHttpsPort(httpsPort);
+        
+        // Add war configuration if necessary
+        if (!warNames.isEmpty()) {
+            for (String warName : warNames) {
+            	libertyConfig.addApplication(warName);
+            }
+        } else {
+            throw new Exception(
+                    "No war files were found. The project must have a war packaging type or specify war dependencies.");
+        }
+        
+        // Loop through configuration objects and add config and
+        // the corresponding Liberty feature
+        for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
+        	libertyConfig.addServerConfig(configurator);
+        	libertyConfig.addFeature(configurator);
+        }
+
+        libertyConfig.writeToServer();
     }
     
     // Liberty Maven Plugin executions
@@ -240,35 +277,10 @@ public class LibertyRuntime implements RuntimeI {
         Element serverNameElement = element(name("serverName"), serverName);
 
         Xpp3Dom configuration = configuration(installAppPackages, serverNameElement, getRuntimeArtifactElement());
-        if (!ConfigConstants.INSTALL_PACKAGE_SPRING.equals(installAppPackagesVal)) {
-            configuration.addChild(element(name("appsDirectory"), "apps").toDom());
-            configuration.addChild(element(name("looseApplication"), "true").toDom());
-        }
+        configuration.addChild(element(name("appsDirectory"), "apps").toDom());
+        configuration.addChild(element(name("looseApplication"), "true").toDom());
 
         executeMojo(getPlugin(), goal("install-apps"), configuration, env);
-    }
-    
-    /**
-     * Invoke the liberty-maven-plugin to package the server into a runnable Liberty
-     * JAR
-     * 
-     * @param packageFilePath
-     *            the Spring Boot Uber JAR file path, whose contents will be
-     *            replaced by the Liberty Uber JAR
-     * @param attach
-     *            whether or not to make the packaged server the project artifact
-     * @throws MojoExecutionException
-     */
-    private void createUberJar(String packageFilePath, boolean attach) throws MojoExecutionException {
-        if (packageFilePath == null) {
-            packageFilePath = "";
-        }
-        executeMojo(getPlugin(), goal("package-server"),
-                configuration(element(name("isInstall"), "false"), element(name("include"), "minify,runnable"),
-                        element(name("attach"), Boolean.toString(attach)),
-                        element(name("outputDirectory"), "target/liberty-alt-output-dir"),
-                        element(name("packageFile"), packageFilePath), element(name("serverName"), serverName)),
-                env);
     }
     
     private Element getRuntimeArtifactElement() {

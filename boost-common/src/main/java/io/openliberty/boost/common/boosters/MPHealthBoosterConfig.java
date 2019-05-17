@@ -25,24 +25,10 @@ import io.openliberty.boost.common.config.ServerConfigGenerator;
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpHealth")
 public class MPHealthBoosterConfig extends AbstractBoosterConfig {
 
-    String libertyFeature = null;
+    String version;
 
     public MPHealthBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        String version = dependencies.get(getCoordinates(this.getClass()));
-        // if it is the 2.0 version = MP2.0 feature level
-        if (version.equals(MP_20_VERSION)) {
-            libertyFeature = MPHEALTH_10;
-        }
-    }
-
-    @Override
-    public String getLibertyFeature() {
-        return libertyFeature;
-    }
-
-    @Override
-    public void addServerConfig(ServerConfigGenerator config) {
-        // No config to write
+        version = dependencies.get(getCoordinates(this.getClass()));
     }
 
     @Override

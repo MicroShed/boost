@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
+package boost.runtimes;
 
 import static io.openliberty.boost.common.config.ConfigConstants.*;
 
@@ -37,7 +37,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import io.openliberty.boost.common.BoostLoggerI;
-import io.openliberty.boost.common.boosters.JDBCBoosterConfig;
+import io.openliberty.boost.common.boosters.*;
+import io.openliberty.boost.common.config.ServerConfigGenerator;
 import io.openliberty.boost.common.utils.BoostUtil;
 
 /**
@@ -60,6 +61,8 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
 
     private Properties bootstrapProperties;
 
+    private final Properties boostConfigProperties;
+
     public LibertyServerConfigGenerator(String serverPath, BoostLoggerI logger) throws ParserConfigurationException {
 
         this.serverPath = serverPath;
@@ -67,6 +70,8 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
                                                             // back from
                                                             // 'wlp/usr/servers/BoostServer'
         this.logger = logger;
+
+        boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
 
         generateServerXml();
 
@@ -91,6 +96,53 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
         httpEndpoint = serverXml.createElement(HTTP_ENDPOINT);
         httpEndpoint.setAttribute("id", DEFAULT_HTTP_ENDPOINT);
         serverRoot.appendChild(httpEndpoint);
+    }
+
+    public void addServerConfig(AbstractBoosterConfig boosterConfig) {
+        if (boosterConfig instanceof JDBCBoosterConfig) {
+            boosterConfig.addServerConfig(this);
+        }
+    }
+
+    public void addFeature(AbstractBoosterConfig boosterConfig) {
+        if (boosterConfig instanceof CDIBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
+            addFeature(ConfigConstants.CDI_20);
+        } else if (boosterConfig instanceof JAXRSBoosterConfig) {
+            if (boosterConfig.version.equals(AbstractBoosterConfig.EE_7_VERSION)) {
+                addFeature(ConfigConstants.JAXRS_20);
+            } else if (boosterConfig.version.equals(AbstractBoosterConfig.EE_8_VERSION)) {
+                addFeature(ConfigConstants.JAXRS_21);
+            }
+        } else if (boosterConfig instanceof JDBCBoosterConfig) {
+            String compilerVersion = boostConfigProperties.getProperty(BoostProperties.INTERNAL_COMPILER_TARGET);
+
+            if ("1.8".equals(compilerVersion) || "8".equals(compilerVersion) || "9".equals(compilerVersion)
+                    || "10".equals(compilerVersion)) {
+                    addFeature(ConfigConstants.JDBC_42);
+            } else if ("11".equals(compilerVersion)) {
+                addFeature(ConfigConstants.JDBC_43);
+            } else {
+                addFeature(ConfigConstants.JDBC_41); // Default to the spec for Liberty's
+                                                     // minimum supported JRE (version 7
+                                                     // as of 17.0.0.3)
+            }
+        } else if (boosterConfig instanceof JPABoosterConfig) {
+            if (boosterConfig.version.equals(AbstractBoosterConfig.EE_7_VERSION)) {
+                addFeature(ConfigConstants.JPA_21);
+            } else if (boosterConfig.version.equals(AbstractBoosterConfig.EE_8_VERSION)) {
+                addFeature(ConfigConstants.JPA_22);
+            }
+        } else if (boosterConfig instanceof JSONPBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
+            addFeature(ConfigConstants.JSONP_11);
+        } else if (boosterConfig instanceof MPConfigBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
+            addFeature(ConfigConstants.MPCONFIG_13);
+        } else if (boosterConfig instanceof MPHealthBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
+            addFeature(ConfigConstants.MPHEALTH_10);
+        } else if (boosterConfig instanceof MPOpenTracingBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
+            addFeature(ConfigConstants.MPOPENTRACING_11);
+        } else if (boosterConfig instanceof MPRestClientBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
+            addFeature(ConfigConstants.MPRESTCLIENT_11);
+        }
     }
 
     /**

@@ -25,25 +25,10 @@ import java.util.Map;
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jaxrs")
 public class JAXRSBoosterConfig extends AbstractBoosterConfig {
 
-    String libertyFeature = null;
+    String version;
 
     public JAXRSBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        String version = dependencies.get(getCoordinates(this.getClass()));
-        if (version.equals(EE_7_VERSION)) {
-            libertyFeature = JAXRS_20;
-        } else if (version.equals(EE_8_VERSION)) {
-            libertyFeature = JAXRS_21;
-        }
-    }
-
-    @Override
-    public String getLibertyFeature() {
-        return libertyFeature;
-    }
-
-    @Override
-    public void addServerConfig(ServerConfigGenerator config) {
-        // No config to write
+        version = dependencies.get(getCoordinates(this.getClass()));
     }
 
     @Override
