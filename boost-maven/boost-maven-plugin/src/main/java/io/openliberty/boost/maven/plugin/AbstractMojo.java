@@ -18,8 +18,10 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,7 +45,6 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.runtimes.RuntimeI;
-import io.openliberty.boost.common.utils.ClassFinderUtil;
 import io.openliberty.boost.maven.runtimes.RuntimeParams;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
@@ -110,17 +111,13 @@ public abstract class AbstractMojo extends MojoSupport {
 
                 URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);
                 ClassLoader compileClassLoader = new URLClassLoader(urlsForClassLoader, this.getClass().getClassLoader());
-                List<Class<?>> runtimes = ClassFinderUtil.findClassesImplementing(RuntimeI.class, "boost.runtimes", compileClassLoader, logger);
+                ServiceLoader<RuntimeI> runtimes = ServiceLoader.load(RuntimeI.class, compileClassLoader);
 
-                if (runtimes.size() == 1) {
-                    Object o = runtimes.get(0).getConstructor(params.getClass()).newInstance(params);
-                        if (o instanceof RuntimeI) {
-                            runtime = (RuntimeI)o;
-                        } else {
-                            throw new MojoExecutionException("No target Boost runtime was detected. Please add a runtime and restart the build. ");
-                        }
-                } else {
-                    throw new MojoExecutionException("Could not determine which Boost runtime to use. Configure the project to use one runtime and restart the build. ");
+                for(RuntimeI runtimeI : runtimes) {
+                    if (runtime != null) {
+                        throw new MojoExecutionException("There are multiple Boost runtimes on the classpath. Configure the project to use one runtime and restart the build. ");
+                    }
+                    runtime = runtimeI.getClass().getConstructor(params.getClass()).newInstance(params);
                 }
             } catch (DependencyResolutionRequiredException | IllegalAccessException | InstantiationException | InvocationTargetException | MalformedURLException| NoSuchMethodException e) {
                 e.printStackTrace();

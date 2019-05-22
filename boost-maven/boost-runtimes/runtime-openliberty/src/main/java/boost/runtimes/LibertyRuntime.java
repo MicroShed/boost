@@ -77,6 +77,19 @@ public class LibertyRuntime implements RuntimeI {
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
     private String libertyMavenPluginVersion = "2.6.3";
     
+    public LibertyRuntime() {
+        this.log = null;
+        this.deps = null;
+        this.env = null;
+        this.project = null;
+        this.projectBuildDir = null;
+        this.libertyServerPath = null;
+        this.repoSystem = null;
+        this.repoSession = null;
+        this.remoteRepos = null;
+        this.mavenDepPlugin = null;
+    }
+
     public LibertyRuntime(RuntimeParams runtimeParams) {
         this.log = runtimeParams.getLog();
         this.deps = runtimeParams.getDeps();
