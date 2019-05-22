@@ -182,11 +182,9 @@ public class LibertyRuntime implements RuntimeI {
      */
     private void generateServerConfig(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
 
-        List<String> warNames = getWarNames();
         try {
             // Generate server config
-            generateLibertyServerConfig(libertyServerPath, boosterConfigs, warNames,
-                    BoostLogger.getInstance());
+            generateLibertyServerConfig(boosterConfigs);
 
         } catch (Exception e) {
             throw new MojoExecutionException("Unable to generate server configuration for the Liberty server.", e);
@@ -216,20 +214,16 @@ public class LibertyRuntime implements RuntimeI {
     /**
      * Configure the Liberty runtime
      * 
-     * @param libertyServerPath
      * @param boosterPackConfigurators
-     * @param warNames
-     * @param logger
      * @throws Exception
      */
-    public static void generateLibertyServerConfig(String libertyServerPath,
-            List<AbstractBoosterConfig> boosterPackConfigurators, List<String> warNames, BoostLoggerI logger)
-            throws Exception {
+    private void generateLibertyServerConfig(List<AbstractBoosterConfig> boosterPackConfigurators) throws Exception {
 
-        LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, logger);
+        List<String> warNames = getWarNames();
+        LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, BoostLogger.getInstance());
         
         // Add default http endpoint configuration
-        Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
+        Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(BoostLogger.getInstance());
         
         String host = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "*");
         libertyConfig.addHostname(host);

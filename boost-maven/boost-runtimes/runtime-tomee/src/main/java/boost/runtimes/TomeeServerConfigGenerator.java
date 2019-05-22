@@ -19,6 +19,7 @@ import java.io.FileReader;
 import javax.xml.parsers.ParserConfigurationException;
 
 import io.openliberty.boost.common.BoostLoggerI;
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.boosters.JDBCBoosterConfig;
 
 import java.io.FileWriter;
@@ -46,7 +47,7 @@ import io.openliberty.boost.common.utils.BoostUtil;
  * Create a Liberty server.xml
  *
  */
-public class TomEEServerConfigGenerator implements ServerConfigGenerator {
+public class TomeeServerConfigGenerator implements ServerConfigGenerator {
 
     private final String CATALINA_PROPERTIES = "catalina.properties";
     private final String SERVER_XML = "server.xml";
@@ -67,12 +68,18 @@ public class TomEEServerConfigGenerator implements ServerConfigGenerator {
     private final String tomeeInstallPath;
     private BoostLoggerI logger;
 
-    public TomEEServerConfigGenerator(String configPath, BoostLoggerI logger) throws ParserConfigurationException {
+    public TomeeServerConfigGenerator(String configPath, BoostLoggerI logger) throws ParserConfigurationException {
 
         this.configPath = configPath;
         this.tomeeInstallPath = configPath + "/.."; // one directory back from
                                                     // 'apache-ee/conf'
         this.logger = logger;
+    }
+
+    public void addServerConfig(AbstractBoosterConfig boosterConfig) {
+        if (boosterConfig instanceof JDBCBoosterConfig) {
+            addDataSource(((JDBCBoosterConfig)boosterConfig).getProductName(), ((JDBCBoosterConfig)boosterConfig).getDatasourceProperties());
+        }
     }
 
     public void addJarsDirToSharedLoader() throws ParserConfigurationException {
@@ -88,7 +95,7 @@ public class TomEEServerConfigGenerator implements ServerConfigGenerator {
                     + ConfigConstants.TOMEEBOOST_JAR_DIR + "/*.jar\",";
             StringBuffer inputBuffer = new StringBuffer();
 
-            createTOMEEBoostJarDir();
+            createTomeeBoostJarDir();
 
             while ((line = file.readLine()) != null) {
                 inputBuffer.append(line);
@@ -112,7 +119,7 @@ public class TomEEServerConfigGenerator implements ServerConfigGenerator {
         }
     }
 
-    private void createTOMEEBoostJarDir() {
+    private void createTomeeBoostJarDir() {
         File dir = new File(tomeeInstallPath + "/" + ConfigConstants.TOMEEBOOST_JAR_DIR);
 
         // attempt to create the directory here

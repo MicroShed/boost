@@ -33,10 +33,10 @@ public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
     @Override
     public List<String> getDependencies(RuntimeI runtime) {
         List<String> deps = new ArrayList<String>();
-        // if(runtime instanceof TomeeRuntimeI) {
-        //     deps.add("org.apache.cxf:cxf-rt-rs-mp-client:3.2.7");
-        //     deps.add("org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1");
-        // }
+        if(runtime instanceof TomeeRuntimeI) {
+            deps.add("org.apache.cxf:cxf-rt-rs-mp-client:3.2.7");
+            deps.add("org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1");
+        }
         return deps;
     }
 }

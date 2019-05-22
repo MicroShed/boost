@@ -32,11 +32,11 @@ public class MPHealthBoosterConfig extends AbstractBoosterConfig {
     @Override
     public List<String> getDependencies(RuntimeI runtime) {
     	List<String> deps = new ArrayList<String>();
-        // if(runtime instanceof TomeeRuntimeI) {
-        //     deps.add("org.apache.geronimo:geronimo-health:1.0.1");
-        //     deps.add("org.apache.geronimo:geronimo-health-common:1.0.1");
-        //     deps.add("org.eclipse.microprofile.health:microprofile-health-api:1.0");
-        // }
+        if(runtime instanceof TomeeRuntimeI) {
+            deps.add("org.apache.geronimo:geronimo-health:1.0.1");
+            deps.add("org.apache.geronimo:geronimo-health-common:1.0.1");
+            deps.add("org.eclipse.microprofile.health:microprofile-health-api:1.0");
+        }
         return deps;
     }
 }

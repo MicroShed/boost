@@ -22,6 +22,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -30,7 +31,9 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.config.BoosterConfigurator;
+import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.runtimes.RuntimeI;
+import io.openliberty.boost.maven.runtimes.RuntimeParams;
 import io.openliberty.boost.maven.utils.BoostLogger;
 
 public class TomeeRuntime implements RuntimeI {
@@ -44,6 +47,16 @@ public class TomeeRuntime implements RuntimeI {
     private final String configDir;
     
     private final Plugin mavenDepPlugin;
+
+    public TomeeRuntime() {
+        this.deps = null;
+        this.env = null;
+        
+        this.installDir = null;
+        this.configDir = null;
+        
+        this.mavenDepPlugin = null;
+    }
     
     public TomeeRuntime(RuntimeParams params) {
         this.deps = params.getDeps();
@@ -63,9 +76,9 @@ public class TomeeRuntime implements RuntimeI {
     public void doPackage() throws BoostException {
         try {
             List<AbstractBoosterConfig> boosterConfigs = BoosterConfigurator.getBoosterConfigs(deps, BoostLogger.getInstance());
-            createTomEEServer();
+            createTomeeServer();
             configureTomeeServer(boosterConfigs);
-            copyTomEEJarDependencies(boosterConfigs);
+            copyTomeeJarDependencies(boosterConfigs);
         }
         catch(Exception e) {
             throw new BoostException("Error packaging TomEE server", e);
@@ -75,24 +88,35 @@ public class TomeeRuntime implements RuntimeI {
     /**
      * Invoke the liberty-maven-plugin to run the create-server goal
      */
-    private void createTomEEServer() throws MojoExecutionException {
+    private void createTomeeServer() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("build"),
                 configuration(element(name("context"), "ROOT"), element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")),
                 env);
     }
-    
-    
+
     /**
-     * Generate config for the Liberty server based on the Maven Spring Boot
-     * project.
-     * 
-     * @throws MojoExecutionException
+     * Configure the TomEE runtime
      */
-    private void configureTomeeServer(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
+    private void configureTomeeServer(List<AbstractBoosterConfig> boosterPackConfigurators) throws Exception {
         try {
-            BoosterConfigurator.configureTomeeServer(configDir, boosterConfigs, BoostLogger.getInstance());
+            TomeeServerConfigGenerator tomeeConfig = new TomeeServerConfigGenerator(configDir, BoostLogger.getInstance());
+            tomeeConfig.addJarsDirToSharedLoader();
+            
+            // Configure HTTP endpoint
+            Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(BoostLogger.getInstance());
+            
+            String hostname = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "localhost");
+            tomeeConfig.addHostname(hostname);
+            
+            String httpPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "8080");
+            tomeeConfig.addHttpPort(httpPort);
+
+            // Loop through configuration objects and add config
+            for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
+                tomeeConfig.addServerConfig(configurator);
+            }
         } catch (Exception e) {
-            throw new MojoExecutionException("Unable to update server configuration for the Tomee server.", e);
+            throw new MojoExecutionException("Unable to generate server configuration for the Tomee server.", e);
         }
     }
     
@@ -103,12 +127,12 @@ public class TomeeRuntime implements RuntimeI {
      * @throws MojoExecutionException
      *
      */
-    private void copyTomEEJarDependencies(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
+    private void copyTomeeJarDependencies(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
 
-        List<String> tomEEDependencyJarsToCopy = BoosterConfigurator
+        List<String> tomeeDependencyJarsToCopy = BoosterConfigurator
                 .getDependenciesToCopy(boosterConfigs, this, BoostLogger.getInstance());
 
-        for (String dep : tomEEDependencyJarsToCopy) {
+        for (String dep : tomeeDependencyJarsToCopy) {
 
             String[] dependencyInfo = dep.split(":");
 
