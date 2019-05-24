@@ -97,7 +97,7 @@ public class TomeeRuntime implements RuntimeI {
     /**
      * Configure the TomEE runtime
      */
-    private void configureTomeeServer(List<AbstractBoosterConfig> boosterPackConfigurators) throws Exception {
+    private void configureTomeeServer(List<AbstractBoosterConfig> boosterConfigurators) throws Exception {
         try {
             TomeeServerConfigGenerator tomeeConfig = new TomeeServerConfigGenerator(configDir, BoostLogger.getInstance());
             tomeeConfig.addJarsDirToSharedLoader();
@@ -112,7 +112,7 @@ public class TomeeRuntime implements RuntimeI {
             tomeeConfig.addHttpPort(httpPort);
 
             // Loop through configuration objects and add config
-            for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
+            for (AbstractBoosterConfig configurator : boosterConfigurators) {
                 tomeeConfig.addServerConfig(configurator);
             }
         } catch (Exception e) {

@@ -214,10 +214,10 @@ public class LibertyRuntime implements RuntimeI {
     /**
      * Configure the Liberty runtime
      * 
-     * @param boosterPackConfigurators
+     * @param boosterConfigurators
      * @throws Exception
      */
-    private void generateLibertyServerConfig(List<AbstractBoosterConfig> boosterPackConfigurators) throws Exception {
+    private void generateLibertyServerConfig(List<AbstractBoosterConfig> boosterConfigurators) throws Exception {
 
         List<String> warNames = getWarNames();
         LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, BoostLogger.getInstance());
@@ -246,7 +246,7 @@ public class LibertyRuntime implements RuntimeI {
         
         // Loop through configuration objects and add config and
         // the corresponding Liberty feature
-        for (AbstractBoosterConfig configurator : boosterPackConfigurators) {
+        for (AbstractBoosterConfig configurator : boosterConfigurators) {
         	libertyConfig.addServerConfig(configurator);
         	libertyConfig.addFeature(configurator);
         }
