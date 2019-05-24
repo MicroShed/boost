@@ -20,7 +20,6 @@ import java.util.List;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.runtimes.RuntimeI;
-import io.openliberty.boost.common.config.ServerConfigGenerator;
 
 /**
  * Interface to describe common function across all technology Booster Pack
@@ -47,21 +46,11 @@ public abstract class AbstractBoosterConfig {
 
     public static final String RUNTIMES_GROUP_ID = "boost.runtimes";
     public static final String BOOSTERS_GROUP_ID = "boost.boosters";
-    protected String EE_7_VERSION = "0.1-SNAPSHOT";
-    protected String EE_8_VERSION = "0.2-SNAPSHOT";
-    protected String MP_20_VERSION = "0.2-SNAPSHOT";
+    public static final String EE_7_VERSION = "0.1-SNAPSHOT";
+    public static final String EE_8_VERSION = "0.2-SNAPSHOT";
+    public static final String MP_20_VERSION = "0.2-SNAPSHOT";
 
-    /**
-     * Add the configuration for this booster
-     * 
-     * @param doc
-     */
-    public abstract void addServerConfig(ServerConfigGenerator config) throws Exception;
-    
-    /**
-     * Return the Liberty feature required for this booster
-     */
-    public abstract String getLibertyFeature();
+    public String version;
 
     /**
      * Return the dependency that this booster requires

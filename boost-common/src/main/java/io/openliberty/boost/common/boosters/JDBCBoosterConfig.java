@@ -41,14 +41,13 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
     private static String DERBY_DEFAULT = "org.apache.derby:derby:10.14.2.0";
 
+    private Properties boostConfigProperties;
     private String dependency;
-    private String libertyFeature;
-    private Properties datasourceProperties;
     private String productName;
 
     public JDBCBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
 
-    	Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
+    	boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
     	
         // Determine JDBC driver dependency
         if (dependencies.containsKey(JDBCBoosterConfig.DERBY_DEPENDENCY)) {
@@ -70,27 +69,11 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
         	this.dependency = DERBY_DEFAULT;
         	this.productName = DERBY;
         }
-        
-        // Determine Liberty feature version based on Java compiler target value.
-        String compilerVersion = boostConfigProperties.getProperty(BoostProperties.INTERNAL_COMPILER_TARGET);
-
-        if ("1.8".equals(compilerVersion) || "8".equals(compilerVersion) || "9".equals(compilerVersion)
-                || "10".equals(compilerVersion)) {
-            this.libertyFeature = JDBC_42;
-        } else if ("11".equals(compilerVersion)) {
-            this.libertyFeature = JDBC_43;
-        } else {
-            this.libertyFeature = JDBC_41; // Default to the spec for Liberty's
-                                           // minimum supported JRE (version 7
-                                           // as of 17.0.0.3)
-        }
-        
-        initDatasourceProperties(boostConfigProperties);
     }
 
-    private void initDatasourceProperties(Properties boostConfigProperties) {
+    public Properties getDatasourceProperties() {
     	
-        datasourceProperties = new Properties();
+        Properties datasourceProperties = new Properties();
         
         // Find and add all "boost.db." properties. 
         for (String key : boostConfigProperties.stringPropertyNames()) {
@@ -116,18 +99,8 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
         	} else if (productName.equals(MYSQL)) {
         		datasourceProperties.put(BoostProperties.DATASOURCE_URL, "jdbc:mysql://localhost:" + MYSQL_DEFAULT_PORT_NUMBER);
         	}
-        }   
-    }
-    
-    @Override
-    public String getLibertyFeature() {
-    	return this.libertyFeature;
-    }
-
-    @Override
-    public void addServerConfig(ServerConfigGenerator config) throws Exception {
-    	
-        config.addDataSource(productName, datasourceProperties);
+        }
+        return datasourceProperties; 
     }
 
     @Override
@@ -136,5 +109,9 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
         deps.add(dependency);
         
         return deps;
+    }
+
+    public String getProductName() {
+        return productName;
     }
 }

@@ -32,23 +32,6 @@ import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 
 public class MavenProjectUtil {
 
-    /**
-     * Detect spring boot version dependency
-     */
-    public static String findSpringBootVersion(MavenProject project) {
-        String version = null;
-
-        Set<Artifact> artifacts = project.getArtifacts();
-        for (Artifact art : artifacts) {
-            if ("org.springframework.boot".equals(art.getGroupId()) && "spring-boot".equals(art.getArtifactId())) {
-                version = art.getVersion();
-                break;
-            }
-        }
-
-        return version;
-    }
-
     public static Map<String, String> getAllDependencies(MavenProject project, RepositorySystem repoSystem,
             RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, BoostLogger logger)
             throws ArtifactDescriptorException {

@@ -25,23 +25,8 @@ import io.openliberty.boost.common.config.ServerConfigGenerator;
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpOpenTracing")
 public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
 
-    String libertyFeature = null;
-
     public MPOpenTracingBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        String version = dependencies.get(getCoordinates(this.getClass()));
-        if (version.equals(MP_20_VERSION)) {
-            libertyFeature = MPOPENTRACING_11;
-        }
-    }
-
-    @Override
-    public String getLibertyFeature() {
-        return libertyFeature;
-    }
-
-    @Override
-    public void addServerConfig(ServerConfigGenerator config) {
-        // No config to write
+        version = dependencies.get(getCoordinates(this.getClass()));
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,61 +75,26 @@ public class EndpointIT {
 
             assertTrue("Unexpected response body",
                     response.contains("Hello World From Your Friends at Liberty Boost EE!"));
-        } finally {
-            method.releaseConnection();
-        }
-    }
 
-    @Test
-    public void testServletAfterCompile() throws Exception {
-        HttpClient client = new HttpClient();
-
-        GetMethod method = new GetMethod(URL);
-
-        try {
-            // make sure original message is in the source
             updateApplicationSource(originalStatement, updatedStatement, false);
 
-            int statusCode = client.executeMethod(method);
-
-            assertEquals("HTTP GET failed", HttpStatus.SC_OK, statusCode);
-
-            String response = method.getResponseBodyAsString(10000);
-
-            assertTrue("Unexpected response body 1st request = " + response,
-                    response.contains("Hello World From Your Friends at Liberty Boost EE! - pass 1"));
-
-            method.releaseConnection();
-
-            // Change text from HTTP Get
-            updateApplicationSource(updatedStatement, originalStatement, true);
-
-            // Compile source change
-            mavenCompile();
-
-            // give server time to catch up with the file changes
-            Thread.sleep(1000);
-
-            method = new GetMethod(URL);
-
-            // Get a new response
             statusCode = client.executeMethod(method);
 
             assertEquals("HTTP GET failed", HttpStatus.SC_OK, statusCode);
 
             response = method.getResponseBodyAsString(10000);
 
-            assertTrue("Unexpected response body 2nd request = " + response,
-                    response.contains("Hello World From Your Friends at Liberty Boost EE! Updated after compile"));
+            assertTrue("Unexpected response body 1st request = " + response,
+                    response.contains("Hello World From Your Friends at Liberty Boost EE! - pass 1"));
+
+            method.releaseConnection();
 
         } finally {
-
             // Set the source back.
             updateApplicationSource(originalStatement, updatedStatement, false);
 
             method.releaseConnection();
         }
-
     }
 
     /*
