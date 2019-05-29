@@ -54,9 +54,9 @@ import io.openliberty.boost.maven.utils.MavenProjectUtil;
 import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
 
 public class LibertyRuntime implements RuntimeI {
-    
+
     private final Log log;
-    
+
     private final Map<String, String> deps;
     private final ExecutionEnvironment env;
     private final MavenProject project;
@@ -64,7 +64,7 @@ public class LibertyRuntime implements RuntimeI {
     private final RepositorySystemSession repoSession;
     private final List<RemoteRepository> remoteRepos;
     private final Plugin mavenDepPlugin;
-    
+
     private final String serverName = "BoostServer";
     private final String projectBuildDir;
     private final String libertyServerPath;
@@ -72,11 +72,11 @@ public class LibertyRuntime implements RuntimeI {
     private final String runtimeGroupId = "io.openliberty";
     private final String runtimeArtifactId = "openliberty-runtime";
     private final String runtimeVersion = "19.0.0.3";
-    
+
     private String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
     private String libertyMavenPluginVersion = "2.6.3";
-    
+
     public LibertyRuntime() {
         this.log = null;
         this.deps = null;
@@ -102,7 +102,7 @@ public class LibertyRuntime implements RuntimeI {
         this.remoteRepos = runtimeParams.getRemoteRepos();
         this.mavenDepPlugin = runtimeParams.getMavenDepPlugin();
     }
-    
+
     private Plugin getPlugin() throws MojoExecutionException {
         return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
                 version(libertyMavenPluginVersion));
@@ -115,17 +115,17 @@ public class LibertyRuntime implements RuntimeI {
             String javaCompilerTargetVersion = MavenProjectUtil.getJavaCompilerTargetVersion(project);
             System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, javaCompilerTargetVersion);
             boosterConfigs = BoosterConfigurator.getBoosterConfigs(deps, BoostLogger.getInstance());
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new BoostException("Error copying booster dependencies", e);
         }
-        
+
         try {
             packageLiberty(boosterConfigs);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new BoostException("Error packaging Liberty server", e);
         }
     }
-    
+
     private void packageLiberty(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
         createLibertyServer();
 
@@ -149,8 +149,11 @@ public class LibertyRuntime implements RuntimeI {
             // set installAppPackages=all.
             installApp(ConfigConstants.INSTALL_PACKAGE_DEP);
         }
+
+        // Create the Liberty runnable jar
+        createUberJar();
     }
-    
+
     /**
      * Get all booster dependencies and invoke the maven-dependency-plugin to
      * copy them to the Liberty server.
@@ -159,7 +162,8 @@ public class LibertyRuntime implements RuntimeI {
      *
      */
     private void copyBoosterDependencies(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
-        List<String> dependenciesToCopy = BoosterConfigurator.getDependenciesToCopy(boosterConfigs, this, BoostLogger.getInstance());
+        List<String> dependenciesToCopy = BoosterConfigurator.getDependenciesToCopy(boosterConfigs, this,
+                BoostLogger.getInstance());
 
         for (String dep : dependenciesToCopy) {
 
@@ -174,7 +178,7 @@ public class LibertyRuntime implements RuntimeI {
                     env);
         }
     }
-    
+
     /**
      * Generate config for the Liberty server based on the Maven project.
      * 
@@ -220,51 +224,51 @@ public class LibertyRuntime implements RuntimeI {
     private void generateLibertyServerConfig(List<AbstractBoosterConfig> boosterConfigurators) throws Exception {
 
         List<String> warNames = getWarNames();
-        LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, BoostLogger.getInstance());
-        
+        LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath,
+                BoostLogger.getInstance());
+
         // Add default http endpoint configuration
         Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(BoostLogger.getInstance());
-        
+
         String host = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "*");
         libertyConfig.addHostname(host);
-        
+
         String httpPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "9080");
         libertyConfig.addHttpPort(httpPort);
-        
+
         String httpsPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTPS_PORT, "9443");
         libertyConfig.addHttpsPort(httpsPort);
-        
+
         // Add war configuration if necessary
         if (!warNames.isEmpty()) {
             for (String warName : warNames) {
-            	libertyConfig.addApplication(warName);
+                libertyConfig.addApplication(warName);
             }
         } else {
             throw new Exception(
                     "No war files were found. The project must have a war packaging type or specify war dependencies.");
         }
-        
+
         // Loop through configuration objects and add config and
         // the corresponding Liberty feature
         for (AbstractBoosterConfig configurator : boosterConfigurators) {
-        	libertyConfig.addServerConfig(configurator);
-        	libertyConfig.addFeature(configurator);
+            libertyConfig.addServerConfig(configurator);
+            libertyConfig.addFeature(configurator);
         }
 
         libertyConfig.writeToServer();
     }
-    
+
     // Liberty Maven Plugin executions
-    
+
     /**
      * Invoke the liberty-maven-plugin to run the create-server goal
      */
     private void createLibertyServer() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("create-server"),
-                configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()),
-                env);
+                configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()), env);
     }
-    
+
     /**
      * Invoke the liberty-maven-plugin to run the install-feature goal.
      *
@@ -276,7 +280,7 @@ public class LibertyRuntime implements RuntimeI {
         executeMojo(getPlugin(), goal("install-feature"), configuration(element(name("serverName"), serverName),
                 element(name("features"), element(name("acceptLicense"), "false"))), env);
     }
-    
+
     /**
      * Invoke the liberty-maven-plugin to run the install-app goal.
      */
@@ -290,21 +294,30 @@ public class LibertyRuntime implements RuntimeI {
 
         executeMojo(getPlugin(), goal("install-apps"), configuration, env);
     }
-    
+
     private Element getRuntimeArtifactElement() {
         return element(name("assemblyArtifact"), element(name("groupId"), runtimeGroupId),
-                element(name("artifactId"), runtimeArtifactId),
-                element(name("version"), runtimeVersion),
+                element(name("artifactId"), runtimeArtifactId), element(name("version"), runtimeVersion),
                 element(name("type"), "zip"));
+    }
+
+    /**
+     * Invoke the liberty-maven-plugin to package the server into a runnable
+     * Liberty JAR
+     */
+    private void createUberJar() throws MojoExecutionException {
+        executeMojo(getPlugin(), goal("package-server"),
+                configuration(element(name("isInstall"), "false"), element(name("include"), "minify,runnable"),
+                        element(name("outputDirectory"), "target/liberty-alt-output-dir"),
+                        element(name("packageFile"), ""), element(name("serverName"), serverName)),
+                env);
     }
 
     @Override
     public void doDebug(boolean clean) throws BoostException {
         try {
-            executeMojo(getPlugin(), goal("debug"),
-                    configuration(element(name("serverName"), serverName),
-                            element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
-                    env);
+            executeMojo(getPlugin(), goal("debug"), configuration(element(name("serverName"), serverName),
+                    element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()), env);
         } catch (MojoExecutionException e) {
             throw new BoostException("Error debugging Liberty server", e);
         }
@@ -313,14 +326,12 @@ public class LibertyRuntime implements RuntimeI {
     @Override
     public void doRun(boolean clean) throws BoostException {
         try {
-            executeMojo(getPlugin(), goal("run"),
-                    configuration(element(name("serverName"), serverName),
-                            element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
-                    env);
+            executeMojo(getPlugin(), goal("run"), configuration(element(name("serverName"), serverName),
+                    element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()), env);
         } catch (MojoExecutionException e) {
             throw new BoostException("Error running Liberty server", e);
         }
-        
+
     }
 
     @Override
@@ -341,8 +352,7 @@ public class LibertyRuntime implements RuntimeI {
     public void doStop() throws BoostException {
         try {
             executeMojo(getPlugin(), goal("stop"),
-                    configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()),
-                    env);
+                    configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()), env);
         } catch (MojoExecutionException e) {
             throw new BoostException("Error stopping Liberty server", e);
         }
