@@ -18,18 +18,13 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import java.lang.reflect.Constructor;
-
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -44,6 +39,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
+import io.openliberty.boost.common.config.BoosterConfigurator;
 import io.openliberty.boost.common.runtimes.RuntimeI;
 import io.openliberty.boost.maven.runtimes.RuntimeParams;
 import io.openliberty.boost.maven.utils.BoostLogger;
@@ -53,6 +49,8 @@ import io.openliberty.boost.maven.utils.MavenProjectUtil;
 public abstract class AbstractMojo extends MojoSupport {
     
     private static RuntimeI runtime;
+    private ClassLoader projectClassLoader;
+    private List<AbstractBoosterConfig> boosterConfigs;
 
     protected String mavenDependencyPluginGroupId = "org.apache.maven.plugins";
     protected String mavenDependencyPluginArtifactId = "maven-dependency-plugin";
@@ -94,6 +92,21 @@ public abstract class AbstractMojo extends MojoSupport {
             // TODO move this into getRuntimeInstance()
             this.dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession,
                         remoteRepos, BoostLogger.getInstance());
+            
+            List<File> compileClasspathJars = new ArrayList<File>();
+            
+            List<URL> pathUrls = new ArrayList<URL>();
+            for(String compilePathElement : project.getCompileClasspathElements()) {
+            	pathUrls.add(new File(compilePathElement).toURI().toURL());
+            	if(compilePathElement.endsWith(".jar")) {
+                    compileClasspathJars.add(new File(compilePathElement));
+            	}
+            }
+            URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);
+            this.projectClassLoader = new URLClassLoader(urlsForClassLoader, this.getClass().getClassLoader());
+            
+            boosterConfigs = BoosterConfigurator.getBoosterConfigs(compileClasspathJars, projectClassLoader, dependencies, BoostLogger.getInstance());
+            
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
@@ -101,17 +114,9 @@ public abstract class AbstractMojo extends MojoSupport {
     
     protected RuntimeI getRuntimeInstance() throws MojoExecutionException {
         if (runtime == null) {
-            BoostLogger logger = BoostLogger.getInstance();
-            RuntimeParams params = new RuntimeParams(dependencies, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
+            RuntimeParams params = new RuntimeParams(boosterConfigs, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
             try {
-                List<URL> pathUrls = new ArrayList<URL>();
-                for(String compilePathElement : project.getCompileClasspathElements()) {
-                    pathUrls.add(new File(compilePathElement).toURI().toURL());
-                }
-
-                URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);
-                ClassLoader compileClassLoader = new URLClassLoader(urlsForClassLoader, this.getClass().getClassLoader());
-                ServiceLoader<RuntimeI> runtimes = ServiceLoader.load(RuntimeI.class, compileClassLoader);
+                ServiceLoader<RuntimeI> runtimes = ServiceLoader.load(RuntimeI.class, projectClassLoader);
 
                 for(RuntimeI runtimeI : runtimes) {
                     if (runtime != null) {
@@ -119,12 +124,16 @@ public abstract class AbstractMojo extends MojoSupport {
                     }
                     runtime = runtimeI.getClass().getConstructor(params.getClass()).newInstance(params);
                 }
-            } catch (DependencyResolutionRequiredException | IllegalAccessException | InstantiationException | InvocationTargetException | MalformedURLException| NoSuchMethodException e) {
+            } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
                 throw new MojoExecutionException("No target Boost runtime was detected. Please add a runtime and restart the build. ");
             }
         }
         return runtime;
+    }
+    
+    protected ClassLoader getProjectClassLoader() {
+    	return projectClassLoader;
     }
 
 }

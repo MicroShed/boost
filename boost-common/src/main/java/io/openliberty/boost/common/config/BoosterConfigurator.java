@@ -10,14 +10,20 @@
  *******************************************************************************/
 package io.openliberty.boost.common.config;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import org.reflections.Reflections;
 
@@ -25,6 +31,10 @@ import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.runtimes.RuntimeI;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.LoaderClassPath;
+import javassist.NotFoundException;
 
 public class BoosterConfigurator {
 
@@ -43,11 +53,20 @@ public class BoosterConfigurator {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      * @throws SecurityException
+     * @throws IOException 
+     * @throws ClassNotFoundException 
      */
-    public static List<AbstractBoosterConfig> getBoosterConfigs(Map<String, String> dependencies,
-            BoostLoggerI logger) throws BoostException, InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-
+    public static List<AbstractBoosterConfig> getBoosterConfigs(List<File> jars, ClassLoader classLoader, Map<String, String> dependencies,
+            BoostLoggerI logger) throws Exception {
+    	
+    	ClassPool classPool = ClassPool.getDefault();
+    	classPool.appendClassPath(new LoaderClassPath(classLoader));
+    	
+    	List<CtClass> runtimeBoosterCtClasses = new ArrayList<CtClass>();
+    	for(File jar: jars) {
+    		List<CtClass> jarCtClasses = findBoosterCtClassesInJar(jar, classPool);
+    		runtimeBoosterCtClasses.addAll(jarCtClasses);
+    	}
     	
         List<AbstractBoosterConfig> boosterConfigList = new ArrayList<AbstractBoosterConfig>();
 
@@ -56,20 +75,27 @@ public class BoosterConfigurator {
         Set<Class<? extends AbstractBoosterConfig>> allClasses = reflections.getSubTypesOf(AbstractBoosterConfig.class);
         for (Class<? extends AbstractBoosterConfig> boosterClass : allClasses) {
             if (dependencies.containsKey(AbstractBoosterConfig.getCoordinates(boosterClass))) {
-                Constructor<?> cons;
-                Reflections projectReflections = new Reflections("*");
-                Set<?> boosterSubClasses = projectReflections.getSubTypesOf(boosterClass);
-                if (boosterSubClasses.size() > 1 || boosterSubClasses.isEmpty()) {
-                    cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
-                } else {
-                    cons = boosterSubClasses.toArray()[0].getClass().getConstructor(Map.class, BoostLoggerI.class);
-                }
+            	
+            	Constructor<?> cons = null;
+            	for(CtClass ctClass : runtimeBoosterCtClasses) {
+            		if(ctClass.getSuperclass().getName().equals(boosterClass.getName())) {
+            			// A runtime specific booster exists
+            			Class<?> runtimeBoosterClass = classLoader.loadClass(ctClass.getName());
+            			cons = runtimeBoosterClass.getConstructor(Map.class, BoostLoggerI.class);
+            		}
+            	}
+            	
+            	if(cons == null) {
+            		// We did not find a runtime specific booster class, just instantiate a generic one
+            		cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
+            	}
+            	
                 Object o = cons.newInstance(dependencies, logger);
                 if (o instanceof AbstractBoosterConfig) {
                     boosterConfigList.add((AbstractBoosterConfig) o);
                 } else {
                     throw new BoostException(
-                            "Found a class in io.openliberty.boost.common.boosters that did not extend AbstractBoosterConfig. This should never happen.");
+                            "Found a booster class that did not extend AbstractBoosterConfig. This should never happen.");
                 }
             }
         }
@@ -98,4 +124,39 @@ public class BoosterConfigurator {
         dependencyJarsToCopy.addAll(allDependencyJarsNoDups);
         return dependencyJarsToCopy;
     }
+    
+    private static List<CtClass> findBoosterCtClassesInJar(File jarFile, ClassPool classPool) throws ClassNotFoundException, IOException {
+        List<CtClass> ctClasses = new ArrayList<CtClass>();
+        JarFile jar = new JarFile(jarFile);
+        // Getting the files into the jar
+        Enumeration<? extends JarEntry> enumeration = jar.entries();
+
+        // Iterates into the files in the jar file
+        while (enumeration.hasMoreElements()) {
+            ZipEntry zipEntry = enumeration.nextElement();
+
+            // Is this a class?
+            if (zipEntry.getName().endsWith(".class")) {
+
+                // Relative path of file into the jar.
+                String className = zipEntry.getName();
+
+                // Complete class name
+                className = className.replace(".class", "").replace("/", ".");
+                
+                try {
+                    CtClass ctClass = classPool.get(className);
+                    // For now, assume that a runtime booster is going to directly extend a common booster, which will extend AbstractBoosterConfig
+                    if(ctClass.getSuperclass().getSuperclass().getName().contains("AbstractBoosterConfig")) {
+                    	ctClasses.add(ctClass);
+                    }
+                } catch(NotFoundException | NullPointerException e) {}
+
+            }
+        }
+        jar.close();
+
+        return ctClasses;
+    }
+    
 }

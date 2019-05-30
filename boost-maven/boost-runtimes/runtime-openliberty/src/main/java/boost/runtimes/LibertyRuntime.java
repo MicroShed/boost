@@ -60,7 +60,7 @@ public class LibertyRuntime implements RuntimeI {
     
     private final Log log;
     
-    private final Map<String, String> deps;
+    private final List<AbstractBoosterConfig> boosterConfigs;
     private final ExecutionEnvironment env;
     private final MavenProject project;
     private final RepositorySystem repoSystem;
@@ -82,7 +82,7 @@ public class LibertyRuntime implements RuntimeI {
     
     public LibertyRuntime() {
         this.log = null;
-        this.deps = null;
+        this.boosterConfigs = null;
         this.env = null;
         this.project = null;
         this.projectBuildDir = null;
@@ -95,7 +95,7 @@ public class LibertyRuntime implements RuntimeI {
 
     public LibertyRuntime(RuntimeParams runtimeParams) {
         this.log = runtimeParams.getLog();
-        this.deps = runtimeParams.getDeps();
+        this.boosterConfigs = runtimeParams.getBoosterConfigs();
         this.env = runtimeParams.getEnv();
         this.project = runtimeParams.getProject();
         this.projectBuildDir = project.getBuild().getDirectory();
@@ -113,11 +113,10 @@ public class LibertyRuntime implements RuntimeI {
 
     @Override
     public void doPackage() throws BoostException {
-        List<AbstractBoosterConfig> boosterConfigs;
+        
         try {
             String javaCompilerTargetVersion = MavenProjectUtil.getJavaCompilerTargetVersion(project);
             System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, javaCompilerTargetVersion);
-            boosterConfigs = BoosterConfigurator.getBoosterConfigs(deps, BoostLogger.getInstance());
         } catch(Exception e) {
             throw new BoostException("Error copying booster dependencies", e);
         }

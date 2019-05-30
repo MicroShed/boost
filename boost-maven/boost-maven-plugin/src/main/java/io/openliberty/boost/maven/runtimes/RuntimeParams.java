@@ -11,7 +11,6 @@
 package io.openliberty.boost.maven.runtimes;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.logging.Log;
@@ -22,9 +21,11 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
+import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
+
 public class RuntimeParams {
 
-    Map<String, String> deps;
+	List<AbstractBoosterConfig> boosterConfigs;
     ExecutionEnvironment env;
     MavenProject project;
     Log log; 
@@ -34,10 +35,10 @@ public class RuntimeParams {
     Plugin mavenDepPlugin;
     String projectBuildDir;
 
-    public RuntimeParams(Map<String, String> deps, ExecutionEnvironment env, MavenProject project, Log log, 
+    public RuntimeParams(List<AbstractBoosterConfig> boosterConfigs, ExecutionEnvironment env, MavenProject project, Log log, 
     RepositorySystem repoSystem, RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, Plugin mavenDepPlugin) {
         this.log = log;
-        this.deps = deps;
+        this.boosterConfigs = boosterConfigs;
         this.env = env;
         this.project = project;
         this.projectBuildDir = project.getBuild().getDirectory();
@@ -51,8 +52,8 @@ public class RuntimeParams {
         return this.log;
     }
 
-    public Map<String,String> getDeps() {
-        return this.deps;
+    public List<AbstractBoosterConfig> getBoosterConfigs() {
+        return this.boosterConfigs;
     }
 
     public ExecutionEnvironment getEnv() {
