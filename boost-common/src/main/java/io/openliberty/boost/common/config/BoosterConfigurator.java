@@ -48,6 +48,7 @@ public class BoosterConfigurator {
             BoostLoggerI logger) throws BoostException, InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 
+    	
         List<AbstractBoosterConfig> boosterConfigList = new ArrayList<AbstractBoosterConfig>();
 
         Reflections reflections = new Reflections("io.openliberty.boost.common.boosters");
@@ -55,7 +56,14 @@ public class BoosterConfigurator {
         Set<Class<? extends AbstractBoosterConfig>> allClasses = reflections.getSubTypesOf(AbstractBoosterConfig.class);
         for (Class<? extends AbstractBoosterConfig> boosterClass : allClasses) {
             if (dependencies.containsKey(AbstractBoosterConfig.getCoordinates(boosterClass))) {
-                Constructor<?> cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
+                Constructor<?> cons;
+                Reflections projectReflections = new Reflections("*");
+                Set<?> boosterSubClasses = projectReflections.getSubTypesOf(boosterClass);
+                if (boosterSubClasses.size() > 1 || boosterSubClasses.isEmpty()) {
+                    cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
+                } else {
+                    cons = boosterSubClasses.toArray()[0].getClass().getConstructor(Map.class, BoostLoggerI.class);
+                }
                 Object o = cons.newInstance(dependencies, logger);
                 if (o instanceof AbstractBoosterConfig) {
                     boosterConfigList.add((AbstractBoosterConfig) o);
@@ -68,7 +76,7 @@ public class BoosterConfigurator {
 
         return boosterConfigList;
     }
-
+    
     public static List<String> getDependenciesToCopy(List<AbstractBoosterConfig> boosterConfigurators,
             RuntimeI runtime, BoostLoggerI logger) {
 

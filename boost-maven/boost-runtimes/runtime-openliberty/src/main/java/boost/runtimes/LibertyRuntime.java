@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
@@ -52,6 +53,8 @@ import io.openliberty.boost.maven.runtimes.RuntimeParams;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
 import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
+
+import boost.runtimes.boosters.LibertyBoosterI;
 
 public class LibertyRuntime implements RuntimeI {
     
@@ -247,8 +250,11 @@ public class LibertyRuntime implements RuntimeI {
         // Loop through configuration objects and add config and
         // the corresponding Liberty feature
         for (AbstractBoosterConfig configurator : boosterConfigurators) {
-        	libertyConfig.addServerConfig(configurator);
-        	libertyConfig.addFeature(configurator);
+            if(configurator instanceof LibertyBoosterI) {
+                ((LibertyBoosterI)configurator).addServerConfig(libertyConfig);
+        	    libertyConfig.addFeature(((LibertyBoosterI)configurator).getFeature());
+            }
+        	
         }
 
         libertyConfig.writeToServer();

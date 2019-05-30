@@ -28,6 +28,12 @@ import io.openliberty.boost.common.runtimes.RuntimeI;
  */
 public abstract class AbstractBoosterConfig {
 
+    public static final String RUNTIMES_GROUP_ID = "boost.runtimes";
+    public static final String BOOSTERS_GROUP_ID = "boost.boosters";
+    public static final String EE_7_VERSION = "0.1-SNAPSHOT";
+    public static final String EE_8_VERSION = "0.2-SNAPSHOT";
+    public static final String MP_20_VERSION = "0.2-SNAPSHOT";
+
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     @Inherited
@@ -44,13 +50,11 @@ public abstract class AbstractBoosterConfig {
         return coordinates.value();
     }
 
-    public static final String RUNTIMES_GROUP_ID = "boost.runtimes";
-    public static final String BOOSTERS_GROUP_ID = "boost.boosters";
-    public static final String EE_7_VERSION = "0.1-SNAPSHOT";
-    public static final String EE_8_VERSION = "0.2-SNAPSHOT";
-    public static final String MP_20_VERSION = "0.2-SNAPSHOT";
+    private final String version;
 
-    public String version;
+    protected AbstractBoosterConfig(String version) {
+        this.version = version;
+    }
 
     /**
      * Return the dependency that this booster requires
@@ -58,5 +62,9 @@ public abstract class AbstractBoosterConfig {
      * @return
      */
     public abstract List<String> getDependencies(RuntimeI runtime);
+
+    public String getVersion() {
+        return version;
+    }
 
 }

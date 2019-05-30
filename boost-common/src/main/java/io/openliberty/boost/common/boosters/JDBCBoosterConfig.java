@@ -12,7 +12,6 @@ package io.openliberty.boost.common.boosters;
 
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.runtimes.RuntimeI;
-import io.openliberty.boost.common.config.ServerConfigGenerator;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
@@ -41,11 +40,12 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
     private static String DERBY_DEFAULT = "org.apache.derby:derby:10.14.2.0";
 
-    private Properties boostConfigProperties;
+    protected Properties boostConfigProperties;
     private String dependency;
     private String productName;
 
     public JDBCBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+        super(dependencies.get(getCoordinates(JDBCBoosterConfig.class)));
 
     	boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
     	

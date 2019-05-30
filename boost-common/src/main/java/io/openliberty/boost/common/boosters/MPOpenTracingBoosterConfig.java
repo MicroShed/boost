@@ -10,8 +10,6 @@
  *******************************************************************************/
 package io.openliberty.boost.common.boosters;
 
-import static io.openliberty.boost.common.config.ConfigConstants.MPOPENTRACING_11;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +18,12 @@ import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 import io.openliberty.boost.common.runtimes.RuntimeI;
-import io.openliberty.boost.common.config.ServerConfigGenerator;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpOpenTracing")
 public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
 
     public MPOpenTracingBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        version = dependencies.get(getCoordinates(this.getClass()));
+        super(dependencies.get(getCoordinates(MPOpenTracingBoosterConfig.class)));
     }
 
     @Override
