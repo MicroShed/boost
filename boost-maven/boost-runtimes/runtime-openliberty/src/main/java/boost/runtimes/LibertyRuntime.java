@@ -20,31 +20,19 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.repository.RemoteRepository;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import io.openliberty.boost.common.BoostException;
-import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
-import io.openliberty.boost.common.utils.BoostUtil;
 import io.openliberty.boost.common.config.BoostProperties;
 import io.openliberty.boost.common.config.BoosterConfigurator;
 import io.openliberty.boost.common.config.ConfigConstants;
@@ -52,20 +40,13 @@ import io.openliberty.boost.common.runtimes.RuntimeI;
 import io.openliberty.boost.maven.runtimes.RuntimeParams;
 import io.openliberty.boost.maven.utils.BoostLogger;
 import io.openliberty.boost.maven.utils.MavenProjectUtil;
-import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
-
 import boost.runtimes.boosters.LibertyBoosterI;
 
 public class LibertyRuntime implements RuntimeI {
     
-    private final Log log;
-    
     private final List<AbstractBoosterConfig> boosterConfigs;
     private final ExecutionEnvironment env;
     private final MavenProject project;
-    private final RepositorySystem repoSystem;
-    private final RepositorySystemSession repoSession;
-    private final List<RemoteRepository> remoteRepos;
     private final Plugin mavenDepPlugin;
     
     private final String serverName = "BoostServer";
@@ -81,28 +62,20 @@ public class LibertyRuntime implements RuntimeI {
     private String libertyMavenPluginVersion = "2.6.3";
     
     public LibertyRuntime() {
-        this.log = null;
         this.boosterConfigs = null;
         this.env = null;
         this.project = null;
         this.projectBuildDir = null;
         this.libertyServerPath = null;
-        this.repoSystem = null;
-        this.repoSession = null;
-        this.remoteRepos = null;
         this.mavenDepPlugin = null;
     }
 
     public LibertyRuntime(RuntimeParams runtimeParams) {
-        this.log = runtimeParams.getLog();
         this.boosterConfigs = runtimeParams.getBoosterConfigs();
         this.env = runtimeParams.getEnv();
         this.project = runtimeParams.getProject();
         this.projectBuildDir = project.getBuild().getDirectory();
         this.libertyServerPath = projectBuildDir + "/liberty/wlp/usr/servers/" + serverName;
-        this.repoSystem = runtimeParams.getRepoSystem();
-        this.repoSession = runtimeParams.getRepoSession();
-        this.remoteRepos = runtimeParams.getRemoteRepos();
         this.mavenDepPlugin = runtimeParams.getMavenDepPlugin();
     }
     
@@ -113,13 +86,8 @@ public class LibertyRuntime implements RuntimeI {
 
     @Override
     public void doPackage() throws BoostException {
-        
-        try {
-            String javaCompilerTargetVersion = MavenProjectUtil.getJavaCompilerTargetVersion(project);
-            System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, javaCompilerTargetVersion);
-        } catch(Exception e) {
-            throw new BoostException("Error copying booster dependencies", e);
-        }
+        String javaCompilerTargetVersion = MavenProjectUtil.getJavaCompilerTargetVersion(project);
+        System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, javaCompilerTargetVersion);
         
         try {
             packageLiberty(boosterConfigs);

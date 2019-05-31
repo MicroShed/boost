@@ -47,6 +47,7 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
     public JDBCBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         super(dependencies.get(getCoordinates(JDBCBoosterConfig.class)));
 
+        // TODO: Should consider getting properties on the fly to avoid timing issues of when properties are set
     	boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
     	
         // Determine JDBC driver dependency

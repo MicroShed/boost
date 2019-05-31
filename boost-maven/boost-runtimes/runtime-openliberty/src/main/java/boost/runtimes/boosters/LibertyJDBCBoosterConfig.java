@@ -23,7 +23,7 @@ public class LibertyJDBCBoosterConfig extends JDBCBoosterConfig implements Liber
 
     @Override
 	public String getFeature() {
-        String compilerVersion = boostConfigProperties.getProperty(BoostProperties.INTERNAL_COMPILER_TARGET);
+        String compilerVersion = System.getProperty(BoostProperties.INTERNAL_COMPILER_TARGET);
 
         if ("1.8".equals(compilerVersion) || "8".equals(compilerVersion) || "9".equals(compilerVersion)
                 || "10".equals(compilerVersion)) {
@@ -32,8 +32,8 @@ public class LibertyJDBCBoosterConfig extends JDBCBoosterConfig implements Liber
             return JDBC_43;
         } else {
             return JDBC_41; // Default to the spec for Liberty's
-                                                    // minimum supported JRE (version 7
-                                                    // as of 17.0.0.3)
+                            // minimum supported JRE (version 7
+                            // as of 17.0.0.3)
         }
     }
 

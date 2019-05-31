@@ -34,12 +34,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import io.openliberty.boost.common.BoostLoggerI;
-import io.openliberty.boost.common.boosters.*;
 import io.openliberty.boost.common.config.BoostProperties;
-import io.openliberty.boost.common.config.ConfigConstants;
 import io.openliberty.boost.common.utils.BoostUtil;
 
 /**

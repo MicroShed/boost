@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -147,10 +146,10 @@ public class BoosterConfigurator {
                 try {
                     CtClass ctClass = classPool.get(className);
                     // For now, assume that a runtime booster is going to directly extend a common booster, which will extend AbstractBoosterConfig
-                    if(ctClass.getSuperclass().getSuperclass().getName().contains("AbstractBoosterConfig")) {
+                    if(ctClass.getSuperclass().getSuperclass().getName().contains(AbstractBoosterConfig.class.getName())) {
                     	ctClasses.add(ctClass);
                     }
-                } catch(NotFoundException | NullPointerException e) {}
+                } catch(Exception e) {}
 
             }
         }
