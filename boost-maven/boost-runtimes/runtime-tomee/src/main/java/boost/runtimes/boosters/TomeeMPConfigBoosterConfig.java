@@ -10,30 +10,25 @@
  *******************************************************************************/
 package boost.runtimes.boosters;
 
-import static io.openliberty.boost.common.config.ConfigConstants.JSONP_11;
+import java.util.List;
 import java.util.Map;
-import io.openliberty.boost.common.boosters.JSONPBoosterConfig;
+
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
-import boost.runtimes.LibertyServerConfigGenerator;
-import boost.runtimes.boosters.LibertyBoosterI;
+import io.openliberty.boost.common.boosters.MPConfigBoosterConfig;
 
-public class LibertyJSONPBoosterConfig extends JSONPBoosterConfig implements LibertyBoosterI {
+public class TomeeMPConfigBoosterConfig extends MPConfigBoosterConfig {
 
-    public LibertyJSONPBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+    public TomeeMPConfigBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         super(dependencies, logger);
     }
 
     @Override
-	public String getFeature() {
-        if (getVersion().equals(MP_20_VERSION)) {
-            return JSONP_11;
-        }
-        return null;
-    }
-
-    @Override
-	public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+    public List<String> getDependencies() {
+        List<String> deps = super.getDependencies();
+        deps.add("org.apache.geronimo.config:geronimo-config-impl:1.2.1");
+        deps.add("org.eclipse.microprofile.config:microprofile-config-api:1.3");
+        deps.add("org.osgi:org.osgi.annotation.versioning:1.0.0");
+        return deps;
     }
 }

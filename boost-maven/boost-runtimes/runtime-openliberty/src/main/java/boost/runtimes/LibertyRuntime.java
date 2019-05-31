@@ -129,7 +129,7 @@ public class LibertyRuntime implements RuntimeI {
      *
      */
     private void copyBoosterDependencies(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
-        List<String> dependenciesToCopy = BoosterConfigurator.getDependenciesToCopy(boosterConfigs, this, BoostLogger.getInstance());
+        List<String> dependenciesToCopy = BoosterConfigurator.getDependenciesToCopy(boosterConfigs, BoostLogger.getInstance());
 
         for (String dep : dependenciesToCopy) {
 

@@ -29,11 +29,9 @@ import org.reflections.Reflections;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
-import io.openliberty.boost.common.runtimes.RuntimeI;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.LoaderClassPath;
-import javassist.NotFoundException;
 
 public class BoosterConfigurator {
 
@@ -102,14 +100,13 @@ public class BoosterConfigurator {
         return boosterConfigList;
     }
     
-    public static List<String> getDependenciesToCopy(List<AbstractBoosterConfig> boosterConfigurators,
-            RuntimeI runtime, BoostLoggerI logger) {
+    public static List<String> getDependenciesToCopy(List<AbstractBoosterConfig> boosterConfigurators, BoostLoggerI logger) {
 
         Set<String> allDependencyJarsNoDups;
         List<String> dependencyJarsToCopy = new ArrayList<String>();
 
         for (AbstractBoosterConfig configurator : boosterConfigurators) {
-            List<String> dependencyStringsToCopy = configurator.getDependencies(runtime);
+            List<String> dependencyStringsToCopy = configurator.getDependencies();
             for (String depStr : dependencyStringsToCopy) {
                 if (depStr != null) {
                     logger.info(depStr);

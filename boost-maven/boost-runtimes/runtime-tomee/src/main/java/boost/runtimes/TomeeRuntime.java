@@ -21,7 +21,6 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.maven.model.Plugin;
@@ -38,7 +37,7 @@ import io.openliberty.boost.maven.utils.BoostLogger;
 
 public class TomeeRuntime implements RuntimeI {
     
-    private final Map<String, String> deps;
+	private final List<AbstractBoosterConfig> boosterConfigs;
     private final ExecutionEnvironment env;
         
     private final String tomeeMavenPluginGroupId = "org.apache.tomee.maven";
@@ -49,7 +48,7 @@ public class TomeeRuntime implements RuntimeI {
     private final Plugin mavenDepPlugin;
 
     public TomeeRuntime() {
-        this.deps = null;
+        this.boosterConfigs = null;
         this.env = null;
         
         this.installDir = null;
@@ -59,11 +58,11 @@ public class TomeeRuntime implements RuntimeI {
     }
     
     public TomeeRuntime(RuntimeParams params) {
-        this.deps = params.getDeps();
+        this.boosterConfigs = params.getBoosterConfigs();
         this.env = params.getEnv();
         
         this.installDir = params.getProjectBuildDir() + "/apache-tomee/";
-        this.configDir = params.getProjectBuildDir() + "conf";
+        this.configDir = installDir + "conf";
         
         this.mavenDepPlugin = params.getMavenDepPlugin();
     }
@@ -72,10 +71,8 @@ public class TomeeRuntime implements RuntimeI {
         return plugin(groupId(tomeeMavenPluginGroupId), artifactId(tomeeMavenPluginArtifactId), version("8.0.0-M2"));
     }
 
-    @Override
     public void doPackage() throws BoostException {
         try {
-            List<AbstractBoosterConfig> boosterConfigs = BoosterConfigurator.getBoosterConfigs(deps, BoostLogger.getInstance());
             createTomeeServer();
             configureTomeeServer(boosterConfigs);
             copyTomeeJarDependencies(boosterConfigs);
@@ -130,10 +127,9 @@ public class TomeeRuntime implements RuntimeI {
     private void copyTomeeJarDependencies(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
 
         List<String> tomeeDependencyJarsToCopy = BoosterConfigurator
-                .getDependenciesToCopy(boosterConfigs, this, BoostLogger.getInstance());
+                .getDependenciesToCopy(boosterConfigs, BoostLogger.getInstance());
 
         for (String dep : tomeeDependencyJarsToCopy) {
-
             String[] dependencyInfo = dep.split(":");
 
             executeMojo(mavenDepPlugin, goal("copy"),
@@ -146,12 +142,10 @@ public class TomeeRuntime implements RuntimeI {
         }
     }
 
-    @Override
     public void doDebug(boolean clean) throws BoostException {
         // TODO No debug in TomEE yet
     }
 
-    @Override
     public void doRun(boolean clean) throws BoostException {
         try {
             executeMojo(getPlugin(), goal("run"),
@@ -162,7 +156,6 @@ public class TomeeRuntime implements RuntimeI {
         }
     }
 
-    @Override
     public void doStart(boolean clean, int verifyTimeout, int serverStartTimeout) throws BoostException {
         try {
             executeMojo(getPlugin(), goal("start"),
@@ -173,7 +166,6 @@ public class TomeeRuntime implements RuntimeI {
         }
     }
 
-    @Override
     public void doStop() throws BoostException {
         try {
             executeMojo(getPlugin(), goal("stop"),

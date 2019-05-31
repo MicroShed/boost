@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.lang.annotation.Target;
 import java.util.List;
 
 import io.openliberty.boost.common.BoostException;
-import io.openliberty.boost.common.runtimes.RuntimeI;
 
 /**
  * Interface to describe common function across all technology Booster Pack
@@ -61,7 +60,7 @@ public abstract class AbstractBoosterConfig {
      * 
      * @return
      */
-    public abstract List<String> getDependencies(RuntimeI runtime);
+    public abstract List<String> getDependencies();
 
     public String getVersion() {
         return version;

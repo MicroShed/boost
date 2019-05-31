@@ -10,30 +10,25 @@
  *******************************************************************************/
 package boost.runtimes.boosters;
 
-import static io.openliberty.boost.common.config.ConfigConstants.JSONP_11;
+import java.util.List;
 import java.util.Map;
-import io.openliberty.boost.common.boosters.JSONPBoosterConfig;
+
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
-import boost.runtimes.LibertyServerConfigGenerator;
-import boost.runtimes.boosters.LibertyBoosterI;
+import io.openliberty.boost.common.boosters.MPRestClientBoosterConfig;
 
-public class LibertyJSONPBoosterConfig extends JSONPBoosterConfig implements LibertyBoosterI {
+public class TomeeMPRestClientBoosterConfig extends MPRestClientBoosterConfig {
 
-    public LibertyJSONPBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+    public TomeeMPRestClientBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         super(dependencies, logger);
     }
 
     @Override
-	public String getFeature() {
-        if (getVersion().equals(MP_20_VERSION)) {
-            return JSONP_11;
-        }
-        return null;
-    }
-
-    @Override
-	public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+    public List<String> getDependencies() {
+        List<String> deps = super.getDependencies();
+        deps.add("org.apache.cxf:cxf-rt-rs-mp-client:3.2.7");
+        deps.add("org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1");
+        return deps;
     }
 }
+

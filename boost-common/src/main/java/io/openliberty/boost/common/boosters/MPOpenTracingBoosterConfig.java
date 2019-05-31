@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import java.util.Map;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
-import io.openliberty.boost.common.runtimes.RuntimeI;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpOpenTracing")
 public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
@@ -27,7 +26,7 @@ public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
     }
 
     @Override
-    public List<String> getDependencies(RuntimeI runtime) {
+    public List<String> getDependencies() {
         return new ArrayList<String>();
     }
 }

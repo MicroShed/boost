@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.config;
+package boost.runtimes;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,6 +21,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig;
 import io.openliberty.boost.common.boosters.JDBCBoosterConfig;
+import io.openliberty.boost.common.config.BoostProperties;
+import io.openliberty.boost.common.config.ConfigConstants;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -47,7 +49,7 @@ import io.openliberty.boost.common.utils.BoostUtil;
  * Create a Liberty server.xml
  *
  */
-public class TomeeServerConfigGenerator implements ServerConfigGenerator {
+public class TomeeServerConfigGenerator {
 
     private final String CATALINA_PROPERTIES = "catalina.properties";
     private final String SERVER_XML = "server.xml";
@@ -76,7 +78,7 @@ public class TomeeServerConfigGenerator implements ServerConfigGenerator {
         this.logger = logger;
     }
 
-    public void addServerConfig(AbstractBoosterConfig boosterConfig) {
+    public void addServerConfig(AbstractBoosterConfig boosterConfig) throws Exception {
         if (boosterConfig instanceof JDBCBoosterConfig) {
             addDataSource(((JDBCBoosterConfig)boosterConfig).getProductName(), ((JDBCBoosterConfig)boosterConfig).getDatasourceProperties());
         }
@@ -133,7 +135,6 @@ public class TomeeServerConfigGenerator implements ServerConfigGenerator {
         }
     }
 
-    @Override
     public void addHttpPort(String httpPort) throws Exception {
 
         // Read server.xml
@@ -165,12 +166,10 @@ public class TomeeServerConfigGenerator implements ServerConfigGenerator {
         addCatalinaProperty(BoostProperties.ENDPOINT_HTTP_PORT, httpPort);
     }
 
-    @Override
     public void addHttpsPort(String httpsPort) throws Exception {
         // Not supported yet
     }
 
-    @Override
     public void addHostname(String hostname) throws Exception {
 
         // Read server.xml
@@ -209,19 +208,15 @@ public class TomeeServerConfigGenerator implements ServerConfigGenerator {
         addCatalinaProperty(BoostProperties.ENDPOINT_HOST, hostname);
     }
 
-    @Override
     public void addApplication(String appName) {
         // Not currently used
     }
 
-    @Override
     public void addKeystore(Map<String, String> keystoreProps, Map<String, String> keyProps) {
         // No keystore support yet
     }
 
-    @Override
     public void addDataSource(String productName, Properties boostDbProperties) throws Exception {
-
         // Read tomee.xml
         File tomeeXml = new File(configPath + "/" + TOMEE_XML);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
