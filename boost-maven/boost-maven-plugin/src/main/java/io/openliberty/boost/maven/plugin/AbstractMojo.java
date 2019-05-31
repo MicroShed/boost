@@ -117,16 +117,17 @@ public abstract class AbstractMojo extends MojoSupport {
             RuntimeParams params = new RuntimeParams(boosterConfigs, getExecutionEnvironment(), project, getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
             try {
                 ServiceLoader<RuntimeI> runtimes = ServiceLoader.load(RuntimeI.class, projectClassLoader);
-
+                if(!runtimes.iterator().hasNext()) {
+                	throw new MojoExecutionException("No target Boost runtime was detected. Please add a runtime and restart the build.");
+                }
                 for(RuntimeI runtimeI : runtimes) {
                     if (runtime != null) {
-                        throw new MojoExecutionException("There are multiple Boost runtimes on the classpath. Configure the project to use one runtime and restart the build. ");
+                        throw new MojoExecutionException("There are multiple Boost runtimes on the classpath. Configure the project to use one runtime and restart the build.");
                     }
                     runtime = runtimeI.getClass().getConstructor(params.getClass()).newInstance(params);
                 }
             } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
-                throw new MojoExecutionException("No target Boost runtime was detected. Please add a runtime and restart the build. ");
+                throw new MojoExecutionException("Error while looking for Boost runtime.");
             }
         }
         return runtime;

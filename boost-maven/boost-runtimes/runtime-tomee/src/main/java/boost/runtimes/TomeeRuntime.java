@@ -143,7 +143,7 @@ public class TomeeRuntime implements RuntimeI {
 	 */
 	private void createUberJar() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("exec"),
-                configuration(element(name("tomeeAlreadyInstalled"), "true"), element(name("classpaths"), "[]"),
+                configuration(element(name("classifier"), "exec"), element(name("tomeeAlreadyInstalled"), "true"), element(name("classpaths"), "[]"),
                         element(name("context"), "ROOT"), element(name("tomeeVersion"), "8.0.0-M2"),
                         element(name("tomeeClassifier"), "plus"), element(name("catalinaBase"), installDir),
                         element(name("config"), configDir)),
