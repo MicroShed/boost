@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.lang.annotation.Target;
 import java.util.List;
 
 import io.openliberty.boost.common.BoostException;
-import io.openliberty.boost.common.runtimes.RuntimeI;
 
 /**
  * Interface to describe common function across all technology Booster Pack
@@ -27,6 +26,12 @@ import io.openliberty.boost.common.runtimes.RuntimeI;
  *
  */
 public abstract class AbstractBoosterConfig {
+
+    public static final String RUNTIMES_GROUP_ID = "boost.runtimes";
+    public static final String BOOSTERS_GROUP_ID = "boost.boosters";
+    public static final String EE_7_VERSION = "0.1-SNAPSHOT";
+    public static final String EE_8_VERSION = "0.2-SNAPSHOT";
+    public static final String MP_20_VERSION = "0.2-SNAPSHOT";
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
@@ -44,19 +49,21 @@ public abstract class AbstractBoosterConfig {
         return coordinates.value();
     }
 
-    public static final String RUNTIMES_GROUP_ID = "boost.runtimes";
-    public static final String BOOSTERS_GROUP_ID = "boost.boosters";
-    public static final String EE_7_VERSION = "0.1-SNAPSHOT";
-    public static final String EE_8_VERSION = "0.2-SNAPSHOT";
-    public static final String MP_20_VERSION = "0.2-SNAPSHOT";
+    private final String version;
 
-    public String version;
+    protected AbstractBoosterConfig(String version) {
+        this.version = version;
+    }
 
     /**
      * Return the dependency that this booster requires
      * 
      * @return
      */
-    public abstract List<String> getDependencies(RuntimeI runtime);
+    public abstract List<String> getDependencies();
+
+    public String getVersion() {
+        return version;
+    }
 
 }

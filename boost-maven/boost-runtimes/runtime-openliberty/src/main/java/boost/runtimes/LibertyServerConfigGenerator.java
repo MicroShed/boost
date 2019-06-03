@@ -34,20 +34,15 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import io.openliberty.boost.common.BoostLoggerI;
-import io.openliberty.boost.common.boosters.*;
 import io.openliberty.boost.common.config.BoostProperties;
-import io.openliberty.boost.common.config.ConfigConstants;
-import io.openliberty.boost.common.config.ServerConfigGenerator;
 import io.openliberty.boost.common.utils.BoostUtil;
 
 /**
  * Create a Liberty server.xml
  *
  */
-public class LibertyServerConfigGenerator implements ServerConfigGenerator {
+public class LibertyServerConfigGenerator {
 
     private final String serverPath;
     private final String libertyInstallPath;
@@ -98,53 +93,6 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
         httpEndpoint = serverXml.createElement(HTTP_ENDPOINT);
         httpEndpoint.setAttribute("id", DEFAULT_HTTP_ENDPOINT);
         serverRoot.appendChild(httpEndpoint);
-    }
-
-    public void addServerConfig(AbstractBoosterConfig boosterConfig) throws Exception {
-        if (boosterConfig instanceof JDBCBoosterConfig) {
-            addDataSource(((JDBCBoosterConfig)boosterConfig).getProductName(), ((JDBCBoosterConfig)boosterConfig).getDatasourceProperties());
-        }
-    }
-
-    public void addFeature(AbstractBoosterConfig boosterConfig) {
-        if (boosterConfig instanceof CDIBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
-            addFeature(ConfigConstants.CDI_20);
-        } else if (boosterConfig instanceof JAXRSBoosterConfig) {
-            if (boosterConfig.version.equals(AbstractBoosterConfig.EE_7_VERSION)) {
-                addFeature(ConfigConstants.JAXRS_20);
-            } else if (boosterConfig.version.equals(AbstractBoosterConfig.EE_8_VERSION)) {
-                addFeature(ConfigConstants.JAXRS_21);
-            }
-        } else if (boosterConfig instanceof JDBCBoosterConfig) {
-            String compilerVersion = boostConfigProperties.getProperty(BoostProperties.INTERNAL_COMPILER_TARGET);
-
-            if ("1.8".equals(compilerVersion) || "8".equals(compilerVersion) || "9".equals(compilerVersion)
-                    || "10".equals(compilerVersion)) {
-                    addFeature(ConfigConstants.JDBC_42);
-            } else if ("11".equals(compilerVersion)) {
-                addFeature(ConfigConstants.JDBC_43);
-            } else {
-                addFeature(ConfigConstants.JDBC_41); // Default to the spec for Liberty's
-                                                     // minimum supported JRE (version 7
-                                                     // as of 17.0.0.3)
-            }
-        } else if (boosterConfig instanceof JPABoosterConfig) {
-            if (boosterConfig.version.equals(AbstractBoosterConfig.EE_7_VERSION)) {
-                addFeature(ConfigConstants.JPA_21);
-            } else if (boosterConfig.version.equals(AbstractBoosterConfig.EE_8_VERSION)) {
-                addFeature(ConfigConstants.JPA_22);
-            }
-        } else if (boosterConfig instanceof JSONPBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
-            addFeature(ConfigConstants.JSONP_11);
-        } else if (boosterConfig instanceof MPConfigBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
-            addFeature(ConfigConstants.MPCONFIG_13);
-        } else if (boosterConfig instanceof MPHealthBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
-            addFeature(ConfigConstants.MPHEALTH_10);
-        } else if (boosterConfig instanceof MPOpenTracingBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
-            addFeature(ConfigConstants.MPOPENTRACING_11);
-        } else if (boosterConfig instanceof MPRestClientBoosterConfig && boosterConfig.version.equals(AbstractBoosterConfig.MP_20_VERSION)) {
-            addFeature(ConfigConstants.MPRESTCLIENT_11);
-        }
     }
 
     /**
@@ -241,7 +189,6 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
         bootstrapProperties.put(key, value);
     }
 
-    @Override
     public void addKeystore(Map<String, String> keystoreProps, Map<String, String> keyProps) {
         Element keystore = serverXml.createElement(KEYSTORE);
         keystore.setAttribute("id", DEFAULT_KEYSTORE);
@@ -263,7 +210,6 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
         serverRoot.appendChild(keystore);
     }
 
-    @Override
     public void addApplication(String appName) {
         Element appCfg = serverXml.createElement(APPLICATION);
         appCfg.setAttribute(CONTEXT_ROOT, "/");
@@ -273,90 +219,25 @@ public class LibertyServerConfigGenerator implements ServerConfigGenerator {
 
     }
 
-    @Override
     public void addHostname(String hostname) throws Exception {
         httpEndpoint.setAttribute("host", BoostUtil.makeVariable(BoostProperties.ENDPOINT_HOST));
 
         addBoostrapProperty(BoostProperties.ENDPOINT_HOST, hostname);
     }
 
-    @Override
     public void addHttpPort(String httpPort) throws Exception {
         httpEndpoint.setAttribute("httpPort", BoostUtil.makeVariable(BoostProperties.ENDPOINT_HTTP_PORT));
 
         addBoostrapProperty(BoostProperties.ENDPOINT_HTTP_PORT, httpPort);
     }
 
-    @Override
     public void addHttpsPort(String httpsPort) throws Exception {
         httpEndpoint.setAttribute("httpsPort", BoostUtil.makeVariable(BoostProperties.ENDPOINT_HTTPS_PORT));
 
         addBoostrapProperty(BoostProperties.ENDPOINT_HTTPS_PORT, httpsPort);
     }
 
-    @Override
-    public void addDataSource(String productName, Properties serverProperties) throws Exception {
-
-        String driverJar = null;
-        String datasourcePropertiesElement = null;
-
-        if (productName.equals(JDBCBoosterConfig.DERBY)) {
-            driverJar = DERBY_JAR;
-            datasourcePropertiesElement = PROPERTIES_DERBY_EMBEDDED;
-        } else if (productName.equals(JDBCBoosterConfig.DB2)) {
-            driverJar = DB2_JAR;
-            datasourcePropertiesElement = PROPERTIES_DB2_JCC;
-        } else if (productName.equals(JDBCBoosterConfig.MYSQL)) {
-            driverJar = MYSQL_JAR;
-            datasourcePropertiesElement = PROPERTIES;
-        }
-
-        Element serverRoot = serverXml.getDocumentElement();
-
-        // Find the root server element
-        NodeList list = serverXml.getChildNodes();
-        for (int i = 0; i < list.getLength(); i++) {
-            if (list.item(i).getNodeName().equals("server")) {
-                serverRoot = (Element) list.item(i);
-            }
-        }
-
-        // Add library
-        Element lib = serverXml.createElement(LIBRARY);
-        lib.setAttribute("id", JDBC_LIBRARY_1);
-        Element fileLoc = serverXml.createElement(FILESET);
-        fileLoc.setAttribute("dir", RESOURCES);
-        fileLoc.setAttribute("includes", driverJar);
-        lib.appendChild(fileLoc);
-        serverRoot.appendChild(lib);
-
-        // Add datasource
-        Element dataSource = serverXml.createElement(DATASOURCE);
-        dataSource.setAttribute("id", DEFAULT_DATASOURCE);
-        dataSource.setAttribute(JDBC_DRIVER_REF, JDBC_DRIVER_1);
-
-        // Add all configured datasource properties
-        Element props = serverXml.createElement(datasourcePropertiesElement);
-        addDatasourceProperties(serverProperties, props);
-        dataSource.appendChild(props);
-
-        serverRoot.appendChild(dataSource);
-
-        // Add jdbc driver
-        Element jdbcDriver = serverXml.createElement(JDBC_DRIVER);
-        jdbcDriver.setAttribute("id", JDBC_DRIVER_1);
-        jdbcDriver.setAttribute(LIBRARY_REF, JDBC_LIBRARY_1);
-        serverRoot.appendChild(jdbcDriver);
-
-        // Add properties to bootstrap.properties
-        addBootstrapProperties(serverProperties);
+    public Document getServerXmlDoc() {
+        return serverXml;
     }
-
-    private void addDatasourceProperties(Properties serverProperties, Element propertiesElement) {
-        for (String property : serverProperties.stringPropertyNames()) {
-            String attribute = property.replace(BoostProperties.DATASOURCE_PREFIX, "");
-            propertiesElement.setAttribute(attribute, BoostUtil.makeVariable(property));
-        }
-    }
-
 }

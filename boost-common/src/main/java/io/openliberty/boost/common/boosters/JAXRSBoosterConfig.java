@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,11 +13,6 @@ package io.openliberty.boost.common.boosters;
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
 import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
-import io.openliberty.boost.common.runtimes.RuntimeI;
-import io.openliberty.boost.common.config.ServerConfigGenerator;
-
-import static io.openliberty.boost.common.config.ConfigConstants.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +21,11 @@ import java.util.Map;
 public class JAXRSBoosterConfig extends AbstractBoosterConfig {
 
     public JAXRSBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        version = dependencies.get(getCoordinates(this.getClass()));
+        super(dependencies.get(getCoordinates(JAXRSBoosterConfig.class)));
     }
 
     @Override
-    public List<String> getDependencies(RuntimeI runtime) {
+    public List<String> getDependencies() {
         return new ArrayList<String>();
     }
 }

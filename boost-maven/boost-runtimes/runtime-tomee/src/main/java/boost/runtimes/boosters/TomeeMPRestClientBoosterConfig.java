@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,27 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.common.boosters;
+package boost.runtimes.boosters;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import io.openliberty.boost.common.BoostException;
 import io.openliberty.boost.common.BoostLoggerI;
-import io.openliberty.boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+import io.openliberty.boost.common.boosters.MPRestClientBoosterConfig;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":cdi")
-public class CDIBoosterConfig extends AbstractBoosterConfig {
+public class TomeeMPRestClientBoosterConfig extends MPRestClientBoosterConfig {
 
-    public CDIBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies.get(getCoordinates(CDIBoosterConfig.class)));
+    public TomeeMPRestClientBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+        super(dependencies, logger);
     }
 
     @Override
     public List<String> getDependencies() {
-        return new ArrayList<String>();
+        List<String> deps = super.getDependencies();
+        deps.add("org.apache.cxf:cxf-rt-rs-mp-client:3.2.7");
+        deps.add("org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1");
+        return deps;
     }
 }
+
