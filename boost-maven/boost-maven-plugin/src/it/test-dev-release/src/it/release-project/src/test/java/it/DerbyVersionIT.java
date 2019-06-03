@@ -21,29 +21,29 @@ import org.junit.Test;
 
 public class DerbyVersionIT {
 
-	private static String DERBY_JAR = null;
+    private static String DERBY_JAR = null;
 
-	@BeforeClass
-	public static void init() {
-		String runtime = System.getProperty("boostRuntime");
+    @BeforeClass
+    public static void init() {
+        String runtime = System.getProperty("boostRuntime");
 
-		if ("tomee".equals(runtime)) {
-			DERBY_JAR = "target/apache-tomee/boost/derby-10.11.1.1.jar";
-		} else if ("ol".equals(runtime) || "wlp".equals(runtime)) {
-			DERBY_JAR = "target/liberty/wlp/usr/servers/BoostServer/resources/derby-10.11.1.1.jar";
-		}
-	}
+        if ("tomee".equals(runtime)) {
+            DERBY_JAR = "target/apache-tomee/boost/derby-10.11.1.1.jar";
+        } else if ("ol".equals(runtime) || "wlp".equals(runtime)) {
+            DERBY_JAR = "target/liberty/wlp/usr/servers/BoostServer/resources/derby-10.11.1.1.jar";
+        }
+    }
 
-	/**
-	 * Test that the release project is using the Derby version that it defined in
-	 * its own project
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testDerbyVersion() throws Exception {
-		assertTrue(DERBY_JAR != null);
-		File targetFile = new File(DERBY_JAR);
-		assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
-	}
+    /**
+     * Test that the release project is using the Derby version that it defined in
+     * its own project
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testDerbyVersion() throws Exception {
+        assertTrue(DERBY_JAR != null);
+        File targetFile = new File(DERBY_JAR);
+        assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
+    }
 }

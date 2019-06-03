@@ -26,7 +26,7 @@ public class LibertyJaxRSBoosterConfig extends JAXRSBoosterConfig implements Lib
     }
 
     @Override
-	public String getFeature() {
+    public String getFeature() {
         if (getVersion().equals(EE_7_VERSION)) {
             return JAXRS_20;
         } else if (getVersion().equals(EE_8_VERSION)) {
@@ -36,7 +36,7 @@ public class LibertyJaxRSBoosterConfig extends JAXRSBoosterConfig implements Lib
     }
 
     @Override
-	public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
+
     }
 }

@@ -20,12 +20,13 @@ import boost.runtimes.boosters.LibertyBoosterI;
 
 public class LibertyMPRestClientBoosterConfig extends MPRestClientBoosterConfig implements LibertyBoosterI {
 
-    public LibertyMPRestClientBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+    public LibertyMPRestClientBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger)
+            throws BoostException {
         super(dependencies, logger);
     }
 
     @Override
-	public String getFeature() {
+    public String getFeature() {
         if (getVersion().equals(MP_20_VERSION)) {
             return MPRESTCLIENT_11;
         }
@@ -33,7 +34,7 @@ public class LibertyMPRestClientBoosterConfig extends MPRestClientBoosterConfig 
     }
 
     @Override
-	public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
+
     }
 }

@@ -25,7 +25,7 @@ public class LibertyMPHealthBoosterConfig extends MPHealthBoosterConfig implemen
     }
 
     @Override
-	public String getFeature() {
+    public String getFeature() {
         if (getVersion().equals(MP_20_VERSION)) {
             return MPHEALTH_10;
         }
@@ -33,7 +33,7 @@ public class LibertyMPHealthBoosterConfig extends MPHealthBoosterConfig implemen
     }
 
     @Override
-	public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
+
     }
 }

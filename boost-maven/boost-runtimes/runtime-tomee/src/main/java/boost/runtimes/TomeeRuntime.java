@@ -35,8 +35,8 @@ import io.openliberty.boost.common.runtimes.RuntimeI;
 import io.openliberty.boost.maven.runtimes.RuntimeParams;
 import io.openliberty.boost.maven.utils.BoostLogger;
 
-public class TomeeRuntime implements RuntimeI {    
-	private final List<AbstractBoosterConfig> boosterConfigs;
+public class TomeeRuntime implements RuntimeI {
+    private final List<AbstractBoosterConfig> boosterConfigs;
     private final ExecutionEnvironment env;
 
     private final String tomeeMavenPluginGroupId = "org.apache.tomee.maven";
@@ -116,15 +116,15 @@ public class TomeeRuntime implements RuntimeI {
     }
 
     /**
-     * Get all booster dependencies and invoke the maven-dependency-plugin to
-     * copy them to the Liberty server.
+     * Get all booster dependencies and invoke the maven-dependency-plugin to copy
+     * them to the Liberty server.
      * 
      * @throws MojoExecutionException
      *
      */
     private void copyTomeeJarDependencies(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
-        List<String> tomeeDependencyJarsToCopy = BoosterConfigurator
-                .getDependenciesToCopy(boosterConfigs, BoostLogger.getInstance());
+        List<String> tomeeDependencyJarsToCopy = BoosterConfigurator.getDependenciesToCopy(boosterConfigs,
+                BoostLogger.getInstance());
         for (String dep : tomeeDependencyJarsToCopy) {
             String[] dependencyInfo = dep.split(":");
 
@@ -139,14 +139,14 @@ public class TomeeRuntime implements RuntimeI {
     }
 
     /**
-	 * Invoke the tomee-maven-plugin to create an executable jar
-	 */
-	private void createUberJar() throws MojoExecutionException {
+     * Invoke the tomee-maven-plugin to create an executable jar
+     */
+    private void createUberJar() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("exec"),
-                configuration(element(name("classifier"), "exec"), element(name("tomeeAlreadyInstalled"), "true"), element(name("classpaths"), "[]"),
-                        element(name("context"), "ROOT"), element(name("tomeeVersion"), "8.0.0-M2"),
-                        element(name("tomeeClassifier"), "plus"), element(name("catalinaBase"), installDir),
-                        element(name("config"), configDir)),
+                configuration(element(name("classifier"), "exec"), element(name("tomeeAlreadyInstalled"), "true"),
+                        element(name("classpaths"), "[]"), element(name("context"), "ROOT"),
+                        element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus"),
+                        element(name("catalinaBase"), installDir), element(name("config"), configDir)),
                 env);
     }
 

@@ -26,7 +26,7 @@ public class LibertyJPABoosterConfig extends JPABoosterConfig implements Liberty
     }
 
     @Override
-	public String getFeature() {
+    public String getFeature() {
         if (getVersion().equals(EE_7_VERSION)) {
             return JPA_21;
         } else if (getVersion().equals(EE_8_VERSION)) {
@@ -36,7 +36,7 @@ public class LibertyJPABoosterConfig extends JPABoosterConfig implements Liberty
     }
 
     @Override
-	public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
+
     }
 }

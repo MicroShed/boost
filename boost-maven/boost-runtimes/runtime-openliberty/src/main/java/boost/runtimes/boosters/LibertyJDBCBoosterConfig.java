@@ -32,12 +32,12 @@ public class LibertyJDBCBoosterConfig extends JDBCBoosterConfig implements Liber
     }
 
     @Override
-	public String getFeature() {
+    public String getFeature() {
         String compilerVersion = System.getProperty(BoostProperties.INTERNAL_COMPILER_TARGET);
 
         if ("1.8".equals(compilerVersion) || "8".equals(compilerVersion) || "9".equals(compilerVersion)
                 || "10".equals(compilerVersion)) {
-                return JDBC_42;
+            return JDBC_42;
         } else if ("11".equals(compilerVersion)) {
             return JDBC_43;
         } else {
@@ -48,15 +48,17 @@ public class LibertyJDBCBoosterConfig extends JDBCBoosterConfig implements Liber
     }
 
     @Override
-	public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) throws BoostException {
-    	try {
-    		addDataSource(getProductName(), getDatasourceProperties(), libertyServerConfigGenerator, libertyServerConfigGenerator.getServerXmlDoc());
-    	} catch(Exception e) {
-    		throw new BoostException("Error when configuring JDBC data source.");
-    	}
+    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) throws BoostException {
+        try {
+            addDataSource(getProductName(), getDatasourceProperties(), libertyServerConfigGenerator,
+                    libertyServerConfigGenerator.getServerXmlDoc());
+        } catch (Exception e) {
+            throw new BoostException("Error when configuring JDBC data source.");
+        }
     }
 
-    private void addDataSource(String productName, Properties serverProperties, LibertyServerConfigGenerator libertyServerConfigGenerator, Document serverXml) throws Exception {
+    private void addDataSource(String productName, Properties serverProperties,
+            LibertyServerConfigGenerator libertyServerConfigGenerator, Document serverXml) throws Exception {
 
         String driverJar = null;
         String datasourcePropertiesElement = null;
