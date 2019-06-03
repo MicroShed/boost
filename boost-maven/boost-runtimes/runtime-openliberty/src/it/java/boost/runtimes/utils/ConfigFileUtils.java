@@ -46,36 +46,37 @@ public class ConfigFileUtils {
 
         return found;
     }
-    
-    public static String findPropertyInBootstrapProperties(String bootstrapPropertiesPath, String key) throws IOException {
 
-    	String foundProperty = null;
-    	
+    public static String findPropertyInBootstrapProperties(String bootstrapPropertiesPath, String key)
+            throws IOException {
+
+        String foundProperty = null;
+
         Properties properties = new Properties();
         InputStream input = null;
 
-    	try {
+        try {
 
-    		input = new FileInputStream(bootstrapPropertiesPath);
-    		
-    		// load a properties file
-    		properties.load(input);
-    		
+            input = new FileInputStream(bootstrapPropertiesPath);
+
+            // load a properties file
+            properties.load(input);
+
             foundProperty = properties.getProperty(key);
 
-    	} catch (IOException ex) {
-    		ex.printStackTrace();
-    	} finally {
-    		if (input != null) {
-    			try {
-    				input.close();
-    			} catch (IOException e) {
-    				e.printStackTrace();
-    			}
-    		}
-    	}
-    	
-		return foundProperty;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return foundProperty;
     }
 
 }

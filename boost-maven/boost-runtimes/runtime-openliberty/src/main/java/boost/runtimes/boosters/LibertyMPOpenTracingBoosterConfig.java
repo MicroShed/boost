@@ -20,12 +20,13 @@ import boost.runtimes.boosters.LibertyBoosterI;
 
 public class LibertyMPOpenTracingBoosterConfig extends MPOpenTracingBoosterConfig implements LibertyBoosterI {
 
-    public LibertyMPOpenTracingBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+    public LibertyMPOpenTracingBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger)
+            throws BoostException {
         super(dependencies, logger);
     }
 
     @Override
-	public String getFeature() {
+    public String getFeature() {
         if (getVersion().equals(MP_20_VERSION)) {
             return MPOPENTRACING_11;
         }
@@ -33,7 +34,7 @@ public class LibertyMPOpenTracingBoosterConfig extends MPOpenTracingBoosterConfi
     }
 
     @Override
-	public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
+
     }
 }

@@ -61,8 +61,8 @@ public final class BoostProperties {
 
             if (entry.getKey().toString().startsWith("boost.")) {
 
-                // logger.debug("Found boost property: " + 
-            	// entry.getKey() + ":" + entry.getValue());
+                // logger.debug("Found boost property: " +
+                // entry.getKey() + ":" + entry.getValue());
 
                 boostProperties.put(entry.getKey(), entry.getValue());
             }
