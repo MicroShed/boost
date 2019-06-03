@@ -13,5 +13,5 @@ package boost.runtimes.tomee.boosters;
 import java.util.List;
 
 public interface TomeeBoosterI {
-	public List<String> getDependencies();
+    public List<String> getDependencies();
 }

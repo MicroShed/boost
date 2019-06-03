@@ -54,8 +54,10 @@ public class JPAResource {
         return builder.toString();
     }
 
-    public void createThing(StringBuilder builder) throws NamingException, NotSupportedException, SystemException, IllegalStateException, SecurityException, HeuristicMixedException, HeuristicRollbackException, RollbackException {
-    	Context ctx = new InitialContext();
+    public void createThing(StringBuilder builder)
+            throws NamingException, NotSupportedException, SystemException, IllegalStateException, SecurityException,
+            HeuristicMixedException, HeuristicRollbackException, RollbackException {
+        Context ctx = new InitialContext();
         // Before getting an EntityManager, start a global transaction
         UserTransaction tran = (UserTransaction) ctx.lookup("java:comp/UserTransaction");
         tran.begin();
@@ -68,7 +70,7 @@ public class JPAResource {
         Thing thing = new Thing();
         em.persist(thing);
 
-        // Commit the transaction 
+        // Commit the transaction
         tran.commit();
         int id = thing.getId();
         builder.append("Created Thing " + id + ":  " + thing).append(newline);

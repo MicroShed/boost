@@ -25,18 +25,19 @@ import boost.common.boosters.AbstractBoosterConfig;
 
 public class RuntimeParams {
 
-	List<AbstractBoosterConfig> boosterConfigs;
+    List<AbstractBoosterConfig> boosterConfigs;
     ExecutionEnvironment env;
     MavenProject project;
-    Log log; 
+    Log log;
     RepositorySystem repoSystem;
     RepositorySystemSession repoSession;
     List<RemoteRepository> remoteRepos;
     Plugin mavenDepPlugin;
     String projectBuildDir;
 
-    public RuntimeParams(List<AbstractBoosterConfig> boosterConfigs, ExecutionEnvironment env, MavenProject project, Log log, 
-    RepositorySystem repoSystem, RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, Plugin mavenDepPlugin) {
+    public RuntimeParams(List<AbstractBoosterConfig> boosterConfigs, ExecutionEnvironment env, MavenProject project,
+            Log log, RepositorySystem repoSystem, RepositorySystemSession repoSession,
+            List<RemoteRepository> remoteRepos, Plugin mavenDepPlugin) {
         this.log = log;
         this.boosterConfigs = boosterConfigs;
         this.env = env;

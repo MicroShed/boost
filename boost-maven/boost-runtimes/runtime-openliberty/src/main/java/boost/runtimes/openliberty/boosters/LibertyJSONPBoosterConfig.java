@@ -27,7 +27,7 @@ public class LibertyJSONPBoosterConfig extends JSONPBoosterConfig implements Lib
     }
 
     @Override
-	public String getFeature() {
+    public String getFeature() {
         if (getVersion().equals(MP_20_VERSION)) {
             return JSONP_11;
         }
@@ -35,7 +35,7 @@ public class LibertyJSONPBoosterConfig extends JSONPBoosterConfig implements Lib
     }
 
     @Override
-	public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
+
     }
 }

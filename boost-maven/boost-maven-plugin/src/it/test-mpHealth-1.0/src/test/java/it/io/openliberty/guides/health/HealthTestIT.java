@@ -28,11 +28,11 @@ public class HealthTestIT {
 
     @BeforeClass
     public static void init() {
-    	// These tests is being temporarily skipped when running on TomEE 
-    	// until the failures are addressed.
-    	String runtime = System.getProperty("boostRuntime");
+        // These tests is being temporarily skipped when running on TomEE
+        // until the failures are addressed.
+        String runtime = System.getProperty("boostRuntime");
         org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
-    	
+
         dataWhenServicesUP = new HashMap<String, String>();
         dataWhenInventoryDown = new HashMap<String, String>();
 

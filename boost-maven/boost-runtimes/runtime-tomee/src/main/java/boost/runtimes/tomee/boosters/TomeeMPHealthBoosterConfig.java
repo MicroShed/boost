@@ -25,7 +25,7 @@ public class TomeeMPHealthBoosterConfig extends MPHealthBoosterConfig implements
 
     @Override
     public List<String> getDependencies() {
-    	List<String> deps = super.getDependencies();
+        List<String> deps = super.getDependencies();
         deps.add("org.apache.geronimo:geronimo-health:1.0.1");
         deps.add("org.apache.geronimo:geronimo-health-common:1.0.1");
         deps.add("org.eclipse.microprofile.health:microprofile-health-api:1.0");

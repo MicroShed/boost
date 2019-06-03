@@ -50,21 +50,21 @@ public class BoosterConfigurator {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      * @throws SecurityException
-     * @throws IOException 
-     * @throws ClassNotFoundException 
+     * @throws IOException
+     * @throws ClassNotFoundException
      */
-    public static List<AbstractBoosterConfig> getBoosterConfigs(List<File> jars, ClassLoader classLoader, Map<String, String> dependencies,
-            BoostLoggerI logger) throws Exception {
-    	
-    	ClassPool classPool = ClassPool.getDefault();
-    	classPool.appendClassPath(new LoaderClassPath(classLoader));
-    	
-    	List<CtClass> runtimeBoosterCtClasses = new ArrayList<CtClass>();
-    	for(File jar: jars) {
-    		List<CtClass> jarCtClasses = findBoosterCtClassesInJar(jar, classPool);
-    		runtimeBoosterCtClasses.addAll(jarCtClasses);
-    	}
-    	
+    public static List<AbstractBoosterConfig> getBoosterConfigs(List<File> jars, ClassLoader classLoader,
+            Map<String, String> dependencies, BoostLoggerI logger) throws Exception {
+
+        ClassPool classPool = ClassPool.getDefault();
+        classPool.appendClassPath(new LoaderClassPath(classLoader));
+
+        List<CtClass> runtimeBoosterCtClasses = new ArrayList<CtClass>();
+        for (File jar : jars) {
+            List<CtClass> jarCtClasses = findBoosterCtClassesInJar(jar, classPool);
+            runtimeBoosterCtClasses.addAll(jarCtClasses);
+        }
+
         List<AbstractBoosterConfig> boosterConfigList = new ArrayList<AbstractBoosterConfig>();
 
         Reflections reflections = new Reflections("boost.common.boosters");
@@ -72,21 +72,22 @@ public class BoosterConfigurator {
         Set<Class<? extends AbstractBoosterConfig>> allClasses = reflections.getSubTypesOf(AbstractBoosterConfig.class);
         for (Class<? extends AbstractBoosterConfig> boosterClass : allClasses) {
             if (dependencies.containsKey(AbstractBoosterConfig.getCoordinates(boosterClass))) {
-            	
-            	Constructor<?> cons = null;
-            	for(CtClass ctClass : runtimeBoosterCtClasses) {
-            		if(ctClass.getSuperclass().getName().equals(boosterClass.getName())) {
-            			// A runtime specific booster exists
-            			Class<?> runtimeBoosterClass = classLoader.loadClass(ctClass.getName());
-            			cons = runtimeBoosterClass.getConstructor(Map.class, BoostLoggerI.class);
-            		}
-            	}
-            	
-            	if(cons == null) {
-            		// We did not find a runtime specific booster class, just instantiate a generic one
-            		cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
-            	}
-            	
+
+                Constructor<?> cons = null;
+                for (CtClass ctClass : runtimeBoosterCtClasses) {
+                    if (ctClass.getSuperclass().getName().equals(boosterClass.getName())) {
+                        // A runtime specific booster exists
+                        Class<?> runtimeBoosterClass = classLoader.loadClass(ctClass.getName());
+                        cons = runtimeBoosterClass.getConstructor(Map.class, BoostLoggerI.class);
+                    }
+                }
+
+                if (cons == null) {
+                    // We did not find a runtime specific booster class, just instantiate a generic
+                    // one
+                    cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
+                }
+
                 Object o = cons.newInstance(dependencies, logger);
                 if (o instanceof AbstractBoosterConfig) {
                     boosterConfigList.add((AbstractBoosterConfig) o);
@@ -99,8 +100,9 @@ public class BoosterConfigurator {
 
         return boosterConfigList;
     }
-    
-    public static List<String> getDependenciesToCopy(List<AbstractBoosterConfig> boosterConfigurators, BoostLoggerI logger) {
+
+    public static List<String> getDependenciesToCopy(List<AbstractBoosterConfig> boosterConfigurators,
+            BoostLoggerI logger) {
 
         Set<String> allDependencyJarsNoDups;
         List<String> dependencyJarsToCopy = new ArrayList<String>();
@@ -114,14 +116,15 @@ public class BoosterConfigurator {
                 }
             }
         }
-        
+
         allDependencyJarsNoDups = new HashSet<>(dependencyJarsToCopy);
         dependencyJarsToCopy.clear();
         dependencyJarsToCopy.addAll(allDependencyJarsNoDups);
         return dependencyJarsToCopy;
     }
-    
-    private static List<CtClass> findBoosterCtClassesInJar(File jarFile, ClassPool classPool) throws ClassNotFoundException, IOException {
+
+    private static List<CtClass> findBoosterCtClassesInJar(File jarFile, ClassPool classPool)
+            throws ClassNotFoundException, IOException {
         List<CtClass> ctClasses = new ArrayList<CtClass>();
         JarFile jar = new JarFile(jarFile);
         // Getting the files into the jar
@@ -139,14 +142,17 @@ public class BoosterConfigurator {
 
                 // Complete class name
                 className = className.replace(".class", "").replace("/", ".");
-                
+
                 try {
                     CtClass ctClass = classPool.get(className);
-                    // For now, assume that a runtime booster is going to directly extend a common booster, which will extend AbstractBoosterConfig
-                    if(ctClass.getSuperclass().getSuperclass().getName().contains(AbstractBoosterConfig.class.getName())) {
-                    	ctClasses.add(ctClass);
+                    // For now, assume that a runtime booster is going to directly extend a common
+                    // booster, which will extend AbstractBoosterConfig
+                    if (ctClass.getSuperclass().getSuperclass().getName()
+                            .contains(AbstractBoosterConfig.class.getName())) {
+                        ctClasses.add(ctClass);
                     }
-                } catch(Exception e) {}
+                } catch (Exception e) {
+                }
 
             }
         }
@@ -154,5 +160,5 @@ public class BoosterConfigurator {
 
         return ctClasses;
     }
-    
+
 }

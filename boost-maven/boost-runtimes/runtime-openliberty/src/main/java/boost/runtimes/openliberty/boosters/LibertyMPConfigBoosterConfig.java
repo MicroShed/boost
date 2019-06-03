@@ -27,7 +27,7 @@ public class LibertyMPConfigBoosterConfig extends MPConfigBoosterConfig implemen
     }
 
     @Override
-	public String getFeature() {
+    public String getFeature() {
         if (getVersion().equals(MP_20_VERSION)) {
             return MPCONFIG_13;
         }
@@ -35,7 +35,7 @@ public class LibertyMPConfigBoosterConfig extends MPConfigBoosterConfig implemen
     }
 
     @Override
-	public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
+
     }
 }
