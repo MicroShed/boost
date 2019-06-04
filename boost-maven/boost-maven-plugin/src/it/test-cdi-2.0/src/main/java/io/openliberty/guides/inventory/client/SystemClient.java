@@ -68,7 +68,8 @@ public class SystemClient {
     // Method that creates the client builder
     protected Builder buildClientBuilder(String urlString) {
         try {
-            Client client = ClientBuilder.newClient();
+            // Client client = ClientBuilder.newClient();
+            Client client = ClientBuilder.newBuilder().register(PropertiesReader.class).build();
             Builder builder = client.target(urlString).request();
             return builder.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         } catch (Exception e) {
@@ -88,6 +89,7 @@ public class SystemClient {
             }
         } catch (RuntimeException e) {
             System.err.println("Runtime exception: " + e.getMessage());
+            e.printStackTrace();
         } catch (Exception e) {
             System.err.println("Exception thrown while invoking the request: " + e.getMessage());
         }
