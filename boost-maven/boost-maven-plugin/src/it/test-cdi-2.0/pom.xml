@@ -116,12 +116,27 @@
             <version>1.0.1</version>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.0.4</version>
-            <optional>true</optional>
-        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-json-binding-provider -->
+<dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-json-binding-provider</artifactId>
+    <version>4.0.0.Final</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs -->
+<dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-jaxrs</artifactId>
+    <version>3.7.0.Final</version>
+    <scope>provided</scope>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-context-propagation -->
+<dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-context-propagation</artifactId>
+    <version>4.0.0.Final</version>
+</dependency>
+
+
     </dependencies>
 
 	<build>

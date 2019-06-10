@@ -22,11 +22,12 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.annotation.*;
 import javax.json.bind.*;
+import java.io.*;
 
 @Provider
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Priority(1)
+@Priority(5000)
 public class PropertiesReader implements MessageBodyReader<Properties>, MessageBodyWriter<Properties> {
 
     @Override
@@ -76,6 +77,9 @@ public class PropertiesReader implements MessageBodyReader<Properties>, MessageB
         Jsonb jsonb = JsonbBuilder.create();
         String propStr = jsonb.toJson(t);
         System.out.println("AJM: just wrote out this prop obj -> \n" + propStr);
+        Writer pw = new PrintWriter(entityStream);
+        pw.write(propStr);
+        pw.flush();
     }
 
 }

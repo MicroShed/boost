@@ -22,11 +22,12 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.annotation.*;
 import javax.json.bind.*;
+import java.io.*;
 
 @Provider
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Priority(2)
+@Priority(5000)
 public class InventoryListJsonBImpl implements MessageBodyReader<InventoryList>, MessageBodyWriter<InventoryList> {
 
     @Override
@@ -76,6 +77,9 @@ public class InventoryListJsonBImpl implements MessageBodyReader<InventoryList>,
         Jsonb jsonb = JsonbBuilder.create();
         String ilstr = jsonb.toJson(t);
         System.out.println("AJM: just wrote out this prop obj -> \n" + ilstr);
+        Writer pw = new PrintWriter(entityStream);
+        pw.write(ilstr);
+        pw.flush();
     }
 
 }
