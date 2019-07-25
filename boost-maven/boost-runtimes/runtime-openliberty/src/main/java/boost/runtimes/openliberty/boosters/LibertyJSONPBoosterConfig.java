@@ -10,7 +10,7 @@
  *******************************************************************************/
 package boost.runtimes.openliberty.boosters;
 
-import static boost.common.config.ConfigConstants.JSONP_11;
+import static boost.common.config.ConfigConstants.*;
 
 import java.util.Map;
 
@@ -28,7 +28,10 @@ public class LibertyJSONPBoosterConfig extends JSONPBoosterConfig implements Lib
 
     @Override
     public String getFeature() {
-        if (getVersion().equals(MP_20_VERSION)) {
+        if (getVersion().equals(JSONP_VERSION_10)) {
+            return JSONP_10;
+        }
+        else if (getVersion().equals(JSONP_VERSION_11)) {
             return JSONP_11;
         }
         return null;

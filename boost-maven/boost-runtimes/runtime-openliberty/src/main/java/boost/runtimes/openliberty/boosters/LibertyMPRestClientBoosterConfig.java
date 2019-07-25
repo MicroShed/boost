@@ -29,7 +29,7 @@ public class LibertyMPRestClientBoosterConfig extends MPRestClientBoosterConfig 
 
     @Override
     public String getFeature() {
-        if (getVersion().equals(MP_20_VERSION)) {
+        if (getVersion().equals(MP_RESTCLIENT_VERSION_11)) {
             return MPRESTCLIENT_11;
         }
         return null;

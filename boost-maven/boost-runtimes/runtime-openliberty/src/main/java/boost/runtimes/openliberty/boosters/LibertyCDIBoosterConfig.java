@@ -10,7 +10,7 @@
  *******************************************************************************/
 package boost.runtimes.openliberty.boosters;
 
-import static boost.common.config.ConfigConstants.CDI_20;
+import static boost.common.config.ConfigConstants.*;
 
 import java.util.Map;
 
@@ -27,10 +27,15 @@ public class LibertyCDIBoosterConfig extends CDIBoosterConfig implements Liberty
     }
 
     public String getFeature() {
-        if (getVersion().equals(MP_20_VERSION)) {
+        if (getVersion().equals(CDI_VERSION_20)) {
             return CDI_20;
         }
-        return null;
+        if (getVersion().equals(CDI_VERSION_12)) {
+            return CDI_12;
+        }
+        else {
+            return null;
+        }
     }
 
     public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {

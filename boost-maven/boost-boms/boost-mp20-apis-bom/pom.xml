@@ -38,11 +38,11 @@
 
 	<dependencyManagement>
 		<dependencies>
-	        <dependency>
-	            <groupId>javax.enterprise</groupId>
-	            <artifactId>cdi-api</artifactId>
-	            <version>${cdi-version}</version>
-	        </dependency>
+			<dependency>
+	        	<groupId>boost.boosters</groupId>
+				<artifactId>boost-ee7-apis-bom</artifactId>
+    			<version>0.1-SNAPSHOT</version>
+			</dependency>
 	        <dependency>
 	            <groupId>javax.ws.rs</groupId>
 	            <artifactId>javax.ws.rs-api</artifactId>
@@ -51,6 +51,11 @@
 	        <dependency>
 	            <groupId>javax.json</groupId>
 	            <artifactId>javax.json-api</artifactId>
+	            <version>${jsonp-version}</version>
+	        </dependency>
+	       	<dependency>
+	            <groupId>javax.json.bind</groupId>
+	            <artifactId>javax.json.bind-api</artifactId>
 	            <version>${jsonp-version}</version>
 	        </dependency>
 	        <dependency>
@@ -98,21 +103,6 @@
 	            <artifactId>microprofile-opentracing-api</artifactId>
 	            <version>${opentracing-version}</version>
 	        </dependency>
-	        			<dependency>
-				<groupId>boost.boosters</groupId>
-				<artifactId>jaxrs</artifactId>
-				<version>${jaxrs-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>boost.boosters</groupId>
-				<artifactId>cdi</artifactId>
-				<version>${cdi-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>boost.boosters</groupId>
-				<artifactId>jsonp</artifactId>
-				<version>${jsonp-version}</version>
-			</dependency>
 		</dependencies>	
 	</dependencyManagement>
 

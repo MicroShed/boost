@@ -13,17 +13,24 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>booster-jaxrs-ee7</module>
-        <module>booster-jaxrs-ee8</module>
-        <module>booster-cdi-ee8</module>
+        <module>booster-jaxrs20</module>
+        <module>booster-jaxrs21</module>
+        <module>booster-cdi12</module>
+        <module>booster-cdi20</module>
         <module>booster-jdbc</module>
-        <module>booster-jpa-ee7</module>
-        <module>booster-jpa-ee8</module>
-        <module>booster-jsonp-ee8</module>
-        <module>booster-mpConfig-20</module>
-        <module>booster-mpHealth-20</module>
-        <module>booster-mpOpenTracing-20</module>
-        <module>booster-mpRestClient-20</module>
+        <module>booster-jpa21</module>
+        <module>booster-jpa22</module>
+        <module>booster-jsonb10</module>
+        <module>booster-jsonp10</module>
+        <module>booster-jsonp11</module>
+        <module>booster-mpConfig13</module>
+        <module>booster-mpMetrics11</module>
+        <module>booster-mpFaultTolerance11</module>
+        <module>booster-mpHealth10</module>
+        <module>booster-mpOpenAPI10</module>
+        <module>booster-mpOpenTracing11</module>
+        <module>booster-mpOpenTracing12</module>
+        <module>booster-mpRestClient11</module>
     </modules>
 
 </project>

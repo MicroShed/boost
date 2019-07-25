@@ -43,7 +43,7 @@
 				<!-- Booster version distinct from the BOM, boost-maven-plugin version -->
 				<!-- Could also use 7.0, 8.0 for EE7, 8 -->
 				<!-- Probably will be 1.0 for initial GA -->
-				<version>0.1-SNAPSHOT</version>
+				<version>2.0-M1-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -55,9 +55,21 @@
 			<dependency>
 				<groupId>boost.boosters</groupId>
 				<artifactId>jpa</artifactId>
-				<version>0.1-SNAPSHOT</version>
+				<version>2.1-M1-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>boost.boosters</groupId>
+				<artifactId>cdi</artifactId>
+				<version>1.2-M1-SNAPSHOT</version>
+				<scope>provided</scope>
+			</dependency>	
+			<dependency>
+				<groupId>boost.boosters</groupId>
+				<artifactId>jsonp</artifactId>
+				<version>1.0-M1-SNAPSHOT</version>
+				<scope>provided</scope>
+			</dependency>					
 		</dependencies>
 	</dependencyManagement>
 

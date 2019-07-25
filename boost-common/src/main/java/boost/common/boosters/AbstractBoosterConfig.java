@@ -27,11 +27,26 @@ import boost.common.BoostException;
  */
 public abstract class AbstractBoosterConfig {
 
+    public static final String milestone = "M1";
     public static final String RUNTIMES_GROUP_ID = "boost.runtimes";
     public static final String BOOSTERS_GROUP_ID = "boost.boosters";
-    public static final String EE_7_VERSION = "0.1-SNAPSHOT";
-    public static final String EE_8_VERSION = "0.2-SNAPSHOT";
-    public static final String MP_20_VERSION = "0.2-SNAPSHOT";
+    public static final String CDI_VERSION_12 = "1.2-"+milestone+"-SNAPSHOT";
+    public static final String CDI_VERSION_20 = "2.0-"+milestone+"-SNAPSHOT";
+    public static final String JAXRS_VERSION_20 = "2.0-"+milestone+"-SNAPSHOT";
+    public static final String JAXRS_VERSION_21 = "2.1-"+milestone+"-SNAPSHOT";
+    public static final String JSONB_VERSION_10 = "1.0-"+milestone+"-SNAPSHOT";
+    public static final String JSONP_VERSION_10 = "1.0-"+milestone+"-SNAPSHOT";
+    public static final String JSONP_VERSION_11 = "1.1-"+milestone+"-SNAPSHOT";
+    public static final String JPA_VERSION_21 = "2.1-"+milestone+"-SNAPSHOT";
+    public static final String JPA_VERSION_22 = "2.2-"+milestone+"-SNAPSHOT";
+    public static final String MP_HEALTH_VERSION_10 = "1.0-"+milestone+"-SNAPSHOT";
+    public static final String MP_CONFIG_VERSION_13 = "1.3-"+milestone+"-SNAPSHOT";
+    public static final String MP_METRICS_VERSION_11 = "1.1-"+milestone+"-SNAPSHOT";
+    public static final String MP_FAULTTOLERANCE_VERSION_11 = "1.1-"+milestone+"-SNAPSHOT";
+    public static final String MP_OPENAPI_VERSION_10 = "1.0-"+milestone+"-SNAPSHOT";
+    public static final String MP_OPENTRACING_VERSION_11 = "1.1-"+milestone+"-SNAPSHOT";
+    public static final String MP_OPENTRACING_VERSION_12 = "1.2-"+milestone+"-SNAPSHOT";
+    public static final String MP_RESTCLIENT_VERSION_11 = "1.1-"+milestone+"-SNAPSHOT";
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
