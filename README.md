@@ -1,26 +1,23 @@
-## Liberty Boost
+## Boost
 
-Boost is a Maven and Gradle plugin that enhances the builds for your Java EE, MicroProfile, and Spring Boot applications. 
+Boost includes a Maven and Gradle plugin to make it easier to build your MicroProfile applications.
 
-There are three separate Boost projects. Click the links for more information.
+There are two, separate active Boost projects. 
 
-- [Boost Maven Plugin](https://github.com/OpenLiberty/boost/tree/master/boost-maven)
-- [Boost Gradle Plugin](https://github.com/OpenLiberty/boost/tree/master/boost-gradle)
-- [Boost Common Resources](https://github.com/OpenLiberty/boost/tree/master/boost-common)
+- Boost Maven Plugin, BOMs, and Boosters (`boost-maven`)
+- Boost Common Resources (`boost-common`)
 
-### Developing Liberty Boost
+with a Boost Gradle project under development.
 
-If you are interested in contributing to Liberty Boost, read the [wiki](https://github.com/OpenLiberty/boost-maven/wiki) for more information.
+### Developing Boost
 
-### Build Dependencies
+If you are interested in contributing to Boost, read the [wiki](https://github.com/dev-tools-for-enterprise-java/boost/wiki) for more information.
 
-The Boost plugin builds on the Liberty plugin.
+If you are interested in the Boost runtime adapter mechanism, it is described in greater detail in the [Boost Runtimes](https://github.com/dev-tools-for-enterprise-java/boost/wiki/Boost-Runtimes) page of the wiki.
 
-For Maven, you will need to clone and `mvn install` the following repositories: [ci.common](https://github.com/WASdev/ci.common) and [ci.maven](https://github.com/WASdev/ci.maven).
+### Building Boost
 
-### Building Liberty Boost
-
-You will need to build the `boost-common` project before building either the Boost Maven Plugin or Boost Gradle Plugin. We provide some scripts below to simplify this process. 
+You will need to build the `boost-common` project before building the `boost-maven` project. We provide some scripts below to simplify this process. 
 
 #### Boost Maven Plugin
 
@@ -38,18 +35,3 @@ To build the Boost Maven Plugin:
 ./boost-maven.sh
 ```
 
-#### Boost Gradle Plugin
-
-To build the Boost Gradle Plugin:
-
-##### Windows:
-
-```
-./boost-gradle.bat
-```
-
-##### Mac/Linux:
-
-```
-./boost-gradle.sh
-```
