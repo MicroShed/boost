@@ -1,4 +1,7 @@
-## Boost
+# Boost
+
+[![Build Status](https://travis-ci.org/dev-tools-for-enterprise-java/boost.svg?branch=master)](https://travis-ci.org/dev-tools-for-enterprise-java/boost)
+[![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](http://www.eclipse.org/legal/epl-v10.html)
 
 Boost includes a Maven and Gradle plugin to make it easier to build your MicroProfile applications.
 
