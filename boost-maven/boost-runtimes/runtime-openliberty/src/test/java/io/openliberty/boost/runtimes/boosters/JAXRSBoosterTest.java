@@ -47,7 +47,7 @@ public class JAXRSBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        LibertyJAXRSBoosterConfig libJAXRSConfig = new LibertyJAXRSBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.0-M1-SNAPSHOT"), logger);
+        LibertyJAXRSBoosterConfig libJAXRSConfig = new LibertyJAXRSBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.0.0.M1-SNAPSHOT"), logger);
 
 
         serverConfig.addFeature(libJAXRSConfig.getFeature());
@@ -71,7 +71,7 @@ public class JAXRSBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        LibertyJAXRSBoosterConfig libJAXRSConfig = new LibertyJAXRSBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.1-M1-SNAPSHOT"), logger);
+        LibertyJAXRSBoosterConfig libJAXRSConfig = new LibertyJAXRSBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.1.0.M1-SNAPSHOT"), logger);
 
 
         serverConfig.addFeature(libJAXRSConfig.getFeature());

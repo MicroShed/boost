@@ -47,7 +47,7 @@ public class MPConfigBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        LibertyMPConfigBoosterConfig libMPConfigConfig = new LibertyMPConfigBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPConfigBoosterConfig.class, "1.3-M1-SNAPSHOT"), logger);
+        LibertyMPConfigBoosterConfig libMPConfigConfig = new LibertyMPConfigBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPConfigBoosterConfig.class, "1.3.0.M1-SNAPSHOT"), logger);
 
 
         serverConfig.addFeature(libMPConfigConfig.getFeature());
