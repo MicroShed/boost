@@ -47,7 +47,7 @@ public class MPOpenTracingBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class, "1.1.0.M1-SNAPSHOT"), logger);
+        LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class, "1.1.M1-SNAPSHOT"), logger);
 
         serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
         serverConfig.writeToServer();
@@ -71,7 +71,7 @@ public class MPOpenTracingBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class, "1.2.0.M1-SNAPSHOT"), logger);
+        LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class, "1.2.M1-SNAPSHOT"), logger);
 
         serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
         serverConfig.writeToServer();

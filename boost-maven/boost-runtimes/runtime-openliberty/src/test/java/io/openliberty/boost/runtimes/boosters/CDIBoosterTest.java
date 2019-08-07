@@ -47,7 +47,7 @@ public class CDIBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        LibertyCDIBoosterConfig libCDIConfig = new LibertyCDIBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "1.2.0.M1-SNAPSHOT"), logger);
+        LibertyCDIBoosterConfig libCDIConfig = new LibertyCDIBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "1.2.M1-SNAPSHOT"), logger);
         
         serverConfig.addFeature(libCDIConfig.getFeature());
         serverConfig.writeToServer();
@@ -70,7 +70,7 @@ public class CDIBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        LibertyCDIBoosterConfig libCDIConfig = new LibertyCDIBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "2.0.0.M1-SNAPSHOT"), logger);
+        LibertyCDIBoosterConfig libCDIConfig = new LibertyCDIBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "2.0.M1-SNAPSHOT"), logger);
 
         serverConfig.addFeature(libCDIConfig.getFeature());
         serverConfig.writeToServer();
