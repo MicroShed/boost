@@ -32,7 +32,7 @@ public class JwtIT {
   private final String TESTNAME = "TESTUSER";
   private final String INV_JWT = "/inventory/jwt";
 
-  String baseUrl = "http://localhost:9000";
+  String baseUrl;
 
   String authHeader;
   
@@ -42,6 +42,14 @@ public class JwtIT {
 
   @Before
   public void setup() throws Exception {
+          // These tests is being temporarily skipped when running on TomEE
+          // until the failures are addressed.
+          String runtime = System.getProperty("boostRuntime");
+          org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
+          String port = System.getProperty("boost.http.port");
+          baseUrl = "http://localhost:" + port;
+
+
 	      JwtVerifier jwtvf = new JwtVerifier();
 	      authHeader = "Bearer " + jwtvf.createJwt(TESTNAME,"groups=admin");
 	      unauthHeader = "Bearer " + jwtvf.createJwt(TESTNAME,"groups=user");

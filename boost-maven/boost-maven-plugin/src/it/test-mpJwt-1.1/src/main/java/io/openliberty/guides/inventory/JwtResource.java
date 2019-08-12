@@ -30,7 +30,7 @@ import java.security.Principal;
 public class JwtResource {
   // The JWT of the current caller. Since this is a request scoped resource, the
   // JWT will be injected for each JAX-RS request. The injection is performed by
-  // the mpJwt-1.0 feature.
+  // the mpJwt-1.1 feature.
   @Inject
   private JsonWebToken jwtPrincipal;
 

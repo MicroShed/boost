@@ -27,6 +27,8 @@ public class TomeeMPJWTBoosterConfig extends MPJWTBoosterConfig {
     public List<String> getDependencies() {
         List<String> deps = super.getDependencies();
         deps.add("org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.1");
+        deps.add("org.apache.geronimo:geronimo-jwt-auth:1.0.3");
+        deps.add("org.apache.geronimo:geronimo-security:1.0");
         return deps;
     }
 }
