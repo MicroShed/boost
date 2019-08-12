@@ -24,6 +24,7 @@
         <module>booster-jsonp10</module>
         <module>booster-jsonp11</module>
         <module>booster-mpConfig13</module>
+        <module>booster-mpJWT-20</module>
         <module>booster-mpMetrics11</module>
         <module>booster-mpFaultTolerance11</module>
         <module>booster-mpHealth10</module>

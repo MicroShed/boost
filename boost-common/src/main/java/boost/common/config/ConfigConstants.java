@@ -103,7 +103,8 @@ public final class ConfigConstants {
     public static final String CDI_12 = "cdi-1.2";
     public static final String CDI_20 = "cdi-2.0";
     public static final String MPHEALTH_10 = "mpHealth-1.0";
-    public static final String MPOPENAPI_10 = "mpOpenAPI-1.0";
+    public static final String MPJWT_11 = "mpjwt-1.1";
+    public static final String MPOPENAPI_10 = "mpOpenAPI-1.0";    
     public static final String MPOPENAPI_11 = "mpOpenAPI-1.1";
     public static final String MPRESTCLIENT_11 = "mpRestClient-1.1";
     public static final String MPRESTCLIENT_12 = "mpRestClient-1.2";

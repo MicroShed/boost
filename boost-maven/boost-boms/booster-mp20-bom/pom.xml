@@ -102,6 +102,12 @@
                 <version>1.0-1.0-M1-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
+                        <dependency>
+				<groupId>boost.boosters</groupId>
+				<artifactId>mpJWT</artifactId>
+				<version>0.2-SNAPSHOT</version>
+				<scope>provided</scope>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 
