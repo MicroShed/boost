@@ -47,8 +47,8 @@ public class JSONBBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        LibertyJSONBBoosterConfig libJSONBConfig = new LibertyJSONBBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyJSONBBoosterConfig.class, "1.0.M1-SNAPSHOT"), logger);
-
+        LibertyJSONBBoosterConfig libJSONBConfig = new LibertyJSONBBoosterConfig(BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyJSONBBoosterConfig.class, "1.0-0-M1-SNAPSHOT"), logger);
 
         serverConfig.addFeature(libJSONBConfig.getFeature());
         serverConfig.writeToServer();

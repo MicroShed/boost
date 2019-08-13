@@ -37,8 +37,8 @@ public class MPFaultToleranceBoosterTest {
     BoostLoggerI logger = CommonLogger.getInstance();
 
     /**
-     * Test that the mpFaultTolerance-1.1 feature is added to server.xml when the MPFaultTolerance
-     * booster version is set to 1.1-M1-SNAPSHOT
+     * Test that the mpFaultTolerance-1.1 feature is added to server.xml when the
+     * MPFaultTolerance booster version is set to 1.1-M1-SNAPSHOT
      * 
      */
     @Test
@@ -47,8 +47,10 @@ public class MPFaultToleranceBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, "1.1.M1-SNAPSHOT"), logger);
-
+        LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(
+                BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class,
+                        "1.1-0-M1-SNAPSHOT"),
+                logger);
 
         serverConfig.addFeature(libMPFTConfig.getFeature());
         serverConfig.writeToServer();

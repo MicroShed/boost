@@ -47,8 +47,8 @@ public class JSONPBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        LibertyJSONPBoosterConfig libJSONPConfig = new LibertyJSONPBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.0.M1-SNAPSHOT"), logger);
-
+        LibertyJSONPBoosterConfig libJSONPConfig = new LibertyJSONPBoosterConfig(BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.0-0-M1-SNAPSHOT"), logger);
 
         serverConfig.addFeature(libJSONPConfig.getFeature());
         serverConfig.writeToServer();
@@ -60,7 +60,7 @@ public class JSONPBoosterTest {
 
     }
 
-       /**
+    /**
      * Test that the jsonp-1.1 feature is added to server.xml when the jsonp booster
      * version is set to 1.1-M1-SNAPSHOT
      * 
@@ -71,7 +71,8 @@ public class JSONPBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), logger);
 
-        LibertyJSONPBoosterConfig libJSONPConfig = new LibertyJSONPBoosterConfig(BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.1.M1-SNAPSHOT"), logger);
+        LibertyJSONPBoosterConfig libJSONPConfig = new LibertyJSONPBoosterConfig(BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.1-0-M1-SNAPSHOT"), logger);
 
         serverConfig.addFeature(libJSONPConfig.getFeature());
         serverConfig.writeToServer();
