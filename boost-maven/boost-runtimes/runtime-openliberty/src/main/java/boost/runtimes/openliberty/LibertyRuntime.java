@@ -37,54 +37,48 @@ import boost.common.config.BoostProperties;
 import boost.common.config.BoosterConfigurator;
 import boost.common.config.ConfigConstants;
 import boost.common.runtimes.RuntimeI;
+import boost.maven.plugin.AbstractMojo;
 import boost.maven.runtimes.RuntimeParams;
 import boost.maven.utils.BoostLogger;
 import boost.maven.utils.MavenProjectUtil;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyRuntime implements RuntimeI {
-    private final List<AbstractBoosterConfig> boosterConfigs;
-    private final ExecutionEnvironment env;
-    private final MavenProject project;
-    private final Plugin mavenDepPlugin;
-
     private final String serverName = "BoostServer";
-    private final String projectBuildDir;
-    private final String libertyServerPath;
+    private final String serversDir = "/liberty/wlp/usr/servers/";
 
     private final String runtimeGroupId = "io.openliberty";
     private final String runtimeArtifactId = "openliberty-runtime";
     private final String runtimeVersion = "19.0.0.3";
 
+    private String libertyServerPath;
+
+    private MavenProject project;
+    private ExecutionEnvironment env;
+
     private String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
     private String libertyMavenPluginVersion = "2.6.3";
 
-    public LibertyRuntime() {
-        this.boosterConfigs = null;
-        this.env = null;
-        this.project = null;
-        this.projectBuildDir = null;
-        this.libertyServerPath = null;
-        this.mavenDepPlugin = null;
-    }
+    private String mavenDependencyPluginGroupId = "org.apache.maven.plugins";
+    private String mavenDependencyPluginArtifactId = "maven-dependency-plugin";
 
-    public LibertyRuntime(RuntimeParams runtimeParams) {
-        this.boosterConfigs = runtimeParams.getBoosterConfigs();
-        this.env = runtimeParams.getEnv();
-        this.project = runtimeParams.getProject();
-        this.projectBuildDir = project.getBuild().getDirectory();
-        this.libertyServerPath = projectBuildDir + "/liberty/wlp/usr/servers/" + serverName;
-        this.mavenDepPlugin = runtimeParams.getMavenDepPlugin();
-    }
+    public LibertyRuntime() {}
 
     private Plugin getPlugin() throws MojoExecutionException {
         return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
                 version(libertyMavenPluginVersion));
     }
 
+    public ExecutionEnvironment getExecutionEnvironment() {
+        return env;
+    }
+
     @Override
-    public void doPackage() throws BoostException {
+    public void doPackage(List<AbstractBoosterConfig> boosterConfigs, Object mavenProject, Object pluginTask) throws BoostException {
+        project = (MavenProject)mavenProject;
+        env = ((AbstractMojo)pluginTask).getExecutionEnvironment();
+        libertyServerPath = project.getBuild().getDirectory() + serversDir + serverName;
         String javaCompilerTargetVersion = MavenProjectUtil.getJavaCompilerTargetVersion(project);
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, javaCompilerTargetVersion);
         try {
@@ -133,6 +127,8 @@ public class LibertyRuntime implements RuntimeI {
         List<String> dependenciesToCopy = BoosterConfigurator.getDependenciesToCopy(boosterConfigs,
                 BoostLogger.getInstance());
 
+        Plugin mavenDepPlugin = plugin(groupId(mavenDependencyPluginGroupId), artifactId(mavenDependencyPluginArtifactId));
+
         for (String dep : dependenciesToCopy) {
 
             String[] dependencyInfo = dep.split(":");
@@ -143,7 +139,7 @@ public class LibertyRuntime implements RuntimeI {
                                     element(name("artifactItem"), element(name("groupId"), dependencyInfo[0]),
                                             element(name("artifactId"), dependencyInfo[1]),
                                             element(name("version"), dependencyInfo[2])))),
-                    env);
+                    getExecutionEnvironment());
         }
     }
 
@@ -236,7 +232,7 @@ public class LibertyRuntime implements RuntimeI {
      */
     private void createLibertyServer() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("create-server"),
-                configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()), env);
+                configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()), getExecutionEnvironment());
     }
 
     /**
@@ -248,7 +244,7 @@ public class LibertyRuntime implements RuntimeI {
      */
     private void installMissingFeatures() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("install-feature"), configuration(element(name("serverName"), serverName),
-                element(name("features"), element(name("acceptLicense"), "false"))), env);
+                element(name("features"), element(name("acceptLicense"), "false"))), getExecutionEnvironment());
     }
 
     /**
@@ -262,7 +258,7 @@ public class LibertyRuntime implements RuntimeI {
         configuration.addChild(element(name("appsDirectory"), "apps").toDom());
         configuration.addChild(element(name("looseApplication"), "true").toDom());
 
-        executeMojo(getPlugin(), goal("install-apps"), configuration, env);
+        executeMojo(getPlugin(), goal("install-apps"), configuration, getExecutionEnvironment());
     }
 
     private Element getRuntimeArtifactElement() {
@@ -280,24 +276,26 @@ public class LibertyRuntime implements RuntimeI {
                 configuration(element(name("isInstall"), "false"), element(name("include"), "minify,runnable"),
                         element(name("outputDirectory"), "target/liberty-alt-output-dir"),
                         element(name("packageFile"), ""), element(name("serverName"), serverName)),
-                env);
+                        getExecutionEnvironment());
     }
 
     @Override
-    public void doDebug(boolean clean) throws BoostException {
+    public void doDebug(Object project, Object pluginTask) throws BoostException {
         try {
-            executeMojo(getPlugin(), goal("debug"), configuration(element(name("serverName"), serverName),
-                    element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()), env);
+            env = ((AbstractMojo)pluginTask).getExecutionEnvironment();
+            executeMojo(getPlugin(), goal("debug"), configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()),
+            getExecutionEnvironment());
         } catch (MojoExecutionException e) {
             throw new BoostException("Error debugging Liberty server", e);
         }
     }
 
     @Override
-    public void doRun(boolean clean) throws BoostException {
+    public void doRun(Object project, Object pluginTask) throws BoostException {
         try {
-            executeMojo(getPlugin(), goal("run"), configuration(element(name("serverName"), serverName),
-                    element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()), env);
+            env = ((AbstractMojo)pluginTask).getExecutionEnvironment();
+            executeMojo(getPlugin(), goal("run"), configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()),
+            getExecutionEnvironment());
         } catch (MojoExecutionException e) {
             throw new BoostException("Error running Liberty server", e);
         }
@@ -305,24 +303,24 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     @Override
-    public void doStart(boolean clean, int verifyTimeout, int serverStartTimeout) throws BoostException {
+    public void doStart(Object project, Object pluginTask) throws BoostException {
         try {
+            env = ((AbstractMojo)pluginTask).getExecutionEnvironment();
             executeMojo(getPlugin(), goal("start"),
-                    configuration(element(name("serverName"), serverName),
-                            element(name("verifyTimeout"), String.valueOf(verifyTimeout)),
-                            element(name("serverStartTimeout"), String.valueOf(serverStartTimeout)),
-                            element(name("clean"), String.valueOf(clean)), getRuntimeArtifactElement()),
-                    env);
+                    configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()),
+                    getExecutionEnvironment());
         } catch (MojoExecutionException e) {
             throw new BoostException("Error starting Liberty server", e);
         }
     }
 
     @Override
-    public void doStop() throws BoostException {
+    public void doStop(Object project, Object pluginTask) throws BoostException {
         try {
+            env = ((AbstractMojo)pluginTask).getExecutionEnvironment();
             executeMojo(getPlugin(), goal("stop"),
-                    configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()), env);
+                    configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()),
+                    getExecutionEnvironment());
         } catch (MojoExecutionException e) {
             throw new BoostException("Error stopping Liberty server", e);
         }

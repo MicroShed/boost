@@ -30,7 +30,7 @@ public class PackageMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         super.execute();
         try {
-            this.getRuntimeInstance().doPackage();
+            this.getRuntimeInstance().doPackage(getBoosterConfigs(), project, this);
         } catch (BoostException e) {
             throw new MojoExecutionException("Error performing server package", e);
         }

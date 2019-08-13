@@ -28,7 +28,7 @@ public class StopMojo extends AbstractMojo {
         super.execute();
 
         try {
-            this.getRuntimeInstance().doStop();
+            this.getRuntimeInstance().doStop(project, this);
         } catch (BoostException e) {
             throw new MojoExecutionException("Error stopping server", e);
         }

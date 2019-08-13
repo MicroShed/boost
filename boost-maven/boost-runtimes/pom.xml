@@ -14,8 +14,8 @@
 
     <modules>
         <module>runtime-openliberty</module>
-        <!-- <module>runtime-wlp</module> -->
-        <module>runtime-tomee</module>
+		<!-- <module>runtime-wlp</module> -->
+		<!-- <module>runtime-tomee</module> -->
     </modules>
 
 </project>

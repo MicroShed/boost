@@ -81,8 +81,12 @@ public abstract class AbstractMojo extends MojoSupport {
         return plugin(groupId(mavenDependencyPluginGroupId), artifactId(mavenDependencyPluginArtifactId));
     }
 
-    protected ExecutionEnvironment getExecutionEnvironment() {
+    public ExecutionEnvironment getExecutionEnvironment() {
         return executionEnvironment(project, session, pluginManager);
+    }
+
+    public List<AbstractBoosterConfig> getBoosterConfigs() {
+        return boosterConfigs;
     }
 
     @Override
@@ -114,8 +118,6 @@ public abstract class AbstractMojo extends MojoSupport {
 
     protected RuntimeI getRuntimeInstance() throws MojoExecutionException {
         if (runtime == null) {
-            RuntimeParams params = new RuntimeParams(boosterConfigs, getExecutionEnvironment(), project, getLog(),
-                    repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
             try {
                 ServiceLoader<RuntimeI> runtimes = ServiceLoader.load(RuntimeI.class, projectClassLoader);
                 if (!runtimes.iterator().hasNext()) {
@@ -127,7 +129,7 @@ public abstract class AbstractMojo extends MojoSupport {
                         throw new MojoExecutionException(
                                 "There are multiple Boost runtimes on the classpath. Configure the project to use one runtime and restart the build.");
                     }
-                    runtime = runtimeI.getClass().getConstructor(params.getClass()).newInstance(params);
+                    runtime = runtimeI.getClass().getDeclaredConstructor().newInstance();
                 }
             } catch (IllegalAccessException | InstantiationException | InvocationTargetException
                     | NoSuchMethodException e) {

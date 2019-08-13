@@ -34,7 +34,7 @@ public class RunMojo extends AbstractMojo {
         super.execute();
         
         try {
-            this.getRuntimeInstance().doRun(clean);
+            this.getRuntimeInstance().doRun(project, this);
         } catch (BoostException e) {
             throw new MojoExecutionException("Error running server", e);
         }

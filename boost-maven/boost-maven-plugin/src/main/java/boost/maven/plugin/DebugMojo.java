@@ -34,7 +34,7 @@ public class DebugMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         super.execute();
         try {
-            this.getRuntimeInstance().doDebug(clean);
+            this.getRuntimeInstance().doDebug(project, this);
         } catch (BoostException e) {
             throw new MojoExecutionException("Error debugging server", e);
         }

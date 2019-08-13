@@ -47,7 +47,7 @@ public class StartMojo extends AbstractMojo {
         super.execute();
 
         try {
-            this.getRuntimeInstance().doStart(clean, verifyTimeout, serverStartTimeout);
+            this.getRuntimeInstance().doStart(project, this);
         } catch (BoostException e) {
             throw new MojoExecutionException("Error starting server", e);
         }
