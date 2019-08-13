@@ -10,7 +10,7 @@
  *******************************************************************************/
 package boost.runtimes.openliberty.boosters;
 
-import static boost.common.config.ConfigConstants.MPOPENAPI_10;
+import static boost.common.config.ConfigConstants.*;
 
 import java.util.Map;
 
@@ -30,7 +30,10 @@ public class LibertyMPOpenAPIBoosterConfig extends MPOpenAPIBoosterConfig implem
     public String getFeature() {
         if (getVersion().equals(MP_OPENAPI_VERSION_10)) {
             return MPOPENAPI_10;
+        } else if (getVersion().equals(MP_OPENAPI_VERSION_11)) {
+            return MPOPENAPI_11;
         }
+
         return null;
     }
 

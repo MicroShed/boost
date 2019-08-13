@@ -88,4 +88,30 @@ public class MPOpenTracingBoosterTest {
 
     }
 
+    /**
+     * Test that the mpOpenTracing-1.3 feature is added to server.xml when the
+     * MPOpenTracing booster version is set to 0.1.3-SNAPSHOT
+     * 
+     */
+    @Test
+    public void testMPOpenTracingBoosterFeature13() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class, "1.3-0-M1-SNAPSHOT"),
+                logger);
+
+        serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
+                "<feature>" + MPOPENTRACING_13 + "</feature>");
+
+        assertTrue("The " + MPOPENTRACING_13 + " feature was not found in the server configuration", featureFound);
+
+    }
+
 }

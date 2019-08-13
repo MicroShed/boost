@@ -63,4 +63,31 @@ public class MPFaultToleranceBoosterTest {
 
     }
 
+    /**
+     * Test that the mpFaultTolerance-1.2 feature is added to server.xml when the
+     * MPFaultTolerance booster version is set to 1.2-M1-SNAPSHOT
+     * 
+     */
+    @Test
+    public void testMPFaultToleranceBoosterFeature20() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(
+                BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class,
+                        "2.0-0-M1-SNAPSHOT"),
+                logger);
+
+        serverConfig.addFeature(libMPFTConfig.getFeature());
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
+                "<feature>" + MPFAULTTOLERANCE_20 + "</feature>");
+
+        assertTrue("The " + MPFAULTTOLERANCE_20 + " feature was not found in the server configuration", featureFound);
+
+    }
+
 }

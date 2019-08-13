@@ -62,4 +62,30 @@ public class MPRestClientBoosterTest {
 
     }
 
+    /**
+     * Test that the mpRestClient-1.2 feature is added to server.xml when the
+     * MPRestClient booster version is set to 0.1.2-SNAPSHOT
+     * 
+     */
+    @Test
+    public void testMPRestClientBoosterFeature12() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        LibertyMPRestClientBoosterConfig libMPOpenTracingConfig = new LibertyMPRestClientBoosterConfig(BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.2-0-M1-SNAPSHOT"),
+                logger);
+
+        serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
+                "<feature>" + MPRESTCLIENT_12 + "</feature>");
+
+        assertTrue("The " + MPRESTCLIENT_12 + " feature was not found in the server configuration", featureFound);
+
+    }
+
 }
