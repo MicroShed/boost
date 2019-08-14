@@ -54,8 +54,6 @@ public class BoostPackageJaxRS20Test extends AbstractBoostTest {
 
     @Test
     public void testPackageSuccess() throws IOException {
-        assertEquals(SUCCESS, result.task(":installLiberty").getOutcome())
-        assertEquals(SUCCESS, result.task(":libertyCreate").getOutcome())
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
 

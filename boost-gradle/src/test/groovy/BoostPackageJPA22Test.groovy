@@ -51,8 +51,6 @@ public class BoostPackageJPA22Test extends AbstractBoostTest {
 
     @Test
     public void testPackageSuccess() throws IOException {
-        assertEquals(SUCCESS, result.task(":installLiberty").getOutcome())
-        assertEquals(SUCCESS, result.task(":libertyCreate").getOutcome())
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
         assertEquals(SUCCESS, result.task(":boostStart").getOutcome())
 
