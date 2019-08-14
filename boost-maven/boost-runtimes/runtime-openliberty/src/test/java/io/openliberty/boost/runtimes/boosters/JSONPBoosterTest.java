@@ -48,7 +48,8 @@ public class JSONPBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), logger);
 
         LibertyJSONPBoosterConfig libJSONPConfig = new LibertyJSONPBoosterConfig(BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.0-0-M1-SNAPSHOT"), logger);
+                .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.0-1.0-M1-SNAPSHOT"),
+                logger);
 
         serverConfig.addFeature(libJSONPConfig.getFeature());
         serverConfig.writeToServer();
@@ -72,7 +73,8 @@ public class JSONPBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), logger);
 
         LibertyJSONPBoosterConfig libJSONPConfig = new LibertyJSONPBoosterConfig(BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.1-0-M1-SNAPSHOT"), logger);
+                .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.1-1.0-M1-SNAPSHOT"),
+                logger);
 
         serverConfig.addFeature(libJSONPConfig.getFeature());
         serverConfig.writeToServer();

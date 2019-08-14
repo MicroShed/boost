@@ -48,7 +48,7 @@ public class MPRestClientBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), logger);
 
         LibertyMPRestClientBoosterConfig libMPOpenTracingConfig = new LibertyMPRestClientBoosterConfig(BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.1-0-M1-SNAPSHOT"),
+                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.1-1.0-M1-SNAPSHOT"),
                 logger);
 
         serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
@@ -74,7 +74,7 @@ public class MPRestClientBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), logger);
 
         LibertyMPRestClientBoosterConfig libMPOpenTracingConfig = new LibertyMPRestClientBoosterConfig(BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.2-0-M1-SNAPSHOT"),
+                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.2-1.0-M1-SNAPSHOT"),
                 logger);
 
         serverConfig.addFeature(libMPOpenTracingConfig.getFeature());

@@ -30,7 +30,7 @@ public abstract class AbstractBoosterConfig {
     // version string format:
     // <Major>.<Minor>-<boost version>-<Milestone>[-SNAPSHOT]
     public static final String milestone = "M1";
-    public static final String boostVersion = "0";
+    public static final String boostVersion = "1.0";
     public static final String RUNTIMES_GROUP_ID = "boost.runtimes";
     public static final String BOOSTERS_GROUP_ID = "boost.boosters";
     public static final String CDI_VERSION_12 = "1.2-" + boostVersion + "-" + milestone + "-SNAPSHOT";
