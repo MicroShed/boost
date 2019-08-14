@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>runtime-openliberty</module>
+        <module>runtime-liberty</module>
 		<!-- <module>runtime-wlp</module> -->
 		<!-- <module>runtime-tomee</module> -->
     </modules>
