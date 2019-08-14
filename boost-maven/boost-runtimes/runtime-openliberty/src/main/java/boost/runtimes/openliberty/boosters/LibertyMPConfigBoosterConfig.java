@@ -28,7 +28,7 @@ public class LibertyMPConfigBoosterConfig extends MPConfigBoosterConfig implemen
 
     @Override
     public String getFeature() {
-        if (getVersion().equals(MP_20_VERSION)) {
+        if (getVersion().equals(MP_CONFIG_VERSION_13)) {
             return MPCONFIG_13;
         }
         return null;

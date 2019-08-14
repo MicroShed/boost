@@ -10,7 +10,7 @@
  *******************************************************************************/
 package boost.runtimes.openliberty.boosters;
 
-import static boost.common.config.ConfigConstants.MPOPENTRACING_11;
+import static boost.common.config.ConfigConstants.*;
 
 import java.util.Map;
 
@@ -29,9 +29,13 @@ public class LibertyMPOpenTracingBoosterConfig extends MPOpenTracingBoosterConfi
 
     @Override
     public String getFeature() {
-        if (getVersion().equals(MP_20_VERSION)) {
+        if (getVersion().equals(MP_OPENTRACING_VERSION_11)) {
             return MPOPENTRACING_11;
         }
+        else if (getVersion().equals(MP_OPENTRACING_VERSION_12)) {
+            return MPOPENTRACING_12;
+        }
+
         return null;
     }
 

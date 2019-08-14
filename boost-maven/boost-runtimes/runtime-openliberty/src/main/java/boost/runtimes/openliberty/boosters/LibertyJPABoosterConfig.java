@@ -29,9 +29,9 @@ public class LibertyJPABoosterConfig extends JPABoosterConfig implements Liberty
 
     @Override
     public String getFeature() {
-        if (getVersion().equals(EE_7_VERSION)) {
+        if (getVersion().equals(JPA_VERSION_21)) {
             return JPA_21;
-        } else if (getVersion().equals(EE_8_VERSION)) {
+        } else if (getVersion().equals(JPA_VERSION_22)) {
             return JPA_22;
         }
         return null;
