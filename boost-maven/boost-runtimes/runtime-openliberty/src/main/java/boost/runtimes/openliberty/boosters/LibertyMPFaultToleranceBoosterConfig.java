@@ -10,7 +10,7 @@
  *******************************************************************************/
 package boost.runtimes.openliberty.boosters;
 
-import static boost.common.config.ConfigConstants.MPFAULTTOLERANCE_11;
+import static boost.common.config.ConfigConstants.*;
 
 import java.util.Map;
 
@@ -22,7 +22,8 @@ import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyMPFaultToleranceBoosterConfig extends MPFaultToleranceBoosterConfig implements LibertyBoosterI {
 
-	public LibertyMPFaultToleranceBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+    public LibertyMPFaultToleranceBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger)
+            throws BoostException {
         super(dependencies, logger);
     }
 
@@ -30,7 +31,10 @@ public class LibertyMPFaultToleranceBoosterConfig extends MPFaultToleranceBooste
     public String getFeature() {
         if (getVersion().equals(MP_FAULTTOLERANCE_VERSION_11)) {
             return MPFAULTTOLERANCE_11;
+        } else if (getVersion().equals(MP_FAULTTOLERANCE_VERSION_20)) {
+            return MPFAULTTOLERANCE_20;
         }
+
         return null;
     }
 

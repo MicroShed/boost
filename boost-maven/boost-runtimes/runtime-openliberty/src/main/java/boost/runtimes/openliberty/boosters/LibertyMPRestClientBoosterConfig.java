@@ -10,7 +10,7 @@
  *******************************************************************************/
 package boost.runtimes.openliberty.boosters;
 
-import static boost.common.config.ConfigConstants.MPRESTCLIENT_11;
+import static boost.common.config.ConfigConstants.*;
 
 import java.util.Map;
 
@@ -31,7 +31,10 @@ public class LibertyMPRestClientBoosterConfig extends MPRestClientBoosterConfig 
     public String getFeature() {
         if (getVersion().equals(MP_RESTCLIENT_VERSION_11)) {
             return MPRESTCLIENT_11;
+        } else if (getVersion().equals(MP_RESTCLIENT_VERSION_12)) {
+            return MPRESTCLIENT_12;
         }
+
         return null;
     }
 

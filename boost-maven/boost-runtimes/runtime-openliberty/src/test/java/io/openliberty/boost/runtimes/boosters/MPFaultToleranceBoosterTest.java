@@ -38,7 +38,7 @@ public class MPFaultToleranceBoosterTest {
 
     /**
      * Test that the mpFaultTolerance-1.1 feature is added to server.xml when the
-     * MPFaultTolerance booster version is set to 1.1-M1-SNAPSHOT
+     * MPFaultTolerance booster version is set to 1.1-1.0-M1-SNAPSHOT
      * 
      */
     @Test
@@ -49,7 +49,7 @@ public class MPFaultToleranceBoosterTest {
 
         LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(
                 BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class,
-                        "1.1-0-M1-SNAPSHOT"),
+                        "1.1-1.0-M1-SNAPSHOT"),
                 logger);
 
         serverConfig.addFeature(libMPFTConfig.getFeature());
@@ -60,6 +60,33 @@ public class MPFaultToleranceBoosterTest {
                 "<feature>" + MPFAULTTOLERANCE_11 + "</feature>");
 
         assertTrue("The " + MPFAULTTOLERANCE_11 + " feature was not found in the server configuration", featureFound);
+
+    }
+
+    /**
+     * Test that the mpFaultTolerance-2.0 feature is added to server.xml when the
+     * MPFaultTolerance booster version is set to 1.2-1.0-M1-SNAPSHOT
+     * 
+     */
+    @Test
+    public void testMPFaultToleranceBoosterFeature20() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), logger);
+
+        LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(
+                BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class,
+                        "2.0-1.0-M1-SNAPSHOT"),
+                logger);
+
+        serverConfig.addFeature(libMPFTConfig.getFeature());
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
+                "<feature>" + MPFAULTTOLERANCE_20 + "</feature>");
+
+        assertTrue("The " + MPFAULTTOLERANCE_20 + " feature was not found in the server configuration", featureFound);
 
     }
 

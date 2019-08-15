@@ -104,15 +104,19 @@ public final class ConfigConstants {
     public static final String CDI_20 = "cdi-2.0";
     public static final String MPHEALTH_10 = "mpHealth-1.0";
     public static final String MPOPENAPI_10 = "mpOpenAPI-1.0";
+    public static final String MPOPENAPI_11 = "mpOpenAPI-1.1";
     public static final String MPRESTCLIENT_11 = "mpRestClient-1.1";
+    public static final String MPRESTCLIENT_12 = "mpRestClient-1.2";
     public static final String MPMETRICS_11 = "mpMetrics-1.1";
     public static final String MPFAULTTOLERANCE_11 = "mpFaultTolerance-1.1";
+    public static final String MPFAULTTOLERANCE_20 = "mpFaultTolerance-2.0";
     public static final String JSONB_10 = "jsonb-1.0";
     public static final String JSONP_10 = "jsonp-1.0";
     public static final String JSONP_11 = "jsonp-1.1";
     public static final String MPCONFIG_13 = "mpConfig-1.3";
     public static final String MPOPENTRACING_11 = "mpOpenTracing-1.1";
     public static final String MPOPENTRACING_12 = "mpOpenTracing-1.2";
+    public static final String MPOPENTRACING_13 = "mpOpenTracing-1.3";
 
     public static final String SHARED_RESOURCES_DIR = "${shared.resource.dir}";
     public static final String SERVER_OUTPUT_DIR = "${server.output.dir}";

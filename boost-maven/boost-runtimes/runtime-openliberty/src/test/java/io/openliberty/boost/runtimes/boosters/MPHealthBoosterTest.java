@@ -48,7 +48,7 @@ public class MPHealthBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), logger);
 
         LibertyMPHealthBoosterConfig libMPHealthConfig = new LibertyMPHealthBoosterConfig(BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPHealthBoosterConfig.class, "1.0-0-M1-SNAPSHOT"),
+                .createDependenciesWithBoosterAndVersion(LibertyMPHealthBoosterConfig.class, "1.0-1.0-M1-SNAPSHOT"),
                 logger);
 
         serverConfig.addFeature(libMPHealthConfig.getFeature());
