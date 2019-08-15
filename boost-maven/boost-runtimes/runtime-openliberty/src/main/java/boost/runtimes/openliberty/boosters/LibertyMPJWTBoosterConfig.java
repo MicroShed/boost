@@ -27,7 +27,7 @@ public class LibertyMPJWTBoosterConfig extends MPJWTBoosterConfig implements Lib
 		
   @Override
   public String getFeature() {        
-	  if (getVersion().equals(MP_20_VERSION)) {
+	  if (getVersion().equals(MP_JWT_VERSION_20)) {
 		  return MPJWT_11;
 		  }
 	      return null;

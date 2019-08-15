@@ -19,7 +19,7 @@
 	<artifactId>mp22-bom</artifactId>
 	<packaging>pom</packaging>
 
-	<description>Booster MP21 Feature Bom</description>
+	<description>Booster MP22 Feature Bom</description>
 
 	<dependencyManagement>
 		<dependencies>

@@ -4,32 +4,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-	<groupId>boost.boosters</groupId>
-	<artifactId>mpJWT</artifactId>
-	<version>0.2-SNAPSHOT</version>
-	
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>boost.boosters</groupId>
-				<artifactId>boost-mp20-apis-bom</artifactId>
-				<version>0.1-SNAPSHOT</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+    <groupId>boost.boosters</groupId>
+    <artifactId>mpJWT</artifactId>
+    <version>0.2-SNAPSHOT</version>
 
-	<dependencies>
-		<dependency>
+    <properties>
+        <jwt-version>1.1</jwt-version>
+        <annotation-version>1.2</annotation-version>
+    </properties>
+   
+    <dependencies>
+        <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-api</artifactId>
-		</dependency>
+            <version>${jwt-version}</version>
+        </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
-            <scope>compile</scope>
+            <version>${annotation-version}</version>
         </dependency>
-	</dependencies>
+    </dependencies>
 
 </project>

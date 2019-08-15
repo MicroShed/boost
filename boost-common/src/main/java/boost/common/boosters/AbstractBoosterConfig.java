@@ -44,6 +44,7 @@ public abstract class AbstractBoosterConfig {
     public static final String JPA_VERSION_22 = "2.2-" + boostVersion + "-" + milestone + "-SNAPSHOT";
     public static final String MP_HEALTH_VERSION_10 = "1.0-" + boostVersion + "-" + milestone + "-SNAPSHOT";
     public static final String MP_CONFIG_VERSION_13 = "1.3-" + boostVersion + "-" + milestone + "-SNAPSHOT";
+    public static final String MP_JWT_VERSION_20 = "2.0-" + boostVersion + "-" + milestone + "-SNAPSHOT";
     public static final String MP_METRICS_VERSION_11 = "1.1-" + boostVersion + "-" + milestone + "-SNAPSHOT";
     public static final String MP_FAULTTOLERANCE_VERSION_11 = "1.1-" + boostVersion + "-" + milestone + "-SNAPSHOT";
     public static final String MP_FAULTTOLERANCE_VERSION_20 = "2.0-" + boostVersion + "-" + milestone + "-SNAPSHOT";
