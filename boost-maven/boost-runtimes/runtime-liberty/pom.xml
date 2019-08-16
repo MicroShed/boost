@@ -15,6 +15,7 @@
     <modules>
         <module>runtime-liberty-common</module>
 		<module>runtime-openliberty</module>
+        <!-- <module>runtime-openliberty-gradle</module> -->
 		<!-- <module>runtime-wlp</module> -->
         <!-- <module>runtime-openliberty</module>
 		<module>runtime-wlp</module> -->

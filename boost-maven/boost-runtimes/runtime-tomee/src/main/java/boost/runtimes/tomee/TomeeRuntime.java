@@ -25,6 +25,7 @@ import java.util.Properties;
 
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import boost.common.BoostException;
@@ -32,45 +33,42 @@ import boost.common.boosters.AbstractBoosterConfig;
 import boost.common.config.BoostProperties;
 import boost.common.config.BoosterConfigurator;
 import boost.common.runtimes.RuntimeI;
-import boost.maven.runtimes.RuntimeParams;
+import boost.maven.plugin.AbstractMojo;
 import boost.maven.utils.BoostLogger;
 
 public class TomeeRuntime implements RuntimeI {
-    private final List<AbstractBoosterConfig> boosterConfigs;
-    private final ExecutionEnvironment env;
-
     private final String tomeeMavenPluginGroupId = "org.apache.tomee.maven";
     private final String tomeeMavenPluginArtifactId = "tomee-maven-plugin";
-    private final String installDir;
-    private final String configDir;
 
-    private final Plugin mavenDepPlugin;
+    private final String mavenDependencyPluginGroupId = "org.apache.maven.plugins";
+    private final String mavenDependencyPluginArtifactId = "maven-dependency-plugin";
 
-    public TomeeRuntime() {
-        this.boosterConfigs = null;
-        this.env = null;
+    private String installDir;
+    private String configDir;
 
-        this.installDir = null;
-        this.configDir = null;
+    private MavenProject project;
+    private ExecutionEnvironment env;
 
-        this.mavenDepPlugin = null;
+    public TomeeRuntime() {}
+
+    public ExecutionEnvironment getExecutionEnvironment() {
+        return env;
     }
 
-    public TomeeRuntime(RuntimeParams params) {
-        this.boosterConfigs = params.getBoosterConfigs();
-        this.env = params.getEnv();
-
-        this.installDir = params.getProjectBuildDir() + "/apache-tomee/";
-        this.configDir = installDir + "conf";
-        this.mavenDepPlugin = params.getMavenDepPlugin();
+    private Plugin getMavenDependencyPlugin() throws MojoExecutionException {
+        return plugin(groupId(mavenDependencyPluginGroupId), artifactId(mavenDependencyPluginArtifactId));
     }
 
     private Plugin getPlugin() throws MojoExecutionException {
         return plugin(groupId(tomeeMavenPluginGroupId), artifactId(tomeeMavenPluginArtifactId), version("8.0.0-M2"));
     }
 
-    public void doPackage() throws BoostException {
+    public void doPackage(List<AbstractBoosterConfig> boosterConfigs, Object mavenProject, Object pluginTask) throws BoostException {
         try {
+            project = (MavenProject)mavenProject;
+            env = ((AbstractMojo)pluginTask).getExecutionEnvironment();
+            this.installDir = project.getBuild().getDirectory() + "/apache-tomee/";
+            this.configDir = installDir + "conf";
             createTomeeServer();
             configureTomeeServer(boosterConfigs);
             copyTomeeJarDependencies(boosterConfigs);
@@ -85,7 +83,7 @@ public class TomeeRuntime implements RuntimeI {
      */
     private void createTomeeServer() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("build"), configuration(element(name("context"), "ROOT"),
-                element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")), env);
+                element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")), getExecutionEnvironment());
     }
 
     /**
@@ -128,13 +126,13 @@ public class TomeeRuntime implements RuntimeI {
         for (String dep : tomeeDependencyJarsToCopy) {
             String[] dependencyInfo = dep.split(":");
 
-            executeMojo(mavenDepPlugin, goal("copy"),
+            executeMojo(getMavenDependencyPlugin(), goal("copy"),
                     configuration(element(name("outputDirectory"), installDir + "boost"),
                             element(name("artifactItems"),
                                     element(name("artifactItem"), element(name("groupId"), dependencyInfo[0]),
                                             element(name("artifactId"), dependencyInfo[1]),
                                             element(name("version"), dependencyInfo[2])))),
-                    env);
+                    getExecutionEnvironment());
         }
     }
 
@@ -147,41 +145,44 @@ public class TomeeRuntime implements RuntimeI {
                         element(name("classpaths"), "[]"), element(name("context"), "ROOT"),
                         element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus"),
                         element(name("catalinaBase"), installDir), element(name("config"), configDir)),
-                env);
+                getExecutionEnvironment());
     }
 
-    public void doDebug(boolean clean) throws BoostException {
+    public void doDebug(Object mavenProject, Object pluginTask) throws BoostException {
         // TODO No debug in TomEE yet
     }
 
-    public void doRun(boolean clean) throws BoostException {
+    public void doRun(Object mavenProject, Object pluginTask) throws BoostException {
         try {
+            env = ((AbstractMojo)pluginTask).getExecutionEnvironment();
             executeMojo(getPlugin(), goal("run"),
                     configuration(element(name("tomeeAlreadyInstalled"), "true"), element(name("context"), "ROOT"),
                             element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")),
-                    env);
+                    getExecutionEnvironment());
         } catch (MojoExecutionException e) {
             throw new BoostException("Error running TomEE server", e);
         }
     }
 
-    public void doStart(boolean clean, int verifyTimeout, int serverStartTimeout) throws BoostException {
+    public void doStart(Object mavenProject, Object pluginTask) throws BoostException {
         try {
+            env = ((AbstractMojo)pluginTask).getExecutionEnvironment();
             executeMojo(getPlugin(), goal("start"),
                     configuration(element(name("tomeeAlreadyInstalled"), "true"), element(name("context"), "ROOT"),
                             element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")),
-                    env);
+                    getExecutionEnvironment());
         } catch (MojoExecutionException e) {
             throw new BoostException("Error starting TomEE server", e);
         }
     }
 
-    public void doStop() throws BoostException {
+    public void doStop(Object mavenProject, Object pluginTask) throws BoostException {
         try {
+            env = ((AbstractMojo)pluginTask).getExecutionEnvironment();
             executeMojo(getPlugin(), goal("stop"),
                     configuration(element(name("tomeeAlreadyInstalled"), "true"), element(name("context"), "ROOT"),
                             element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")),
-                    env);
+                    getExecutionEnvironment());
         } catch (MojoExecutionException e) {
             throw new BoostException("Error stopping TomEE server", e);
         }
