@@ -5,7 +5,7 @@
 
     <groupId>boost.runtimes</groupId>
     <artifactId>openliberty</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0-M1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
