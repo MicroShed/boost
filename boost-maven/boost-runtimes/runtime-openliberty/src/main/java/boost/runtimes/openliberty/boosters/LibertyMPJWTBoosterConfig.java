@@ -5,6 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -20,22 +21,22 @@ import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyMPJWTBoosterConfig extends MPJWTBoosterConfig implements LibertyBoosterI {
-	
-  public LibertyMPJWTBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-	       super(dependencies, logger);
-  }
-		
-  @Override
-  public String getFeature() {        
-	  if (getVersion().equals(MP_JWT_VERSION_20)) {
-		  return MPJWT_11;
-		  }
-	      return null;
-      }
 
-  @Override
-  public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-	  
-  }
-  
+    public LibertyMPJWTBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+        super(dependencies, logger);
+    }
+
+    @Override
+    public String getFeature() {
+        if (getVersion().equals(MP_JWT_VERSION_11)) {
+            return MPJWT_11;
+        }
+        return null;
+    }
+
+    @Override
+    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
+
+    }
+
 }

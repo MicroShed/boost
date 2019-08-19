@@ -34,8 +34,8 @@
     </repositories>
     
     <properties>
-                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         	<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<mp.jwt.verify.publickey.location>${project.build.testOutputDirectory}/truststore/public.key</mp.jwt.verify.publickey.location>
@@ -123,7 +123,6 @@
         <artifactId>spring-context</artifactId>
         <version>4.3.9.RELEASE</version>
         <scope>test</scope>       
-   
     </dependency>
         <dependency>
         <groupId>com.github.dev-tools-for-enterprise-java</groupId>
@@ -180,35 +179,34 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
-				<groupId>boost</groupId>
-				<artifactId>boost-maven-plugin</artifactId>
-				<version>@pom.version@</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>package</goal>
-						</goals>
- 					</execution>
-					<execution>
-						<id>test-start-server</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>start</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>test-stop-server</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>stop</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-				</configuration>
-			</plugin>
+                <groupId>boost</groupId>
+                <artifactId>boost-maven-plugin</artifactId>
+                <version>@pom.version@</version>
+                <executions>
+                        <execution>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                        </execution>
+                        <execution>
+                                <id>test-start-server</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                      <goal>start</goal>
+                                </goals>
+                        </execution>
+                        <execution>
+                                <id>test-stop-server</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                      <goal>stop</goal>
+                                </goals>
+                        </execution>
+                </executions>
+                <configuration>
+                </configuration>
+	    </plugin>
             <!-- Liberty setup. -->
 
             <!-- Integration test execution setup. -->

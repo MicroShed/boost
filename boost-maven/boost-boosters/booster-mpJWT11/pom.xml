@@ -19,11 +19,6 @@
             <artifactId>microprofile-jwt-auth-api</artifactId>
             <version>${jwt-version}</version>
         </dependency>
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-            <version>${annotation-version}</version>
-        </dependency>
     </dependencies>
 
 </project>
