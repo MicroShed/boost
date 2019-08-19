@@ -149,7 +149,14 @@ public class TomeeRuntime implements RuntimeI {
     }
 
     public void doDebug(Object mavenProject, Object pluginTask) throws BoostException {
-        // TODO No debug in TomEE yet
+        try {
+            executeMojo(getPlugin(), goal("debug"), 
+                configuration(element(name("tomeeAlreadyInstalled"), "true"), element(name("context"), "ROOT"),
+                            element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")), 
+                    getExecutionEnvironment());
+        } catch (MojoExecutionException e) {
+            throw new BoostException("Error running TomEE server in debug", e);
+        }
     }
 
     public void doRun(Object mavenProject, Object pluginTask) throws BoostException {
