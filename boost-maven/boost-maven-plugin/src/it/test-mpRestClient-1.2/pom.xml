@@ -136,13 +136,6 @@
                             <includes>
                                 <include>**/it/**/*.java</include>
                             </includes>
-                            <!-- tag::system-props[] -->
-                            <!--
-                            <systemPropertyVariables>
-                                <boost.http.port>${boost.http.port}</boost.http.port>
-                            </systemPropertyVariables>
--->
-                            <!-- end::system-props[] -->
                             <!-- the runOrder enforces an alphabetical running of the 
                                  tests which is required for this bucket to be successful -->
                             <runOrder>reversealphabetical</runOrder>
@@ -213,6 +206,10 @@
                     <value>tomee</value>
                 </property>
             </activation>
+            <properties>
+                <!-- https://github.com/dev-tools-for-enterprise-java/boost/issues/349 -->
+                <skipITs>true</skipITs>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>boost.runtimes</groupId>
