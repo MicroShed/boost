@@ -42,7 +42,7 @@
           <dependency>
               <groupId>boost.boosters</groupId>
               <artifactId>mp20-bom</artifactId>
-			  <version>@pom.version@</version>
+              <version>@pom.version@</version>
               <type>pom</type>
               <scope>import</scope>
           </dependency>

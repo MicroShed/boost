@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.openliberty.guides</groupId>
-    <artifactId>boosted-microprofile-rest-client</artifactId>
+    <artifactId>boosted-microprofile-rest-client-1.2</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <properties>
@@ -15,11 +15,21 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <!-- tag::ports[] -->
-        <testServerHttpPort>8080</testServerHttpPort>
-        <testServerHttpsPort>8443</testServerHttpsPort>
-        <!-- end::ports[] -->
     </properties>
+
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>boost.boosters</groupId>
+                <artifactId>mp22-bom</artifactId>
+                <version>0.1.3-SNAPSHOT</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
     <dependencies>
         <!-- Boosters -->
@@ -146,20 +156,16 @@
                     </reportsDirectory>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>boost.boosters</groupId>
-                <artifactId>mp21-bom</artifactId>
-                <version>@pom.version@</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <profiles>
         <profile>
@@ -200,6 +206,10 @@
                     <value>tomee</value>
                 </property>
             </activation>
+            <properties>
+                <!-- https://github.com/dev-tools-for-enterprise-java/boost/issues/349 -->
+                <skipITs>true</skipITs>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>boost.runtimes</groupId>
