@@ -44,6 +44,7 @@ import boost.gradle.runtimes.GradleRuntimeI;
 import boost.gradle.utils.BoostLogger;
 import boost.gradle.utils.GradleProjectUtil;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
+import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 
 import net.wasdev.wlp.gradle.plugins.extensions.LibertyExtension;
 

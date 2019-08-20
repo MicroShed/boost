@@ -8,6 +8,7 @@ repositories {
 
 dependencies {
     compile "boost:boost-common:0.1.3-SNAPSHOT"
+    compile "boost.runtimes:liberty-common:0.1-SNAPSHOT"
     compile "boost:boost-gradle-plugin:0.1.1-SNAPSHOT"
     compile "commons-io:commons-io:2.6"
     compile gradleApi()
