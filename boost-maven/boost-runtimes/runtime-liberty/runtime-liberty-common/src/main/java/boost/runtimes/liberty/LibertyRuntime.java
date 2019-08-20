@@ -43,13 +43,13 @@ import boost.maven.utils.BoostLogger;
 import boost.maven.utils.MavenProjectUtil;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
-public class LibertyRuntime implements RuntimeI {
+public abstract class LibertyRuntime implements RuntimeI {
     private final String serverName = "BoostServer";
     private final String serversDir = "/liberty/wlp/usr/servers/";
 
-    private final String runtimeGroupId = "io.openliberty";
-    private final String runtimeArtifactId = "openliberty-runtime";
-    private final String runtimeVersion = "19.0.0.3";
+    private final String runtimeGroupId;
+    private final String runtimeArtifactId;
+    private final String runtimeVersion;
 
     private String libertyServerPath;
 
@@ -63,7 +63,11 @@ public class LibertyRuntime implements RuntimeI {
     private String mavenDependencyPluginGroupId = "org.apache.maven.plugins";
     private String mavenDependencyPluginArtifactId = "maven-dependency-plugin";
 
-    public LibertyRuntime() {}
+    public LibertyRuntime(String runtimeGroupId, String runtimeArtifactId, String runtimeVersion) {
+        this.runtimeGroupId = runtimeGroupId;
+        this.runtimeArtifactId = runtimeArtifactId;
+        this.runtimeVersion = runtimeVersion;
+    }
 
     private Plugin getPlugin() throws MojoExecutionException {
         return plugin(groupId(libertyMavenPluginGroupId), artifactId(libertyMavenPluginArtifactId),
