@@ -48,7 +48,7 @@ public class LibertyRuntime implements RuntimeI {
     private final MavenProject project;
     private final Plugin mavenDepPlugin;
 
-    private final String serverName = "BoostServer";
+    private final String serverName = "defaultServer";
     private final String projectBuildDir;
     private final String libertyServerPath;
 
