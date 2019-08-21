@@ -27,6 +27,7 @@
                 <groupId>boost.runtimes</groupId>
                 <artifactId>openliberty</artifactId>
                 <version>1.0-M1-SNAPSHOT</version>
+                <scope>provided</scope>
             </dependency>
             <!--<dependency> <groupId>boost.runtimes</groupId> <artifactId>wlp</artifactId> 
                 <version>1.0-M1-SNAPSHOT</version> <scope>provided</scope> </dependency> -->
@@ -34,6 +35,7 @@
                 <groupId>boost.runtimes</groupId>
                 <artifactId>tomee</artifactId>
                 <version>1.0-M1-SNAPSHOT</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
