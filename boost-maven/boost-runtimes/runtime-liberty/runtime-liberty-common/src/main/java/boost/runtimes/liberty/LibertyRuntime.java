@@ -38,7 +38,6 @@ import boost.common.config.BoosterConfigurator;
 import boost.common.config.ConfigConstants;
 import boost.common.runtimes.RuntimeI;
 import boost.maven.plugin.AbstractMojo;
-import boost.maven.runtimes.RuntimeParams;
 import boost.maven.utils.BoostLogger;
 import boost.maven.utils.MavenProjectUtil;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;

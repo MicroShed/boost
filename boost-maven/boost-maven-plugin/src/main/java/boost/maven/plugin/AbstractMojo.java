@@ -41,7 +41,6 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 import boost.common.boosters.AbstractBoosterConfig;
 import boost.common.config.BoosterConfigurator;
 import boost.common.runtimes.RuntimeI;
-import boost.maven.runtimes.RuntimeParams;
 import boost.maven.utils.BoostLogger;
 import boost.maven.utils.MavenProjectUtil;
 

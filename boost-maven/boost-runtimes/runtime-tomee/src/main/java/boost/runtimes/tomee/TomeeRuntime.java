@@ -150,6 +150,7 @@ public class TomeeRuntime implements RuntimeI {
 
     public void doDebug(Object mavenProject, Object pluginTask) throws BoostException {
         try {
+            env = ((AbstractMojo)pluginTask).getExecutionEnvironment();
             executeMojo(getPlugin(), goal("debug"), 
                 configuration(element(name("tomeeAlreadyInstalled"), "true"), element(name("context"), "ROOT"),
                             element(name("tomeeVersion"), "8.0.0-M2"), element(name("tomeeClassifier"), "plus")), 
