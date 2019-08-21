@@ -29,6 +29,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -88,9 +89,11 @@ public abstract class AbstractMojo extends MojoSupport {
     @Override
     public void execute() throws MojoExecutionException {
         try {
+        	init();
+        	BoostLogger boostLogger = new BoostLogger(getLog());
             // TODO move this into getRuntimeInstance()
-            this.dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession, remoteRepos,
-                    BoostLogger.getInstance());
+            this.dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession, remoteRepos, boostLogger);
+                    
 
             List<File> compileClasspathJars = new ArrayList<File>();
 
@@ -105,7 +108,7 @@ public abstract class AbstractMojo extends MojoSupport {
             this.projectClassLoader = new URLClassLoader(urlsForClassLoader, this.getClass().getClassLoader());
 
             boosterConfigs = BoosterConfigurator.getBoosterConfigs(compileClasspathJars, projectClassLoader,
-                    dependencies, BoostLogger.getInstance());
+                    dependencies, boostLogger);
 
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);

@@ -94,11 +94,11 @@ public class TomeeRuntime implements RuntimeI {
     private void configureTomeeServer(List<AbstractBoosterConfig> boosterConfigurators) throws Exception {
         try {
             TomeeServerConfigGenerator tomeeConfig = new TomeeServerConfigGenerator(configDir,
-                    BoostLogger.getInstance());
+            		BoostLogger.getSystemStreamLogger());
             tomeeConfig.addJarsDirToSharedLoader();
 
             // Configure HTTP endpoint
-            Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(BoostLogger.getInstance());
+            Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(BoostLogger.getSystemStreamLogger());
 
             String hostname = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "localhost");
             tomeeConfig.addHostname(hostname);
@@ -124,7 +124,7 @@ public class TomeeRuntime implements RuntimeI {
      */
     private void copyTomeeJarDependencies(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
         List<String> tomeeDependencyJarsToCopy = BoosterConfigurator.getDependenciesToCopy(boosterConfigs,
-                BoostLogger.getInstance());
+                BoostLogger.getSystemStreamLogger());
         for (String dep : tomeeDependencyJarsToCopy) {
             String[] dependencyInfo = dep.split(":");
 
