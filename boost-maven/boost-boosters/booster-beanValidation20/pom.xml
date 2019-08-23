@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>boost.boosters</groupId>
-    <artifactId>beanValidation</artifactId>
+    <artifactId>bean-validation</artifactId>
     <version>2.0-1.0-M1-SNAPSHOT</version>
 
     <dependencyManagement>

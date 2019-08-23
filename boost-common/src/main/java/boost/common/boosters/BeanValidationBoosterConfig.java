@@ -18,7 +18,7 @@ import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":beanValidation")
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":bean-validation")
 public class BeanValidationBoosterConfig extends AbstractBoosterConfig {
 
     public BeanValidationBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
