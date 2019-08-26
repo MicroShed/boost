@@ -13,6 +13,7 @@ package boost.runtimes.openliberty.boosters;
 import static boost.common.config.ConfigConstants.*;
 
 import java.util.Map;
+import java.util.Properties;
 
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
@@ -23,8 +24,8 @@ import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyJSONBBoosterConfig extends JSONBBoosterConfig implements LibertyBoosterI {
 
-    public LibertyJSONBBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies, logger);
+    public LibertyJSONBBoosterConfig(Map<String, String> dependencies, Properties boostProperties, BoostLoggerI logger) throws BoostException {
+        super(dependencies, boostProperties, logger);
     }
 
     @Override

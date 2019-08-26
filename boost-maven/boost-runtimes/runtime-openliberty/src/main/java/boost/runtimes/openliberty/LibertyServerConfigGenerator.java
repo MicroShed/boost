@@ -12,10 +12,13 @@ package boost.runtimes.openliberty;
 
 import static boost.common.config.ConfigConstants.*;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +41,7 @@ import org.w3c.dom.Element;
 import boost.common.BoostLoggerI;
 import boost.common.config.BoostProperties;
 import boost.common.utils.BoostUtil;
+import net.wasdev.wlp.common.plugins.util.OSUtil;
 
 /**
  * Create a Liberty server.xml
@@ -47,6 +51,7 @@ public class LibertyServerConfigGenerator {
 
     private final String serverPath;
     private final String libertyInstallPath;
+    private final String encryptionType;
 
     private final BoostLoggerI logger;
 
@@ -59,17 +64,14 @@ public class LibertyServerConfigGenerator {
 
     private Properties bootstrapProperties;
 
-    private final Properties boostConfigProperties;
-
-    public LibertyServerConfigGenerator(String serverPath, BoostLoggerI logger) throws ParserConfigurationException {
+    public LibertyServerConfigGenerator(String serverPath, String encryptionType, BoostLoggerI logger) throws ParserConfigurationException {
 
         this.serverPath = serverPath;
         this.libertyInstallPath = serverPath + "/../../.."; // Three directories
                                                             // back from
                                                             // 'wlp/usr/servers/BoostServer'
+        this.encryptionType = encryptionType;
         this.logger = logger;
-
-        boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
 
         generateServerXml();
 
@@ -178,13 +180,7 @@ public class LibertyServerConfigGenerator {
         Map<String, String> propertiesToEncrypt = BoostProperties.getPropertiesToEncrypt();
 
         if (propertiesToEncrypt.containsKey(key) && value != null && !value.equals("")) {
-            // Getting properties that might not have been passed with the other
-            // properties that will be written to boostrap.properties
-            // Don't want to add certain properties to the boostrap properties
-            // so we'll grab them here
-            Properties supportedProperties = BoostProperties.getConfiguredBoostProperties(logger);
-            value = BoostUtil.encrypt(libertyInstallPath, value, propertiesToEncrypt.get(key),
-                    supportedProperties.getProperty(BoostProperties.AES_ENCRYPTION_KEY), logger);
+            value = encrypt(value);
         }
 
         bootstrapProperties.put(key, value);
@@ -241,4 +237,65 @@ public class LibertyServerConfigGenerator {
     public Document getServerXmlDoc() {
         return serverXml;
     }
+    
+    private String getSecurityUtilCmd(String libertyInstallPath) {
+        if (OSUtil.isWindows()) {
+            return libertyInstallPath + "/bin/securityUtility.bat";
+        } else {
+            return libertyInstallPath + "/bin/securityUtility";
+        }
+    }
+
+    private String encrypt(String property) throws IOException {
+        //Won't encode the property if it contains the aes flag
+        if (!isEncoded(property)) {
+            Runtime rt = Runtime.getRuntime();
+            List<String> commands = new ArrayList<String>();
+
+            commands.add(getSecurityUtilCmd(libertyInstallPath));
+            commands.add("encode");
+            commands.add(property);
+
+            if(encryptionType != null && !encryptionType.equals("")) {
+                commands.add("--encoding=" + encryptionType);
+            } else {
+                commands.add("--encoding=aes");
+            }
+
+            String encryptionKey = BoostProperties.getPropertiesToEncrypt().get(property);
+            if(encryptionKey != null && !encryptionKey.equals("")) {
+                commands.add("--key=" + encryptionKey);
+            }
+
+            Process proc = rt.exec(commands.toArray(new String[0]));
+
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+
+            String s = null;
+
+            StringBuilder out = new StringBuilder();
+            while ((s = stdInput.readLine()) != null) {
+                out.append(s);
+            }
+
+            StringBuilder error = new StringBuilder();
+            while ((s = stdError.readLine()) != null) {
+                error.append(s + "\n");
+            }
+
+            if (error.length() != 0) {
+                throw new IOException("Password encryption failed: " + error);
+            }
+
+            return out.toString();
+        }
+        return property;
+    }
+
+    public boolean isEncoded(String property) {
+        return property.contains("{aes}") || property.contains("{hash}") || property.contains("{xor}");
+    }
+
 }

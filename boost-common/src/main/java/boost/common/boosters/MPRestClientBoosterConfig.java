@@ -13,6 +13,7 @@ package boost.common.boosters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
@@ -21,7 +22,7 @@ import boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpRestClient")
 public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
 
-    public MPRestClientBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+    public MPRestClientBoosterConfig(Map<String, String> dependencies, Properties boostProperties, BoostLoggerI logger) throws BoostException {
         super(dependencies.get(getCoordinates(MPRestClientBoosterConfig.class)));
     }
     

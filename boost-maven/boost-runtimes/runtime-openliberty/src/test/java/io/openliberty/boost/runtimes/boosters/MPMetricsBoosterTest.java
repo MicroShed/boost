@@ -45,11 +45,11 @@ public class MPMetricsBoosterTest {
     public void testMPMetricsBoosterFeature11() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyMPMetricsBoosterConfig libMPMetricsConfig = new LibertyMPMetricsBoosterConfig(BoosterUtil
                 .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "1.1-1.0-M1-SNAPSHOT"),
-                logger);
+                null, logger);
 
         serverConfig.addFeature(libMPMetricsConfig.getFeature());
         serverConfig.writeToServer();

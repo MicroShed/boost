@@ -29,8 +29,8 @@ import org.w3c.dom.NodeList;
 
 public class LibertyJDBCBoosterConfig extends JDBCBoosterConfig implements LibertyBoosterI {
 
-    public LibertyJDBCBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies, logger);
+    public LibertyJDBCBoosterConfig(Map<String, String> dependencies, Properties boostProperties, BoostLoggerI logger) throws BoostException {
+        super(dependencies, boostProperties, logger);
 
     }
 

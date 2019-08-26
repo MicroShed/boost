@@ -44,6 +44,7 @@ import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyRuntime implements RuntimeI {
     private final List<AbstractBoosterConfig> boosterConfigs;
+    private final Properties boostProperties;
     private final ExecutionEnvironment env;
     private final MavenProject project;
     private final Plugin mavenDepPlugin;
@@ -62,6 +63,7 @@ public class LibertyRuntime implements RuntimeI {
 
     public LibertyRuntime() {
         this.boosterConfigs = null;
+        this.boostProperties = null;
         this.env = null;
         this.project = null;
         this.projectBuildDir = null;
@@ -71,6 +73,7 @@ public class LibertyRuntime implements RuntimeI {
 
     public LibertyRuntime(RuntimeParams runtimeParams) {
         this.boosterConfigs = runtimeParams.getBoosterConfigs();
+        this.boostProperties = runtimeParams.getBoostProperties();
         this.env = runtimeParams.getEnv();
         this.project = runtimeParams.getProject();
         this.projectBuildDir = project.getBuild().getDirectory();
@@ -192,19 +195,19 @@ public class LibertyRuntime implements RuntimeI {
     private void generateLibertyServerConfig(List<AbstractBoosterConfig> boosterConfigurators) throws Exception {
 
         List<String> warNames = getWarNames();
-        LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath,
+        
+        String encryptionType = (String) boostProperties.get(BoostProperties.AES_ENCRYPTION_KEY);
+        LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, encryptionType,
                 BoostLogger.getInstance());
 
-        // Add default http endpoint configuration
-        Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(BoostLogger.getInstance());
-
-        String host = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "*");
+        // Configure HTTP endpoint
+        String host = (String) boostProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "*");
         libertyConfig.addHostname(host);
 
-        String httpPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "9080");
+        String httpPort = (String) boostProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "9080");
         libertyConfig.addHttpPort(httpPort);
 
-        String httpsPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTPS_PORT, "9443");
+        String httpsPort = (String) boostProperties.getOrDefault(BoostProperties.ENDPOINT_HTTPS_PORT, "9443");
         libertyConfig.addHttpsPort(httpsPort);
 
         // Add war configuration if necessary

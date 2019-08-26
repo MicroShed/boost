@@ -45,11 +45,11 @@ public class MPOpenTracingBoosterTest {
     public void testMPOpenTracingBoosterFeature11() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(
                 BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class,
-                        "1.1-1.0-M1-SNAPSHOT"),
+                        "1.1-1.0-M1-SNAPSHOT"), null,
                 logger);
 
         serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
@@ -72,11 +72,11 @@ public class MPOpenTracingBoosterTest {
     public void testMPOpenTracingBoosterFeature12() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(
                 BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class,
-                        "1.2-1.0-M1-SNAPSHOT"),
+                        "1.2-1.0-M1-SNAPSHOT"), null,
                 logger);
 
         serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
@@ -99,11 +99,11 @@ public class MPOpenTracingBoosterTest {
     public void testMPOpenTracingBoosterFeature13() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(
                 BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class,
-                        "1.3-1.0-M1-SNAPSHOT"),
+                        "1.3-1.0-M1-SNAPSHOT"), null,
                 logger);
 
         serverConfig.addFeature(libMPOpenTracingConfig.getFeature());

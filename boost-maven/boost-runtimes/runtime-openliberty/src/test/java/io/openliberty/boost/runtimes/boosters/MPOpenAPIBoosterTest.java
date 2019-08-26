@@ -45,11 +45,11 @@ public class MPOpenAPIBoosterTest {
     public void testMPOpenAPIBoosterFeature10() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyMPOpenAPIBoosterConfig libMPOpenAPIConfig = new LibertyMPOpenAPIBoosterConfig(BoosterUtil
                 .createDependenciesWithBoosterAndVersion(LibertyMPOpenAPIBoosterConfig.class, "1.0-1.0-M1-SNAPSHOT"),
-                logger);
+                null, logger);
 
         serverConfig.addFeature(libMPOpenAPIConfig.getFeature());
         serverConfig.writeToServer();
@@ -71,11 +71,11 @@ public class MPOpenAPIBoosterTest {
     public void testMPOpenAPIBoosterFeature11() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyMPOpenAPIBoosterConfig libMPOpenAPIConfig = new LibertyMPOpenAPIBoosterConfig(BoosterUtil
                 .createDependenciesWithBoosterAndVersion(LibertyMPOpenAPIBoosterConfig.class, "1.1-1.0-M1-SNAPSHOT"),
-                logger);
+                null, logger);
 
         serverConfig.addFeature(libMPOpenAPIConfig.getFeature());
         serverConfig.writeToServer();

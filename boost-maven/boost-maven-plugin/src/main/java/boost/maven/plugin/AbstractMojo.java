@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ServiceLoader;
 
 import java.net.URL;
@@ -39,6 +40,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import boost.common.boosters.AbstractBoosterConfig;
+import boost.common.config.BoostProperties;
 import boost.common.config.BoosterConfigurator;
 import boost.common.runtimes.RuntimeI;
 import boost.maven.runtimes.RuntimeParams;
@@ -49,6 +51,7 @@ public abstract class AbstractMojo extends MojoSupport {
 
     private ClassLoader projectClassLoader;
     private List<AbstractBoosterConfig> boosterConfigs;
+    private Properties boostProperties;
 
     protected String mavenDependencyPluginGroupId = "org.apache.maven.plugins";
     protected String mavenDependencyPluginArtifactId = "maven-dependency-plugin";
@@ -102,9 +105,11 @@ public abstract class AbstractMojo extends MojoSupport {
             }
             URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);
             this.projectClassLoader = new URLClassLoader(urlsForClassLoader, this.getClass().getClassLoader());
-
+            
+            boostProperties = BoostProperties.getConfiguredBoostProperties(project.getProperties(), BoostLogger.getInstance());
+            
             boosterConfigs = BoosterConfigurator.getBoosterConfigs(compileClasspathJars, projectClassLoader,
-                    dependencies, BoostLogger.getInstance());
+                    dependencies, boostProperties, BoostLogger.getInstance());
 
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
@@ -115,7 +120,7 @@ public abstract class AbstractMojo extends MojoSupport {
         
     	RuntimeI runtime = null;
     	
-        RuntimeParams params = new RuntimeParams(boosterConfigs, getExecutionEnvironment(), project, getLog(),
+        RuntimeParams params = new RuntimeParams(boosterConfigs, boostProperties, getExecutionEnvironment(), project, getLog(),
                 repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
         try {
             ServiceLoader<RuntimeI> runtimes = ServiceLoader.load(RuntimeI.class, projectClassLoader);

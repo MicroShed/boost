@@ -45,12 +45,12 @@ public class MPFaultToleranceBoosterTest {
     public void testMPFaultToleranceBoosterFeature11() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(
                 BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class,
                         "1.1-1.0-M1-SNAPSHOT"),
-                logger);
+                null, logger);
 
         serverConfig.addFeature(libMPFTConfig.getFeature());
         serverConfig.writeToServer();
@@ -72,12 +72,12 @@ public class MPFaultToleranceBoosterTest {
     public void testMPFaultToleranceBoosterFeature20() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(
                 BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class,
                         "2.0-1.0-M1-SNAPSHOT"),
-                logger);
+                null, logger);
 
         serverConfig.addFeature(libMPFTConfig.getFeature());
         serverConfig.writeToServer();

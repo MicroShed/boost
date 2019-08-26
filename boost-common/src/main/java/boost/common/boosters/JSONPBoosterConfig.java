@@ -13,6 +13,7 @@ package boost.common.boosters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
@@ -21,7 +22,7 @@ import boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jsonp")
 public class JSONPBoosterConfig extends AbstractBoosterConfig {
 
-    public JSONPBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
+    public JSONPBoosterConfig(Map<String, String> dependencies, Properties boostProperties, BoostLoggerI logger) throws BoostException {
         super(dependencies.get(getCoordinates(JSONPBoosterConfig.class)));
     }
 

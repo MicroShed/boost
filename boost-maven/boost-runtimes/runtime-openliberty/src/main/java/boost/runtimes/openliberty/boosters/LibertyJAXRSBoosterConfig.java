@@ -14,6 +14,7 @@ import static boost.common.config.ConfigConstants.JAXRS_20;
 import static boost.common.config.ConfigConstants.JAXRS_21;
 
 import java.util.Map;
+import java.util.Properties;
 
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
@@ -23,8 +24,8 @@ import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyJAXRSBoosterConfig extends JAXRSBoosterConfig implements LibertyBoosterI {
 
-    public LibertyJAXRSBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies, logger);
+    public LibertyJAXRSBoosterConfig(Map<String, String> dependencies, Properties boostProperties, BoostLoggerI logger) throws BoostException {
+        super(dependencies, boostProperties, logger);
     }
 
     @Override

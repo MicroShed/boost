@@ -45,11 +45,11 @@ public class MPHealthBoosterTest {
     public void testMPHealthBoosterFeature10() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyMPHealthBoosterConfig libMPHealthConfig = new LibertyMPHealthBoosterConfig(BoosterUtil
                 .createDependenciesWithBoosterAndVersion(LibertyMPHealthBoosterConfig.class, "1.0-1.0-M1-SNAPSHOT"),
-                logger);
+                null, logger);
 
         serverConfig.addFeature(libMPHealthConfig.getFeature());
         serverConfig.writeToServer();

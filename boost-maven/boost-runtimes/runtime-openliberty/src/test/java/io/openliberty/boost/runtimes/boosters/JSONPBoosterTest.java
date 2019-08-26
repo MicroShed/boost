@@ -45,11 +45,11 @@ public class JSONPBoosterTest {
     public void testJSONPBoosterFeature10() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyJSONPBoosterConfig libJSONPConfig = new LibertyJSONPBoosterConfig(BoosterUtil
                 .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.0-1.0-M1-SNAPSHOT"),
-                logger);
+                null, logger);
 
         serverConfig.addFeature(libJSONPConfig.getFeature());
         serverConfig.writeToServer();
@@ -70,11 +70,11 @@ public class JSONPBoosterTest {
     public void testJSONPBoosterFeature11() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyJSONPBoosterConfig libJSONPConfig = new LibertyJSONPBoosterConfig(BoosterUtil
                 .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.1-1.0-M1-SNAPSHOT"),
-                logger);
+                null, logger);
 
         serverConfig.addFeature(libJSONPConfig.getFeature());
         serverConfig.writeToServer();

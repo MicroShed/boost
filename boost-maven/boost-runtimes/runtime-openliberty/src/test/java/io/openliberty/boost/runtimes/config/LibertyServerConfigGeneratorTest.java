@@ -66,7 +66,7 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddSpringFeature() throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
         serverConfig.addFeature(SPRING_BOOT_15);
         serverConfig.writeToServer();
 
@@ -91,15 +91,9 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddDatasource_Derby() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        // Add basic properties
-        Properties datasourceProperties = new Properties();
-        datasourceProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, DERBY_DB);
-        datasourceProperties.put(BoostProperties.DATASOURCE_CREATE_DATABASE, "create");
-
-        //serverConfig.addDataSource(JDBCBoosterConfig.DERBY, datasourceProperties);
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), logger);
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), new Properties(), logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
 
@@ -179,12 +173,14 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddDatasource_DB2() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> jdbcDependency = BoosterUtil.getJDBCDependency();
         jdbcDependency.put(JDBCBoosterConfig.DB2_DEPENDENCY, "the db2 dependency version");
-        System.setProperty(BoostProperties.DATASOURCE_URL, DB2_URL);
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(jdbcDependency, logger);
+        
+        Properties boostProperties = new Properties();
+        boostProperties.put(BoostProperties.DATASOURCE_URL, DB2_URL);
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(jdbcDependency, boostProperties, logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
 
@@ -254,12 +250,14 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddJdbcBoosterConfig_MySQL() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> jdbcDependency = BoosterUtil.getJDBCDependency();
         jdbcDependency.put(JDBCBoosterConfig.MYSQL_DEPENDENCY, "the mysql dependency version");
-        System.setProperty(BoostProperties.DATASOURCE_URL, MYSQL_URL);
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(jdbcDependency, logger);
+        
+        Properties boostProperties = new Properties();
+        boostProperties.put(BoostProperties.DATASOURCE_URL, MYSQL_URL);
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(jdbcDependency, boostProperties, logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
         

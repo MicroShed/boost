@@ -45,10 +45,10 @@ public class JAXRSBoosterTest {
     public void testJAXRSBoosterFeature20() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyJAXRSBoosterConfig libJAXRSConfig = new LibertyJAXRSBoosterConfig(BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.0-1.0-M1-SNAPSHOT"),
+                .createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.0-1.0-M1-SNAPSHOT"), null,
                 logger);
 
         serverConfig.addFeature(libJAXRSConfig.getFeature());
@@ -70,11 +70,11 @@ public class JAXRSBoosterTest {
     public void testJAXRSBoosterFeature21() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyJAXRSBoosterConfig libJAXRSConfig = new LibertyJAXRSBoosterConfig(BoosterUtil
                 .createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.1-1.0-M1-SNAPSHOT"),
-                logger);
+                null, logger);
 
         serverConfig.addFeature(libJAXRSConfig.getFeature());
         serverConfig.writeToServer();

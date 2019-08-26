@@ -45,11 +45,11 @@ public class JSONBBoosterTest {
     public void testJSONBBoosterFeature10() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyJSONBBoosterConfig libJSONBConfig = new LibertyJSONBBoosterConfig(BoosterUtil
                 .createDependenciesWithBoosterAndVersion(LibertyJSONBBoosterConfig.class, "1.0-1.0-M1-SNAPSHOT"),
-                logger);
+                null,logger);
 
         serverConfig.addFeature(libJSONBConfig.getFeature());
         serverConfig.writeToServer();
