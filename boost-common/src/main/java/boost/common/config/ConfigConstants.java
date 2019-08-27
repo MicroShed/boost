@@ -102,6 +102,7 @@ public final class ConfigConstants {
     public static final String JPA_22 = "jpa-2.2";
     public static final String CDI_12 = "cdi-1.2";
     public static final String CDI_20 = "cdi-2.0";
+    public static final String BEANVALIDATION_20 = "beanValidation-2.0";
     public static final String MPHEALTH_10 = "mpHealth-1.0";
     public static final String MPOPENAPI_10 = "mpOpenAPI-1.0";
     public static final String MPOPENAPI_11 = "mpOpenAPI-1.1";

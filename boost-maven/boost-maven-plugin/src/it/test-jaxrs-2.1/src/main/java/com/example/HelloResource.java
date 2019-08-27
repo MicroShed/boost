@@ -5,7 +5,9 @@ import java.util.Set;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.validation.constraints.Size;
 
 //import com.ibm.json.java.JSON;
 //import com.ibm.json.java.JSONArray;
@@ -18,8 +20,17 @@ import javax.ws.rs.Produces;
 public class HelloResource {
 
     @GET
+    @Path("/hello")
     @Produces("text/plain")
     public String getInformation() throws Exception, IOException {
         return "Hello World From Your Friends at Liberty Boost EE!";
+    }
+
+    @GET
+    @Path("/{dataIn}")
+    @Produces("text/plain")
+    public String getInformationWithString(@PathParam("dataIn") @Size(min = 2, max = 10) String dataIn)
+            throws Exception, IOException {
+        return ("Hello World From Your Friends at Liberty Boost EE! Your passed in string data is: " + dataIn);
     }
 }
