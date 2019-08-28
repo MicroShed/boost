@@ -10,15 +10,26 @@
  *******************************************************************************/
 package io.openliberty.boost.runtimes.utils;
 
+import static boost.common.config.ConfigConstants.LIBRARY;
+import static io.openliberty.boost.runtimes.utils.DOMUtils.getDirectChildrenByTag;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class ConfigFileUtils {
 
@@ -47,36 +58,26 @@ public class ConfigFileUtils {
         return found;
     }
 
-    public static String findPropertyInBootstrapProperties(String bootstrapPropertiesPath, String key)
-            throws IOException {
+    public static String findVariableInXml(String variablesXmlPath, String variableName)
+            throws Exception {
 
-        String foundProperty = null;
+        String variableValue = null;
+        
+        File variablesXml = new File(variablesXmlPath);
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document doc = dBuilder.parse(variablesXml);
 
-        Properties properties = new Properties();
-        InputStream input = null;
-
-        try {
-
-            input = new FileInputStream(bootstrapPropertiesPath);
-
-            // load a properties file
-            properties.load(input);
-
-            foundProperty = properties.getProperty(key);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        Element serverRoot = doc.getDocumentElement();
+        
+        List<Element> variablesList = getDirectChildrenByTag(serverRoot, "variable");
+        for (Element variable : variablesList) {
+        	if (variableName.equals(variable.getAttribute("name"))) {
+        		variableValue = variable.getAttribute("defaultValue");
+        	}
         }
 
-        return foundProperty;
+        return variableValue;
     }
 
 }

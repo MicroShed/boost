@@ -14,6 +14,8 @@ package io.openliberty.boost.runtimes.boosters;
 import static boost.common.config.ConfigConstants.*;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Properties;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
@@ -45,7 +47,7 @@ public class BeanValidationBoosterTest {
     public void testBeanValidationBoosterFeature_20() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyBeanValidationBoosterConfig libBeanValidationConfig = new LibertyBeanValidationBoosterConfig(
                 BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyBeanValidationBoosterConfig.class,
@@ -72,10 +74,10 @@ public class BeanValidationBoosterTest {
     public void testCDIBoosterFeature_20() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         LibertyCDIBoosterConfig libCDIConfig = new LibertyCDIBoosterConfig(BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "2.0-1.0-M1-SNAPSHOT"), logger);
+                .createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "2.0-1.0-M1-SNAPSHOT"), new Properties(), logger);
 
         serverConfig.addFeature(libCDIConfig.getFeature());
         serverConfig.writeToServer();
