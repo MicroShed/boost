@@ -9,18 +9,11 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.boost.gradle.extensions
+package boost.gradle.extensions
 
 import org.gradle.util.ConfigureUtil
 
 class BoostExtension {
-
-	BoostDockerExtension docker
-
-	def docker(Closure closure){
-        docker = new BoostDockerExtension()
-        ConfigureUtil.configure(closure, docker)
-	}
 
 	BoostPackageExtension packaging
 

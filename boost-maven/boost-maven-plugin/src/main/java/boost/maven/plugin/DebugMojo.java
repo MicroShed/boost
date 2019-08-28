@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package boost.maven.plugin;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
@@ -21,7 +22,7 @@ import boost.common.BoostException;
  * debugger connects to debug port <b>7777</b>.
  *
  */
-@Mojo(name = "debug")
+@Mojo(name = "debug", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class DebugMojo extends AbstractMojo {
 
     /**
@@ -34,7 +35,7 @@ public class DebugMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         super.execute();
         try {
-            this.getRuntimeInstance().doDebug(clean);
+            this.getRuntimeInstance().doDebug(project, this);
         } catch (BoostException e) {
             throw new MojoExecutionException("Error debugging server", e);
         }

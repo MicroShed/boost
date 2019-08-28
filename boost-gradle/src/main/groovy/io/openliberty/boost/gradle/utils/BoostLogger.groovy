@@ -9,9 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.boost.gradle.utils
+package boost.gradle.utils
 
-import io.openliberty.boost.common.BoostLoggerI
+import boost.common.BoostLoggerI
 
 import org.gradle.api.Project
 

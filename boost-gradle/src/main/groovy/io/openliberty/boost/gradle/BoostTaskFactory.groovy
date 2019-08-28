@@ -8,17 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.gradle
+package boost.gradle
 
 import org.gradle.api.Project
 
-import io.openliberty.boost.gradle.tasks.BoostStartTask
-import io.openliberty.boost.gradle.tasks.BoostRunTask
-import io.openliberty.boost.gradle.tasks.BoostStopTask
-import io.openliberty.boost.gradle.tasks.BoostPackageTask
-import io.openliberty.boost.gradle.tasks.BoostDebugTask
-import io.openliberty.boost.gradle.tasks.docker.BoostDockerBuildTask
-import io.openliberty.boost.gradle.tasks.docker.BoostDockerPushTask
+import boost.gradle.tasks.BoostStartTask
+import boost.gradle.tasks.BoostRunTask
+import boost.gradle.tasks.BoostStopTask
+import boost.gradle.tasks.BoostPackageTask
+import boost.gradle.tasks.BoostDebugTask
 
 class BoostTaskFactory {
     Project project
@@ -33,8 +31,6 @@ class BoostTaskFactory {
         project.tasks.create('boostStop', BoostStopTask)
         project.tasks.create('boostPackage', BoostPackageTask)
         project.tasks.create('boostDebug', BoostDebugTask)
-        project.tasks.create('boostDockerBuild', BoostDockerBuildTask)
-        project.tasks.create('boostDockerPush', BoostDockerPushTask)
         
     }
 }

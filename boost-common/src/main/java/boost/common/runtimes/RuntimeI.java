@@ -10,18 +10,22 @@
  *******************************************************************************/
 package boost.common.runtimes;
 
+import java.util.List;
+
 import boost.common.BoostException;
+import boost.common.boosters.AbstractBoosterConfig;
 
 public abstract interface RuntimeI {
+    //Will need to pass in plugin mojo/task to Maven/Gradle along with project object
+
+    public void doPackage(List<AbstractBoosterConfig> boosterConfigs, Object project, Object pluginTask) throws BoostException;
     
-    public void doPackage() throws BoostException;
+    public void doDebug(Object project, Object pluginTask) throws BoostException;
     
-    public void doDebug(boolean clean) throws BoostException;
+    public void doRun(Object project, Object pluginTask) throws BoostException;
     
-    public void doRun(boolean clean) throws BoostException;
+    public void doStart(Object project, Object pluginTask) throws BoostException;
     
-    public void doStart(boolean clean, int verifyTimeout, int serverStartTimeout) throws BoostException;
-    
-    public void doStop() throws BoostException;
+    public void doStop(Object project, Object pluginTask) throws BoostException;
 
 }

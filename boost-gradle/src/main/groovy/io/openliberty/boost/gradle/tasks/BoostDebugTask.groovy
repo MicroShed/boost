@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.gradle.tasks
+package boost.gradle.tasks
 
 import org.gradle.api.logging.LogLevel
 
@@ -20,10 +20,8 @@ public class BoostDebugTask extends AbstractBoostTask {
             logging.level = LogLevel.INFO
             group 'Boost'
 
-            finalizedBy 'libertyDebug'
-
             doFirst {
-                logger.info('Running the application in debug mode.')
+                AbstractBoostTask.getRuntimeInstance(project).doDebug(project, this)
             }
         })
     }   
