@@ -145,16 +145,16 @@ public class LibertyServerConfigGeneratorTest {
         assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
         assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
 
-        // Check bootstrap.properties content
-        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+        // Check variables.xml content
+        String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR + "/variables.xml";
 
-        String databaseNameFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+        String databaseNameFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_DATABASE_NAME);
 
         assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_DATABASE_NAME
                 + " is not correct", DERBY_DB, databaseNameFound);
 
-        String createFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+        String createFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_CREATE_DATABASE);
 
         assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_CREATE_DATABASE
@@ -227,10 +227,10 @@ public class LibertyServerConfigGeneratorTest {
         assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
         assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
 
-        // Check bootstrap.properties content
-        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+        // Check variables.xml content
+        String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR + "/variables.xml";
 
-        String urlFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+        String urlFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_URL);
 
         assertEquals(
@@ -303,10 +303,10 @@ public class LibertyServerConfigGeneratorTest {
         assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
         assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
 
-        // Check bootstrap.properties content
-        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+        // Check variables.xml content
+        String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR + "/variables.xml";
 
-        String urlFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+        String urlFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_URL);
 
         assertEquals(
