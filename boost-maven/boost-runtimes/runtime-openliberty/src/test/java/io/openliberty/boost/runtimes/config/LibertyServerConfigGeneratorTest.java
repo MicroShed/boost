@@ -32,6 +32,7 @@ import org.w3c.dom.Element;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 
 import boost.common.config.BoostProperties;
+import boost.common.config.BoosterConfigParams;
 import boost.common.utils.BoostUtil;
 import io.openliberty.boost.runtimes.utils.CommonLogger;
 import io.openliberty.boost.runtimes.utils.ConfigFileUtils;
@@ -93,7 +94,8 @@ public class LibertyServerConfigGeneratorTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), new Properties(), logger);
+        BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(params, logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
 
@@ -180,7 +182,9 @@ public class LibertyServerConfigGeneratorTest {
         
         Properties boostProperties = new Properties();
         boostProperties.put(BoostProperties.DATASOURCE_URL, DB2_URL);
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(jdbcDependency, boostProperties, logger);
+        
+        BoosterConfigParams params = new BoosterConfigParams(jdbcDependency, boostProperties);
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(params, logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
 
@@ -257,7 +261,9 @@ public class LibertyServerConfigGeneratorTest {
         
         Properties boostProperties = new Properties();
         boostProperties.put(BoostProperties.DATASOURCE_URL, MYSQL_URL);
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(jdbcDependency, boostProperties, logger);
+        
+        BoosterConfigParams params = new BoosterConfigParams(jdbcDependency, boostProperties);
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(params, logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
         

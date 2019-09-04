@@ -12,19 +12,17 @@ package boost.runtimes.openliberty.boosters;
 
 import static boost.common.config.ConfigConstants.*;
 
-import java.util.Map;
-import java.util.Properties;
-
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.MPRestClientBoosterConfig;
+import boost.common.config.BoosterConfigParams;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyMPRestClientBoosterConfig extends MPRestClientBoosterConfig implements LibertyBoosterI {
 
-    public LibertyMPRestClientBoosterConfig(Map<String, String> dependencies, Properties boostProperties, BoostLoggerI logger) throws BoostException {
-        super(dependencies, boostProperties, logger);
+    public LibertyMPRestClientBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params, logger);
     }
 
     @Override

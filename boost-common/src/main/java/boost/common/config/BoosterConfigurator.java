@@ -79,17 +79,18 @@ public class BoosterConfigurator {
                     if (ctClass.getSuperclass().getName().equals(boosterClass.getName())) {
                         // A runtime specific booster exists
                         Class<?> runtimeBoosterClass = classLoader.loadClass(ctClass.getName());
-                        cons = runtimeBoosterClass.getConstructor(Map.class, Properties.class, BoostLoggerI.class);
+                        cons = runtimeBoosterClass.getConstructor(BoosterConfigParams.class, BoostLoggerI.class);
                     }
                 }
 
                 if (cons == null) {
                     // We did not find a runtime specific booster class, just instantiate a generic
                     // one
-                    cons = boosterClass.getConstructor(Map.class, Properties.class, BoostLoggerI.class);
+                    cons = boosterClass.getConstructor(BoosterConfigParams.class, BoostLoggerI.class);
                 }
 
-                Object o = cons.newInstance(dependencies, boostProperties, logger);
+                BoosterConfigParams boosterConfigParams = new BoosterConfigParams(dependencies, boostProperties);
+                Object o = cons.newInstance(boosterConfigParams, logger);
                 if (o instanceof AbstractBoosterConfig) {
                     boosterConfigList.add((AbstractBoosterConfig) o);
                 } else {

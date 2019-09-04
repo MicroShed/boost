@@ -11,17 +11,16 @@
 package boost.runtimes.tomee.boosters;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.MPConfigBoosterConfig;
+import boost.common.config.BoosterConfigParams;
 
 public class TomeeMPConfigBoosterConfig extends MPConfigBoosterConfig {
 
-    public TomeeMPConfigBoosterConfig(Map<String, String> dependencies, Properties boostProperties, BoostLoggerI logger) throws BoostException {
-        super(dependencies, boostProperties, logger);
+    public TomeeMPConfigBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params, logger);
     }
 
     @Override

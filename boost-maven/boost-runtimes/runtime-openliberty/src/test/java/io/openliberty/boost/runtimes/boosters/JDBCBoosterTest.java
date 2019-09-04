@@ -16,6 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Properties;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -28,6 +30,7 @@ import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.config.BoostProperties;
+import boost.common.config.BoosterConfigParams;
 import io.openliberty.boost.runtimes.utils.BoosterUtil;
 import io.openliberty.boost.runtimes.utils.CommonLogger;
 import io.openliberty.boost.runtimes.utils.ConfigFileUtils;
@@ -67,7 +70,8 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "1.6");
 
-        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), null, logger);
+        BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
+        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(params, logger);
         
         serverConfig.addFeature(libJDBCConfig.getFeature());
         serverConfig.writeToServer();
@@ -96,7 +100,8 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "1.7");
 
-        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), null, logger);
+        BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
+        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(params, logger);
         
         serverConfig.addFeature(libJDBCConfig.getFeature());
         serverConfig.writeToServer();
@@ -125,7 +130,8 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "7");
 
-        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), null, logger);
+        BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
+        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(params, logger);
 
         serverConfig.addFeature(libJDBCConfig.getFeature());
         serverConfig.writeToServer();
@@ -154,7 +160,8 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "1.8");
 
-        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), null, logger);
+        BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
+        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(params, logger);
 
         serverConfig.addFeature(libJDBCConfig.getFeature());
         serverConfig.writeToServer();
@@ -183,7 +190,8 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "8");
 
-        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), null, logger);
+        BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
+        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(params, logger);
 
         serverConfig.addFeature(libJDBCConfig.getFeature());
         serverConfig.writeToServer();
@@ -212,7 +220,8 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "9");
 
-        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), null, logger);
+        BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
+        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(params, logger);
 
         serverConfig.addFeature(libJDBCConfig.getFeature());
         serverConfig.writeToServer();
@@ -241,7 +250,8 @@ public class JDBCBoosterTest {
         // Set compiler target property
         System.setProperty(BoostProperties.INTERNAL_COMPILER_TARGET, "11");
 
-        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), null, logger);
+        BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
+        LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(params, logger);
 
         serverConfig.addFeature(libJDBCConfig.getFeature());
         serverConfig.writeToServer();
