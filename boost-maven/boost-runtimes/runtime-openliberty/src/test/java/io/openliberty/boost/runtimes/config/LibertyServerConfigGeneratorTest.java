@@ -153,13 +153,13 @@ public class LibertyServerConfigGeneratorTest {
         String databaseNameFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_DATABASE_NAME);
 
-        assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_DATABASE_NAME
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_DATABASE_NAME
                 + " is not correct", DERBY_DB, databaseNameFound);
 
         String createFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_CREATE_DATABASE);
 
-        assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_CREATE_DATABASE
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_CREATE_DATABASE
                 + " is not correct", "create", createFound);
     }
 
@@ -238,7 +238,7 @@ public class LibertyServerConfigGeneratorTest {
                 BoostProperties.DATASOURCE_URL);
 
         assertEquals(
-                "The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_URL + " is not correct",
+                "The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct",
                 DB2_URL, urlFound);
     }
 
@@ -316,7 +316,7 @@ public class LibertyServerConfigGeneratorTest {
                 BoostProperties.DATASOURCE_URL);
 
         assertEquals(
-                "The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_URL + " is not correct",
+                "The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct",
                 MYSQL_URL, urlFound);
     }
 

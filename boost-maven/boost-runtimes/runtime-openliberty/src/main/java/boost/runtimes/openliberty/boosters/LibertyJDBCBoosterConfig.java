@@ -49,7 +49,7 @@ public class LibertyJDBCBoosterConfig extends JDBCBoosterConfig implements Liber
         try {
         	libertyServerConfigGenerator.addDataSource(getProductName(), getDatasourceProperties());
         } catch (Exception e) {
-            throw new BoostException("Error when configuring JDBC data source.");
+            throw new BoostException("Error when configuring JDBC data source.", e);
         }
     }
 }

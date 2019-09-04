@@ -15,10 +15,14 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import boost.common.config.BoostProperties;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import utils.LibertyConfigFileUtils;
 
 public class Db2PropertiesIT {
 
@@ -35,34 +39,18 @@ public class Db2PropertiesIT {
     }
 
     @Test
-    public void checkPropertiesTest() {
+    public void checkPropertiesTest() throws Exception {
+    	String variablesXml = "target/liberty/wlp/usr/servers/defaultServer/configDropins/defaults/variables.xml";
 
-        Properties bootstrapProperties = new Properties();
-        InputStream input = null;
-
-        try {
-            input = new FileInputStream("target/liberty/wlp/usr/servers/defaultServer/bootstrap.properties");
-
-            bootstrapProperties.load(input);
-
-            assertEquals("Incorrect boost.db.user found in bootstrap.properties.", DB_USER,
-                    bootstrapProperties.getProperty("boost.db.user"));
-            assertEquals("Incorrect boost.db.databaseName found in bootstrap.properties.", DB_NAME,
-                    bootstrapProperties.getProperty("boost.db.databaseName"));
-            // AES hashed password changes so we're just going to look for the
-            // aes flag.
-            assertTrue("Incorrect boost.db.password found in bootstrap.properties.",
-                    bootstrapProperties.getProperty("boost.db.password").contains(AES_HASHED_PASSWORD_FLAG));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        assertEquals("Incorrect boost.db.user found in bootstrap.properties.", DB_USER,
+        		LibertyConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_USER));
+        
+        assertEquals("Incorrect boost.db.databaseName found in bootstrap.properties.", DB_NAME,
+        		LibertyConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_DATABASE_NAME));
+        
+        // AES hashed password changes so we're just going to look for the
+        // aes flag.
+        assertTrue("Incorrect boost.db.password found in bootstrap.properties.",
+        		LibertyConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_PASSWORD).contains(AES_HASHED_PASSWORD_FLAG));
     }
 }
