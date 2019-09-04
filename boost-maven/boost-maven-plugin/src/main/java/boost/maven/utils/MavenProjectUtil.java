@@ -90,7 +90,7 @@ public class MavenProjectUtil {
         }
 
         // Check maven-compiler-plugin release value
-        String release = net.wasdev.wlp.maven.plugins.utils.MavenProjectUtil.getPluginConfiguration(project,
+        String release = io.openliberty.tools.maven.utils.MavenProjectUtil.getPluginConfiguration(project,
                 "org.apache.maven.plugins", "maven-compiler-plugin", "release");
 
         if (release != null) {
@@ -98,7 +98,7 @@ public class MavenProjectUtil {
         }
 
         // Check maven-compiler-plugin target value
-        String target = net.wasdev.wlp.maven.plugins.utils.MavenProjectUtil.getPluginConfiguration(project,
+        String target = io.openliberty.tools.maven.utils.MavenProjectUtil.getPluginConfiguration(project,
                 "org.apache.maven.plugins", "maven-compiler-plugin", "target");
 
         if (target != null) {
