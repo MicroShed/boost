@@ -239,7 +239,7 @@ public class LibertyRuntime implements RuntimeI {
      * Invoke the liberty-maven-plugin to run the create-server goal
      */
     private void createLibertyServer() throws MojoExecutionException {
-        executeMojo(getPlugin(), goal("create-server"),
+        executeMojo(getPlugin(), goal("create"),
                 configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()), env);
     }
 
@@ -280,7 +280,7 @@ public class LibertyRuntime implements RuntimeI {
      * JAR
      */
     private void createUberJar() throws MojoExecutionException {
-        executeMojo(getPlugin(), goal("package-server"),
+        executeMojo(getPlugin(), goal("package"),
                 configuration(element(name("isInstall"), "false"), element(name("include"), "minify,runnable"),
                         element(name("outputDirectory"), "target/liberty-alt-output-dir"),
                         element(name("packageFile"), ""), element(name("serverName"), serverName)),
