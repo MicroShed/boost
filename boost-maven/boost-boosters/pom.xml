@@ -25,6 +25,7 @@
         <module>booster-jsonp11</module>
         <module>booster-beanValidation20</module>
         <module>booster-mpConfig13</module>
+        <module>booster-mp-jwt11</module>
         <module>booster-mpMetrics11</module>
         <module>booster-mpFaultTolerance11</module>
         <module>booster-mpFaultTolerance20</module>
