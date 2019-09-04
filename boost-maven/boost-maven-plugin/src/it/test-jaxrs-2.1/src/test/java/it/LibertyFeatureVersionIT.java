@@ -22,7 +22,7 @@ import org.junit.Test;
 public class LibertyFeatureVersionIT {
 
     private static final String JAXRS_21_FEATURE = "<feature>jaxrs-2.1</feature>";
-    private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";
+    private static String SERVER_XML = "target/liberty/wlp/usr/servers/defaultServer/server.xml";
 
     @BeforeClass
     public static void init() {

@@ -14,6 +14,9 @@ package io.openliberty.boost.runtimes.boosters;
 import static boost.common.config.ConfigConstants.*;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Map;
+import java.util.Properties;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
@@ -21,6 +24,7 @@ import org.junit.rules.TemporaryFolder;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 
 import boost.common.BoostLoggerI;
+import boost.common.config.BoosterConfigParams;
 import io.openliberty.boost.runtimes.utils.BoosterUtil;
 import io.openliberty.boost.runtimes.utils.CommonLogger;
 import io.openliberty.boost.runtimes.utils.ConfigFileUtils;
@@ -45,11 +49,13 @@ public class MPMetricsBoosterTest {
     public void testMPMetricsBoosterFeature11() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        LibertyMPMetricsBoosterConfig libMPMetricsConfig = new LibertyMPMetricsBoosterConfig(BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "1.1-1.0-M1-SNAPSHOT"),
-                logger);
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "1.1-1.0-M1-SNAPSHOT");
+        
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+        LibertyMPMetricsBoosterConfig libMPMetricsConfig = new LibertyMPMetricsBoosterConfig(params, logger);
 
         serverConfig.addFeature(libMPMetricsConfig.getFeature());
         serverConfig.writeToServer();

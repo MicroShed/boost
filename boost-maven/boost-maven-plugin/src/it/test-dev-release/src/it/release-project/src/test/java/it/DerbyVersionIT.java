@@ -30,7 +30,7 @@ public class DerbyVersionIT {
         if ("tomee".equals(runtime)) {
             DERBY_JAR = "target/apache-tomee/boost/derby-10.11.1.1.jar";
         } else if ("ol".equals(runtime) || "wlp".equals(runtime)) {
-            DERBY_JAR = "target/liberty/wlp/usr/servers/BoostServer/resources/derby-10.11.1.1.jar";
+            DERBY_JAR = "target/liberty/wlp/usr/servers/defaultServer/resources/derby-10.11.1.1.jar";
         }
     }
 

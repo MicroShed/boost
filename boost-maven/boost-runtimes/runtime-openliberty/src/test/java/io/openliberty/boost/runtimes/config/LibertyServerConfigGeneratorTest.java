@@ -32,6 +32,7 @@ import org.w3c.dom.Element;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 
 import boost.common.config.BoostProperties;
+import boost.common.config.BoosterConfigParams;
 import boost.common.utils.BoostUtil;
 import io.openliberty.boost.runtimes.utils.CommonLogger;
 import io.openliberty.boost.runtimes.utils.ConfigFileUtils;
@@ -66,7 +67,7 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddSpringFeature() throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
         serverConfig.addFeature(SPRING_BOOT_15);
         serverConfig.writeToServer();
 
@@ -91,15 +92,10 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddDatasource_Derby() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        // Add basic properties
-        Properties datasourceProperties = new Properties();
-        datasourceProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, DERBY_DB);
-        datasourceProperties.put(BoostProperties.DATASOURCE_CREATE_DATABASE, "create");
-
-        //serverConfig.addDataSource(JDBCBoosterConfig.DERBY, datasourceProperties);
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), logger);
+        BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(params, logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
 
@@ -151,19 +147,19 @@ public class LibertyServerConfigGeneratorTest {
         assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
         assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
 
-        // Check bootstrap.properties content
-        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+        // Check variables.xml content
+        String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR + "/variables.xml";
 
-        String databaseNameFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+        String databaseNameFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_DATABASE_NAME);
 
-        assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_DATABASE_NAME
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_DATABASE_NAME
                 + " is not correct", DERBY_DB, databaseNameFound);
 
-        String createFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+        String createFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_CREATE_DATABASE);
 
-        assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_CREATE_DATABASE
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_CREATE_DATABASE
                 + " is not correct", "create", createFound);
     }
 
@@ -179,12 +175,16 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddDatasource_DB2() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> jdbcDependency = BoosterUtil.getJDBCDependency();
         jdbcDependency.put(JDBCBoosterConfig.DB2_DEPENDENCY, "the db2 dependency version");
-        System.setProperty(BoostProperties.DATASOURCE_URL, DB2_URL);
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(jdbcDependency, logger);
+        
+        Properties boostProperties = new Properties();
+        boostProperties.put(BoostProperties.DATASOURCE_URL, DB2_URL);
+        
+        BoosterConfigParams params = new BoosterConfigParams(jdbcDependency, boostProperties);
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(params, logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
 
@@ -231,14 +231,14 @@ public class LibertyServerConfigGeneratorTest {
         assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
         assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
 
-        // Check bootstrap.properties content
-        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+        // Check variables.xml content
+        String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR + "/variables.xml";
 
-        String urlFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+        String urlFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_URL);
 
         assertEquals(
-                "The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_URL + " is not correct",
+                "The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct",
                 DB2_URL, urlFound);
     }
 
@@ -254,12 +254,16 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddJdbcBoosterConfig_MySQL() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> jdbcDependency = BoosterUtil.getJDBCDependency();
         jdbcDependency.put(JDBCBoosterConfig.MYSQL_DEPENDENCY, "the mysql dependency version");
-        System.setProperty(BoostProperties.DATASOURCE_URL, MYSQL_URL);
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(jdbcDependency, logger);
+        
+        Properties boostProperties = new Properties();
+        boostProperties.put(BoostProperties.DATASOURCE_URL, MYSQL_URL);
+        
+        BoosterConfigParams params = new BoosterConfigParams(jdbcDependency, boostProperties);
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(params, logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
         
@@ -305,14 +309,14 @@ public class LibertyServerConfigGeneratorTest {
         assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
         assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
 
-        // Check bootstrap.properties content
-        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+        // Check variables.xml content
+        String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR + "/variables.xml";
 
-        String urlFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+        String urlFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_URL);
 
         assertEquals(
-                "The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_URL + " is not correct",
+                "The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct",
                 MYSQL_URL, urlFound);
     }
 
