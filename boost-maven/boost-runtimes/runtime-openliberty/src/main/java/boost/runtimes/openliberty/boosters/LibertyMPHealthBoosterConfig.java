@@ -12,18 +12,17 @@ package boost.runtimes.openliberty.boosters;
 
 import static boost.common.config.ConfigConstants.MPHEALTH_10;
 
-import java.util.Map;
-
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.MPHealthBoosterConfig;
+import boost.common.config.BoosterConfigParams;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyMPHealthBoosterConfig extends MPHealthBoosterConfig implements LibertyBoosterI {
 
-    public LibertyMPHealthBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies, logger);
+    public LibertyMPHealthBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params, logger);
     }
 
     @Override

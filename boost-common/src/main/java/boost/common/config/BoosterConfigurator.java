@@ -19,6 +19,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -54,7 +55,7 @@ public class BoosterConfigurator {
      * @throws ClassNotFoundException
      */
     public static List<AbstractBoosterConfig> getBoosterConfigs(List<File> jars, ClassLoader classLoader,
-            Map<String, String> dependencies, BoostLoggerI logger) throws Exception {
+            Map<String, String> dependencies, Properties boostProperties, BoostLoggerI logger) throws Exception {
 
         ClassPool classPool = ClassPool.getDefault();
         classPool.appendClassPath(new LoaderClassPath(classLoader));
@@ -78,17 +79,18 @@ public class BoosterConfigurator {
                     if (ctClass.getSuperclass().getName().equals(boosterClass.getName())) {
                         // A runtime specific booster exists
                         Class<?> runtimeBoosterClass = classLoader.loadClass(ctClass.getName());
-                        cons = runtimeBoosterClass.getConstructor(Map.class, BoostLoggerI.class);
+                        cons = runtimeBoosterClass.getConstructor(BoosterConfigParams.class, BoostLoggerI.class);
                     }
                 }
 
                 if (cons == null) {
                     // We did not find a runtime specific booster class, just instantiate a generic
                     // one
-                    cons = boosterClass.getConstructor(Map.class, BoostLoggerI.class);
+                    cons = boosterClass.getConstructor(BoosterConfigParams.class, BoostLoggerI.class);
                 }
 
-                Object o = cons.newInstance(dependencies, logger);
+                BoosterConfigParams boosterConfigParams = new BoosterConfigParams(dependencies, boostProperties);
+                Object o = cons.newInstance(boosterConfigParams, logger);
                 if (o instanceof AbstractBoosterConfig) {
                     boosterConfigList.add((AbstractBoosterConfig) o);
                 } else {

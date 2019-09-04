@@ -12,19 +12,18 @@ package boost.runtimes.openliberty.boosters;
 
 import static boost.common.config.ConfigConstants.*;
 
-import java.util.Map;
-
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.BeanValidationBoosterConfig;
+import boost.common.config.BoosterConfigParams;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyBeanValidationBoosterConfig extends BeanValidationBoosterConfig implements LibertyBoosterI {
 
-    public LibertyBeanValidationBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger)
+    public LibertyBeanValidationBoosterConfig(BoosterConfigParams params, BoostLoggerI logger)
             throws BoostException {
-        super(dependencies, logger);
+        super(params, logger);
     }
 
     public String getFeature() {
