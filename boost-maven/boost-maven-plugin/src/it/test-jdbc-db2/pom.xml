@@ -32,7 +32,7 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>boost.boosters</groupId>
+				<groupId>org.microshed.boost.boosters</groupId>
 				<artifactId>ee8-bom</artifactId>
 				<version>@pom.version@</version>
 				<scope>import</scope>
@@ -43,11 +43,11 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>boost.boosters</groupId>
+			<groupId>org.microshed.boost.boosters</groupId>
 			<artifactId>jdbc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>boost.boosters</groupId>
+			<groupId>org.microshed.boost.boosters</groupId>
 			<artifactId>jaxrs</artifactId>
 		</dependency>
 		<dependency>
@@ -163,7 +163,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>openliberty</artifactId>
 				</dependency>
 			</dependencies>
@@ -178,7 +178,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>wlp</artifactId>
 				</dependency>
 			</dependencies>
@@ -193,7 +193,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>tomee</artifactId>
 				</dependency>
 			</dependencies>

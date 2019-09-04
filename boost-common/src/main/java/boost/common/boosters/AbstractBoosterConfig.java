@@ -31,8 +31,8 @@ public abstract class AbstractBoosterConfig {
     // <Major>.<Minor>-<boost version>-<Milestone>[-SNAPSHOT]
     public static final String milestone = "M1";
     public static final String boostVersion = "1.0";
-    public static final String RUNTIMES_GROUP_ID = "boost.runtimes";
-    public static final String BOOSTERS_GROUP_ID = "boost.boosters";
+    public static final String RUNTIMES_GROUP_ID = "org.microshed.boost.runtimes";
+    public static final String BOOSTERS_GROUP_ID = "org.microshed.boost.boosters";
     public static final String CDI_VERSION_12 = "1.2-" + boostVersion + "-" + milestone + "-SNAPSHOT";
     public static final String CDI_VERSION_20 = "2.0-" + boostVersion + "-" + milestone + "-SNAPSHOT";
     public static final String JAXRS_VERSION_20 = "2.0-" + boostVersion + "-" + milestone + "-SNAPSHOT";

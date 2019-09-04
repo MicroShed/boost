@@ -32,7 +32,7 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>boost.runtimes</groupId>
+				<groupId>org.microshed.boost.runtimes</groupId>
 				<artifactId>runtimes-bom</artifactId>
 				<version>@pom.version@</version>
 				<scope>import</scope>
@@ -123,7 +123,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>openliberty</artifactId>
 				</dependency>
 			</dependencies>
@@ -138,7 +138,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>wlp</artifactId>
 				</dependency>
 			</dependencies>
@@ -153,7 +153,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>tomee</artifactId>
 				</dependency>
 			</dependencies>

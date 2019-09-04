@@ -24,23 +24,23 @@
     <dependencies>
         <!-- Boosters -->
         <dependency>
-            <groupId>boost.boosters</groupId>
+            <groupId>org.microshed.boost.boosters</groupId>
             <artifactId>mpConfig</artifactId>
         </dependency>
         <dependency>
-            <groupId>boost.boosters</groupId>
+            <groupId>org.microshed.boost.boosters</groupId>
             <artifactId>mpRestClient</artifactId>
         </dependency>
         <dependency>
-            <groupId>boost.boosters</groupId>
+            <groupId>org.microshed.boost.boosters</groupId>
             <artifactId>jaxrs</artifactId>
         </dependency>
         <dependency>
-            <groupId>boost.boosters</groupId>
+            <groupId>org.microshed.boost.boosters</groupId>
             <artifactId>cdi</artifactId>
         </dependency>
         <dependency>
-            <groupId>boost.boosters</groupId>
+            <groupId>org.microshed.boost.boosters</groupId>
             <artifactId>jsonp</artifactId>
         </dependency>
         <dependency>
@@ -152,7 +152,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>org.microshed.boost.boosters</groupId>
                 <artifactId>mp21-bom</artifactId>
                 <version>@pom.version@</version>
                 <scope>import</scope>
@@ -172,7 +172,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>boost.runtimes</groupId>
+                    <groupId>org.microshed.boost.runtimes</groupId>
                     <artifactId>openliberty</artifactId>
                 </dependency>
             </dependencies>
@@ -187,7 +187,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>boost.runtimes</groupId>
+                    <groupId>org.microshed.boost.runtimes</groupId>
                     <artifactId>wlp</artifactId>
                 </dependency>
             </dependencies>
@@ -202,7 +202,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>boost.runtimes</groupId>
+                    <groupId>org.microshed.boost.runtimes</groupId>
                     <artifactId>tomee</artifactId>
                 </dependency>
             </dependencies>

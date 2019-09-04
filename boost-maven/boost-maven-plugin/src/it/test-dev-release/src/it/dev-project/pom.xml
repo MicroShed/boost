@@ -32,14 +32,14 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>boost.boosters</groupId>
+				<groupId>org.microshed.boost.boosters</groupId>
 				<artifactId>ee8-bom</artifactId>
 				<version>@pom.version@</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
 			<dependency>
-				<groupId>boost.boosters</groupId>
+				<groupId>org.microshed.boost.boosters</groupId>
 				<artifactId>mp20-bom</artifactId>
 				<version>@pom.version@</version>
 				<scope>import</scope>
@@ -50,19 +50,19 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>boost.boosters</groupId>
+			<groupId>org.microshed.boost.boosters</groupId>
 			<artifactId>jdbc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>boost.boosters</groupId>
+			<groupId>org.microshed.boost.boosters</groupId>
 			<artifactId>jaxrs</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>boost.boosters</groupId>
+			<groupId>org.microshed.boost.boosters</groupId>
 			<artifactId>mpHealth</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>boost.boosters</groupId>
+			<groupId>org.microshed.boost.boosters</groupId>
 			<artifactId>cdi</artifactId>
 		</dependency>
     </dependencies>
