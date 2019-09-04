@@ -23,6 +23,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -57,9 +58,9 @@ public class LibertyRuntime implements RuntimeI {
     private final String runtimeArtifactId = "openliberty-runtime";
     private final String runtimeVersion = "19.0.0.3";
 
-    private String libertyMavenPluginGroupId = "net.wasdev.wlp.maven.plugins";
+    private String libertyMavenPluginGroupId = "io.openliberty.tools";
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
-    private String libertyMavenPluginVersion = "2.6.3";
+    private String libertyMavenPluginVersion = "3.0-M3-SNAPSHOT";
 
     public LibertyRuntime() {
         this.boosterConfigs = null;
