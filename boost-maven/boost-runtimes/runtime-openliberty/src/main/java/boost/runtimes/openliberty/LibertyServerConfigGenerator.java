@@ -75,7 +75,7 @@ public class LibertyServerConfigGenerator {
         this.serverPath = serverPath;
         this.libertyInstallPath = serverPath + "/../../.."; // Three directories
                                                             // back from
-                                                            // 'wlp/usr/servers/BoostServer'
+                                                            // 'wlp/usr/servers/defaultServer'
         this.encryptionType = encryptionType;
         this.logger = logger;
 
