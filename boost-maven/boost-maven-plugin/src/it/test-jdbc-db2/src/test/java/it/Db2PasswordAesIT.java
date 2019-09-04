@@ -41,7 +41,7 @@ public class Db2PasswordAesIT {
         InputStream input = null;
 
         try {
-            input = new FileInputStream("target/liberty/wlp/usr/servers/BoostServer/bootstrap.properties");
+            input = new FileInputStream("target/liberty/wlp/usr/servers/defaultServer/bootstrap.properties");
 
             bootstrapProperties.load(input);
 

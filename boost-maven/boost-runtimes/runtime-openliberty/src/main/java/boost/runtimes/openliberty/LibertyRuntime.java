@@ -23,6 +23,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -59,7 +60,7 @@ public class LibertyRuntime implements RuntimeI {
 
     private String libertyMavenPluginGroupId = "io.openliberty.tools";
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
-    private String libertyMavenPluginVersion = "3.0-M2";
+    private String libertyMavenPluginVersion = "3.0-M3-SNAPSHOT";
 
     public LibertyRuntime() {
         this.boosterConfigs = null;
@@ -238,7 +239,7 @@ public class LibertyRuntime implements RuntimeI {
      * Invoke the liberty-maven-plugin to run the create-server goal
      */
     private void createLibertyServer() throws MojoExecutionException {
-        executeMojo(getPlugin(), goal("create-server"),
+        executeMojo(getPlugin(), goal("create"),
                 configuration(element(name("serverName"), serverName), getRuntimeArtifactElement()), env);
     }
 
@@ -279,7 +280,7 @@ public class LibertyRuntime implements RuntimeI {
      * JAR
      */
     private void createUberJar() throws MojoExecutionException {
-        executeMojo(getPlugin(), goal("package-server"),
+        executeMojo(getPlugin(), goal("package"),
                 configuration(element(name("isInstall"), "false"), element(name("include"), "minify,runnable"),
                         element(name("outputDirectory"), "target/liberty-alt-output-dir"),
                         element(name("packageFile"), ""), element(name("serverName"), serverName)),
