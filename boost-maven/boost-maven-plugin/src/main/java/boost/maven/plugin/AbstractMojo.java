@@ -118,8 +118,8 @@ public abstract class AbstractMojo extends MojoSupport {
 
     protected RuntimeI getRuntimeInstance() throws MojoExecutionException {
         
-    	RuntimeI runtime = null;
-    	
+        RuntimeI runtime = null;
+        
         RuntimeParams params = new RuntimeParams(boosterConfigs, boostProperties, getExecutionEnvironment(), project, getLog(),
                 repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
         try {
