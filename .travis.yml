@@ -23,12 +23,17 @@ before_install:
      - rm -rf $HOME/.m2/repository/net/wasdev
      - rm -rf $HOME/.m2/repository/io/openliberty
      - echo 'Installing ci.common lib ....'
-     - git clone https://github.com/wasdev/ci.common.git ./ci.common
+     - git clone https://github.com/openliberty/ci.common.git ./ci.common
      - cd ./ci.common
      - mvn clean install
      - cd ..
+     - echo 'Installing ci.maven lib ....'
+     - git clone https://github.com/openliberty/ci.maven.git ./ci.maven
+     - cd ./ci.maven
+     - mvn clean install
+     - cd ..
      - echo "Installing ci.gradle lib ..."
-     - git clone https://github.com/wasdev/ci.gradle.git ./ci.gradle
+     - git clone https://github.com/OpenLiberty/ci.gradle.git ./ci.gradle
      - cd ./ci.gradle
      - ./gradlew clean install
      - cd ..
