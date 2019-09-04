@@ -52,6 +52,7 @@ public class BeanValidationBoosterTest {
         LibertyBeanValidationBoosterConfig libBeanValidationConfig = new LibertyBeanValidationBoosterConfig(
                 BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyBeanValidationBoosterConfig.class,
                         "2.0-1.0-M1-SNAPSHOT"),
+                new Properties(),
                 logger);
 
         serverConfig.addFeature(libBeanValidationConfig.getFeature());
