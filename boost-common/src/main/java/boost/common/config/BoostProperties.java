@@ -52,11 +52,24 @@ public final class BoostProperties {
         return propertiesToEncrypt;
     }
 
-    public static Properties getConfiguredBoostProperties(BoostLoggerI logger) {
+    public static Properties getConfiguredBoostProperties(Properties projectProperties, BoostLoggerI logger) {
         Properties systemProperties = System.getProperties();
 
         Properties boostProperties = new Properties();
 
+        // Add project properties first to allow them to be overriden by 
+        // system properties (set at command line)
+        for (Map.Entry<Object, Object> entry : projectProperties.entrySet()) {
+
+            if (entry.getKey().toString().startsWith("boost.")) {
+
+                // logger.debug("Found boost property: " +
+                // entry.getKey() + ":" + entry.getValue());
+
+                boostProperties.put(entry.getKey(), entry.getValue());
+            }
+        }
+        
         for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
 
             if (entry.getKey().toString().startsWith("boost.")) {

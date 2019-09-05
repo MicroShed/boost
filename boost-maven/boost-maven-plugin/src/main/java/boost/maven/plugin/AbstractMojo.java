@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ServiceLoader;
 
 import java.net.URL;
@@ -40,6 +41,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import boost.common.boosters.AbstractBoosterConfig;
+import boost.common.config.BoostProperties;
 import boost.common.config.BoosterConfigurator;
 import boost.common.runtimes.RuntimeI;
 import boost.maven.runtimes.RuntimeParams;
@@ -48,9 +50,9 @@ import boost.maven.utils.MavenProjectUtil;
 
 public abstract class AbstractMojo extends MojoSupport {
 
-    private static RuntimeI runtime;
     private ClassLoader projectClassLoader;
     private List<AbstractBoosterConfig> boosterConfigs;
+    private Properties boostProperties;
 
     protected String mavenDependencyPluginGroupId = "org.apache.maven.plugins";
     protected String mavenDependencyPluginArtifactId = "maven-dependency-plugin";
@@ -89,8 +91,8 @@ public abstract class AbstractMojo extends MojoSupport {
     @Override
     public void execute() throws MojoExecutionException {
         try {
-        	init();
-        	BoostLogger boostLogger = new BoostLogger(getLog());
+            init();
+            BoostLogger boostLogger = new BoostLogger(getLog());
             // TODO move this into getRuntimeInstance()
             this.dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession, remoteRepos, boostLogger);
                     
@@ -106,9 +108,11 @@ public abstract class AbstractMojo extends MojoSupport {
             }
             URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);
             this.projectClassLoader = new URLClassLoader(urlsForClassLoader, this.getClass().getClassLoader());
-
+            
+            boostProperties = BoostProperties.getConfiguredBoostProperties(project.getProperties(), boostLogger);
+            
             boosterConfigs = BoosterConfigurator.getBoosterConfigs(compileClasspathJars, projectClassLoader,
-                    dependencies, boostLogger);
+                    dependencies, boostProperties, boostLogger);
 
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
@@ -116,27 +120,29 @@ public abstract class AbstractMojo extends MojoSupport {
     }
 
     protected RuntimeI getRuntimeInstance() throws MojoExecutionException {
-        if (runtime == null) {
-            RuntimeParams params = new RuntimeParams(boosterConfigs, getExecutionEnvironment(), project, getLog(),
-                    repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
-            try {
-                ServiceLoader<RuntimeI> runtimes = ServiceLoader.load(RuntimeI.class, projectClassLoader);
-                if (!runtimes.iterator().hasNext()) {
-                    throw new MojoExecutionException(
-                            "No target Boost runtime was detected. Please add a runtime and restart the build.");
-                }
-                for (RuntimeI runtimeI : runtimes) {
-                    if (runtime != null) {
-                        throw new MojoExecutionException(
-                                "There are multiple Boost runtimes on the classpath. Configure the project to use one runtime and restart the build.");
-                    }
-                    runtime = runtimeI.getClass().getConstructor(params.getClass()).newInstance(params);
-                }
-            } catch (IllegalAccessException | InstantiationException | InvocationTargetException
-                    | NoSuchMethodException e) {
-                throw new MojoExecutionException("Error while looking for Boost runtime.");
+        
+        RuntimeI runtime = null;
+        
+        RuntimeParams params = new RuntimeParams(boosterConfigs, boostProperties, getExecutionEnvironment(), project, getLog(),
+                repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
+        try {
+            ServiceLoader<RuntimeI> runtimes = ServiceLoader.load(RuntimeI.class, projectClassLoader);
+            if (!runtimes.iterator().hasNext()) {
+                throw new MojoExecutionException(
+                        "No target Boost runtime was detected. Please add a runtime and restart the build.");
             }
+            for (RuntimeI runtimeI : runtimes) {
+                if (runtime != null) {
+                    throw new MojoExecutionException(
+                            "There are multiple Boost runtimes on the classpath. Configure the project to use one runtime and restart the build.");
+                }
+                runtime = runtimeI.getClass().getConstructor(params.getClass()).newInstance(params);
+            }
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException
+                | NoSuchMethodException e) {
+            throw new MojoExecutionException("Error while looking for Boost runtime.");
         }
+        
         return runtime;
     }
 

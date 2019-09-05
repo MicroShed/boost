@@ -13,6 +13,7 @@ package boost.maven.plugin;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
 import boost.common.BoostException;
 
@@ -21,7 +22,7 @@ import boost.common.BoostException;
  * debugger connects to debug port <b>7777</b>.
  *
  */
-@Mojo(name = "debug")
+@Mojo(name = "debug", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class DebugMojo extends AbstractMojo {
 
     /**

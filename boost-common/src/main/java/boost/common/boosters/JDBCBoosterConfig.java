@@ -21,6 +21,7 @@ import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 import boost.common.config.BoostProperties;
+import boost.common.config.BoosterConfigParams;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":jdbc")
 public class JDBCBoosterConfig extends AbstractBoosterConfig {
@@ -43,26 +44,25 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
     private String dependency;
     private String productName;
 
-    public JDBCBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies.get(getCoordinates(JDBCBoosterConfig.class)));
-
-        // TODO: Should consider getting properties on the fly to avoid timing issues of
-        // when properties are set
-        boostConfigProperties = BoostProperties.getConfiguredBoostProperties(logger);
+    public JDBCBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params.getProjectDependencies().get(getCoordinates(JDBCBoosterConfig.class)));
+        
+        Map<String, String> projectDependencies = params.getProjectDependencies();
+        this.boostConfigProperties = params.getBoostProperties();
 
         // Determine JDBC driver dependency
-        if (dependencies.containsKey(JDBCBoosterConfig.DERBY_DEPENDENCY)) {
-            String derbyVersion = dependencies.get(JDBCBoosterConfig.DERBY_DEPENDENCY);
+        if (projectDependencies.containsKey(JDBCBoosterConfig.DERBY_DEPENDENCY)) {
+            String derbyVersion = projectDependencies.get(JDBCBoosterConfig.DERBY_DEPENDENCY);
             this.dependency = JDBCBoosterConfig.DERBY_DEPENDENCY + ":" + derbyVersion;
             this.productName = DERBY;
 
-        } else if (dependencies.containsKey(JDBCBoosterConfig.DB2_DEPENDENCY)) {
-            String db2Version = dependencies.get(JDBCBoosterConfig.DB2_DEPENDENCY);
+        } else if (projectDependencies.containsKey(JDBCBoosterConfig.DB2_DEPENDENCY)) {
+            String db2Version = projectDependencies.get(JDBCBoosterConfig.DB2_DEPENDENCY);
             this.dependency = JDBCBoosterConfig.DB2_DEPENDENCY + ":" + db2Version;
             this.productName = DB2;
 
-        } else if (dependencies.containsKey(JDBCBoosterConfig.MYSQL_DEPENDENCY)) {
-            String mysqlVersion = dependencies.get(JDBCBoosterConfig.MYSQL_DEPENDENCY);
+        } else if (projectDependencies.containsKey(JDBCBoosterConfig.MYSQL_DEPENDENCY)) {
+            String mysqlVersion = projectDependencies.get(JDBCBoosterConfig.MYSQL_DEPENDENCY);
             this.dependency = JDBCBoosterConfig.MYSQL_DEPENDENCY + ":" + mysqlVersion;
             this.productName = MYSQL;
 

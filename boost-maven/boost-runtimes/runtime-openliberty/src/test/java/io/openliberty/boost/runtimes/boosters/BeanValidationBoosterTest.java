@@ -14,6 +14,9 @@ package io.openliberty.boost.runtimes.boosters;
 import static boost.common.config.ConfigConstants.*;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Map;
+import java.util.Properties;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
@@ -21,6 +24,7 @@ import org.junit.rules.TemporaryFolder;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 
 import boost.common.BoostLoggerI;
+import boost.common.config.BoosterConfigParams;
 import io.openliberty.boost.runtimes.utils.BoosterUtil;
 import io.openliberty.boost.runtimes.utils.CommonLogger;
 import io.openliberty.boost.runtimes.utils.ConfigFileUtils;
@@ -45,12 +49,15 @@ public class BeanValidationBoosterTest {
     public void testBeanValidationBoosterFeature_20() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        LibertyBeanValidationBoosterConfig libBeanValidationConfig = new LibertyBeanValidationBoosterConfig(
-                BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyBeanValidationBoosterConfig.class,
-                        "2.0-1.0-M1-SNAPSHOT"),
-                logger);
+        Map<String, String> dependencies = BoosterUtil.createDependenciesWithBoosterAndVersion(
+			    LibertyBeanValidationBoosterConfig.class,
+                "2.0-1.0-M1-SNAPSHOT");
+        
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+        
+        LibertyBeanValidationBoosterConfig libBeanValidationConfig = new LibertyBeanValidationBoosterConfig(params, logger);
 
         serverConfig.addFeature(libBeanValidationConfig.getFeature());
         serverConfig.writeToServer();
@@ -72,10 +79,14 @@ public class BeanValidationBoosterTest {
     public void testCDIBoosterFeature_20() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        LibertyCDIBoosterConfig libCDIConfig = new LibertyCDIBoosterConfig(BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "2.0-1.0-M1-SNAPSHOT"), logger);
+        Map<String, String> dependencies = BoosterUtil.createDependenciesWithBoosterAndVersion(
+        		LibertyCDIBoosterConfig.class, "2.0-1.0-M1-SNAPSHOT");
+        
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+        
+        LibertyCDIBoosterConfig libCDIConfig = new LibertyCDIBoosterConfig(params, logger);
 
         serverConfig.addFeature(libCDIConfig.getFeature());
         serverConfig.writeToServer();

@@ -1,0 +1,24 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+package utils;
+
+public interface BoostConstants {
+
+    public static final String DATASOURCE_PREFIX = "boost.db.";
+    public static final String DATASOURCE_DATABASE_NAME = "boost.db.databaseName";
+    public static final String DATASOURCE_SERVER_NAME = "boost.db.serverName";
+    public static final String DATASOURCE_PORT_NUMBER = "boost.db.portNumber";
+    public static final String DATASOURCE_USER = "boost.db.user";
+    public static final String DATASOURCE_PASSWORD = "boost.db.password";
+    public static final String DATASOURCE_CREATE_DATABASE = "boost.db.createDatabase";
+    public static final String DATASOURCE_URL = "boost.db.url";
+}

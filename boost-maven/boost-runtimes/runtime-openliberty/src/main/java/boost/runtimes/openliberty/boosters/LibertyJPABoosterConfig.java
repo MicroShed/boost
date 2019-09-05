@@ -13,18 +13,17 @@ package boost.runtimes.openliberty.boosters;
 import static boost.common.config.ConfigConstants.JPA_21;
 import static boost.common.config.ConfigConstants.JPA_22;
 
-import java.util.Map;
-
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.JPABoosterConfig;
+import boost.common.config.BoosterConfigParams;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyJPABoosterConfig extends JPABoosterConfig implements LibertyBoosterI {
 
-    public LibertyJPABoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies, logger);
+    public LibertyJPABoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params, logger);
     }
 
     @Override

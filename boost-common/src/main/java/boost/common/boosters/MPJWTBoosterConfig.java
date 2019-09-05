@@ -17,12 +17,13 @@ import java.util.Map;
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+import boost.common.config.BoosterConfigParams;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mp-jwt")
 public class MPJWTBoosterConfig extends AbstractBoosterConfig {
 
-    public MPJWTBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies.get(getCoordinates(MPJWTBoosterConfig.class)));
+    public MPJWTBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params.getProjectDependencies().get(getCoordinates(MPJWTBoosterConfig.class)));
     }
 
     @Override

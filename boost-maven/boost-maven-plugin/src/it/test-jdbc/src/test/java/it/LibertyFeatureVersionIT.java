@@ -22,7 +22,7 @@ import org.junit.Test;
 public class LibertyFeatureVersionIT {
 
     private static final String JDBC_42_FEATURE = "<feature>jdbc-4.2</feature>";
-    private static String SERVER_XML = "target/liberty/wlp/usr/servers/BoostServer/server.xml";
+    private static String SERVER_XML = "target/liberty/wlp/usr/servers/defaultServer/server.xml";
 
     @BeforeClass
     public static void init() {

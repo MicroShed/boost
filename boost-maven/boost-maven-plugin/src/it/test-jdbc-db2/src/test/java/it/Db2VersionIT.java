@@ -30,7 +30,7 @@ public class Db2VersionIT {
         if ("tomee".equals(runtime)) {
             DB2_JAR = "target/apache-tomee/boost/db2jcc-db2jcc4.jar";
         } else if ("ol".equals(runtime) || "wlp".equals(runtime)) {
-            DB2_JAR = "target/liberty/wlp/usr/servers/BoostServer/resources/db2jcc-db2jcc4.jar";
+            DB2_JAR = "target/liberty/wlp/usr/servers/defaultServer/resources/db2jcc-db2jcc4.jar";
         }
     }
 

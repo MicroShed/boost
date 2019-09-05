@@ -21,15 +21,15 @@ public class BoostLogger implements BoostLoggerI {
     private org.apache.maven.plugin.logging.Log log;
     
     public org.apache.maven.plugin.logging.Log getLog() {
-    	return log;
+        return log;
     }
     
     public BoostLogger(org.apache.maven.plugin.logging.Log log) {
-    	this.log = log;        	
+        this.log = log;
     }
 
     public static BoostLogger getSystemStreamLogger() {
-    	return new BoostLogger(new SystemStreamLog());         	
+        return new BoostLogger(new SystemStreamLog());
     }
 
     @Override

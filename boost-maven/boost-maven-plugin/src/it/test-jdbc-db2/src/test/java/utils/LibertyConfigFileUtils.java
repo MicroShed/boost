@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.boost.runtimes.utils;
+package utils;
 
-import static io.openliberty.boost.runtimes.utils.DOMUtils.getDirectChildrenByTag;
+import static utils.DOMUtils.getDirectChildrenByTag;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -26,32 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class ConfigFileUtils {
-
-    public static boolean findStringInServerXml(String serverXMLPath, String stringToFind) throws IOException {
-
-        boolean found = false;
-
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(serverXMLPath));
-            String line;
-            while ((line = br.readLine()) != null && !found) {
-                if (line.contains(stringToFind)) {
-                    found = true;
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            fail("The file " + serverXMLPath + " does not exist");
-        } finally {
-            if (br != null) {
-                br.close();
-            }
-        }
-
-        return found;
-    }
+public class LibertyConfigFileUtils {
 
     public static String findVariableInXml(String variablesXmlPath, String variableName)
             throws Exception {
