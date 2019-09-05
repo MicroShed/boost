@@ -197,8 +197,8 @@ public class LibertyRuntime implements RuntimeI {
 
         List<String> warNames = getWarNames();
         
-        String encryptionType = (String) boostProperties.get(BoostProperties.AES_ENCRYPTION_KEY);
-        LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, encryptionType,
+        String encryptionKey = (String) boostProperties.get(BoostProperties.AES_ENCRYPTION_KEY);
+        LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, encryptionKey,
                 BoostLogger.getSystemStreamLogger());
 
         // Configure HTTP endpoint

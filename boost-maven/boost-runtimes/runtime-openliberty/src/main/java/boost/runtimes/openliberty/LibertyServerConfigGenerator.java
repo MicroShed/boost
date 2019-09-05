@@ -56,7 +56,7 @@ public class LibertyServerConfigGenerator {
 
     private final String serverPath;
     private final String libertyInstallPath;
-    private final String encryptionType;
+    private final String encryptionKey;
 
     private final BoostLoggerI logger;
 
@@ -70,13 +70,13 @@ public class LibertyServerConfigGenerator {
 
     private Set<String> featuresAdded;
 
-    public LibertyServerConfigGenerator(String serverPath, String encryptionType, BoostLoggerI logger) throws ParserConfigurationException {
+    public LibertyServerConfigGenerator(String serverPath, String encryptionKey, BoostLoggerI logger) throws ParserConfigurationException {
 
         this.serverPath = serverPath;
         this.libertyInstallPath = serverPath + "/../../.."; // Three directories
                                                             // back from
                                                             // 'wlp/usr/servers/defaultServer'
-        this.encryptionType = encryptionType;
+        this.encryptionKey = encryptionKey;
         this.logger = logger;
 
         generateServerXml();
@@ -188,7 +188,7 @@ public class LibertyServerConfigGenerator {
         Map<String, String> propertiesToEncrypt = BoostProperties.getPropertiesToEncrypt();
 
         if (propertiesToEncrypt.containsKey(key) && value != null && !value.equals("")) {
-            value = encrypt(value);
+            value = encrypt(key,value);
         }
 
         Element variable = variablesXml.createElement("variable");
@@ -257,23 +257,26 @@ public class LibertyServerConfigGenerator {
         }
     }
 
-    private String encrypt(String property) throws IOException {
+    private String encrypt(String propertyKey, String propertyValue) throws IOException {
+
         //Won't encode the property if it contains the aes flag
-        if (!isEncoded(property)) {
+        if (!isEncoded(propertyValue)) {
             Runtime rt = Runtime.getRuntime();
             List<String> commands = new ArrayList<String>();
 
             commands.add(getSecurityUtilCmd(libertyInstallPath));
             commands.add("encode");
-            commands.add(property);
+            commands.add(propertyValue);
 
+            // Get the internal encryption type set for this property
+            String encryptionType = BoostProperties.getPropertiesToEncrypt().get(propertyKey);
             if(encryptionType != null && !encryptionType.equals("")) {
                 commands.add("--encoding=" + encryptionType);
             } else {
                 commands.add("--encoding=aes");
             }
 
-            String encryptionKey = BoostProperties.getPropertiesToEncrypt().get(property);
+            // Set the defined encryption key
             if(encryptionKey != null && !encryptionKey.equals("")) {
                 commands.add("--key=" + encryptionKey);
             }
@@ -302,7 +305,7 @@ public class LibertyServerConfigGenerator {
 
             return out.toString();
         }
-        return property;
+        return propertyValue;
     }
 
     public boolean isEncoded(String property) {
