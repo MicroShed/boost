@@ -16,11 +16,12 @@ import java.util.Map;
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.MPJWTBoosterConfig;
+import boost.common.config.BoosterConfigParams;
 
 public class TomeeMPJWTBoosterConfig extends MPJWTBoosterConfig {
 
-    public TomeeMPJWTBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies, logger);
+    public TomeeMPJWTBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params, logger);
     }
 
     @Override
