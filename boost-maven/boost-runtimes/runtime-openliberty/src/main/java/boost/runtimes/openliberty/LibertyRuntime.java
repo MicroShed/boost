@@ -131,7 +131,7 @@ public class LibertyRuntime implements RuntimeI {
      */
     private void copyBoosterDependencies(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
         List<String> dependenciesToCopy = BoosterConfigurator.getDependenciesToCopy(boosterConfigs,
-                BoostLogger.getInstance());
+                BoostLogger.getSystemStreamLogger());
 
         for (String dep : dependenciesToCopy) {
 
@@ -193,10 +193,10 @@ public class LibertyRuntime implements RuntimeI {
 
         List<String> warNames = getWarNames();
         LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath,
-                BoostLogger.getInstance());
+                BoostLogger.getSystemStreamLogger());
 
         // Add default http endpoint configuration
-        Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(BoostLogger.getInstance());
+        Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(BoostLogger.getSystemStreamLogger());
 
         String host = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "*");
         libertyConfig.addHostname(host);
