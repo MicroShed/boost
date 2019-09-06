@@ -23,7 +23,7 @@ Edit your project pom.xml and place the following plugin stanza into your build:
 <plugin>
 	<groupId>boost</groupId>
 	<artifactId>boost-maven-plugin</artifactId>
-	<version>0.1.3-SNAPSHOT</version>
+	<version>1.0-M1-SNAPSHOT</version>
 	<executions>
 		<execution>
 			<goals>

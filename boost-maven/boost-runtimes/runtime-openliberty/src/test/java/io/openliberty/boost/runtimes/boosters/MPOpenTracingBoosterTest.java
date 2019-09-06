@@ -98,7 +98,7 @@ public class MPOpenTracingBoosterTest {
 
     /**
      * Test that the mpOpenTracing-1.3 feature is added to server.xml when the
-     * MPOpenTracing booster version is set to 0.1.3-SNAPSHOT
+     * MPOpenTracing booster version is set to 1.0-M1-SNAPSHOT
      * 
      */
     @Test

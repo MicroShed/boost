@@ -23,7 +23,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'io.openliberty.boost:boost-gradle-plugin:0.1-SNAPSHOT'
+        classpath 'io.openliberty.boost:boost-gradle-plugin:1.0-M1-SNAPSHOT'
     }
 }
 

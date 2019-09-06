@@ -11,7 +11,7 @@
     <groupId>boost.boosters</groupId>
     <artifactId>boost-ee8-apis-bom</artifactId>
     <!-- Versioned separately from the main project -->
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0-M1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Boost EE8 APIs BOM</description>

@@ -10,7 +10,7 @@
 
     <groupId>boost</groupId>
     <artifactId>boost-common</artifactId>
-    <version>0.1.3-SNAPSHOT</version>
+    <version>1.0-M1-SNAPSHOT</version>
 
     <url>https://github.com/OpenLiberty/boost</url>
 

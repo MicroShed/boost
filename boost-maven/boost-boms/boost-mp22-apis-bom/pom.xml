@@ -11,7 +11,7 @@
 	<groupId>boost.boosters</groupId>
 	<artifactId>boost-mp22-apis-bom</artifactId>
 	<!-- Versioned separately from the main project -->
-	<version>0.1-SNAPSHOT</version>
+	<version>1.0-M1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<description>Booster MP22 APIs Bom</description>
@@ -38,6 +38,14 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+    			<groupId>org.eclipse.microprofile</groupId>
+    			<artifactId>microprofile</artifactId>
+    			<version>2.2</version>
+				<type>pom</type>
+    			<scope>import</scope>
+			</dependency>
+			<!--
 			<dependency>
 				<groupId>javax.enterprise</groupId>
 				<artifactId>cdi-api</artifactId>
@@ -98,6 +106,7 @@
 				<artifactId>microprofile-opentracing-api</artifactId>
 				<version>${opentracing-version}</version>
 			</dependency>
+			-->
 		</dependencies>
 	</dependencyManagement>
 

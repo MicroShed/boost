@@ -11,7 +11,7 @@
 	<groupId>boost.boosters</groupId>
 	<artifactId>boost-mp20-apis-bom</artifactId>
 	<!-- Versioned separately from the main project -->
-	<version>0.1-SNAPSHOT</version>
+	<version>1.0-M1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<description>Booster MP20 APIs Bom</description>
@@ -32,11 +32,21 @@
 
 	<dependencyManagement>
 		<dependencies>
+		<!--
 			<dependency>
 				<groupId>boost.boosters</groupId>
 				<artifactId>boost-ee8-apis-bom</artifactId>
-				<version>0.1-SNAPSHOT</version>
+				<version>1.0-M1-SNAPSHOT</version>
 			</dependency>
+			-->
+			<dependency>
+    			<groupId>org.eclipse.microprofile</groupId>
+    			<artifactId>microprofile</artifactId>
+    			<version>2.0</version>
+				<type>pom</type>
+    			<scope>import</scope>
+			</dependency>
+			<!--
 			<dependency>
 				<groupId>org.eclipse.microprofile.config</groupId>
 				<artifactId>microprofile-config-api</artifactId>
@@ -77,6 +87,7 @@
 				<artifactId>microprofile-opentracing-api</artifactId>
 				<version>${opentracing-version}</version>
 			</dependency>
+			-->
 		</dependencies>
 	</dependencyManagement>
 
