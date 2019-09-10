@@ -56,7 +56,7 @@ public class LibertyRuntime implements RuntimeI {
 
     private final String runtimeGroupId = "io.openliberty";
     private final String runtimeArtifactId = "openliberty-runtime";
-    private final String runtimeVersion = "19.0.0.8";
+    private final String runtimeVersion = "19.0.0.3";
 
     private String libertyMavenPluginGroupId = "io.openliberty.tools";
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
