@@ -56,11 +56,11 @@ public class LibertyRuntime implements RuntimeI {
 
     private final String runtimeGroupId = "io.openliberty";
     private final String runtimeArtifactId = "openliberty-runtime";
-    private final String runtimeVersion = "19.0.0.3";
+    private final String runtimeVersion = "19.0.0.8";
 
     private String libertyMavenPluginGroupId = "io.openliberty.tools";
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
-    private String libertyMavenPluginVersion = "3.0-M3-SNAPSHOT";
+    private String libertyMavenPluginVersion = "3.0-SNAPSHOT";
 
     public LibertyRuntime() {
         this.boosterConfigs = null;
@@ -281,9 +281,11 @@ public class LibertyRuntime implements RuntimeI {
      */
     private void createUberJar() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("package"),
-                configuration(element(name("isInstall"), "false"), element(name("include"), "minify,runnable"),
+                    configuration(element(name("isInstall"), "false"),
+                        element(name("include"), "minify"),
                         element(name("outputDirectory"), "target/liberty-alt-output-dir"),
-                        element(name("packageFile"), ""), element(name("serverName"), serverName)),
+                        element(name("packageType"), "jar"),
+                        element(name("serverName"), serverName)),
                 env);
     }
 
