@@ -34,7 +34,7 @@
       <dependencies>
           <dependency>
               <groupId>boost.boosters</groupId>
-              <artifactId>mp20-bom</artifactId>
+              <artifactId>mp14-bom</artifactId>
               <version>@pom.version@</version>
               <type>pom</type>
               <scope>import</scope>
