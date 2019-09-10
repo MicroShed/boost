@@ -14,7 +14,7 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>boost.boosters</groupId>
+    <groupId>boost.boms</groupId>
     <artifactId>mp14-bom</artifactId>
     <packaging>pom</packaging>
 

@@ -14,7 +14,7 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>boost.boosters</groupId>
+    <groupId>boost.boms</groupId>
     <artifactId>mp21-bom</artifactId>
     <packaging>pom</packaging>
 
@@ -23,14 +23,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>boost.boms</groupId>
                 <artifactId>boost-mp21-apis-bom</artifactId>
                 <version>1.0-M1-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>boost.boms</groupId>
                 <artifactId>ee8-bom</artifactId>
                 <version>1.0-M1-SNAPSHOT</version>
                 <scope>import</scope>

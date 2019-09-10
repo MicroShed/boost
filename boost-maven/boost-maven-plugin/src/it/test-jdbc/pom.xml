@@ -30,7 +30,7 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>boost.boosters</groupId>
+				<groupId>boost.boms</groupId>
 				<artifactId>mp20-bom</artifactId>
 				<version>1.0-M1-SNAPSHOT</version>
 				<scope>import</scope>

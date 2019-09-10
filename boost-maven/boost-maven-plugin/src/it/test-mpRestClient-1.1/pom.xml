@@ -148,7 +148,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>boost.boms</groupId>
                 <artifactId>mp21-bom</artifactId>
                 <version>@pom.version@</version>
                 <scope>import</scope>
