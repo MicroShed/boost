@@ -38,13 +38,10 @@
             </dependency>
             <dependency>
                 <groupId>boost.runtimes</groupId>
-                <artifactId>openliberty</artifactId>
+                <artifactId>runtimes-bom</artifactId>
                 <version>1.0-M1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>boost.runtimes</groupId>
-                <artifactId>tomee</artifactId>
-                <version>1.0-M1-SNAPSHOT</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>boost.boosters</groupId>

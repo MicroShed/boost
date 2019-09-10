@@ -23,14 +23,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>boost.boms</groupId>
                 <artifactId>boost-mp14-apis-bom</artifactId>
                 <version>1.0-M1-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>boost.boms</groupId>
                 <artifactId>ee7-bom</artifactId>
                 <version>1.0-M1-SNAPSHOT</version>
                 <scope>import</scope>
@@ -38,8 +38,10 @@
             </dependency>
             <dependency>
                 <groupId>boost.runtimes</groupId>
-                <artifactId>openliberty</artifactId>
+                <artifactId>runtimes-bom</artifactId>
                 <version>1.0-M1-SNAPSHOT</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>boost.boosters</groupId>
