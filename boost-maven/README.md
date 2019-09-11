@@ -23,7 +23,7 @@ Edit your project pom.xml and place the following plugin stanza into your build:
 <plugin>
 	<groupId>org.microshed.boost</groupId>
 	<artifactId>boost-maven-plugin</artifactId>
-	<version>1.0-M1-SNAPSHOT</version>
+	<version>0.2</version>
 	<executions>
 		<execution>
 			<goals>

@@ -11,7 +11,7 @@
 	<groupId>org.microshed.boost.boms</groupId>
 	<artifactId>boost-mp21-apis-bom</artifactId>
 	<!-- Versioned separately from the main project -->
-	<version>1.0-M1-SNAPSHOT</version>
+	<version>0.2</version>
 	<packaging>pom</packaging>
 
 	<description>Booster MP21 APIs Bom</description>

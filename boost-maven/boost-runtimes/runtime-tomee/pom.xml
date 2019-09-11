@@ -5,7 +5,7 @@
 
     <groupId>org.microshed.boost.runtimes</groupId>
     <artifactId>tomee</artifactId>
-    <version>1.0-M1-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -19,12 +19,12 @@
         <dependency>
             <groupId>org.microshed.boost</groupId>
             <artifactId>boost-common</artifactId>
-            <version>1.0-M1-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.microshed.boost</groupId>
             <artifactId>boost-maven-plugin</artifactId>
-            <version>1.0-M1-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>

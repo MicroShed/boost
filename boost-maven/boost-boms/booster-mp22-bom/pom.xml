@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.microshed.boost</groupId>
         <artifactId>boost-maven-parent</artifactId>
-        <version>1.0-M1-SNAPSHOT</version>
+        <version>0.2</version>
         <relativePath>../..</relativePath>
     </parent>
 
@@ -26,21 +26,21 @@
             <dependency>
                 <groupId>org.microshed.boost.boms</groupId>
                 <artifactId>boost-mp22-apis-bom</artifactId>
-                <version>1.0-M1-SNAPSHOT</version>
+                <version>0.2</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.microshed.boost.boms</groupId>
                 <artifactId>ee8-bom</artifactId>
-                <version>1.0-M1-SNAPSHOT</version>
+                <version>0.2</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.microshed.boost.runtimes</groupId>
                 <artifactId>runtimes-bom</artifactId>
-                <version>1.0-M1-SNAPSHOT</version>
+                <version>0.2</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

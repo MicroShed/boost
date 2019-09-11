@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.microshed.boost</groupId>
         <artifactId>boost-maven-parent</artifactId>
-        <version>1.0-M1-SNAPSHOT</version>
+        <version>0.2</version>
     </parent>
 	
 	<artifactId>boost-boms</artifactId>

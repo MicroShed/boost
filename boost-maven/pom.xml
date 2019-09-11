@@ -9,7 +9,7 @@
 
     <groupId>org.microshed.boost</groupId>
     <artifactId>boost-maven-parent</artifactId>
-    <version>1.0-M1-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>pom</packaging>
 
     <name>boost-maven-plugin Parent</name>
