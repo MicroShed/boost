@@ -46,7 +46,7 @@
    <dependencyManagement>
       <dependencies>
           <dependency>
-              <groupId>boost.boosters</groupId>
+              <groupId>boost.boms</groupId>
               <artifactId>mp20-bom</artifactId>
               <version>@pom.version@</version>
               <type>pom</type>
