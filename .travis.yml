@@ -27,6 +27,11 @@ before_install:
      - cd ./ci.common
      - mvn clean install
      - cd ..
+     - echo 'Installing ci.maven lib ....'
+     - git clone https://github.com/openliberty/ci.maven.git ./ci.maven
+     - cd ./ci.maven
+     - mvn clean install
+     - cd ..
      - echo "Installing ci.gradle lib ..."
      - git clone https://github.com/OpenLiberty/ci.gradle.git ./ci.gradle
      - cd ./ci.gradle
