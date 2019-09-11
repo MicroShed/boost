@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>boost.runtimes</groupId>
+    <groupId>org.microshed.boost.runtimes</groupId>
     <artifactId>openliberty</artifactId>
     <version>1.0-M1-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -17,12 +17,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>boost</groupId>
+            <groupId>org.microshed.boost</groupId>
             <artifactId>boost-common</artifactId>
             <version>1.0-M1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>boost</groupId>
+            <groupId>org.microshed.boost</groupId>
             <artifactId>boost-maven-plugin</artifactId>
             <version>1.0-M1-SNAPSHOT</version>
         </dependency>

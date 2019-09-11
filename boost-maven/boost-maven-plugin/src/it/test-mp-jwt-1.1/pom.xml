@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>boost</groupId>
+  <groupId>org.microshed.boost</groupId>
   <artifactId>test-mpJwt-1.1</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
@@ -46,7 +46,7 @@
    <dependencyManagement>
       <dependencies>
           <dependency>
-              <groupId>boost.boms</groupId>
+              <groupId>org.microshed.boost.boms</groupId>
               <artifactId>mp20-bom</artifactId>
               <version>@pom.version@</version>
               <type>pom</type>
@@ -60,23 +60,23 @@
   <dependencies>
      <!-- Open Liberty features -->
     <dependency>
-        <groupId>boost.boosters</groupId>
+        <groupId>org.microshed.boost.boosters</groupId>
         <artifactId>jaxrs</artifactId>
     </dependency>
     <dependency>
-        <groupId>boost.boosters</groupId>
+        <groupId>org.microshed.boost.boosters</groupId>
         <artifactId>jsonp</artifactId>
     </dependency>
     <dependency>
-        <groupId>boost.boosters</groupId>
+        <groupId>org.microshed.boost.boosters</groupId>
         <artifactId>cdi</artifactId>
     </dependency>
     <dependency>
-        <groupId>boost.boosters</groupId>
+        <groupId>org.microshed.boost.boosters</groupId>
         <artifactId>mpConfig</artifactId>
     </dependency>
     <dependency>
-       <groupId>boost.boosters</groupId>
+       <groupId>org.microshed.boost.boosters</groupId>
        <artifactId>mp-jwt</artifactId>
     </dependency>
         <!-- For testing -->
@@ -161,7 +161,7 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>boost</groupId>
+                <groupId>org.microshed.boost</groupId>
                 <artifactId>boost-maven-plugin</artifactId>
                 <version>@pom.version@</version>
                 <executions>
@@ -235,7 +235,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>openliberty</artifactId>
 				</dependency>
 			</dependencies>
@@ -250,7 +250,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>wlp</artifactId>
 				</dependency>
 			</dependencies>
@@ -265,7 +265,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>tomee</artifactId>
 				</dependency>
 			</dependencies>

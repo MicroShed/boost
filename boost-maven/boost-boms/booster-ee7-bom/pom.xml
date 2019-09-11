@@ -8,13 +8,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>boost</groupId>
+        <groupId>org.microshed.boost</groupId>
         <artifactId>boost-maven-parent</artifactId>
         <version>1.0-M1-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>boost.boms</groupId>
+    <groupId>org.microshed.boost.boms</groupId>
     <artifactId>ee7-bom</artifactId>
     <packaging>pom</packaging>
 
@@ -23,21 +23,21 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>boost.boms</groupId>
+                <groupId>org.microshed.boost.boms</groupId>
                 <artifactId>boost-ee7-apis-bom</artifactId>
                 <version>1.0-M1-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>boost.runtimes</groupId>
+                <groupId>org.microshed.boost.runtimes</groupId>
                 <artifactId>runtimes-bom</artifactId>
                 <version>1.0-M1-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>org.microshed.boost.boosters</groupId>
                 <artifactId>jaxrs</artifactId>
                 <!-- Booster version distinct from the BOM, boost-maven-plugin 
                     version -->
@@ -47,25 +47,25 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>org.microshed.boost.boosters</groupId>
                 <artifactId>jdbc</artifactId>
                 <version>1.0-M1-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>org.microshed.boost.boosters</groupId>
                 <artifactId>jpa</artifactId>
                 <version>2.1-1.0-M1-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>org.microshed.boost.boosters</groupId>
                 <artifactId>cdi</artifactId>
                 <version>1.2-1.0-M1-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>org.microshed.boost.boosters</groupId>
                 <artifactId>jsonp</artifactId>
                 <version>1.0-1.0-M1-SNAPSHOT</version>
                 <scope>provided</scope>

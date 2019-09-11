@@ -21,7 +21,7 @@ When added to your pom.xml, the plugin will
 Edit your project pom.xml and place the following plugin stanza into your build:
 ```xml
 <plugin>
-	<groupId>boost</groupId>
+	<groupId>org.microshed.boost</groupId>
 	<artifactId>boost-maven-plugin</artifactId>
 	<version>1.0-M1-SNAPSHOT</version>
 	<executions>
