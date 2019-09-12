@@ -240,9 +240,16 @@ public class LibertyServerConfigGeneratorTest {
         String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR
                 + "/variables.xml";
 
-        String urlFound = ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_URL);
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct", DB2_URL,
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_URL));
 
-        assertEquals("The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct", DB2_URL, urlFound);
+        // No user set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_USER + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_USER));
+
+        // No password set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_PASSWORD + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_PASSWORD));
     }
 
     /**
@@ -318,9 +325,16 @@ public class LibertyServerConfigGeneratorTest {
         String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR
                 + "/variables.xml";
 
-        String urlFound = ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_URL);
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct", MYSQL_URL,
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_URL));
 
-        assertEquals("The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct", MYSQL_URL, urlFound);
+        // No user set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_USER + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_USER));
+
+        // No password set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_PASSWORD + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_PASSWORD));
     }
 
     /**
@@ -397,10 +411,16 @@ public class LibertyServerConfigGeneratorTest {
         String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR
                 + "/variables.xml";
 
-        String urlFound = ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_URL);
-
         assertEquals("The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct", POSTGRESQL_URL,
-                urlFound);
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_URL));
+
+        // No user set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_USER + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_USER));
+
+        // No password set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_PASSWORD + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_PASSWORD));
     }
 
 }

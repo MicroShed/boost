@@ -315,13 +315,13 @@ public class LibertyServerConfigGenerator {
         String datasourcePropertiesElement = null;
 
         String driverName = driverInfo.get(JDBCBoosterConfig.DRIVER_NAME);
-        if (driverName.equals(JDBCBoosterConfig.DERBY_ARTIFACT_ID)) {
+        if (driverName.equals(JDBCBoosterConfig.DERBY_DRIVER_NAME)) {
             datasourcePropertiesElement = PROPERTIES_DERBY_EMBEDDED;
-        } else if (driverName.equals(JDBCBoosterConfig.DB2_ARTIFACT_ID)) {
+        } else if (driverName.equals(JDBCBoosterConfig.DB2_DRIVER_NAME)) {
             datasourcePropertiesElement = PROPERTIES_DB2_JCC;
-        } else if (driverName.equals(JDBCBoosterConfig.MYSQL_ARTIFACT_ID)) {
+        } else if (driverName.equals(JDBCBoosterConfig.MYSQL_DRIVER_NAME)) {
             datasourcePropertiesElement = PROPERTIES;
-        } else if (driverName.equals(JDBCBoosterConfig.POSTGRESQL_ARTIFACT_ID)) {
+        } else if (driverName.equals(JDBCBoosterConfig.POSTGRESQL_DRIVER_NAME)) {
             datasourcePropertiesElement = PROPERTIES_POSTGRESQL;
         }
 

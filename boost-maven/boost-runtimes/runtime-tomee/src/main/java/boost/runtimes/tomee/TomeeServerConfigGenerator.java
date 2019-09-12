@@ -274,7 +274,7 @@ public class TomeeServerConfigGenerator {
             StringBuilder jdbcUrl = new StringBuilder();
             jdbcUrl.append("jdbc:" + driverName);
 
-            if (driverName.equals(JDBCBoosterConfig.DERBY_ARTIFACT_ID)) {
+            if (driverName.equals(JDBCBoosterConfig.DERBY_DRIVER_NAME)) {
 
                 // Derby's URL is slightly different than MySQL and DB2
                 String databaseName = (String) boostDbProperties.remove(BoostProperties.DATASOURCE_DATABASE_NAME);
