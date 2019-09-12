@@ -4,19 +4,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.microshed.boost.boosters</groupId>
-    <artifactId>mpOpenTracing</artifactId>
-    <version>1.3-0.2</version>
+    <artifactId>mp-health</artifactId>
+    <version>1.0-0.2</version>
 
     <properties>
-        <mp-open-tracing-api-version>1.3</mp-open-tracing-api-version>
+        <mp-health-api-version>1.0</mp-health-api-version>
     </properties>
-
 
     <dependencies>
         <dependency>
-            <groupId>org.eclipse.microprofile.opentracing</groupId>
-            <artifactId>microprofile-opentracing-api</artifactId>
-            <version>${mp-open-tracing-api-version}</version>
+            <groupId>org.eclipse.microprofile.health</groupId>
+            <artifactId>microprofile-health-api</artifactId>
+            <version>${mp-health-api-version}</version>
         </dependency>
     </dependencies>
 

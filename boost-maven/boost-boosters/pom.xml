@@ -24,19 +24,19 @@
         <module>booster-jsonp10</module>
         <module>booster-jsonp11</module>
         <module>booster-beanValidation20</module>
-        <module>booster-mpConfig13</module>
+        <module>booster-mp-config13</module>
         <module>booster-mp-jwt11</module>
-        <module>booster-mpMetrics11</module>
-        <module>booster-mpFaultTolerance11</module>
-        <module>booster-mpFaultTolerance20</module>
-        <module>booster-mpHealth10</module>
-        <module>booster-mpOpenAPI10</module>
-        <module>booster-mpOpenAPI11</module>
-        <module>booster-mpOpenTracing11</module>
-        <module>booster-mpOpenTracing12</module>
-        <module>booster-mpOpenTracing13</module>
-        <module>booster-mpRestClient11</module>
-        <module>booster-mpRestClient12</module>
+        <module>booster-mp-metrics11</module>
+        <module>booster-mp-fault-tolerance11</module>
+        <module>booster-mp-fault-tolerance20</module>
+        <module>booster-mp-health10</module>
+        <module>booster-mp-openapi10</module>
+        <module>booster-mp-openapi11</module>
+        <module>booster-mp-opentracing11</module>
+        <module>booster-mp-opentracing12</module>
+        <module>booster-mp-opentracing13</module>
+        <module>booster-mp-rest-client11</module>
+        <module>booster-mp-rest-client12</module>
     </modules>
 
 </project>

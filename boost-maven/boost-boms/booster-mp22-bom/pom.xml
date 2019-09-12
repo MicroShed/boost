@@ -46,25 +46,25 @@
             </dependency>
             <dependency>
                 <groupId>org.microshed.boost.boosters</groupId>
-                <artifactId>mpHealth</artifactId>
+                <artifactId>mp-health</artifactId>
                 <version>1.0-0.2</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.microshed.boost.boosters</groupId>
-                <artifactId>mpConfig</artifactId>
+                <artifactId>mp-config</artifactId>
                 <version>1.3-0.2</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.microshed.boost.boosters</groupId>
-                <artifactId>mpOpenAPI</artifactId>
+                <artifactId>mp-openapi</artifactId>
                 <version>1.1-0.2</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.microshed.boost.boosters</groupId>
-                <artifactId>mpRestClient</artifactId>
+                <artifactId>mp-rest-client</artifactId>
                 <version>1.2-0.2</version>
                 <scope>provided</scope>
             </dependency>
@@ -88,7 +88,7 @@
             </dependency>
             <dependency>
                 <groupId>org.microshed.boost.boosters</groupId>
-                <artifactId>mpOpenTracing</artifactId>
+                <artifactId>mp-opentracing</artifactId>
                 <version>1.3-0.2</version>
                 <scope>provided</scope>
             </dependency>    
@@ -100,13 +100,13 @@
             </dependency>    
             <dependency>
                 <groupId>org.microshed.boost.boosters</groupId>
-                <artifactId>mpMetrics</artifactId>
+                <artifactId>mp-metrics</artifactId>
                 <version>1.1-0.2</version>
                 <scope>provided</scope>
             </dependency>        
             <dependency>
                 <groupId>org.microshed.boost.boosters</groupId>
-                <artifactId>fault-tolerance</artifactId>
+                <artifactId>mp-fault-tolerance</artifactId>
                 <version>2.0-0.2</version>
                 <scope>provided</scope>
             </dependency>        
