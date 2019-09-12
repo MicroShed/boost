@@ -52,8 +52,8 @@ public class CDIBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "1.2-1.0-M1-SNAPSHOT");
-        
+                .createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "1.2-0.2");
+
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyCDIBoosterConfig libCDIConfig = new LibertyCDIBoosterConfig(params, logger);
 
@@ -79,8 +79,8 @@ public class CDIBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "2.0-1.0-M1-SNAPSHOT");
-        
+                .createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "2.0-0.2");
+
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyCDIBoosterConfig libCDIConfig = new LibertyCDIBoosterConfig(params, logger);
 

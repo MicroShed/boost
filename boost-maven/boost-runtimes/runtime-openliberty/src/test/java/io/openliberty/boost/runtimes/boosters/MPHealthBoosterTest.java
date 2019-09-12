@@ -42,7 +42,7 @@ public class MPHealthBoosterTest {
 
     /**
      * Test that the mpHealth-1.0 feature is added to server.xml when the MPHealth
-     * booster version is set to 1.0-M1-SNAPSHOT
+     * booster version is set to 0.2
      * 
      */
     @Test
@@ -52,8 +52,8 @@ public class MPHealthBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPHealthBoosterConfig.class, "1.0-1.0-M1-SNAPSHOT");
-        
+                .createDependenciesWithBoosterAndVersion(LibertyMPHealthBoosterConfig.class, "1.0-0.2");
+
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPHealthBoosterConfig libMPHealthConfig = new LibertyMPHealthBoosterConfig(params, logger);
 
