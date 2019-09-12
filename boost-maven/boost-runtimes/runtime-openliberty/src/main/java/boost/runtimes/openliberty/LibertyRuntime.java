@@ -127,8 +127,8 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     /**
-     * Get all booster dependencies and invoke the maven-dependency-plugin to copy
-     * them to the Liberty server.
+     * Get all booster dependencies and invoke the maven-dependency-plugin to
+     * copy them to the Liberty server.
      * 
      * @throws MojoExecutionException
      *
@@ -196,7 +196,7 @@ public class LibertyRuntime implements RuntimeI {
     private void generateLibertyServerConfig(List<AbstractBoosterConfig> boosterConfigurators) throws Exception {
 
         List<String> warNames = getWarNames();
-        
+
         String encryptionKey = (String) boostProperties.get(BoostProperties.AES_ENCRYPTION_KEY);
         LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, encryptionKey,
                 BoostLogger.getSystemStreamLogger());
@@ -276,8 +276,8 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     /**
-     * Invoke the liberty-maven-plugin to package the server into a runnable Liberty
-     * JAR
+     * Invoke the liberty-maven-plugin to package the server into a runnable
+     * Liberty JAR
      */
     private void createUberJar() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("package"),

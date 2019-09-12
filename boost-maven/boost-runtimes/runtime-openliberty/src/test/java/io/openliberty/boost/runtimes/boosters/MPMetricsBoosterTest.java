@@ -41,8 +41,8 @@ public class MPMetricsBoosterTest {
     BoostLoggerI logger = CommonLogger.getInstance();
 
     /**
-     * Test that the mpMetrics-1.1 feature is added to server.xml when the MPMetrics
-     * booster version is set to 1.1-M1-SNAPSHOT
+     * Test that the mpMetrics-1.1 feature is added to server.xml when the
+     * MPMetrics booster version is set to 1.1-M1-SNAPSHOT
      * 
      */
     @Test
@@ -53,7 +53,7 @@ public class MPMetricsBoosterTest {
 
         Map<String, String> dependencies = BoosterUtil
                 .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "1.1-1.0-M1-SNAPSHOT");
-        
+
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPMetricsBoosterConfig libMPMetricsConfig = new LibertyMPMetricsBoosterConfig(params, logger);
 
@@ -65,6 +65,34 @@ public class MPMetricsBoosterTest {
                 "<feature>" + MPMETRICS_11 + "</feature>");
 
         assertTrue("The " + MPMETRICS_11 + " feature was not found in the server configuration", featureFound);
+
+    }
+
+    /**
+     * Test that the mpMetrics-2.0 feature is added to server.xml when the
+     * MPMetrics booster version is set to 2.0-1.0-M1-SNAPSHOT
+     * 
+     */
+    @Test
+    public void testMPMetricsBoosterFeature20() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), null, logger);
+
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "2.0-1.0-M1-SNAPSHOT");
+
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+        LibertyMPMetricsBoosterConfig libMPMetricsConfig = new LibertyMPMetricsBoosterConfig(params, logger);
+
+        serverConfig.addFeature(libMPMetricsConfig.getFeature());
+        serverConfig.writeToServer();
+
+        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
+                "<feature>" + MPMETRICS_20 + "</feature>");
+
+        assertTrue("The " + MPMETRICS_20 + " feature was not found in the server configuration", featureFound);
 
     }
 

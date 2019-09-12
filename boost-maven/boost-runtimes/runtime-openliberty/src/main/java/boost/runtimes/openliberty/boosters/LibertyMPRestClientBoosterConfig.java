@@ -31,6 +31,8 @@ public class LibertyMPRestClientBoosterConfig extends MPRestClientBoosterConfig 
             return MPRESTCLIENT_11;
         } else if (getVersion().equals(MP_RESTCLIENT_VERSION_12)) {
             return MPRESTCLIENT_12;
+        } else if (getVersion().equals(MP_RESTCLIENT_VERSION_13)) {
+            return MPRESTCLIENT_13;
         }
 
         return null;
