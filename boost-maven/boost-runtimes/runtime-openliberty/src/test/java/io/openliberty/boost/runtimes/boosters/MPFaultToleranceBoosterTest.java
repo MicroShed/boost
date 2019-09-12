@@ -42,7 +42,7 @@ public class MPFaultToleranceBoosterTest {
 
     /**
      * Test that the mpFaultTolerance-1.1 feature is added to server.xml when the
-     * MPFaultTolerance booster version is set to 1.1-1.0-M1-SNAPSHOT
+     * MPFaultTolerance booster version is set to 1.1-0.2
      * 
      */
     @Test
@@ -52,8 +52,8 @@ public class MPFaultToleranceBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-        		.createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, "1.1-1.0-M1-SNAPSHOT");
-        
+                .createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, "1.1-0.2");
+
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(params, logger);
 
@@ -70,7 +70,7 @@ public class MPFaultToleranceBoosterTest {
 
     /**
      * Test that the mpFaultTolerance-2.0 feature is added to server.xml when the
-     * MPFaultTolerance booster version is set to 1.2-1.0-M1-SNAPSHOT
+     * MPFaultTolerance booster version is set to 1.2-0.2
      * 
      */
     @Test
@@ -80,8 +80,8 @@ public class MPFaultToleranceBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-        		.createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, "2.0-1.0-M1-SNAPSHOT");
-        
+                .createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, "2.0-0.2");
+
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(params, logger);
 

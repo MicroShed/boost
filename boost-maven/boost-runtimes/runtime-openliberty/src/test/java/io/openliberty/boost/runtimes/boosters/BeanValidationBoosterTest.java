@@ -51,13 +51,13 @@ public class BeanValidationBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        Map<String, String> dependencies = BoosterUtil.createDependenciesWithBoosterAndVersion(
-			    LibertyBeanValidationBoosterConfig.class,
-                "2.0-1.0-M1-SNAPSHOT");
-        
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyBeanValidationBoosterConfig.class, "2.0-0.2");
+
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
-        
-        LibertyBeanValidationBoosterConfig libBeanValidationConfig = new LibertyBeanValidationBoosterConfig(params, logger);
+
+        LibertyBeanValidationBoosterConfig libBeanValidationConfig = new LibertyBeanValidationBoosterConfig(params,
+                logger);
 
         serverConfig.addFeature(libBeanValidationConfig.getFeature());
         serverConfig.writeToServer();
@@ -81,11 +81,11 @@ public class BeanValidationBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        Map<String, String> dependencies = BoosterUtil.createDependenciesWithBoosterAndVersion(
-        		LibertyCDIBoosterConfig.class, "2.0-1.0-M1-SNAPSHOT");
-        
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "2.0-0.2");
+
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
-        
+
         LibertyCDIBoosterConfig libCDIConfig = new LibertyCDIBoosterConfig(params, logger);
 
         serverConfig.addFeature(libCDIConfig.getFeature());

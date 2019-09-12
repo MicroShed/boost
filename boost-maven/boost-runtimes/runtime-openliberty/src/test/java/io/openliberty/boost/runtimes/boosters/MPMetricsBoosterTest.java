@@ -52,8 +52,8 @@ public class MPMetricsBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "1.1-1.0-M1-SNAPSHOT");
-        
+                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "1.1-0.2");
+
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPMetricsBoosterConfig libMPMetricsConfig = new LibertyMPMetricsBoosterConfig(params, logger);
 

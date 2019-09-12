@@ -3,26 +3,19 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>boost.boosters</groupId>
+    <groupId>org.microshed.boost.boosters</groupId>
     <artifactId>mpHealth</artifactId>
-    <version>1.0-1.0-M1-SNAPSHOT</version>
+    <version>1.0-0.2</version>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>boost.boosters</groupId>
-                <artifactId>boost-mp14-apis-bom</artifactId>
-                <version>0.1-SNAPSHOT</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <properties>
+        <mp-health-api-version>1.0</mp-health-api-version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.eclipse.microprofile.health</groupId>
             <artifactId>microprofile-health-api</artifactId>
+            <version>${mp-health-api-version}</version>
         </dependency>
     </dependencies>
 

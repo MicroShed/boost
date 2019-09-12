@@ -9,10 +9,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>boost.boosters</groupId>
+	<groupId>org.microshed.boost.boms</groupId>
 	<artifactId>boost-ee7-apis-bom</artifactId>
-	<!-- Versioned separately from the main project -->
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2</version>
 	<packaging>pom</packaging>
 
 	<description>Boost EE7 APIs BOM</description>

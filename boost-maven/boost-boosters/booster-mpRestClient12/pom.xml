@@ -3,26 +3,19 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>boost.boosters</groupId>
+    <groupId>org.microshed.boost.boosters</groupId>
     <artifactId>mpRestClient</artifactId>
-    <version>1.2-1.0-M1-SNAPSHOT</version>
+    <version>1.2-0.2</version>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>boost.boosters</groupId>
-                <artifactId>boost-mp22-apis-bom</artifactId>
-                <version>0.1-SNAPSHOT</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <properties>
+        <mp-rest-client-api-version>1.2</mp-rest-client-api-version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.eclipse.microprofile.rest.client</groupId>
             <artifactId>microprofile-rest-client-api</artifactId>
+            <version>${mp-rest-client-api-version}</version>
         </dependency>
     </dependencies>
 

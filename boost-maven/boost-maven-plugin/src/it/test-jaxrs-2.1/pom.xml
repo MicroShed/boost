@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>boost</groupId>
+	<groupId>org.microshed.boost</groupId>
 	<artifactId>test-jaxrs-2.1</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
@@ -32,7 +32,7 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>boost.boosters</groupId>
+				<groupId>org.microshed.boost.boms</groupId>
 				<artifactId>ee8-bom</artifactId>
 				<version>@pom.version@</version>
 				<scope>import</scope>
@@ -43,11 +43,11 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>boost.boosters</groupId>
+			<groupId>org.microshed.boost.boosters</groupId>
 			<artifactId>jaxrs</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>boost.boosters</groupId>
+			<groupId>org.microshed.boost.boosters</groupId>
 			<artifactId>bean-validation</artifactId>
     	</dependency>
 		<dependency>
@@ -67,7 +67,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>boost</groupId>
+				<groupId>org.microshed.boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>@pom.version@</version>
 				<executions>
@@ -119,7 +119,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>openliberty</artifactId>
 				</dependency>
 			</dependencies>
@@ -134,7 +134,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>wlp</artifactId>
 				</dependency>
 			</dependencies>
@@ -149,7 +149,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-    				<groupId>boost.runtimes</groupId>
+    				<groupId>org.microshed.boost.runtimes</groupId>
     				<artifactId>tomee</artifactId>
     			</dependency>
 			</dependencies>

@@ -3,26 +3,20 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>boost.boosters</groupId>
+    <groupId>org.microshed.boost.boosters</groupId>
     <artifactId>mpOpenTracing</artifactId>
-    <version>1.2-1.0-M1-SNAPSHOT</version>
+    <version>1.2-0.2</version>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>boost.boosters</groupId>
-                <artifactId>boost-mp20-apis-bom</artifactId>
-                <version>0.1-SNAPSHOT</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <properties>
+        <mp-open-tracing-api-version>1.2</mp-open-tracing-api-version>
+    </properties>
+
 
     <dependencies>
         <dependency>
             <groupId>org.eclipse.microprofile.opentracing</groupId>
             <artifactId>microprofile-opentracing-api</artifactId>
+            <version>${mp-open-tracing-api-version}</version>
         </dependency>
     </dependencies>
 
