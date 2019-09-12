@@ -363,4 +363,13 @@ public class LibertyServerConfigGenerator {
         }
     }
 
+    public void addElementWithAttributes(String elementName, Map<String, String> attributes) {
+        Element element = serverXml.createElement(elementName);
+        for (String attributeName : attributes.keySet()) {
+            element.setAttribute(attributeName, attributes.get(attributeName));
+        }
+
+        serverRoot.appendChild(element);
+    }
+
 }

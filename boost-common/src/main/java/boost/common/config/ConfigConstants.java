@@ -100,12 +100,15 @@ public final class ConfigConstants {
     public static final String CDI_20 = "cdi-2.0";
     public static final String BEANVALIDATION_20 = "beanValidation-2.0";
     public static final String MPHEALTH_10 = "mpHealth-1.0";
+    public static final String MPHEALTH_20 = "mpHealth-2.0";
     public static final String MPJWT_11 = "mpjwt-1.1";
     public static final String MPOPENAPI_10 = "mpOpenAPI-1.0";
     public static final String MPOPENAPI_11 = "mpOpenAPI-1.1";
     public static final String MPRESTCLIENT_11 = "mpRestClient-1.1";
     public static final String MPRESTCLIENT_12 = "mpRestClient-1.2";
+    public static final String MPRESTCLIENT_13 = "mpRestClient-1.3";
     public static final String MPMETRICS_11 = "mpMetrics-1.1";
+    public static final String MPMETRICS_20 = "mpMetrics-2.0";
     public static final String MPFAULTTOLERANCE_11 = "mpFaultTolerance-1.1";
     public static final String MPFAULTTOLERANCE_20 = "mpFaultTolerance-2.0";
     public static final String JSONB_10 = "jsonb-1.0";

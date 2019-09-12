@@ -25,10 +25,12 @@
 		<module>booster-mp20-bom</module>
 		<module>booster-mp21-bom</module>
 		<module>booster-mp22-bom</module>
+        <module>booster-mp30-bom</module>
 		<module>boost-mp14-apis-bom</module>
 		<module>boost-mp20-apis-bom</module>
 		<module>boost-mp21-apis-bom</module>
 		<module>boost-mp22-apis-bom</module>
+        <module>boost-mp30-apis-bom</module>
 		<module>booster-runtimes-bom</module>
 	</modules>
 

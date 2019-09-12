@@ -27,9 +27,11 @@
         <module>booster-mp-config13</module>
         <module>booster-mp-jwt11</module>
         <module>booster-mp-metrics11</module>
+        <module>booster-mp-metrics20</module>
         <module>booster-mp-fault-tolerance11</module>
         <module>booster-mp-fault-tolerance20</module>
         <module>booster-mp-health10</module>
+        <module>booster-mp-health20</module>
         <module>booster-mp-openapi10</module>
         <module>booster-mp-openapi11</module>
         <module>booster-mp-opentracing11</module>
@@ -37,6 +39,8 @@
         <module>booster-mp-opentracing13</module>
         <module>booster-mp-rest-client11</module>
         <module>booster-mp-rest-client12</module>
+        <module>booster-mp-rest-client13</module>
+
     </modules>
 
 </project>
