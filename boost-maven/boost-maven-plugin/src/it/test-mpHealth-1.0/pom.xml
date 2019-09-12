@@ -195,6 +195,10 @@
 					<value>tomee</value>
 				</property>
 			</activation>
+            <properties>
+                <!-- https://github.com/dev-tools-for-enterprise-java/boost/issues/349 -->
+                <skipITs>true</skipITs>
+            </properties>
 			<dependencies>
 				<dependency>
 					<groupId>org.microshed.boost.runtimes</groupId>
