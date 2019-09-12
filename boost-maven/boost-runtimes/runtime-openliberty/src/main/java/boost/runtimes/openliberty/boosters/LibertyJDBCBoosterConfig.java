@@ -20,7 +20,6 @@ import boost.common.config.BoosterConfigParams;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
-
 public class LibertyJDBCBoosterConfig extends JDBCBoosterConfig implements LibertyBoosterI {
 
     public LibertyJDBCBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
@@ -47,7 +46,7 @@ public class LibertyJDBCBoosterConfig extends JDBCBoosterConfig implements Liber
     @Override
     public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) throws BoostException {
         try {
-        	libertyServerConfigGenerator.addDataSource(getProductName(), getDatasourceProperties());
+            libertyServerConfigGenerator.addDataSource(getDriverInfo(), getDatasourceProperties());
         } catch (Exception e) {
             throw new BoostException("Error when configuring JDBC data source.", e);
         }

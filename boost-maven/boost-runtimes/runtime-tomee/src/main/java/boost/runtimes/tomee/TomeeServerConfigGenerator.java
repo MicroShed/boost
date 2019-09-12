@@ -79,7 +79,8 @@ public class TomeeServerConfigGenerator {
 
     public void addServerConfig(AbstractBoosterConfig boosterConfig) throws Exception {
         if (boosterConfig instanceof JDBCBoosterConfig) {
-            addDataSource(((JDBCBoosterConfig)boosterConfig).getProductName(), ((JDBCBoosterConfig)boosterConfig).getDatasourceProperties());
+            addDataSource(((JDBCBoosterConfig) boosterConfig).getDriverInfo(),
+                    ((JDBCBoosterConfig) boosterConfig).getDatasourceProperties());
         }
     }
 
@@ -215,7 +216,7 @@ public class TomeeServerConfigGenerator {
         // No keystore support yet
     }
 
-    public void addDataSource(String productName, Properties boostDbProperties) throws Exception {
+    public void addDataSource(Map<String, String> driverInfo, Properties boostDbProperties) throws Exception {
         // Read tomee.xml
         File tomeeXml = new File(configPath + "/" + TOMEE_XML);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -231,23 +232,15 @@ public class TomeeServerConfigGenerator {
         tomee.appendChild(resource);
 
         // Add driver class name
-        String driverClassName = "";
-        if (productName.equals(JDBCBoosterConfig.DERBY)) {
-            driverClassName = JDBCBoosterConfig.DERBY_DRIVER_CLASS_NAME;
-        } else if (productName.equals(JDBCBoosterConfig.DB2)) {
-            driverClassName = JDBCBoosterConfig.DB2_DRIVER_CLASS_NAME;
-        } else if (productName.equals(JDBCBoosterConfig.MYSQL)) {
-            driverClassName = JDBCBoosterConfig.MYSQL_DRIVER_CLASS_NAME;
-        }
-        Text jdbcDriverText = doc.createTextNode(JDBC_DRIVER_PROPERTY + " = " + driverClassName + System.lineSeparator());
+        Text jdbcDriverText = doc.createTextNode(JDBC_DRIVER_PROPERTY + " = "
+                + driverInfo.get(JDBCBoosterConfig.DRIVER_CLASS_NAME) + System.lineSeparator());
         resource.appendChild(jdbcDriverText);
-        
 
         // Add UserName if set. Remove from list to avoid adding it again below
         String username = (String) boostDbProperties.remove(BoostProperties.DATASOURCE_USER);
         if (username != null) {
-            Text usernameText = doc.createTextNode(
-                    USERNAME_PROPERTY + " = " + BoostUtil.makeVariable(BoostProperties.DATASOURCE_USER) + System.lineSeparator());
+            Text usernameText = doc.createTextNode(USERNAME_PROPERTY + " = "
+                    + BoostUtil.makeVariable(BoostProperties.DATASOURCE_USER) + System.lineSeparator());
             resource.appendChild(usernameText);
 
             addCatalinaProperty(BoostProperties.DATASOURCE_USER, username);
@@ -256,11 +249,10 @@ public class TomeeServerConfigGenerator {
         // Add Password if set. Remove from list to avoid adding it again below
         String password = (String) boostDbProperties.remove(BoostProperties.DATASOURCE_PASSWORD);
         if (password != null) {
-            Text passwordText = doc.createTextNode(
-                    PASSWORD_PROPERTY + " = " + BoostUtil.makeVariable(BoostProperties.DATASOURCE_PASSWORD) + System.lineSeparator());
+            Text passwordText = doc.createTextNode(PASSWORD_PROPERTY + " = "
+                    + BoostUtil.makeVariable(BoostProperties.DATASOURCE_PASSWORD) + System.lineSeparator());
             resource.appendChild(passwordText);
 
-            
             addCatalinaProperty(BoostProperties.DATASOURCE_PASSWORD, password);
         }
 
@@ -270,18 +262,19 @@ public class TomeeServerConfigGenerator {
         // configured.
         String url = (String) boostDbProperties.remove(BoostProperties.DATASOURCE_URL);
         if (url != null) {
-            Text jdbcUrlText = doc
-                    .createTextNode(JDBC_URL_PROPERTY + " = " + BoostUtil.makeVariable(BoostProperties.DATASOURCE_URL) + System.lineSeparator());
+            Text jdbcUrlText = doc.createTextNode(JDBC_URL_PROPERTY + " = "
+                    + BoostUtil.makeVariable(BoostProperties.DATASOURCE_URL) + System.lineSeparator());
             resource.appendChild(jdbcUrlText);
 
             addCatalinaProperty(BoostProperties.DATASOURCE_URL, url);
         } else {
 
             // Build the url
+            String driverName = driverInfo.get(JDBCBoosterConfig.DRIVER_NAME);
             StringBuilder jdbcUrl = new StringBuilder();
-            jdbcUrl.append("jdbc:" + productName);
+            jdbcUrl.append("jdbc:" + driverName);
 
-            if (productName.equals(JDBCBoosterConfig.DERBY)) {
+            if (driverName.equals(JDBCBoosterConfig.DERBY_DRIVER_NAME)) {
 
                 // Derby's URL is slightly different than MySQL and DB2
                 String databaseName = (String) boostDbProperties.remove(BoostProperties.DATASOURCE_DATABASE_NAME);
@@ -313,7 +306,8 @@ public class TomeeServerConfigGenerator {
                 }
             }
 
-            Text jdbcUrlText = doc.createTextNode(JDBC_URL_PROPERTY + " = " + jdbcUrl.toString() + System.lineSeparator());
+            Text jdbcUrlText = doc
+                    .createTextNode(JDBC_URL_PROPERTY + " = " + jdbcUrl.toString() + System.lineSeparator());
             resource.appendChild(jdbcUrlText);
         }
 
@@ -329,8 +323,8 @@ public class TomeeServerConfigGenerator {
             addCatalinaProperty(boostProperty, boostDbProperties.getProperty(boostProperty));
         }
 
-        Text connectionPropertiesText = doc
-                .createTextNode(CONNECTION_PROPERTIES_PROPERTY + " = [" + connectionProperties.toString() + "]"   + System.lineSeparator());
+        Text connectionPropertiesText = doc.createTextNode(CONNECTION_PROPERTIES_PROPERTY + " = ["
+                + connectionProperties.toString() + "]" + System.lineSeparator());
         resource.appendChild(connectionPropertiesText);
 
         // Overwrite content

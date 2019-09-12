@@ -50,9 +50,8 @@ import net.wasdev.wlp.common.plugins.util.OSUtil;
  *
  */
 public class LibertyServerConfigGenerator {
-    
+
     public static final String CONFIG_DROPINS_DIR = "/configDropins/defaults";
-    
 
     private final String serverPath;
     private final String libertyInstallPath;
@@ -64,13 +63,14 @@ public class LibertyServerConfigGenerator {
     private Element featureManager;
     private Element serverRoot;
     private Element httpEndpoint;
-    
+
     private Document variablesXml;
     private Element variablesRoot;
 
     private Set<String> featuresAdded;
 
-    public LibertyServerConfigGenerator(String serverPath, String encryptionKey, BoostLoggerI logger) throws ParserConfigurationException {
+    public LibertyServerConfigGenerator(String serverPath, String encryptionKey, BoostLoggerI logger)
+            throws ParserConfigurationException {
 
         this.serverPath = serverPath;
         this.libertyInstallPath = serverPath + "/../../.."; // Three directories
@@ -103,7 +103,7 @@ public class LibertyServerConfigGenerator {
         httpEndpoint.setAttribute("id", DEFAULT_HTTP_ENDPOINT);
         serverRoot.appendChild(httpEndpoint);
     }
-    
+
     private void generateVariablesXml() throws ParserConfigurationException {
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
@@ -113,7 +113,6 @@ public class LibertyServerConfigGenerator {
         variablesRoot.setAttribute("description", "Boost variables");
         variablesXml.appendChild(variablesRoot);
     }
-    
 
     /**
      * Add a Liberty feature to the server configuration
@@ -153,7 +152,7 @@ public class LibertyServerConfigGenerator {
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        
+
         // Replace auto-generated server.xml
         DOMSource server = new DOMSource(serverXml);
         StreamResult serverResult = new StreamResult(new File(serverPath + "/server.xml"));
@@ -162,12 +161,12 @@ public class LibertyServerConfigGenerator {
         // Create configDropins/default path
         Path configDropins = Paths.get(serverPath + CONFIG_DROPINS_DIR);
         Files.createDirectories(configDropins);
-        
+
         // Write variables.xml to configDropins
         DOMSource variables = new DOMSource(variablesXml);
         StreamResult variablesResult = new StreamResult(new File(serverPath + CONFIG_DROPINS_DIR + "/variables.xml"));
         transformer.transform(variables, variablesResult);
-       
+
     }
 
     public void addConfigVariables(Properties properties) throws IOException {
@@ -188,7 +187,7 @@ public class LibertyServerConfigGenerator {
         Map<String, String> propertiesToEncrypt = BoostProperties.getPropertiesToEncrypt();
 
         if (propertiesToEncrypt.containsKey(key) && value != null && !value.equals("")) {
-            value = encrypt(key,value);
+            value = encrypt(key, value);
         }
 
         Element variable = variablesXml.createElement("variable");
@@ -248,7 +247,7 @@ public class LibertyServerConfigGenerator {
     public Document getServerXmlDoc() {
         return serverXml;
     }
-    
+
     private String getSecurityUtilCmd(String libertyInstallPath) {
         if (OSUtil.isWindows()) {
             return libertyInstallPath + "/bin/securityUtility.bat";
@@ -259,7 +258,7 @@ public class LibertyServerConfigGenerator {
 
     private String encrypt(String propertyKey, String propertyValue) throws IOException {
 
-        //Won't encode the property if it contains the aes flag
+        // Won't encode the property if it contains the aes flag
         if (!isEncoded(propertyValue)) {
             Runtime rt = Runtime.getRuntime();
             List<String> commands = new ArrayList<String>();
@@ -270,14 +269,14 @@ public class LibertyServerConfigGenerator {
 
             // Get the internal encryption type set for this property
             String encryptionType = BoostProperties.getPropertiesToEncrypt().get(propertyKey);
-            if(encryptionType != null && !encryptionType.equals("")) {
+            if (encryptionType != null && !encryptionType.equals("")) {
                 commands.add("--encoding=" + encryptionType);
             } else {
                 commands.add("--encoding=aes");
             }
 
             // Set the defined encryption key
-            if(encryptionKey != null && !encryptionKey.equals("")) {
+            if (encryptionKey != null && !encryptionKey.equals("")) {
                 commands.add("--key=" + encryptionKey);
             }
 
@@ -311,20 +310,19 @@ public class LibertyServerConfigGenerator {
     public boolean isEncoded(String property) {
         return property.contains("{aes}") || property.contains("{hash}") || property.contains("{xor}");
     }
-    
-    public void addDataSource(String productName, Properties datasourceProperties) throws Exception {
-        String driverJar = null;
+
+    public void addDataSource(Map<String, String> driverInfo, Properties datasourceProperties) throws Exception {
         String datasourcePropertiesElement = null;
 
-        if (productName.equals(JDBCBoosterConfig.DERBY)) {
-            driverJar = DERBY_JAR;
+        String driverName = driverInfo.get(JDBCBoosterConfig.DRIVER_NAME);
+        if (driverName.equals(JDBCBoosterConfig.DERBY_DRIVER_NAME)) {
             datasourcePropertiesElement = PROPERTIES_DERBY_EMBEDDED;
-        } else if (productName.equals(JDBCBoosterConfig.DB2)) {
-            driverJar = DB2_JAR;
+        } else if (driverName.equals(JDBCBoosterConfig.DB2_DRIVER_NAME)) {
             datasourcePropertiesElement = PROPERTIES_DB2_JCC;
-        } else if (productName.equals(JDBCBoosterConfig.MYSQL)) {
-            driverJar = MYSQL_JAR;
+        } else if (driverName.equals(JDBCBoosterConfig.MYSQL_DRIVER_NAME)) {
             datasourcePropertiesElement = PROPERTIES;
+        } else if (driverName.equals(JDBCBoosterConfig.POSTGRESQL_DRIVER_NAME)) {
+            datasourcePropertiesElement = PROPERTIES_POSTGRESQL;
         }
 
         // Add library
@@ -332,7 +330,7 @@ public class LibertyServerConfigGenerator {
         lib.setAttribute("id", JDBC_LIBRARY_1);
         Element fileLoc = serverXml.createElement(FILESET);
         fileLoc.setAttribute("dir", RESOURCES);
-        fileLoc.setAttribute("includes", driverJar);
+        fileLoc.setAttribute("includes", driverInfo.get(JDBCBoosterConfig.DRIVER_JAR));
         lib.appendChild(fileLoc);
         serverRoot.appendChild(lib);
 
