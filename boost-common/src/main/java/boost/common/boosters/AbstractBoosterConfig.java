@@ -34,7 +34,7 @@ public abstract class AbstractBoosterConfig {
     public static final String snapShot = "-SNAPSHOT";
     public static final String fullSnapshotString = milestone + snapShot;
     public static final String emptyString = "";
-    public static final String RUNTIMES_GROUID = "org.microshed.boost.runtimes";
+    public static final String RUNTIMES_GROUID = "org.microshed.boost.boms";
     public static final String BOOSTERS_GROUP_ID = "org.microshed.boost.boosters";
     public static final String CDI_VERSION_12 = "1.2" + boostVersion + emptyString;
     public static final String CDI_VERSION_20 = "2.0" + boostVersion + emptyString;

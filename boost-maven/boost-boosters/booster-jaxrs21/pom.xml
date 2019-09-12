@@ -7,22 +7,16 @@
     <artifactId>jaxrs</artifactId>
     <version>2.1-0.2</version>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.microshed.boost.boms</groupId>
-                <artifactId>boost-ee8-apis-bom</artifactId>
-                <version>0.2</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <properties>
+        <jaxrs-api-version>2.1</jaxrs-api-version>
+    </properties>
+
 
     <dependencies>
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
+            <version>${jaxrs-api-version}</version>
         </dependency>
     </dependencies>
 

@@ -7,22 +7,15 @@
     <artifactId>bean-validation</artifactId>
     <version>2.0-0.2</version>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.microshed.boost.boms</groupId>
-                <artifactId>boost-ee8-apis-bom</artifactId>
-                <version>0.2</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <properties>
+        <beanvalidation-api-version>2.0.0.Final</beanvalidation-api-version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
+            <version>${beanvalidation-api-version}</version>
         </dependency>
     </dependencies>
 

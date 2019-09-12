@@ -10,7 +10,6 @@
 
 	<groupId>org.microshed.boost.boms</groupId>
 	<artifactId>boost-mp22-apis-bom</artifactId>
-	<!-- Versioned separately from the main project -->
 	<version>0.2</version>
 	<packaging>pom</packaging>
 

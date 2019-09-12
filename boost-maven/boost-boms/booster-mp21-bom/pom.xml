@@ -37,7 +37,7 @@
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>org.microshed.boost.runtimes</groupId>
+                <groupId>org.microshed.boost.boms</groupId>
                 <artifactId>runtimes-bom</artifactId>
                 <version>0.2</version>
                 <scope>import</scope>

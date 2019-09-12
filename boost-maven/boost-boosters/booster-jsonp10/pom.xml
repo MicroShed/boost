@@ -7,22 +7,15 @@
     <artifactId>jsonp</artifactId>
     <version>1.0-0.2</version>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.microshed.boost.boms</groupId>
-                <artifactId>boost-ee7-apis-bom</artifactId>
-                <version>0.2</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <properties>
+        <jsonp-api-version>1.0</jsonp-api-version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
+            <version>${jsonp-api-version}</version>
         </dependency>
     </dependencies>
 

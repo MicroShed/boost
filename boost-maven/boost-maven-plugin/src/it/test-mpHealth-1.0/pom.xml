@@ -167,7 +167,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>org.microshed.boost.runtimes</groupId>
+					<groupId>org.microshed.boost.boms</groupId>
 					<artifactId>openliberty</artifactId>
 				</dependency>
 			</dependencies>
@@ -182,7 +182,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>org.microshed.boost.runtimes</groupId>
+					<groupId>org.microshed.boost.boms</groupId>
 					<artifactId>wlp</artifactId>
 				</dependency>
 			</dependencies>
@@ -197,7 +197,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>org.microshed.boost.runtimes</groupId>
+					<groupId>org.microshed.boost.boms</groupId>
 					<artifactId>tomee</artifactId>
 				</dependency>
 			</dependencies>

@@ -15,7 +15,7 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.microshed.boost.runtimes</groupId>
+    <groupId>org.microshed.boost.boms</groupId>
     <artifactId>runtimes-bom</artifactId>
     <packaging>pom</packaging>
 
@@ -29,7 +29,7 @@
                 <version>0.2</version>
                 <scope>provided</scope>
             </dependency>
-            <!--<dependency> <groupId>org.microshed.boost.runtimes</groupId> <artifactId>wlp</artifactId> 
+            <!--<dependency> <groupId>org.microshed.boost.boms</groupId> <artifactId>wlp</artifactId> 
                 <version>0.2</version> <scope>provided</scope> </dependency> -->
             <dependency>
                 <groupId>org.microshed.boost.runtimes</groupId>
