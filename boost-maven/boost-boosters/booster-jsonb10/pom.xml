@@ -5,7 +5,7 @@
 
     <groupId>org.microshed.boost.boosters</groupId>
     <artifactId>jsonb</artifactId>
-    <version>1.0-0.2</version>
+    <version>1.0-0.2-SNAPSHOT</version>
 
     <properties>
         <jsonb-api-version>1.0</jsonb-api-version>

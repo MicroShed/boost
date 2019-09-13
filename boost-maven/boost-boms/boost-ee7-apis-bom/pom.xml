@@ -11,7 +11,7 @@
 
 	<groupId>org.microshed.boost.boms</groupId>
 	<artifactId>boost-ee7-apis-bom</artifactId>
-	<version>0.2</version>
+	<version>0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<description>Boost EE7 APIs BOM</description>

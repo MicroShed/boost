@@ -5,6 +5,6 @@
 
     <groupId>org.microshed.boost.boosters</groupId>
     <artifactId>jdbc</artifactId>
-    <version>0.2</version>
+    <version>0.2-SNAPSHOT</version>
 
 </project>

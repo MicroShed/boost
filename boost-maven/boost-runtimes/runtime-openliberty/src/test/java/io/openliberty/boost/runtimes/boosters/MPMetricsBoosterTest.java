@@ -42,7 +42,7 @@ public class MPMetricsBoosterTest {
 
     /**
      * Test that the mpMetrics-1.1 feature is added to server.xml when the
-     * MPMetrics booster version is set to 1.1-0.2
+     * MPMetrics booster version is set to 1.1-0.2-SNAPSHOT
      * 
      */
     @Test
@@ -52,7 +52,7 @@ public class MPMetricsBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "1.1-0.2");
+                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "1.1-0.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPMetricsBoosterConfig libMPMetricsConfig = new LibertyMPMetricsBoosterConfig(params, logger);
@@ -70,7 +70,7 @@ public class MPMetricsBoosterTest {
 
     /**
      * Test that the mpMetrics-2.0 feature is added to server.xml when the
-     * MPMetrics booster version is set to 2.0-0.2
+     * MPMetrics booster version is set to 2.0-0.2-SNAPSHOT
      * 
      */
     @Test
@@ -80,7 +80,7 @@ public class MPMetricsBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "2.0-0.2");
+                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "2.0-0.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPMetricsBoosterConfig libMPMetricsConfig = new LibertyMPMetricsBoosterConfig(params, logger);

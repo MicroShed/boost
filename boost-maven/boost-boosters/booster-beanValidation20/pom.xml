@@ -5,7 +5,7 @@
 
     <groupId>org.microshed.boost.boosters</groupId>
     <artifactId>bean-validation</artifactId>
-    <version>2.0-0.2</version>
+    <version>2.0-0.2-SNAPSHOT</version>
 
     <properties>
         <beanvalidation-api-version>2.0.0.Final</beanvalidation-api-version>

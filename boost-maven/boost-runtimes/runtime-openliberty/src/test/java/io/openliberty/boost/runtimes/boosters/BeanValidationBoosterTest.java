@@ -52,7 +52,7 @@ public class BeanValidationBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyBeanValidationBoosterConfig.class, "2.0-0.2");
+                .createDependenciesWithBoosterAndVersion(LibertyBeanValidationBoosterConfig.class, "2.0-0.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
 
@@ -82,7 +82,7 @@ public class BeanValidationBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "2.0-0.2");
+                .createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "2.0-0.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
 

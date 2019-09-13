@@ -52,7 +52,7 @@ public class MPOpenAPIBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPOpenAPIBoosterConfig.class, "1.0-0.2");
+                .createDependenciesWithBoosterAndVersion(LibertyMPOpenAPIBoosterConfig.class, "1.0-0.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPOpenAPIBoosterConfig libMPOpenAPIConfig = new LibertyMPOpenAPIBoosterConfig(params, logger);
@@ -80,7 +80,7 @@ public class MPOpenAPIBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPOpenAPIBoosterConfig.class, "1.1-0.2");
+                .createDependenciesWithBoosterAndVersion(LibertyMPOpenAPIBoosterConfig.class, "1.1-0.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPOpenAPIBoosterConfig libMPOpenAPIConfig = new LibertyMPOpenAPIBoosterConfig(params, logger);

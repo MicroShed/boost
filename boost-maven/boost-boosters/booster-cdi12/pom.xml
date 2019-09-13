@@ -5,7 +5,7 @@
 
     <groupId>org.microshed.boost.boosters</groupId>
     <artifactId>cdi</artifactId>
-    <version>1.2-0.2</version>
+    <version>1.2-0.2-SNAPSHOT</version>
 
     <properties>
         <cdi-api-version>1.2</cdi-api-version>
