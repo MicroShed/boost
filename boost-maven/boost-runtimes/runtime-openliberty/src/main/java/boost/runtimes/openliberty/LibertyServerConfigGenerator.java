@@ -43,7 +43,7 @@ import boost.common.BoostLoggerI;
 import boost.common.boosters.JDBCBoosterConfig;
 import boost.common.config.BoostProperties;
 import boost.common.utils.BoostUtil;
-import net.wasdev.wlp.common.plugins.util.OSUtil;
+import io.openliberty.tools.common.plugins.util.OSUtil;
 
 /**
  * Create a Liberty server.xml

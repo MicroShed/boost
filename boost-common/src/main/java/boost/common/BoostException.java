@@ -11,7 +11,7 @@
 
 package boost.common;
 
-import net.wasdev.wlp.common.plugins.util.PluginExecutionException;
+import io.openliberty.tools.common.plugins.util.PluginExecutionException;
 
 public class BoostException extends PluginExecutionException {
 
