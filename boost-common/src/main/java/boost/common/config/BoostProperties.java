@@ -39,7 +39,7 @@ public final class BoostProperties {
 
     public static final String AES_ENCRYPTION_KEY = "boost_aes_key";
 
-    public static final String INTERNAL_COMPILER_TARGET = "boost_internal_compiler_target";
+    public static final String INTERNAL_COMPILER_TARGET = "boost.internal.compiler.target";
 
     /**
      * Return a list of all properties that need to be encrypted
