@@ -38,17 +38,17 @@ public class Db2PropertiesIT implements BoostConstants {
 
     @Test
     public void checkPropertiesTest() throws Exception {
-    	String variablesXml = "target/liberty/wlp/usr/servers/defaultServer/configDropins/defaults/variables.xml";
+        String variablesXml = "target/liberty/wlp/usr/servers/defaultServer/configDropins/defaults/variables.xml";
 
-        assertEquals("Incorrect boost.db.user found in generated config.", DB_USER,
-        		LibertyConfigFileUtils.findVariableInXml(variablesXml, DATASOURCE_USER));
-        
-        assertEquals("Incorrect boost.db.databaseName found in generated config.", DB_NAME,
-        		LibertyConfigFileUtils.findVariableInXml(variablesXml, DATASOURCE_DATABASE_NAME));
-        
+        assertEquals("Incorrect boost_db_user found in generated config.", DB_USER,
+                LibertyConfigFileUtils.findVariableInXml(variablesXml, DATASOURCE_USER));
+
+        assertEquals("Incorrect boost_db_databaseName found in generated config.", DB_NAME,
+                LibertyConfigFileUtils.findVariableInXml(variablesXml, DATASOURCE_DATABASE_NAME));
+
         // AES hashed password changes so we're just going to look for the
         // aes flag.
-        assertTrue("Incorrect boost.db.password found in generated config",
-        		LibertyConfigFileUtils.findVariableInXml(variablesXml, DATASOURCE_PASSWORD).contains(AES_HASHED_PASSWORD_FLAG));
+        assertTrue("Incorrect boost_db_password found in generated config", LibertyConfigFileUtils
+                .findVariableInXml(variablesXml, DATASOURCE_PASSWORD).contains(AES_HASHED_PASSWORD_FLAG));
     }
 }

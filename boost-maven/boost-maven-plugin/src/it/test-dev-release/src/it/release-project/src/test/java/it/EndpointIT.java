@@ -27,7 +27,7 @@ public class EndpointIT {
         String runtime = System.getProperty("boostRuntime");
         org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
 
-        String port = System.getProperty("boost.http.port");
+        String port = System.getProperty("boost_http_port");
         URL = "http://localhost:" + port + "/population";
     }
 

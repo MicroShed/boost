@@ -162,7 +162,7 @@ public class TomeeServerConfigGenerator {
         StreamResult result = new StreamResult(serverXml);
         transformer.transform(source, result);
 
-        // Set boost.http.port in catalina.properties
+        // Set boost_http_port in catalina.properties
         addCatalinaProperty(BoostProperties.ENDPOINT_HTTP_PORT, httpPort);
     }
 
@@ -204,7 +204,7 @@ public class TomeeServerConfigGenerator {
         StreamResult result = new StreamResult(serverXml);
         transformer.transform(source, result);
 
-        // Set boost.http.port in catalina.properties
+        // Set boost_http_port in catalina.properties
         addCatalinaProperty(BoostProperties.ENDPOINT_HOST, hostname);
     }
 

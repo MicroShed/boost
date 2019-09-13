@@ -37,7 +37,7 @@ public class HealthTestUtil {
     public static final String INV_MAINTENANCE_TRUE = "io_openliberty_guides_inventory_inMaintenance\":true";
 
     static {
-        String port = System.getProperty("boost.http.port");
+        String port = System.getProperty("boost_http_port");
         baseUrl = "http://localhost:" + port;
     }
 

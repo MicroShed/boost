@@ -26,7 +26,7 @@ public class SystemEndpointIT {
     @Test
     public void testGetProperties() {
         // String port = System.getProperty("liberty.test.port");
-        String port = System.getProperty("boost.http.port");
+        String port = System.getProperty("boost_http_port");
         // String port = "9000";
         String url = "http://localhost:" + port + "/";
 

@@ -44,7 +44,7 @@ public class JwtIT {
         // until the failures are addressed.
         String runtime = System.getProperty("boostRuntime");
         org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
-        String port = System.getProperty("boost.http.port");
+        String port = System.getProperty("boost_http_port");
         baseUrl = "http://localhost:" + port;
 
         JwtVerifier jwtvf = new JwtVerifier();
