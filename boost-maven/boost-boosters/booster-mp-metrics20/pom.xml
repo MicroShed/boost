@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.microshed.boost.boosters</groupId>
-    <artifactId>mpMetrics</artifactId>
+    <artifactId>mp-metrics</artifactId>
     <version>2.0-0.2</version>
 
     <properties>
