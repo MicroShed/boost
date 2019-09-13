@@ -35,8 +35,12 @@ public class LibertyMPJWTBoosterConfig extends MPJWTBoosterConfig implements Lib
     }
 
     @Override
-    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-
+    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) throws BoostException {
+        try {
+            libertyServerConfigGenerator.addBootstrapProperties(boostMPProperties);
+        } catch (Exception e) {
+            throw new BoostException("Error when configuring mp-jwt " + e.toString());
+        }
     }
 
 }

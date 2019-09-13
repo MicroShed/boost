@@ -10,23 +10,34 @@
  *******************************************************************************/
 package boost.common.boosters;
 
+import static boost.common.config.ConfigConstants.DB2_DEFAULT_PORT_NUMBER;
+import static boost.common.config.ConfigConstants.DERBY_DB;
+import static boost.common.config.ConfigConstants.MYSQL_DEFAULT_PORT_NUMBER;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+import boost.common.config.BoostProperties;
 
 @BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mp-jwt")
 public class MPJWTBoosterConfig extends AbstractBoosterConfig {
 
+    protected Properties boostMPProperties;
+
     public MPJWTBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
         super(dependencies.get(getCoordinates(MPJWTBoosterConfig.class)));
+
+        boostMPProperties = BoostProperties.getConfiguredMPProperties(logger);
     }
 
     @Override
     public List<String> getDependencies() {
         return new ArrayList<String>();
     }
+
 }

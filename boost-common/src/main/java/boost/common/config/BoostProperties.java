@@ -53,13 +53,25 @@ public final class BoostProperties {
     }
 
     public static Properties getConfiguredBoostProperties(BoostLoggerI logger) {
+
+        return getConfiguredBoostPropertiesFiltered(logger, "boost.");
+
+    }
+
+    public static Properties getConfiguredMPProperties(BoostLoggerI logger) {
+
+        return getConfiguredBoostPropertiesFiltered(logger, "mp.jwt.");
+
+    }
+
+    public static Properties getConfiguredBoostPropertiesFiltered(BoostLoggerI logger, String filterString) {
         Properties systemProperties = System.getProperties();
 
         Properties boostProperties = new Properties();
 
         for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
 
-            if (entry.getKey().toString().startsWith("boost.")) {
+            if (entry.getKey().toString().startsWith(filterString)) {
 
                 // logger.debug("Found boost property: " +
                 // entry.getKey() + ":" + entry.getValue());
