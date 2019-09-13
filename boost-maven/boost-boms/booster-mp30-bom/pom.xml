@@ -1,0 +1,113 @@
+<!-- Copyright (c) 2019 IBM Corporation and others. All rights reserved. 
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+    and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: 
+    IBM Corporation - initial API and implementation -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.microshed.boost</groupId>
+        <artifactId>boost-maven-parent</artifactId>
+        <version>0.2</version>
+        <relativePath>../..</relativePath>
+    </parent>
+
+    <groupId>org.microshed.boost.boms</groupId>
+    <artifactId>mp30-bom</artifactId>
+    <packaging>pom</packaging>
+    <description>Booster MP30 Feature Bom</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.microshed.boost.boms</groupId>
+                <artifactId>boost-mp30-apis-bom</artifactId>
+                <version>0.2</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.microshed.boost.boms</groupId>
+                <artifactId>ee8-bom</artifactId>
+                <version>0.2</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>mp-health</artifactId>
+                <version>2.0-0.2</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>mp-config</artifactId>
+                <version>1.3-0.2</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>mp-openapi</artifactId>
+                <version>1.1-0.2</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>mp-rest-client</artifactId>
+                <version>1.3-0.2</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>jaxrs</artifactId>
+                <version>2.1-0.2</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>jsonp</artifactId>
+                <version>1.1-0.2</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>cdi</artifactId>
+                <version>2.0-0.2</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>mp-opentracing</artifactId>
+                <version>1.3-0.2</version>
+                <scope>provided</scope>
+            </dependency>    
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>jsonb</artifactId>
+                <version>1.0-0.2</version>
+                <scope>provided</scope>
+            </dependency>    
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>mp-metrics</artifactId>
+                <version>2.0-0.2</version>
+                <scope>provided</scope>
+            </dependency>        
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>fault-tolerance</artifactId>
+                <version>2.0-0.2</version>
+                <scope>provided</scope>
+            </dependency>        
+            <dependency>
+                <groupId>org.microshed.boost.boosters</groupId>
+                <artifactId>mp-jwt</artifactId>
+                <version>1.1-0.2</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

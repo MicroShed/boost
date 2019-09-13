@@ -60,7 +60,7 @@ public class LibertyRuntime implements RuntimeI {
 
     private String libertyMavenPluginGroupId = "io.openliberty.tools";
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
-    private String libertyMavenPluginVersion = "3.0-SNAPSHOT";
+    private String libertyMavenPluginVersion = "3.0";
 
     public LibertyRuntime() {
         this.boosterConfigs = null;
@@ -127,8 +127,8 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     /**
-     * Get all booster dependencies and invoke the maven-dependency-plugin to copy
-     * them to the Liberty server.
+     * Get all booster dependencies and invoke the maven-dependency-plugin to
+     * copy them to the Liberty server.
      * 
      * @throws MojoExecutionException
      *
@@ -196,7 +196,7 @@ public class LibertyRuntime implements RuntimeI {
     private void generateLibertyServerConfig(List<AbstractBoosterConfig> boosterConfigurators) throws Exception {
 
         List<String> warNames = getWarNames();
-        
+
         String encryptionKey = (String) boostProperties.get(BoostProperties.AES_ENCRYPTION_KEY);
         LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, encryptionKey,
                 BoostLogger.getSystemStreamLogger());
@@ -259,14 +259,13 @@ public class LibertyRuntime implements RuntimeI {
      * Invoke the liberty-maven-plugin to run the install-app goal.
      */
     private void installApp(String installAppPackagesVal) throws MojoExecutionException {
-        Element installAppPackages = element(name("installAppPackages"), installAppPackagesVal);
+        Element deployPackages = element(name("deployPackages"), installAppPackagesVal);
         Element serverNameElement = element(name("serverName"), serverName);
 
-        Xpp3Dom configuration = configuration(installAppPackages, serverNameElement, getRuntimeArtifactElement());
+        Xpp3Dom configuration = configuration(deployPackages, serverNameElement, getRuntimeArtifactElement());
         configuration.addChild(element(name("appsDirectory"), "apps").toDom());
-        configuration.addChild(element(name("looseApplication"), "true").toDom());
 
-        executeMojo(getPlugin(), goal("install-apps"), configuration, env);
+        executeMojo(getPlugin(), goal("deploy"), configuration, env);
     }
 
     private Element getRuntimeArtifactElement() {
@@ -276,8 +275,8 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     /**
-     * Invoke the liberty-maven-plugin to package the server into a runnable Liberty
-     * JAR
+     * Invoke the liberty-maven-plugin to package the server into a runnable
+     * Liberty JAR
      */
     private void createUberJar() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("package"),

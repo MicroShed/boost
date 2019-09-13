@@ -10,7 +10,7 @@
  *******************************************************************************/
 package boost.runtimes.openliberty.boosters;
 
-import static boost.common.config.ConfigConstants.MPHEALTH_10;
+import static boost.common.config.ConfigConstants.*;
 
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
@@ -27,9 +27,14 @@ public class LibertyMPHealthBoosterConfig extends MPHealthBoosterConfig implemen
 
     @Override
     public String getFeature() {
-        if (getVersion().equals(MP_HEALTH_VERSION_10)) {
+        String version = getVersion();
+
+        if (version.equals(MP_HEALTH_VERSION_10)) {
             return MPHEALTH_10;
+        } else if (version.equals(MP_HEALTH_VERSION_20)) {
+            return MPHEALTH_20;
         }
+
         return null;
     }
 

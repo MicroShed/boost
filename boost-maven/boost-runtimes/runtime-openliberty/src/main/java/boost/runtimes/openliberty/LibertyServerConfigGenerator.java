@@ -43,7 +43,7 @@ import boost.common.BoostLoggerI;
 import boost.common.boosters.JDBCBoosterConfig;
 import boost.common.config.BoostProperties;
 import boost.common.utils.BoostUtil;
-import net.wasdev.wlp.common.plugins.util.OSUtil;
+import io.openliberty.tools.common.plugins.util.OSUtil;
 
 /**
  * Create a Liberty server.xml
@@ -361,6 +361,15 @@ public class LibertyServerConfigGenerator {
             String attribute = property.replace(BoostProperties.DATASOURCE_PREFIX, "");
             propertiesElement.setAttribute(attribute, BoostUtil.makeVariable(property));
         }
+    }
+
+    public void addElementWithAttributes(String elementName, Map<String, String> attributes) {
+        Element element = serverXml.createElement(elementName);
+        for (String attributeName : attributes.keySet()) {
+            element.setAttribute(attributeName, attributes.get(attributeName));
+        }
+
+        serverRoot.appendChild(element);
     }
 
 }

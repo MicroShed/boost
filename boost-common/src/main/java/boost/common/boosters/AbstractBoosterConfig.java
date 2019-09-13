@@ -45,11 +45,13 @@ public abstract class AbstractBoosterConfig {
     public static final String JSONP_VERSION_11 = "1.1" + boostVersion + emptyString;
     public static final String JPA_VERSION_21 = "2.1" + boostVersion + emptyString;
     public static final String JPA_VERSION_22 = "2.2" + boostVersion + emptyString;
+    public static final String MP_HEALTH_VERSION_20 = "2.0" + boostVersion + emptyString;
     public static final String BEANVALIDATION_VERSION_20 = "2.0" + boostVersion + emptyString;
     public static final String MP_HEALTH_VERSION_10 = "1.0" + boostVersion + emptyString;
     public static final String MP_CONFIG_VERSION_13 = "1.3" + boostVersion + emptyString;
     public static final String MP_JWT_VERSION_11 = "1.1" + boostVersion + emptyString;
     public static final String MP_METRICS_VERSION_11 = "1.1" + boostVersion + emptyString;
+    public static final String MP_METRICS_VERSION_20 = "2.0" + boostVersion + emptyString;
     public static final String MP_FAULTTOLERANCE_VERSION_11 = "1.1" + boostVersion + emptyString;
     public static final String MP_FAULTTOLERANCE_VERSION_20 = "2.0" + boostVersion + emptyString;
     public static final String MP_OPENAPI_VERSION_10 = "1.0" + boostVersion + emptyString;
@@ -59,6 +61,7 @@ public abstract class AbstractBoosterConfig {
     public static final String MP_OPENTRACING_VERSION_13 = "1.3" + boostVersion + emptyString;
     public static final String MP_RESTCLIENT_VERSION_11 = "1.1" + boostVersion + emptyString;
     public static final String MP_RESTCLIENT_VERSION_12 = "1.2" + boostVersion + emptyString;
+    public static final String MP_RESTCLIENT_VERSION_13 = "1.3" + boostVersion + emptyString;
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)

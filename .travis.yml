@@ -22,20 +22,11 @@ before_install:
      - echo "Deleting old .m2 artifacts..."
      - rm -rf $HOME/.m2/repository/net/wasdev
      - rm -rf $HOME/.m2/repository/io/openliberty
-     - echo 'Installing ci.common lib ....'
-     - git clone https://github.com/openliberty/ci.common.git ./ci.common
-     - cd ./ci.common
-     - mvn clean install
-     - cd ..
      - echo 'Installing ci.maven lib ....'
-     - git clone https://github.com/openliberty/ci.maven.git ./ci.maven
+     - git clone https://github.com/OpenLiberty/ci.maven.git ./ci.maven
      - cd ./ci.maven
+     - git checkout liberty-maven-3.0
      - mvn clean install
-     - cd ..
-     - echo "Installing ci.gradle lib ..."
-     - git clone https://github.com/OpenLiberty/ci.gradle.git ./ci.gradle
-     - cd ./ci.gradle
-     - ./gradlew clean install
      - cd ..
      - docker run -d -p 5000:5000 --restart=always --name registry registry:2
 install: true
