@@ -112,7 +112,7 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
         Properties datasourceProperties = new Properties();
 
-        // Find and add all "boost.db." properties.
+        // Find and add all "boost_db_" properties.
         for (String key : boostConfigProperties.stringPropertyNames()) {
             if (key.startsWith(BoostProperties.DATASOURCE_PREFIX)) {
                 String value = (String) boostConfigProperties.get(key);

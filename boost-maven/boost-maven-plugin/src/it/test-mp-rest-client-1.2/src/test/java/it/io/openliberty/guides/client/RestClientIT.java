@@ -38,7 +38,7 @@ public class RestClientIT {
     @BeforeClass
     public static void oneTimeSetup() {
         // port = System.getProperty("liberty.test.port");
-        port = System.getProperty("boost.http.port");
+        port = System.getProperty("boost_http_port");
         // port = "9000";
     }
 

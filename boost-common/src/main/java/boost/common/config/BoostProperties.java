@@ -19,22 +19,25 @@ import boost.common.BoostLoggerI;
 
 public final class BoostProperties {
 
+    // Boost specific
+    public static final String BOOST_PROP_PREFIX = "boost_";
+
     // HTTP Endpoint properties
-    public static final String ENDPOINT_HOST = "boost.http.host";
-    public static final String ENDPOINT_HTTP_PORT = "boost.http.port";
-    public static final String ENDPOINT_HTTPS_PORT = "boost.http.securePort";
+    public static final String ENDPOINT_HOST = "boost_http_host";
+    public static final String ENDPOINT_HTTP_PORT = "boost_http_port";
+    public static final String ENDPOINT_HTTPS_PORT = "boost_http_securePort";
 
     // Datasource default properties
-    public static final String DATASOURCE_PREFIX = "boost.db.";
-    public static final String DATASOURCE_DATABASE_NAME = "boost.db.databaseName";
-    public static final String DATASOURCE_SERVER_NAME = "boost.db.serverName";
-    public static final String DATASOURCE_PORT_NUMBER = "boost.db.portNumber";
-    public static final String DATASOURCE_USER = "boost.db.user";
-    public static final String DATASOURCE_PASSWORD = "boost.db.password";
-    public static final String DATASOURCE_CREATE_DATABASE = "boost.db.createDatabase";
-    public static final String DATASOURCE_URL = "boost.db.url";
+    public static final String DATASOURCE_PREFIX = "boost_db_";
+    public static final String DATASOURCE_DATABASE_NAME = "boost_db_databaseName";
+    public static final String DATASOURCE_SERVER_NAME = "boost_db_serverName";
+    public static final String DATASOURCE_PORT_NUMBER = "boost_db_portNumber";
+    public static final String DATASOURCE_USER = "boost_db_user";
+    public static final String DATASOURCE_PASSWORD = "boost_db_password";
+    public static final String DATASOURCE_CREATE_DATABASE = "boost_db_createDatabase";
+    public static final String DATASOURCE_URL = "boost_db_url";
 
-    public static final String AES_ENCRYPTION_KEY = "boost.aes.key";
+    public static final String AES_ENCRYPTION_KEY = "boost_aes_key";
 
     public static final String INTERNAL_COMPILER_TARGET = "boost.internal.compiler.target";
 
@@ -57,11 +60,11 @@ public final class BoostProperties {
 
         Properties boostProperties = new Properties();
 
-        // Add project properties first to allow them to be overriden by 
+        // Add project properties first to allow them to be overriden by
         // system properties (set at command line)
         for (Map.Entry<Object, Object> entry : projectProperties.entrySet()) {
 
-            if (entry.getKey().toString().startsWith("boost.")) {
+            if (entry.getKey().toString().startsWith(BOOST_PROP_PREFIX)) {
 
                 // logger.debug("Found boost property: " +
                 // entry.getKey() + ":" + entry.getValue());
@@ -69,10 +72,10 @@ public final class BoostProperties {
                 boostProperties.put(entry.getKey(), entry.getValue());
             }
         }
-        
+
         for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
 
-            if (entry.getKey().toString().startsWith("boost.")) {
+            if (entry.getKey().toString().startsWith(BOOST_PROP_PREFIX)) {
 
                 // logger.debug("Found boost property: " +
                 // entry.getKey() + ":" + entry.getValue());

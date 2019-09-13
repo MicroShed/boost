@@ -127,8 +127,8 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     /**
-     * Get all booster dependencies and invoke the maven-dependency-plugin to
-     * copy them to the Liberty server.
+     * Get all booster dependencies and invoke the maven-dependency-plugin to copy
+     * them to the Liberty server.
      * 
      * @throws MojoExecutionException
      *
@@ -259,6 +259,7 @@ public class LibertyRuntime implements RuntimeI {
      * Invoke the liberty-maven-plugin to run the install-app goal.
      */
     private void installApp(String installAppPackagesVal) throws MojoExecutionException {
+
         Element deployPackages = element(name("deployPackages"), installAppPackagesVal);
         Element serverNameElement = element(name("serverName"), serverName);
 
@@ -275,16 +276,14 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     /**
-     * Invoke the liberty-maven-plugin to package the server into a runnable
-     * Liberty JAR
+     * Invoke the liberty-maven-plugin to package the server into a runnable Liberty
+     * JAR
      */
     private void createUberJar() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("package"),
-                    configuration(element(name("isInstall"), "false"),
-                        element(name("include"), "minify"),
+                configuration(element(name("isInstall"), "false"), element(name("include"), "minify"),
                         element(name("outputDirectory"), "target/liberty-alt-output-dir"),
-                        element(name("packageType"), "jar"),
-                        element(name("serverName"), serverName)),
+                        element(name("packageType"), "jar"), element(name("serverName"), serverName)),
                 env);
     }
 

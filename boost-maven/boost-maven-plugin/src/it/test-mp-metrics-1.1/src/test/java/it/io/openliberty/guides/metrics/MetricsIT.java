@@ -28,7 +28,7 @@ public class MetricsIT {
 
     @BeforeClass
     public static void oneTimeSetup() {
-        httpPort = System.getProperty("boost.http.port");
+        httpPort = System.getProperty("boost_http_port");
         baseHttpUrl = "http://localhost:" + httpPort + "/";
     }
 
