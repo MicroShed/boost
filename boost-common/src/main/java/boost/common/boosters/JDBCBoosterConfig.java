@@ -122,11 +122,15 @@ public class JDBCBoosterConfig extends AbstractBoosterConfig {
 
         // Verify correct property configuration
         if (dependency.contains(DERBY_GROUP_ID)) {
-            if (!datasourceProperties.containsKey(BoostProperties.DATASOURCE_DATABASE_NAME)) {
+            // If there's no DB name and there's no server name then we can create an embedded DB at a default location
+            if ((!datasourceProperties.containsKey(BoostProperties.DATASOURCE_DATABASE_NAME)) &&
+                (!datasourceProperties.containsKey(BoostProperties.DATASOURCE_SERVER_NAME))) {
                 datasourceProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, DERBY_DB);
-            }
-            if (!datasourceProperties.containsKey(BoostProperties.DATASOURCE_CREATE_DATABASE)) {
-                datasourceProperties.put(BoostProperties.DATASOURCE_CREATE_DATABASE, "create");
+                // Though we want to auto-create our default location DB, I guess if someone already specified a property will honor it
+                // even though not sure how useful that would be.
+                if (!datasourceProperties.containsKey(BoostProperties.DATASOURCE_CREATE_DATABASE)) {
+                    datasourceProperties.put(BoostProperties.DATASOURCE_CREATE_DATABASE, "create");
+                }
             }
         } else {
             // Check connection properties
