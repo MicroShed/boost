@@ -18,7 +18,7 @@ import boost.common.BoostLoggerI;
 import boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 import boost.common.config.BoosterConfigParams;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpOpenTracing")
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mp-opentracing")
 public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
 
     public MPOpenTracingBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {

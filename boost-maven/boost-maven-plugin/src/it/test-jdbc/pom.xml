@@ -51,11 +51,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.microshed.boost.boosters</groupId>
-			<artifactId>mpHealth</artifactId>
+			<artifactId>mp-health</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.microshed.boost.boosters</groupId>
-			<artifactId>mpRestClient</artifactId>
+			<artifactId>mp-rest-client</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.microshed.boost.boosters</groupId>

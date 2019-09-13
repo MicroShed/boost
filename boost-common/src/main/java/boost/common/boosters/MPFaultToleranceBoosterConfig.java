@@ -18,7 +18,7 @@ import boost.common.BoostLoggerI;
 import boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 import boost.common.config.BoosterConfigParams;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpFaultTolerance")
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mp-fault-tolerance")
 public class MPFaultToleranceBoosterConfig extends AbstractBoosterConfig {
 
     public MPFaultToleranceBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {

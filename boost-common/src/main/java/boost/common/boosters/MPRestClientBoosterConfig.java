@@ -18,13 +18,13 @@ import boost.common.BoostLoggerI;
 import boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 import boost.common.config.BoosterConfigParams;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpRestClient")
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mp-rest-client")
 public class MPRestClientBoosterConfig extends AbstractBoosterConfig {
 
     public MPRestClientBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
         super(params.getProjectDependencies().get(getCoordinates(MPRestClientBoosterConfig.class)));
     }
-    
+
     @Override
     public List<String> getDependencies() {
         return new ArrayList<String>();

@@ -18,7 +18,7 @@ import boost.common.BoostLoggerI;
 import boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
 import boost.common.config.BoosterConfigParams;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpOpenAPI")
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mp-openapi")
 public class MPOpenAPIBoosterConfig extends AbstractBoosterConfig {
 
     public MPOpenAPIBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
