@@ -259,14 +259,13 @@ public class LibertyRuntime implements RuntimeI {
      * Invoke the liberty-maven-plugin to run the install-app goal.
      */
     private void installApp(String installAppPackagesVal) throws MojoExecutionException {
-        Element installAppPackages = element(name("installAppPackages"), installAppPackagesVal);
+        Element deployPackages = element(name("deployPackages"), installAppPackagesVal);
         Element serverNameElement = element(name("serverName"), serverName);
 
-        Xpp3Dom configuration = configuration(installAppPackages, serverNameElement, getRuntimeArtifactElement());
+        Xpp3Dom configuration = configuration(deployPackages, serverNameElement, getRuntimeArtifactElement());
         configuration.addChild(element(name("appsDirectory"), "apps").toDom());
-        configuration.addChild(element(name("looseApplication"), "true").toDom());
 
-        executeMojo(getPlugin(), goal("install-apps"), configuration, env);
+        executeMojo(getPlugin(), goal("deploy"), configuration, env);
     }
 
     private Element getRuntimeArtifactElement() {
