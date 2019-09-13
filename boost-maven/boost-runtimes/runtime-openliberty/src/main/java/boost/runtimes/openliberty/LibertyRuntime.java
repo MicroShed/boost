@@ -60,7 +60,7 @@ public class LibertyRuntime implements RuntimeI {
 
     private String libertyMavenPluginGroupId = "io.openliberty.tools";
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
-    private String libertyMavenPluginVersion = "3.0-SNAPSHOT";
+    private String libertyMavenPluginVersion = "3.0";
 
     public LibertyRuntime() {
         this.boosterConfigs = null;
