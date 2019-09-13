@@ -34,7 +34,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>boost.boosters</groupId>
+                <groupId>org.microshed.boost.boosters</groupId>
                 <artifactId>mp22-bom</artifactId>
                 <version>@pom.version@</version>
                 <type>pom</type>
@@ -46,28 +46,28 @@
     <dependencies>
         <!-- Boosters -->
         <dependency>
-            <groupId>boost.boosters</groupId>
+            <groupId>org.microshed.boost.boosters</groupId>
             <artifactId>jaxrs</artifactId>
         </dependency>
         <dependency>
-            <groupId>boost.boosters</groupId>
+            <groupId>org.microshed.boost.boosters</groupId>
             <artifactId>jsonp</artifactId>
         </dependency>
         <dependency>
-            <groupId>boost.boosters</groupId>
+            <groupId>org.microshed.boost.boosters</groupId>
             <artifactId>cdi</artifactId>
         </dependency>
         <dependency>
-            <groupId>boost.boosters</groupId>
-            <artifactId>mpConfig</artifactId>
+            <groupId>org.microshed.boost.boosters</groupId>
+            <artifactId>mp-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>boost.boosters</groupId>
-            <artifactId>mpRestClient</artifactId>
+            <groupId>org.microshed.boost.boosters</groupId>
+            <artifactId>mp-rest-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>boost.boosters</groupId>
-            <artifactId>mpMetrics</artifactId>
+            <groupId>org.microshed.boost.boosters</groupId>
+            <artifactId>mp-metrics</artifactId>
         </dependency>
 
         <!-- For tests -->
@@ -133,7 +133,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>boost</groupId>
+                <groupId>org.microshed.boost</groupId>
                 <artifactId>boost-maven-plugin</artifactId>
                 <version>@pom.version@</version>
                 <executions>
@@ -185,7 +185,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>boost.runtimes</groupId>
+                    <groupId>org.microshed.boost.runtimes</groupId>
                     <artifactId>openliberty</artifactId>
                 </dependency>
             </dependencies>
@@ -200,7 +200,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>boost.runtimes</groupId>
+                    <groupId>org.microshed.boost.runtimes</groupId>
                     <artifactId>wlp</artifactId>
                 </dependency>
             </dependencies>
@@ -219,7 +219,7 @@
             </properties>
             <dependencies>
                 <dependency>
-                    <groupId>boost.runtimes</groupId>
+                    <groupId>org.microshed.boost.runtimes</groupId>
                     <artifactId>tomee</artifactId>
                 </dependency>
             </dependencies>
