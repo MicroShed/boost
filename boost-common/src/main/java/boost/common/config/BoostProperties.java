@@ -52,26 +52,27 @@ public final class BoostProperties {
         return propertiesToEncrypt;
     }
 
-    public static Properties getConfiguredBoostProperties(BoostLoggerI logger) {
-
-        return getConfiguredBoostPropertiesFiltered(logger, "boost.");
-
-    }
-
-    public static Properties getConfiguredMPProperties(BoostLoggerI logger) {
-
-        return getConfiguredBoostPropertiesFiltered(logger, "mp.jwt.");
-
-    }
-
-    public static Properties getConfiguredBoostPropertiesFiltered(BoostLoggerI logger, String filterString) {
+    public static Properties getConfiguredBoostProperties(Properties projectProperties, BoostLoggerI logger) {
         Properties systemProperties = System.getProperties();
 
         Properties boostProperties = new Properties();
 
+        // Add project properties first to allow them to be overriden by
+        // system properties (set at command line)
+        for (Map.Entry<Object, Object> entry : projectProperties.entrySet()) {
+
+            if (entry.getKey().toString().startsWith("boost.") || entry.getKey().toString().startsWith("mp.jwt.")) {
+
+                // logger.debug("Found boost property: " +
+                // entry.getKey() + ":" + entry.getValue());
+
+                boostProperties.put(entry.getKey(), entry.getValue());
+            }
+        }
+
         for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
 
-            if (entry.getKey().toString().startsWith(filterString)) {
+            if (entry.getKey().toString().startsWith("boost.")) {
 
                 // logger.debug("Found boost property: " +
                 // entry.getKey() + ":" + entry.getValue());

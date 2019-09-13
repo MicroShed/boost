@@ -4,7 +4,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>boost</groupId>
+	<groupId>org.microshed.boost</groupId>
 	<artifactId>test-jpa-2.1</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
@@ -14,13 +14,12 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<testServerHttpPort>9080</testServerHttpPort>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>boost.boosters</groupId>
+				<groupId>org.microshed.boost.boms</groupId>
 				<artifactId>ee7-bom</artifactId>
 				<version>@pom.version@</version>
 				<scope>import</scope>
@@ -31,11 +30,11 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>boost.boosters</groupId>
+			<groupId>org.microshed.boost.boosters</groupId>
 			<artifactId>jpa</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>boost.boosters</groupId>
+			<groupId>org.microshed.boost.boosters</groupId>
 			<artifactId>jaxrs</artifactId>
 		</dependency>
 		<dependency>
@@ -75,7 +74,7 @@
 		<plugins>
 
 			<plugin>
-				<groupId>boost</groupId>
+				<groupId>org.microshed.boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
 				<version>@pom.version@</version>
 				<executions>
@@ -128,7 +127,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>openliberty</artifactId>
 				</dependency>
 			</dependencies>
@@ -143,7 +142,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>wlp</artifactId>
 				</dependency>
 			</dependencies>
@@ -158,7 +157,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>tomee</artifactId>
 				</dependency>
 			</dependencies>

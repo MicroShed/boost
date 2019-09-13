@@ -37,6 +37,7 @@ import boost.maven.utils.BoostLogger;
 
 public class TomeeRuntime implements RuntimeI {
     private final List<AbstractBoosterConfig> boosterConfigs;
+    private final Properties boostProperties;
     private final ExecutionEnvironment env;
 
     private final String tomeeMavenPluginGroupId = "org.apache.tomee.maven";
@@ -48,6 +49,7 @@ public class TomeeRuntime implements RuntimeI {
 
     public TomeeRuntime() {
         this.boosterConfigs = null;
+        this.boostProperties = null;
         this.env = null;
 
         this.installDir = null;
@@ -58,6 +60,7 @@ public class TomeeRuntime implements RuntimeI {
 
     public TomeeRuntime(RuntimeParams params) {
         this.boosterConfigs = params.getBoosterConfigs();
+        this.boostProperties = params.getBoostProperties();
         this.env = params.getEnv();
 
         this.installDir = params.getProjectBuildDir() + "/apache-tomee/";
@@ -94,16 +97,14 @@ public class TomeeRuntime implements RuntimeI {
     private void configureTomeeServer(List<AbstractBoosterConfig> boosterConfigurators) throws Exception {
         try {
             TomeeServerConfigGenerator tomeeConfig = new TomeeServerConfigGenerator(configDir,
-                    BoostLogger.getInstance());
+                    BoostLogger.getSystemStreamLogger());
             tomeeConfig.addJarsDirToSharedLoader();
 
             // Configure HTTP endpoint
-            Properties boostConfigProperties = BoostProperties.getConfiguredBoostProperties(BoostLogger.getInstance());
-
-            String hostname = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "localhost");
+            String hostname = (String) boostProperties.getOrDefault(BoostProperties.ENDPOINT_HOST, "localhost");
             tomeeConfig.addHostname(hostname);
 
-            String httpPort = (String) boostConfigProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "8080");
+            String httpPort = (String) boostProperties.getOrDefault(BoostProperties.ENDPOINT_HTTP_PORT, "8080");
             tomeeConfig.addHttpPort(httpPort);
 
             // Loop through configuration objects and add config
@@ -124,7 +125,7 @@ public class TomeeRuntime implements RuntimeI {
      */
     private void copyTomeeJarDependencies(List<AbstractBoosterConfig> boosterConfigs) throws MojoExecutionException {
         List<String> tomeeDependencyJarsToCopy = BoosterConfigurator.getDependenciesToCopy(boosterConfigs,
-                BoostLogger.getInstance());
+                BoostLogger.getSystemStreamLogger());
         for (String dep : tomeeDependencyJarsToCopy) {
             String[] dependencyInfo = dep.split(":");
 

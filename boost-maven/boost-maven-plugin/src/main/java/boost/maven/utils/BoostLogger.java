@@ -10,19 +10,26 @@
  *******************************************************************************/
 package boost.maven.utils;
 
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.codehaus.mojo.pluginsupport.MojoSupport;
 
 import boost.common.BoostLoggerI;
 
-public class BoostLogger extends MojoSupport implements BoostLoggerI {
+public class BoostLogger implements BoostLoggerI {
 
-    private static BoostLogger logger = null;
+    private org.apache.maven.plugin.logging.Log log;
 
-    public static BoostLogger getInstance() {
-        if (logger == null) {
-            logger = new BoostLogger();
-        }
-        return logger;
+    public org.apache.maven.plugin.logging.Log getLog() {
+        return log;
+    }
+
+    public BoostLogger(org.apache.maven.plugin.logging.Log log) {
+        this.log = log;
+    }
+
+    public static BoostLogger getSystemStreamLogger() {
+        return new BoostLogger(new SystemStreamLog());
     }
 
     @Override

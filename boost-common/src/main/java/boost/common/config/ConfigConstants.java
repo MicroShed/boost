@@ -53,6 +53,7 @@ public final class ConfigConstants {
     public static final String FILESET = "fileset";
     public static final String PROPERTIES_DERBY_EMBEDDED = "properties.derby.embedded";
     public static final String PROPERTIES_DB2_JCC = "properties.db2.jcc";
+    public static final String PROPERTIES_POSTGRESQL = "properties.postgresql";
     public static final String PROPERTIES = "properties";
     public static final String CONTAINER_AUTH_DATA_REF = "containerAuthDataRef";
     public static final String URL = "url";
@@ -63,11 +64,6 @@ public final class ConfigConstants {
     public static final String JDBC_LIBRARY_1 = "Library1";
     public static final String DERBY_DB = "DerbyDB";
     public static final String DATASOURCE_AUTH_DATA = "datasourceAuth";
-    public static final String DERBY_JAR = "derby*.jar";
-    public static final String DB2_JAR = "db2jcc*.jar";
-    public static final String MYSQL_JAR = "mysql*.jar";
-    public static final String DB2_DEFAULT_PORT_NUMBER = "50000";
-    public static final String MYSQL_DEFAULT_PORT_NUMBER = "3306";
 
     // Authentication configuration element/attribute names
     public static final String AUTH_DATA = "authData";
@@ -104,12 +100,15 @@ public final class ConfigConstants {
     public static final String CDI_20 = "cdi-2.0";
     public static final String BEANVALIDATION_20 = "beanValidation-2.0";
     public static final String MPHEALTH_10 = "mpHealth-1.0";
+    public static final String MPHEALTH_20 = "mpHealth-2.0";
     public static final String MPJWT_11 = "mpjwt-1.1";
     public static final String MPOPENAPI_10 = "mpOpenAPI-1.0";
     public static final String MPOPENAPI_11 = "mpOpenAPI-1.1";
     public static final String MPRESTCLIENT_11 = "mpRestClient-1.1";
     public static final String MPRESTCLIENT_12 = "mpRestClient-1.2";
+    public static final String MPRESTCLIENT_13 = "mpRestClient-1.3";
     public static final String MPMETRICS_11 = "mpMetrics-1.1";
+    public static final String MPMETRICS_20 = "mpMetrics-2.0";
     public static final String MPFAULTTOLERANCE_11 = "mpFaultTolerance-1.1";
     public static final String MPFAULTTOLERANCE_20 = "mpFaultTolerance-2.0";
     public static final String JSONB_10 = "jsonb-1.0";

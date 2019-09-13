@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>boost</groupId>
+        <groupId>org.microshed.boost</groupId>
         <artifactId>boost-maven-parent</artifactId>
-        <version>0.1.3-SNAPSHOT</version>
+        <version>0.2</version>
     </parent>
 
     <artifactId>boost-runtimes</artifactId>

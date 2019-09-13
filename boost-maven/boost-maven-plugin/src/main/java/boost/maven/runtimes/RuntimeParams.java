@@ -11,6 +11,7 @@
 package boost.maven.runtimes;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.logging.Log;
@@ -26,6 +27,7 @@ import boost.common.boosters.AbstractBoosterConfig;
 public class RuntimeParams {
 
     List<AbstractBoosterConfig> boosterConfigs;
+    Properties boostProperties;
     ExecutionEnvironment env;
     MavenProject project;
     Log log;
@@ -35,11 +37,12 @@ public class RuntimeParams {
     Plugin mavenDepPlugin;
     String projectBuildDir;
 
-    public RuntimeParams(List<AbstractBoosterConfig> boosterConfigs, ExecutionEnvironment env, MavenProject project,
-            Log log, RepositorySystem repoSystem, RepositorySystemSession repoSession,
-            List<RemoteRepository> remoteRepos, Plugin mavenDepPlugin) {
+    public RuntimeParams(List<AbstractBoosterConfig> boosterConfigs, Properties boostProperties,
+            ExecutionEnvironment env, MavenProject project, Log log, RepositorySystem repoSystem,
+            RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, Plugin mavenDepPlugin) {
         this.log = log;
         this.boosterConfigs = boosterConfigs;
+        this.boostProperties = boostProperties;
         this.env = env;
         this.project = project;
         this.projectBuildDir = project.getBuild().getDirectory();
@@ -55,6 +58,10 @@ public class RuntimeParams {
 
     public List<AbstractBoosterConfig> getBoosterConfigs() {
         return this.boosterConfigs;
+    }
+
+    public Properties getBoostProperties() {
+        return this.boostProperties;
     }
 
     public ExecutionEnvironment getEnv() {

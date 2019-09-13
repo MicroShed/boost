@@ -17,13 +17,14 @@ import java.util.Map;
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.MPJWTBoosterConfig;
+import boost.common.config.BoosterConfigParams;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyMPJWTBoosterConfig extends MPJWTBoosterConfig implements LibertyBoosterI {
 
-    public LibertyMPJWTBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies, logger);
+    public LibertyMPJWTBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params, logger);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class LibertyMPJWTBoosterConfig extends MPJWTBoosterConfig implements Lib
     @Override
     public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) throws BoostException {
         try {
-            libertyServerConfigGenerator.addBootstrapProperties(boostMPProperties);
+            libertyServerConfigGenerator.addConfigVariables(boostMPProperties);
         } catch (Exception e) {
             throw new BoostException("Error when configuring mp-jwt " + e.toString());
         }

@@ -14,6 +14,9 @@ package io.openliberty.boost.runtimes.boosters;
 import static boost.common.config.ConfigConstants.*;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Map;
+import java.util.Properties;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
@@ -21,6 +24,7 @@ import org.junit.rules.TemporaryFolder;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 
 import boost.common.BoostLoggerI;
+import boost.common.config.BoosterConfigParams;
 import io.openliberty.boost.runtimes.utils.BoosterUtil;
 import io.openliberty.boost.runtimes.utils.CommonLogger;
 import io.openliberty.boost.runtimes.utils.ConfigFileUtils;
@@ -38,19 +42,20 @@ public class MPFaultToleranceBoosterTest {
 
     /**
      * Test that the mpFaultTolerance-1.1 feature is added to server.xml when the
-     * MPFaultTolerance booster version is set to 1.1-1.0-M1-SNAPSHOT
+     * MPFaultTolerance booster version is set to 1.1-0.2
      * 
      */
     @Test
     public void testMPFaultToleranceBoosterFeature11() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(
-                BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class,
-                        "1.1-1.0-M1-SNAPSHOT"),
-                logger);
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, "1.1-0.2");
+
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+        LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(params, logger);
 
         serverConfig.addFeature(libMPFTConfig.getFeature());
         serverConfig.writeToServer();
@@ -65,19 +70,20 @@ public class MPFaultToleranceBoosterTest {
 
     /**
      * Test that the mpFaultTolerance-2.0 feature is added to server.xml when the
-     * MPFaultTolerance booster version is set to 1.2-1.0-M1-SNAPSHOT
+     * MPFaultTolerance booster version is set to 1.2-0.2
      * 
      */
     @Test
     public void testMPFaultToleranceBoosterFeature20() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(
-                BoosterUtil.createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class,
-                        "2.0-1.0-M1-SNAPSHOT"),
-                logger);
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, "2.0-0.2");
+
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+        LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(params, logger);
 
         serverConfig.addFeature(libMPFTConfig.getFeature());
         serverConfig.writeToServer();

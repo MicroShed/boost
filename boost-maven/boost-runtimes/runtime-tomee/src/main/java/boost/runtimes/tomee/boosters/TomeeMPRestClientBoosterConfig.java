@@ -11,16 +11,16 @@
 package boost.runtimes.tomee.boosters;
 
 import java.util.List;
-import java.util.Map;
 
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.MPRestClientBoosterConfig;
+import boost.common.config.BoosterConfigParams;
 
 public class TomeeMPRestClientBoosterConfig extends MPRestClientBoosterConfig {
 
-    public TomeeMPRestClientBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies, logger);
+    public TomeeMPRestClientBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params, logger);
     }
 
     @Override
@@ -31,4 +31,3 @@ public class TomeeMPRestClientBoosterConfig extends MPRestClientBoosterConfig {
         return deps;
     }
 }
-

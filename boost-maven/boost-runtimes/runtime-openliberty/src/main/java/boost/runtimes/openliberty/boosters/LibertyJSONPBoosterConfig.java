@@ -12,26 +12,24 @@ package boost.runtimes.openliberty.boosters;
 
 import static boost.common.config.ConfigConstants.*;
 
-import java.util.Map;
-
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.JSONPBoosterConfig;
+import boost.common.config.BoosterConfigParams;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyJSONPBoosterConfig extends JSONPBoosterConfig implements LibertyBoosterI {
 
-    public LibertyJSONPBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies, logger);
+    public LibertyJSONPBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params, logger);
     }
 
     @Override
     public String getFeature() {
         if (getVersion().equals(JSONP_VERSION_10)) {
             return JSONP_10;
-        }
-        else if (getVersion().equals(JSONP_VERSION_11)) {
+        } else if (getVersion().equals(JSONP_VERSION_11)) {
             return JSONP_11;
         }
         return null;

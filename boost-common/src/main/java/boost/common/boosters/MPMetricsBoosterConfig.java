@@ -12,17 +12,17 @@ package boost.common.boosters;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.AbstractBoosterConfig.BoosterCoordinates;
+import boost.common.config.BoosterConfigParams;
 
-@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mpMetrics")
+@BoosterCoordinates(AbstractBoosterConfig.BOOSTERS_GROUP_ID + ":mp-metrics")
 public class MPMetricsBoosterConfig extends AbstractBoosterConfig {
 
-    public MPMetricsBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies.get(getCoordinates(MPMetricsBoosterConfig.class)));
+    public MPMetricsBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params.getProjectDependencies().get(getCoordinates(MPMetricsBoosterConfig.class)));
     }
 
     @Override

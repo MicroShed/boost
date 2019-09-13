@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class Db2PasswordAesIT {
+import utils.BoostConstants;
+import utils.LibertyConfigFileUtils;
+
+public class Db2PasswordAesIT implements BoostConstants {
 
     private final String DB_NAME = "myCustomDB";
     private final String DB_USER = "user";
@@ -28,39 +31,22 @@ public class Db2PasswordAesIT {
 
     @BeforeClass
     public static void init() {
-        // Liberty specific checking of bootstrap.properties file
         // TODO: this should eventually be moved to a unit test
         String runtime = System.getProperty("boostRuntime");
         org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
     }
 
     @Test
-    public void checkPropertiesTest() {
+    public void checkPropertiesTest() throws Exception {
+        String variablesXml = "target/liberty/wlp/usr/servers/defaultServer/configDropins/defaults/variables.xml";
 
-        Properties bootstrapProperties = new Properties();
-        InputStream input = null;
+        assertEquals("Incorrect boost.db.user found in server config.", DB_USER,
+                LibertyConfigFileUtils.findVariableInXml(variablesXml, DATASOURCE_USER));
 
-        try {
-            input = new FileInputStream("target/liberty/wlp/usr/servers/BoostServer/bootstrap.properties");
+        assertEquals("Incorrect boost.db.password found in server config.", ENCODED_DB_PASS,
+                LibertyConfigFileUtils.findVariableInXml(variablesXml, DATASOURCE_PASSWORD));
 
-            bootstrapProperties.load(input);
-
-            assertEquals("Incorrect boost.db.user found in bootstrap.properties.", DB_USER,
-                    bootstrapProperties.getProperty("boost.db.user"));
-            assertEquals("Incorrect boost.db.password found in bootstrap.properties.", ENCODED_DB_PASS,
-                    bootstrapProperties.getProperty("boost.db.password"));
-            assertEquals("Incorrect boost.db.databaseName found in bootstrap.properties.", DB_NAME,
-                    bootstrapProperties.getProperty("boost.db.databaseName"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        assertEquals("Incorrect boost.db.databaseName found in server config.", DB_NAME,
+                LibertyConfigFileUtils.findVariableInXml(variablesXml, DATASOURCE_DATABASE_NAME));
     }
 }

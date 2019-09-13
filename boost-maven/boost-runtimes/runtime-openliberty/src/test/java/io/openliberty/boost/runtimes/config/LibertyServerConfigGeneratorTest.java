@@ -32,6 +32,7 @@ import org.w3c.dom.Element;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 
 import boost.common.config.BoostProperties;
+import boost.common.config.BoosterConfigParams;
 import boost.common.utils.BoostUtil;
 import io.openliberty.boost.runtimes.utils.CommonLogger;
 import io.openliberty.boost.runtimes.utils.ConfigFileUtils;
@@ -44,7 +45,6 @@ import boost.runtimes.openliberty.boosters.LibertyJDBCBoosterConfig;
 import java.util.*;
 import io.openliberty.boost.runtimes.utils.BoosterUtil;
 
-
 public class LibertyServerConfigGeneratorTest {
 
     @Rule
@@ -53,6 +53,7 @@ public class LibertyServerConfigGeneratorTest {
     BoostLoggerI logger = CommonLogger.getInstance();
 
     private final String MYSQL_URL = "jdbc:mysql://localhost:3306/testdb";
+    private final String POSTGRESQL_URL = "jdbc:postgresql://localhost:5432/testdb";
     private final String DB2_URL = "jdbc:db2://localhost:50000/testdb";
 
     /**
@@ -66,7 +67,7 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddSpringFeature() throws ParserConfigurationException, TransformerException, IOException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
         serverConfig.addFeature(SPRING_BOOT_15);
         serverConfig.writeToServer();
 
@@ -80,8 +81,8 @@ public class LibertyServerConfigGeneratorTest {
     }
 
     /**
-     * Test that the server.xml and boostrap.properties are fully configured
-     * with the Derby datasource
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the Derby datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -91,15 +92,10 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddDatasource_Derby() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        // Add basic properties
-        Properties datasourceProperties = new Properties();
-        datasourceProperties.put(BoostProperties.DATASOURCE_DATABASE_NAME, DERBY_DB);
-        datasourceProperties.put(BoostProperties.DATASOURCE_CREATE_DATABASE, "create");
-
-        //serverConfig.addDataSource(JDBCBoosterConfig.DERBY, datasourceProperties);
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(BoosterUtil.getJDBCDependency(), logger);
+        BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(params, logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
 
@@ -120,7 +116,9 @@ public class LibertyServerConfigGeneratorTest {
 
         Element fileset = getDirectChildrenByTag(library, FILESET).get(0);
         assertEquals("Fileset dir attribute is not correct", RESOURCES, fileset.getAttribute("dir"));
-        assertEquals("Fileset includes attribute is not correct", DERBY_JAR, fileset.getAttribute("includes"));
+
+        String derbyJar = JDBCBoosterConfig.DERBY_ARTIFACT_ID + "-" + JDBCBoosterConfig.DERBY_DEFAULT_VERSION + ".jar";
+        assertEquals("Fileset includes attribute is not correct", derbyJar, fileset.getAttribute("includes"));
 
         // Check that the <dataSource> element is correctly configured
         List<Element> dataSourceList = getDirectChildrenByTag(serverRoot, DATASOURCE);
@@ -151,25 +149,26 @@ public class LibertyServerConfigGeneratorTest {
         assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
         assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
 
-        // Check bootstrap.properties content
-        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+        // Check variables.xml content
+        String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR
+                + "/variables.xml";
 
-        String databaseNameFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+        String databaseNameFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_DATABASE_NAME);
 
-        assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_DATABASE_NAME
-                + " is not correct", DERBY_DB, databaseNameFound);
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_DATABASE_NAME + " is not correct", DERBY_DB,
+                databaseNameFound);
 
-        String createFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
+        String createFound = ConfigFileUtils.findVariableInXml(variablesXml,
                 BoostProperties.DATASOURCE_CREATE_DATABASE);
 
-        assertEquals("The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_CREATE_DATABASE
-                + " is not correct", "create", createFound);
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_CREATE_DATABASE + " is not correct", "create",
+                createFound);
     }
 
     /**
-     * Test that the server.xml and boostrap.properties are fully configured
-     * with the DB2 datasource
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the DB2 datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -179,12 +178,16 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddDatasource_DB2() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> jdbcDependency = BoosterUtil.getJDBCDependency();
-        jdbcDependency.put(JDBCBoosterConfig.DB2_DEPENDENCY, "the db2 dependency version");
-        System.setProperty(BoostProperties.DATASOURCE_URL, DB2_URL);
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(jdbcDependency, logger);
+        jdbcDependency.put(JDBCBoosterConfig.DB2_GROUP_ID + ":" + JDBCBoosterConfig.DB2_ARTIFACT_ID, "1.0");
+
+        Properties boostProperties = new Properties();
+        boostProperties.put(BoostProperties.DATASOURCE_URL, DB2_URL);
+
+        BoosterConfigParams params = new BoosterConfigParams(jdbcDependency, boostProperties);
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(params, logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
 
@@ -205,7 +208,9 @@ public class LibertyServerConfigGeneratorTest {
 
         Element fileset = getDirectChildrenByTag(library, FILESET).get(0);
         assertEquals("Fileset dir attribute is not correct", RESOURCES, fileset.getAttribute("dir"));
-        assertEquals("Fileset includes attribute is not correct", DB2_JAR, fileset.getAttribute("includes"));
+
+        String db2Jar = JDBCBoosterConfig.DB2_ARTIFACT_ID + "-1.0.jar";
+        assertEquals("Fileset includes attribute is not correct", db2Jar, fileset.getAttribute("includes"));
 
         // Check that the <dataSource> element is correctly configured
         List<Element> dataSourceList = getDirectChildrenByTag(serverRoot, DATASOURCE);
@@ -231,20 +236,25 @@ public class LibertyServerConfigGeneratorTest {
         assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
         assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
 
-        // Check bootstrap.properties content
-        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+        // Check variables.xml content
+        String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR
+                + "/variables.xml";
 
-        String urlFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
-                BoostProperties.DATASOURCE_URL);
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct", DB2_URL,
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_URL));
 
-        assertEquals(
-                "The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_URL + " is not correct",
-                DB2_URL, urlFound);
+        // No user set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_USER + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_USER));
+
+        // No password set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_PASSWORD + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_PASSWORD));
     }
 
     /**
-     * Test that the server.xml and boostrap.properties are fully configured
-     * with the MySQL datasource
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the MySQL datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -254,15 +264,19 @@ public class LibertyServerConfigGeneratorTest {
     public void testAddJdbcBoosterConfig_MySQL() throws Exception {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), logger);
+                outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> jdbcDependency = BoosterUtil.getJDBCDependency();
-        jdbcDependency.put(JDBCBoosterConfig.MYSQL_DEPENDENCY, "the mysql dependency version");
-        System.setProperty(BoostProperties.DATASOURCE_URL, MYSQL_URL);
-        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(jdbcDependency, logger);
+        jdbcDependency.put(JDBCBoosterConfig.MYSQL_GROUP_ID + ":" + JDBCBoosterConfig.MYSQL_ARTIFACT_ID, "1.0");
+
+        Properties boostProperties = new Properties();
+        boostProperties.put(BoostProperties.DATASOURCE_URL, MYSQL_URL);
+
+        BoosterConfigParams params = new BoosterConfigParams(jdbcDependency, boostProperties);
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(params, logger);
         jdbcConfig.addServerConfig(serverConfig);
         serverConfig.writeToServer();
-        
+
         File serverXml = new File(outputDir.getRoot().getAbsolutePath() + "/server.xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -279,7 +293,9 @@ public class LibertyServerConfigGeneratorTest {
 
         Element fileset = getDirectChildrenByTag(library, FILESET).get(0);
         assertEquals("Fileset dir attribute is not correct", RESOURCES, fileset.getAttribute("dir"));
-        assertEquals("Fileset includes attribute is not correct", MYSQL_JAR, fileset.getAttribute("includes"));
+
+        String mysqlJar = JDBCBoosterConfig.MYSQL_ARTIFACT_ID + "-1.0.jar";
+        assertEquals("Fileset includes attribute is not correct", mysqlJar, fileset.getAttribute("includes"));
 
         // Check that the <dataSource> element is correctly configured
         List<Element> dataSourceList = getDirectChildrenByTag(serverRoot, DATASOURCE);
@@ -305,15 +321,106 @@ public class LibertyServerConfigGeneratorTest {
         assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
         assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
 
-        // Check bootstrap.properties content
-        String bootstrapProperties = outputDir.getRoot().getAbsolutePath() + "/bootstrap.properties";
+        // Check variables.xml content
+        String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR
+                + "/variables.xml";
 
-        String urlFound = ConfigFileUtils.findPropertyInBootstrapProperties(bootstrapProperties,
-                BoostProperties.DATASOURCE_URL);
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct", MYSQL_URL,
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_URL));
 
-        assertEquals(
-                "The property set in bootstrap.properties for " + BoostProperties.DATASOURCE_URL + " is not correct",
-                MYSQL_URL, urlFound);
+        // No user set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_USER + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_USER));
+
+        // No password set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_PASSWORD + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_PASSWORD));
+    }
+
+    /**
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the MySQL datasource
+     * 
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     */
+    @Test
+    public void testAddJdbcBoosterConfig_PostgreSQL() throws Exception {
+
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), null, logger);
+
+        Map<String, String> jdbcDependency = BoosterUtil.getJDBCDependency();
+        jdbcDependency.put(JDBCBoosterConfig.POSTGRESQL_GROUP_ID + ":" + JDBCBoosterConfig.POSTGRESQL_ARTIFACT_ID,
+                "1.0");
+
+        Properties boostProperties = new Properties();
+        boostProperties.put(BoostProperties.DATASOURCE_URL, POSTGRESQL_URL);
+
+        BoosterConfigParams params = new BoosterConfigParams(jdbcDependency, boostProperties);
+        LibertyJDBCBoosterConfig jdbcConfig = new LibertyJDBCBoosterConfig(params, logger);
+        jdbcConfig.addServerConfig(serverConfig);
+        serverConfig.writeToServer();
+
+        File serverXml = new File(outputDir.getRoot().getAbsolutePath() + "/server.xml");
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document doc = dBuilder.parse(serverXml);
+
+        Element serverRoot = doc.getDocumentElement();
+
+        // Check that the <library> element is correctly configured
+        List<Element> libraryList = getDirectChildrenByTag(serverRoot, LIBRARY);
+        assertEquals("Didn't find one and only one library", 1, libraryList.size());
+
+        Element library = libraryList.get(0);
+        assertEquals("Library id is not correct", JDBC_LIBRARY_1, library.getAttribute("id"));
+
+        Element fileset = getDirectChildrenByTag(library, FILESET).get(0);
+        assertEquals("Fileset dir attribute is not correct", RESOURCES, fileset.getAttribute("dir"));
+
+        String postgresqlJar = JDBCBoosterConfig.POSTGRESQL_ARTIFACT_ID + "-1.0.jar";
+        assertEquals("Fileset includes attribute is not correct", postgresqlJar, fileset.getAttribute("includes"));
+
+        // Check that the <dataSource> element is correctly configured
+        List<Element> dataSourceList = getDirectChildrenByTag(serverRoot, DATASOURCE);
+        assertEquals("Didn't find one and only one dataSource", 1, dataSourceList.size());
+
+        Element dataSource = dataSourceList.get(0);
+        assertEquals("DataSource id is not correct", DEFAULT_DATASOURCE, dataSource.getAttribute("id"));
+        assertEquals("DataSource jdbcDriverRef is not correct", JDBC_DRIVER_1,
+                dataSource.getAttribute(JDBC_DRIVER_REF));
+
+        List<Element> propertiesList = getDirectChildrenByTag(dataSource, PROPERTIES_POSTGRESQL);
+        assertEquals("Didn't find one and only one properties", 1, propertiesList.size());
+
+        Element properties = propertiesList.get(0);
+        assertEquals("The url attribute is not correct", BoostUtil.makeVariable(BoostProperties.DATASOURCE_URL),
+                properties.getAttribute(URL));
+
+        // Check that the <jdbcDriver> element is correctly configured
+        List<Element> jdbcDriverList = getDirectChildrenByTag(serverRoot, JDBC_DRIVER);
+        assertEquals("Didn't find one and only one jdbcDriver", 1, jdbcDriverList.size());
+
+        Element jdbcDriver = jdbcDriverList.get(0);
+        assertEquals("JdbcDriver id is not correct", JDBC_DRIVER_1, jdbcDriver.getAttribute("id"));
+        assertEquals("JdbcDriver libraryRef is not correct", JDBC_LIBRARY_1, jdbcDriver.getAttribute(LIBRARY_REF));
+
+        // Check variables.xml content
+        String variablesXml = outputDir.getRoot().getAbsolutePath() + LibertyServerConfigGenerator.CONFIG_DROPINS_DIR
+                + "/variables.xml";
+
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_URL + " is not correct", POSTGRESQL_URL,
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_URL));
+
+        // No user set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_USER + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_USER));
+
+        // No password set.
+        assertEquals("The variable set for " + BoostProperties.DATASOURCE_PASSWORD + " is not correct", "",
+                ConfigFileUtils.findVariableInXml(variablesXml, BoostProperties.DATASOURCE_PASSWORD));
     }
 
 }

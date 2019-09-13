@@ -12,18 +12,17 @@ package boost.runtimes.openliberty.boosters;
 
 import static boost.common.config.ConfigConstants.*;
 
-import java.util.Map;
-
 import boost.common.BoostException;
 import boost.common.BoostLoggerI;
 import boost.common.boosters.CDIBoosterConfig;
+import boost.common.config.BoosterConfigParams;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyCDIBoosterConfig extends CDIBoosterConfig implements LibertyBoosterI {
 
-    public LibertyCDIBoosterConfig(Map<String, String> dependencies, BoostLoggerI logger) throws BoostException {
-        super(dependencies, logger);
+    public LibertyCDIBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
+        super(params, logger);
     }
 
     public String getFeature() {
@@ -32,13 +31,12 @@ public class LibertyCDIBoosterConfig extends CDIBoosterConfig implements Liberty
         }
         if (getVersion().equals(CDI_VERSION_12)) {
             return CDI_12;
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+
     }
 }
