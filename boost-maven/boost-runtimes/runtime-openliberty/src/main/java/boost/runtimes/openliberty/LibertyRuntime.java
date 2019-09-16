@@ -167,24 +167,35 @@ public class LibertyRuntime implements RuntimeI {
         }
     }
 
-    private List<String> getWarNames() {
-        List<String> warNames = new ArrayList<String>();
+    /**
+     * Assumes a non-WAR packaging type (like JAR) has a WAR dependency.
+     * We assume there's only 1 but don't check, just return the first one.
+     * @return
+     * @throws BoostException
+     */
+    private String getWarName() throws BoostException {
 
-        for (Artifact artifact : project.getArtifacts()) {
-            if (artifact.getType().equals("war")) {
-                warNames.add(artifact.getArtifactId() + "-" + artifact.getVersion());
-            }
-        }
-
+        String retVal = null;
         if (project.getPackaging().equals(ConfigConstants.WAR_PKG_TYPE)) {
-            if (project.getVersion() == null) {
-                warNames.add(project.getArtifactId());
-            } else {
-                warNames.add(project.getArtifactId() + "-" + project.getVersion());
+            retVal = project.getBuild().getFinalName();
+        } else { 
+            // JAR package "release", get WAR from dependency
+            for (Artifact artifact : project.getArtifacts()) {
+                // first WAR
+                if (artifact.getType().equals("war")) {
+                    retVal = artifact.getArtifactId() + "-" + artifact.getVersion();
+                    break;
+                }
+            }
+            if (retVal == null) {
+                BoostLogger log = BoostLogger.getSystemStreamLogger();
+                String msg = "With non-WAR packaging type, we require a WAR dependency";
+                log.error(msg);
+                throw new BoostException(msg);
             }
         }
-
-        return warNames;
+        
+        return retVal;
     }
 
     /**
@@ -194,8 +205,6 @@ public class LibertyRuntime implements RuntimeI {
      * @throws Exception
      */
     private void generateLibertyServerConfig(List<AbstractBoosterConfig> boosterConfigurators) throws Exception {
-
-        List<String> warNames = getWarNames();
 
         String encryptionKey = (String) boostProperties.get(BoostProperties.AES_ENCRYPTION_KEY);
         LibertyServerConfigGenerator libertyConfig = new LibertyServerConfigGenerator(libertyServerPath, encryptionKey,
@@ -210,16 +219,9 @@ public class LibertyRuntime implements RuntimeI {
 
         String httpsPort = (String) boostProperties.getOrDefault(BoostProperties.ENDPOINT_HTTPS_PORT, "9443");
         libertyConfig.addHttpsPort(httpsPort);
-
-        // Add war configuration if necessary
-        if (!warNames.isEmpty()) {
-            for (String warName : warNames) {
-                libertyConfig.addApplication(warName);
-            }
-        } else {
-            throw new Exception(
-                    "No war files were found. The project must have a war packaging type or specify war dependencies.");
-        }
+        
+        String warName = getWarName();
+        libertyConfig.addApplication(warName);
 
         // Loop through configuration objects and add config and
         // the corresponding Liberty feature
