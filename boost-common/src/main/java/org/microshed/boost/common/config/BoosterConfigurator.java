@@ -68,7 +68,7 @@ public class BoosterConfigurator {
 
         List<AbstractBoosterConfig> boosterConfigList = new ArrayList<AbstractBoosterConfig>();
 
-        Reflections reflections = new Reflections("boost.common.boosters");
+        Reflections reflections = new Reflections("org.microshed.boost.common.boosters");
 
         Set<Class<? extends AbstractBoosterConfig>> allClasses = reflections.getSubTypesOf(AbstractBoosterConfig.class);
         for (Class<? extends AbstractBoosterConfig> boosterClass : allClasses) {
