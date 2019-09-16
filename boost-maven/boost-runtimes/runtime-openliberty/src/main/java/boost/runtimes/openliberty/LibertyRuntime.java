@@ -258,15 +258,14 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     /**
-     * Invoke the liberty-maven-plugin to run the install-app goal.
+     * Invoke the liberty-maven-plugin to run the deploy goal.
      */
-    private void installApp(String installAppPackagesVal) throws MojoExecutionException {
+    private void installApp(String deployPackagesVal) throws MojoExecutionException {
 
-        Element deployPackages = element(name("deployPackages"), installAppPackagesVal);
+        Element deployPackages = element(name("deployPackages"), deployPackagesVal);
         Element serverNameElement = element(name("serverName"), serverName);
 
         Xpp3Dom configuration = configuration(deployPackages, serverNameElement, getRuntimeArtifactElement());
-        configuration.addChild(element(name("appsDirectory"), "apps").toDom());
 
         executeMojo(getPlugin(), goal("deploy"), configuration, env);
     }
@@ -284,7 +283,6 @@ public class LibertyRuntime implements RuntimeI {
     private void createUberJar() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("package"),
                 configuration(element(name("isInstall"), "false"), element(name("include"), "minify"),
-                        element(name("outputDirectory"), "target/liberty-alt-output-dir"),
                         element(name("packageType"), "jar"), element(name("serverName"), serverName)),
                 env);
     }
