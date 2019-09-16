@@ -27,9 +27,9 @@ public class LibertyMPOpenAPIBoosterConfig extends MPOpenAPIBoosterConfig implem
 
     @Override
     public String getFeature() {
-        if (getVersion().equals(MP_OPENAPI_VERSION_10)) {
+        if (getVersion().startsWith(MP_OPENAPI_VERSION_10)) {
             return MPOPENAPI_10;
-        } else if (getVersion().equals(MP_OPENAPI_VERSION_11)) {
+        } else if (getVersion().startsWith(MP_OPENAPI_VERSION_11)) {
             return MPOPENAPI_11;
         }
 

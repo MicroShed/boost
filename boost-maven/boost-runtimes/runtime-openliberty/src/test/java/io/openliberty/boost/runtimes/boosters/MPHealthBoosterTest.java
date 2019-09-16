@@ -42,7 +42,7 @@ public class MPHealthBoosterTest {
 
     /**
      * Test that the mpHealth-1.0 feature is added to server.xml when the
-     * booster version is set to 1.0-0.2
+     * booster version is set to 1.0-0.2-SNAPSHOT
      * 
      */
     @Test
@@ -52,7 +52,7 @@ public class MPHealthBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPHealthBoosterConfig.class, "1.0-0.2");
+                .createDependenciesWithBoosterAndVersion(LibertyMPHealthBoosterConfig.class, "1.0-0.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPHealthBoosterConfig libMPHealthConfig = new LibertyMPHealthBoosterConfig(params, logger);
@@ -70,7 +70,7 @@ public class MPHealthBoosterTest {
 
     /**
      * Test that the mpHealth-2.0 feature is added to server.xml when the
-     * MPHealth booster version is set to 2.0-0.2
+     * MPHealth booster version is set to 2.0-0.2-SNAPSHOT
      * 
      */
     @Test
@@ -80,7 +80,7 @@ public class MPHealthBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPHealthBoosterConfig.class, "2.0-0.2");
+                .createDependenciesWithBoosterAndVersion(LibertyMPHealthBoosterConfig.class, "2.0-0.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPHealthBoosterConfig libMPHealthConfig = new LibertyMPHealthBoosterConfig(params, logger);

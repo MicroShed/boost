@@ -27,9 +27,9 @@ public class LibertyMPFaultToleranceBoosterConfig extends MPFaultToleranceBooste
 
     @Override
     public String getFeature() {
-        if (getVersion().equals(MP_FAULTTOLERANCE_VERSION_11)) {
+        if (getVersion().startsWith(MP_FAULTTOLERANCE_VERSION_11)) {
             return MPFAULTTOLERANCE_11;
-        } else if (getVersion().equals(MP_FAULTTOLERANCE_VERSION_20)) {
+        } else if (getVersion().startsWith(MP_FAULTTOLERANCE_VERSION_20)) {
             return MPFAULTTOLERANCE_20;
         }
 

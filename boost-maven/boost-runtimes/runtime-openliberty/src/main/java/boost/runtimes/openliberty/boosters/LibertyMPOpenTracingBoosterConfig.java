@@ -27,11 +27,11 @@ public class LibertyMPOpenTracingBoosterConfig extends MPOpenTracingBoosterConfi
 
     @Override
     public String getFeature() {
-        if (getVersion().equals(MP_OPENTRACING_VERSION_11)) {
+        if (getVersion().startsWith(MP_OPENTRACING_VERSION_11)) {
             return MPOPENTRACING_11;
-        } else if (getVersion().equals(MP_OPENTRACING_VERSION_12)) {
+        } else if (getVersion().startsWith(MP_OPENTRACING_VERSION_12)) {
             return MPOPENTRACING_12;
-        } else if (getVersion().equals(MP_OPENTRACING_VERSION_13)) {
+        } else if (getVersion().startsWith(MP_OPENTRACING_VERSION_13)) {
             return MPOPENTRACING_13;
         }
 

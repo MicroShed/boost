@@ -32,9 +32,9 @@ public class LibertyMPMetricsBoosterConfig extends MPMetricsBoosterConfig implem
     public String getFeature() {
         String version = getVersion();
 
-        if (version.equals(MP_METRICS_VERSION_11)) {
+        if (version.startsWith(MP_METRICS_VERSION_11)) {
             return MPMETRICS_11;
-        } else if (version.equals(MP_METRICS_VERSION_20)) {
+        } else if (version.startsWith(MP_METRICS_VERSION_20)) {
             return MPMETRICS_20;
         }
         return null;

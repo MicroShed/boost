@@ -28,7 +28,7 @@ public class LibertyJSONBBoosterConfig extends JSONBBoosterConfig implements Lib
 
     @Override
     public String getFeature() {
-        if (getVersion().equals(JSONB_VERSION_10)) {
+        if (getVersion().startsWith(JSONB_VERSION_10)) {
             return JSONB_10;
         }
         return null;

@@ -29,9 +29,9 @@ public class LibertyMPHealthBoosterConfig extends MPHealthBoosterConfig implemen
     public String getFeature() {
         String version = getVersion();
 
-        if (version.equals(MP_HEALTH_VERSION_10)) {
+        if (version.startsWith(MP_HEALTH_VERSION_10)) {
             return MPHEALTH_10;
-        } else if (version.equals(MP_HEALTH_VERSION_20)) {
+        } else if (version.startsWith(MP_HEALTH_VERSION_20)) {
             return MPHEALTH_20;
         }
 
