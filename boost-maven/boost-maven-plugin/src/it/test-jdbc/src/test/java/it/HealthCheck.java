@@ -34,7 +34,7 @@ public class HealthCheck {
     @Test
     public void testServlet() throws Exception {
 
-        String port = System.getProperty("boost.http.port");
+        String port = System.getProperty("boost_http_port");
         String urlString = "http://localhost:" + port + "/health";
 
         URL url = new URL(urlString);

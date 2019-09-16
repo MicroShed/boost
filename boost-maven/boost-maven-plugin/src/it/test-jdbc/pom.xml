@@ -289,7 +289,7 @@
 						</goals>
 						<configuration>
 							<systemPropertyVariables>
-								<test.port>${boost.http.port}</test.port>
+								<test.port>${boost_http_port}</test.port>
 							</systemPropertyVariables>
 						</configuration>
 					</execution>

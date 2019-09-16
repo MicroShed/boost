@@ -13,12 +13,12 @@ package utils;
 
 public interface BoostConstants {
 
-    public static final String DATASOURCE_PREFIX = "boost.db.";
-    public static final String DATASOURCE_DATABASE_NAME = "boost.db.databaseName";
-    public static final String DATASOURCE_SERVER_NAME = "boost.db.serverName";
-    public static final String DATASOURCE_PORT_NUMBER = "boost.db.portNumber";
-    public static final String DATASOURCE_USER = "boost.db.user";
-    public static final String DATASOURCE_PASSWORD = "boost.db.password";
-    public static final String DATASOURCE_CREATE_DATABASE = "boost.db.createDatabase";
-    public static final String DATASOURCE_URL = "boost.db.url";
+    public static final String DATASOURCE_PREFIX = "boost_db_";
+    public static final String DATASOURCE_DATABASE_NAME = "boost_db_databaseName";
+    public static final String DATASOURCE_SERVER_NAME = "boost_db_serverName";
+    public static final String DATASOURCE_PORT_NUMBER = "boost_db_portNumber";
+    public static final String DATASOURCE_USER = "boost_db_user";
+    public static final String DATASOURCE_PASSWORD = "boost_db_password";
+    public static final String DATASOURCE_CREATE_DATABASE = "boost_db_createDatabase";
+    public static final String DATASOURCE_URL = "boost_db_url";
 }

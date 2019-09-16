@@ -70,8 +70,11 @@ public class JwtVerifier {
     // The algorithm used to sign the JWT.
     private static final String JWT_ALGORITHM = "SHA256withRSA";
 
-    private static final String JWT_ISSUER = System.getProperty("jwt.issuer", "http://openliberty.io");
+    // private static final String JWT_ISSUER = System.getProperty("jwt.issuer",
+    // "http://openliberty.io");
+    private static final String DEFAULT_JWT_ISSUER = "http://openliberty.io";
 
+    private static final String JWT_ISSUER = System.getProperty("testcase.issuer", DEFAULT_JWT_ISSUER);
     // The hostname we'll use in our tests. The hostname of the backend service.
     private static final String libertyHostname = "localhost";
 
@@ -92,7 +95,7 @@ public class JwtVerifier {
             String[] claims = new String[2];
             claims[0] = groups;
             claims[1] = "customClaim=Custom";
-            return JwtBuilder.buildJwt(username, "http://openliberty.io", claims);
+            return JwtBuilder.buildJwt(username, JWT_ISSUER, claims);
         } else {
             throw new Exception("group or user name is null");
         }

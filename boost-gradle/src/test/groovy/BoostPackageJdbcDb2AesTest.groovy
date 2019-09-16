@@ -54,7 +54,7 @@ public class BoostPackageJdbcDb2AesTest extends AbstractBoostTest {
         BuildResult result = GradleRunner.create()
             .withProjectDir(testProjectDir)
             .forwardOutput()
-            .withArguments("clean", "boostPackage", "-Dboost.db.databaseName=myCustomDB", "-Dboost.db.user=user", "-Dboost.db.password=password", "-Dboost.aes.key=test", "-i", "-s")
+            .withArguments("clean", "boostPackage", "-Dboost_db_databaseName=myCustomDB", "-Dboost_db_user=user", "-Dboost_db_password=password", "-Dboost_aes_key=test", "-i", "-s")
             .build()
             
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
@@ -67,10 +67,10 @@ public class BoostPackageJdbcDb2AesTest extends AbstractBoostTest {
 
             bootstrapProperties.load(input)
 
-            assertEquals("Incorrect boost.db.user found in bootstrap.properties.", DB_USER, bootstrapProperties.getProperty("boost.db.user"))
-            assertEquals("Incorrect boost.db.databaseName found in bootstrap.properties.", DB_NAME, bootstrapProperties.getProperty("boost.db.databaseName"))
+            assertEquals("Incorrect boost_db_user found in bootstrap.properties.", DB_USER, bootstrapProperties.getProperty("boost_db_user"))
+            assertEquals("Incorrect boost_db_databaseName found in bootstrap.properties.", DB_NAME, bootstrapProperties.getProperty("boost_db_databaseName"))
             //AES hashed password changes so we're just going to look for the aes flag.
-            assertTrue("Incorrect boost.db.password found in bootstrap.properties.", bootstrapProperties.getProperty("boost.db.password").contains(AES_HASHED_PASSWORD_FLAG))
+            assertTrue("Incorrect boost_db_password found in bootstrap.properties.", bootstrapProperties.getProperty("boost_db_password").contains(AES_HASHED_PASSWORD_FLAG))
         } catch (IOException ex) {
             ex.printStackTrace()
         } finally {
@@ -92,7 +92,7 @@ public class BoostPackageJdbcDb2AesTest extends AbstractBoostTest {
         BuildResult result = GradleRunner.create()
             .withProjectDir(testProjectDir)
             .forwardOutput()
-            .withArguments("clean", "boostPackage", "-Dboost.db.databaseName=myCustomDB", "-Dboost.db.user=user", "-Dboost.db.password={aes}Lz4sLCgwLTs=", "-Dboost.aes.key=test", "-i", "-s")
+            .withArguments("clean", "boostPackage", "-Dboost_db_databaseName=myCustomDB", "-Dboost_db_user=user", "-Dboost_db_password={aes}Lz4sLCgwLTs=", "-Dboost_aes_key=test", "-i", "-s")
             .build()
             
         assertEquals(SUCCESS, result.task(":boostPackage").getOutcome())
@@ -105,9 +105,9 @@ public class BoostPackageJdbcDb2AesTest extends AbstractBoostTest {
 
             bootstrapProperties.load(input)
 
-            assertEquals("Incorrect boost.db.user found in bootstrap.properties.", DB_USER, bootstrapProperties.getProperty("boost.db.user"))
-            assertEquals("Incorrect boost.db.password found in bootstrap.properties.", AES_HASHED_PASSWORD, bootstrapProperties.getProperty("boost.db.password"))
-            assertEquals("Incorrect boost.db.databaseName found in bootstrap.properties.", DB_NAME, bootstrapProperties.getProperty("boost.db.databaseName"))
+            assertEquals("Incorrect boost_db_user found in bootstrap.properties.", DB_USER, bootstrapProperties.getProperty("boost_db_user"))
+            assertEquals("Incorrect boost_db_password found in bootstrap.properties.", AES_HASHED_PASSWORD, bootstrapProperties.getProperty("boost_db_password"))
+            assertEquals("Incorrect boost_db_databaseName found in bootstrap.properties.", DB_NAME, bootstrapProperties.getProperty("boost_db_databaseName"))
         } catch (IOException ex) {
             ex.printStackTrace()
         } finally {

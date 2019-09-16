@@ -259,6 +259,7 @@ public class LibertyRuntime implements RuntimeI {
      * Invoke the liberty-maven-plugin to run the install-app goal.
      */
     private void installApp(String installAppPackagesVal) throws MojoExecutionException {
+
         Element deployPackages = element(name("deployPackages"), installAppPackagesVal);
         Element serverNameElement = element(name("serverName"), serverName);
 

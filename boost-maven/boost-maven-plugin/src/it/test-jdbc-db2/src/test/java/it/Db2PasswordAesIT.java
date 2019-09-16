@@ -40,13 +40,13 @@ public class Db2PasswordAesIT implements BoostConstants {
     public void checkPropertiesTest() throws Exception {
         String variablesXml = "target/liberty/wlp/usr/servers/defaultServer/configDropins/defaults/variables.xml";
 
-        assertEquals("Incorrect boost.db.user found in server config.", DB_USER,
+        assertEquals("Incorrect boost_db_user found in server config.", DB_USER,
                 LibertyConfigFileUtils.findVariableInXml(variablesXml, DATASOURCE_USER));
 
-        assertEquals("Incorrect boost.db.password found in server config.", ENCODED_DB_PASS,
+        assertEquals("Incorrect boost_db_password found in server config.", ENCODED_DB_PASS,
                 LibertyConfigFileUtils.findVariableInXml(variablesXml, DATASOURCE_PASSWORD));
 
-        assertEquals("Incorrect boost.db.databaseName found in server config.", DB_NAME,
+        assertEquals("Incorrect boost_db_databaseName found in server config.", DB_NAME,
                 LibertyConfigFileUtils.findVariableInXml(variablesXml, DATASOURCE_DATABASE_NAME));
     }
 }

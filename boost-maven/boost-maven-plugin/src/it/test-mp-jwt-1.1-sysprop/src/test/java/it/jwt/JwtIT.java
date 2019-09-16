@@ -46,7 +46,7 @@ public class JwtIT {
         // until the failures are addressed.
         String runtime = System.getProperty("boostRuntime");
         org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
-        String port = System.getProperty("boost.http.port");
+        String port = System.getProperty("boost_http_port");
         baseUrl = "http://localhost:" + port;
 
         JwtVerifier jwtvf = new JwtVerifier();
@@ -55,26 +55,21 @@ public class JwtIT {
         // create header that should NOT be authorized
         unauthHeader = "Bearer " + jwtvf.createJwt(TESTNAME, "groups=user");
 
-        String mpPublicKeyLocation = System.getProperty("mp.jwt.verify.publickey.location");
-        String mpIssuer = System.getProperty("mp.jwt.verify.issuer");
+        String mpPublicKeyLocation = System.getProperty("testcase.publickey.location");
+        String mpIssuer = System.getProperty("testcase.issuer");
 
         System.out.println("mp PublicKey location = " + mpPublicKeyLocation);
         System.out.println("MPISSUER =" + mpIssuer);
-        // String publicKeyLocation = System.getProperty("boost.public.key");
-        /*
-         * File publicKeyPath = null; String publicKeyAbsolutePath = null; try {
-         * publicKeyPath = new File(publicKeyLocation); publicKeyAbsolutePath =
-         * publicKeyPath.getAbsolutePath();
-         * System.out.print("Absolute path to public key is " + publicKeyAbsolutePath +
-         * " \n"); } catch (Exception e) { System.out.println("Error getting path " +
-         * e.toString()); }
-         */
 
         if (mpPublicKeyLocation != null)
             JwtBuilder.storePublicKey(mpPublicKeyLocation);
         else
             throw new Exception("public key location is null");
     }
+
+    /*
+     * @Test public void testIssuer() { this.testJwtGetIssuer(true); }
+     */
 
     @Test
     public void testSuiteGetName() {
@@ -91,8 +86,28 @@ public class JwtIT {
         this.testJwtGetCustomClaim(false);
     }
 
+    /*
+     * public void testJwtGetIssuer(boolean userAuthorized) { String jwtUrl =
+     * baseUrl + INV_JWT + "/issuer"; System.out.println("jwtURL = " + jwtUrl);
+     * System.out.println("authHeader = " + authHeader); Response jwtResponse =
+     * TestUtils.processRequest(jwtUrl, "GET", null, authHeader);
+     * 
+     * assertEquals("HTTP response code should have been " +
+     * Status.OK.getStatusCode() + ".", Status.OK.getStatusCode(),
+     * jwtResponse.getStatus());
+     * 
+     * String responseIssuer = jwtResponse.readEntity(String.class);
+     * 
+     * assertEquals("The response and issuer should match", "openliberty.io",
+     * responseIssuer);
+     * 
+     * }
+     */
+
     public void testJwtGetName(boolean userAuthorized) {
         String jwtUrl = baseUrl + INV_JWT + "/username";
+        System.out.println("jwtURL = " + jwtUrl);
+        System.out.println("authHeader = " + authHeader);
         Response jwtResponse = TestUtils.processRequest(jwtUrl, "GET", null, authHeader);
 
         assertEquals("HTTP response code should have been " + Status.OK.getStatusCode() + ".",

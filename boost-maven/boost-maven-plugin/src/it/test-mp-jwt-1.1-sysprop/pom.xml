@@ -38,15 +38,15 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         	<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<mp.jwt.verify.publickey.location>${project.build.testOutputDirectory}/truststore/public.key</mp.jwt.verify.publickey.location>
-        <mp.jwt.verify.issuer>http://openliberty.io</mp.jwt.verify.issuer>
+        	<mp_jwt_verify_publickey_location>${project.build.testOutputDirectory}/truststore/public.key</mp_jwt_verify_publickey_location>
+        <mp_jwt_verify_issuer>http://openliberty.io</mp_jwt_verify_issuer>
      </properties>
     
     
-   <dependencyManagement>
+  <dependencyManagement>
       <dependencies>
           <dependency>
-              <groupId>boost.boosters</groupId>
+              <groupId>org.microshed.boost.boms</groupId>
               <artifactId>mp20-bom</artifactId>
               <version>@pom.version@</version>
               <type>pom</type>
@@ -57,28 +57,30 @@
 
 
 
+
   <dependencies>
      <!-- Open Liberty features -->
     <dependency>
-        <groupId>boost.boosters</groupId>
+        <groupId>org.microshed.boost.boosters</groupId>
         <artifactId>jaxrs</artifactId>
     </dependency>
     <dependency>
-        <groupId>boost.boosters</groupId>
+        <groupId>org.microshed.boost.boosters</groupId>
         <artifactId>jsonp</artifactId>
     </dependency>
     <dependency>
-        <groupId>boost.boosters</groupId>
+        <groupId>org.microshed.boost.boosters</groupId>
         <artifactId>cdi</artifactId>
     </dependency>
     <dependency>
-        <groupId>boost.boosters</groupId>
-        <artifactId>mpConfig</artifactId>
+        <groupId>org.microshed.boost.boosters</groupId>
+        <artifactId>mp-config</artifactId>
     </dependency>
     <dependency>
-       <groupId>boost.boosters</groupId>
+       <groupId>org.microshed.boost.boosters</groupId>
        <artifactId>mp-jwt</artifactId>
     </dependency>
+    
         <!-- For testing -->
     <dependency>
         <groupId>org.glassfish</groupId>
@@ -142,29 +144,9 @@
                 </execution>
               </executions>
             </plugin>
-            
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                           <goal>write-project-properties</goal>
-                        </goals>
-                        <!-- write the system properties into a config file to be saved in the war file -->
-                        <configuration>
-                          <outputFile>
-                             ${project.basedir}/target/liberty/wlp/etc/server.env
-                          </outputFile>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
             <plugin>
-                <groupId>boost</groupId>
+                <groupId>org.microshed.boost</groupId>
                 <artifactId>boost-maven-plugin</artifactId>
                 <version>@pom.version@</version>
                 <executions>
@@ -209,8 +191,8 @@
                              generated with. -->
                         <configuration>
                               <systemPropertyVariables>
-                                 <mp.jwt.verify.publickey.location>${project.build.testOutputDirectory}/truststore/public.key</mp.jwt.verify.publickey.location>
-                                 <mp.jwt.verify.issuer>http://openliberty.io</mp.jwt.verify.issuer>
+                                 <testcase.publickey.location>${mp_jwt_verify_publickey_location}</testcase.publickey.location>
+                                 <testcase.issuer>${mp_jwt_verify_issuer}</testcase.issuer>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
@@ -239,9 +221,9 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>openliberty</artifactId>
-				</dependency>
+			    </dependency>
 			</dependencies>
 		</profile>
 		<profile>
@@ -254,7 +236,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>wlp</artifactId>
 				</dependency>
 			</dependencies>
@@ -269,7 +251,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>boost.runtimes</groupId>
+					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>tomee</artifactId>
 				</dependency>
 			</dependencies>

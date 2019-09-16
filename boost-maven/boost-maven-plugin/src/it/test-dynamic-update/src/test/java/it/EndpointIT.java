@@ -48,7 +48,7 @@ public class EndpointIT {
         String runtime = System.getProperty("boostRuntime");
         org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
 
-        String port = System.getProperty("boost.http.port");
+        String port = System.getProperty("boost_http_port");
         URL = "http://localhost:" + port + "/api/hello";
 
         if (System.getProperty("os.name").contains("Windows")) {
@@ -98,8 +98,8 @@ public class EndpointIT {
     }
 
     /*
-     * Execute mvn compile Note the command will be different in Windows,
-     * Linux/MAC and Cygwin. Thus all the
+     * Execute mvn compile Note the command will be different in Windows, Linux/MAC
+     * and Cygwin. Thus all the
      */
     private void mavenCompile() throws IOException {
 
@@ -167,9 +167,8 @@ public class EndpointIT {
     }
 
     /*
-     * get file name path setup correctly for environment. This file will be
-     * edited on the fly by the testcase This is to test loosApplication
-     * function.
+     * get file name path setup correctly for environment. This file will be edited
+     * on the fly by the testcase This is to test loosApplication function.
      */
     private static void setupHelloResources() {
 

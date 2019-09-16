@@ -20,6 +20,7 @@ import boost.common.boosters.MPJWTBoosterConfig;
 import boost.common.config.BoosterConfigParams;
 import boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import boost.runtimes.openliberty.boosters.LibertyBoosterI;
+import java.util.Properties;
 
 public class LibertyMPJWTBoosterConfig extends MPJWTBoosterConfig implements LibertyBoosterI {
 
@@ -37,11 +38,15 @@ public class LibertyMPJWTBoosterConfig extends MPJWTBoosterConfig implements Lib
 
     @Override
     public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) throws BoostException {
+
         try {
-            libertyServerConfigGenerator.addConfigVariables(boostMPProperties);
+            if (!!!boostMPProperties.isEmpty())
+                libertyServerConfigGenerator.addEnvironemntVariables(boostMPProperties);
+
         } catch (Exception e) {
             throw new BoostException("Error when configuring mp-jwt " + e.toString());
         }
+
     }
 
 }

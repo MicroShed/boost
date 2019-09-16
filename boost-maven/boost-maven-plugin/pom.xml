@@ -95,7 +95,7 @@
                                 <boostRuntime>${boostRuntime}</boostRuntime>
                                 <!-- Explicitly set the boost port to 9000 
                                     for testing purposes across multiple runtimes -->
-                                <boost.http.port>9000</boost.http.port>
+                                <boost_http_port>9000</boost_http_port>
                             </properties>
                         </configuration>
                         <executions>
