@@ -28,9 +28,9 @@ public class LibertyJAXRSBoosterConfig extends JAXRSBoosterConfig implements Lib
 
     @Override
     public String getFeature() {
-        if (getVersion().equals(JAXRS_VERSION_20)) {
+        if (getVersion().startsWith(JAXRS_VERSION_20)) {
             return JAXRS_20;
-        } else if (getVersion().equals(JAXRS_VERSION_21)) {
+        } else if (getVersion().startsWith(JAXRS_VERSION_21)) {
             return JAXRS_21;
         }
         return null;

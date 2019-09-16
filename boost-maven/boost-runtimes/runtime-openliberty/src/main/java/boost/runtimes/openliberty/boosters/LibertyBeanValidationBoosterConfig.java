@@ -27,7 +27,7 @@ public class LibertyBeanValidationBoosterConfig extends BeanValidationBoosterCon
     }
 
     public String getFeature() {
-        if (getVersion().equals(BEANVALIDATION_VERSION_20)) {
+        if (getVersion().startsWith(BEANVALIDATION_VERSION_20)) {
             return BEANVALIDATION_20;
         } else {
             return null;

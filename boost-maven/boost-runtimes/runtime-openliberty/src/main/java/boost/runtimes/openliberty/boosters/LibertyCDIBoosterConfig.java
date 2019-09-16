@@ -26,10 +26,10 @@ public class LibertyCDIBoosterConfig extends CDIBoosterConfig implements Liberty
     }
 
     public String getFeature() {
-        if (getVersion().equals(CDI_VERSION_20)) {
+        if (getVersion().startsWith(CDI_VERSION_20)) {
             return CDI_20;
         }
-        if (getVersion().equals(CDI_VERSION_12)) {
+        if (getVersion().startsWith(CDI_VERSION_12)) {
             return CDI_12;
         }
         else {
