@@ -10,9 +10,8 @@
 
     <parent>
         <groupId>org.microshed.boost</groupId>
-        <artifactId>boost-maven-parent</artifactId>
+        <artifactId>boost-boms</artifactId>
         <version>0.2-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.microshed.boost.boms</groupId>
