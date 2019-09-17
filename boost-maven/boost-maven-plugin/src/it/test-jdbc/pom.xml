@@ -249,7 +249,7 @@
 			<plugin>
 				<groupId>org.microshed.boost</groupId>
 				<artifactId>boost-maven-plugin</artifactId>
-				<version>0.2</version>
+				<version>@pom.version@</version>
 				<executions>
 					<execution>
 						<goals>
