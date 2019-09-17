@@ -1,40 +1,45 @@
-# Boost
+# Boost Maven Plugin Prototype
 
-[![Build Status](https://travis-ci.org/dev-tools-for-enterprise-java/boost.svg?branch=master)](https://travis-ci.org/dev-tools-for-enterprise-java/boost)
-[![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](http://www.eclipse.org/legal/epl-v10.html)
+### What is Boost?
 
-Boost includes a Maven and Gradle plugin to make it easier to build your MicroProfile applications.
+This is a prototype Maven plugin to package a fully configured Java EE or MicroProfile application with a target runtime.
 
-There are two, separate active Boost projects. 
+When added to your pom.xml, the plugin will
 
-- Boost Maven Plugin, BOMs, and Boosters (`boost-maven`)
-- Boost Common Resources (`boost-common`)
+1. Install the desired target runtime.
+2. Create a server.
+3. Install the application to the server.
+4. Configure the server appropriately for the application.
 
-with a Boost Gradle project under development.
+### Build the Boost Maven Plugin
 
-### Developing Boost
+1. `git clone git@github.com:OpenLiberty/boost.git`
+2. `boost-maven.sh`
 
-If you are interested in contributing to Boost, read the [wiki](https://github.com/dev-tools-for-enterprise-java/boost/wiki) for more information.
+### Use the Boost Maven Plugin
 
-If you are interested in the Boost runtime adapter mechanism, it is described in greater detail in the [Boost Runtimes](https://github.com/dev-tools-for-enterprise-java/boost/wiki/Boost-Runtimes) page of the wiki.
+Edit your project pom.xml and place the following plugin stanza into your build:
+```xml
+<plugin>
+	<groupId>org.microshed.boost</groupId>
+	<artifactId>boost-maven-plugin</artifactId>
+	<version>0.2</version>
+	<executions>
+		<execution>
+			<goals>
+				<goal>package</goal>
+			</goals>
+		</execution>
+	</executions>
+</plugin>
+ ```
 
-### Building Boost
+ Run `mvn clean package`
 
-You will need to build the `boost-common` project before building the `boost-maven` project. We provide some scripts below to simplify this process. 
+### Tutorial
 
-#### Boost Maven Plugin
+For more detailed instructions on using the boost plugin, see [here](https://github.com/OpenLiberty/boost/wiki/Boosted-MicroProfile-Rest-Client-sample-app).
 
-To build the Boost Maven Plugin:
+### Building and Developing Boost
 
-##### Windows:
-
-```
-./boost-maven.bat
-```
-
-##### Mac/Linux:
-
-```
-./boost-maven.sh
-```
-
+See [here](https://github.com/OpenLiberty/boost/wiki/Home) 
