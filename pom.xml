@@ -9,7 +9,7 @@
 
     <groupId>org.microshed.boost</groupId>
     <artifactId>boost-common</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
 
     <url>https://github.com/OpenLiberty/boost</url>
 
@@ -32,7 +32,7 @@
         <connection>scm:git:git@github.com:OpenLiberty/boost.git</connection>
         <developerConnection>scm:git:git@github.com:OpenLiberty/boost.git</developerConnection>
         <url>git@github.com:OpenLiberty/boost.git</url>
-        <tag>boost-common-0.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
