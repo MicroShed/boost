@@ -24,15 +24,15 @@
     <licenses>
         <license>
             <name>Eclipse Public License 1.0 (EPL-1.0)</name>
-            <url>https://raw.github.com/OpenLiberty/boost/master/LICENSE</url>
+            <url>https://raw.github.com/MicroShed/boost/master/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:OpenLiberty/boost.git</connection>
-        <developerConnection>scm:git:git@github.com:OpenLiberty/boost.git</developerConnection>
-        <url>git@github.com:OpenLiberty/boost.git</url>
+        <connection>scm:git:git@github.com:MicroShed/boost.git</connection>
+        <developerConnection>scm:git:git@github.com:MicroShed/boost.git</developerConnection>
+        <url>git@github.com:MicroShed/boost.git</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -48,6 +48,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <base-release-version>0.2</base-release-version>
     </properties>
 
     <dependencyManagement>
@@ -60,5 +61,29 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <releaseVersion>${base-release-version}</releaseVersion>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.danielflower.mavenplugins</groupId>
+                    <artifactId>multi-module-maven-release-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <configuration>
+                        <releaseGoals>
+                            <releaseGoal>deploy</releaseGoal>
+                        </releaseGoals>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>

@@ -54,6 +54,7 @@
                     <version>2.5</version>
                     <configuration>
                         <tagNameFormat>${release-prefix}@{project.version}</tagNameFormat>
+                        <releaseVersion>${release-prefix}${base-release-version}</releaseVersion>
                     </configuration>
                 </plugin>
             </plugins>
