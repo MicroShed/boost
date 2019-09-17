@@ -15,6 +15,7 @@
 
     <properties>
         <mp-fault-tolerance-api-version>1.1</mp-fault-tolerance-api-version>
+        <release-prefix>1.1-</release-prefix>
     </properties>
 
     <dependencies>

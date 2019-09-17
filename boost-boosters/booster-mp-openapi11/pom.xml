@@ -15,6 +15,7 @@
 
     <properties>
         <mp-openapi-api-version>1.1</mp-openapi-api-version>
+        <release-prefix>1.1-</release-prefix>
     </properties>
 
     <dependencies>

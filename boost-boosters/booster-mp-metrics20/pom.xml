@@ -15,6 +15,7 @@
 
     <properties>
         <mp-metrics-api-version>2.0.0</mp-metrics-api-version>
+        <release-prefix>2.0-</release-prefix>
     </properties>
 
     <dependencies>

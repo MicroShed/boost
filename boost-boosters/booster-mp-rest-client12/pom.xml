@@ -15,6 +15,7 @@
 
     <properties>
         <mp-rest-client-api-version>1.2</mp-rest-client-api-version>
+        <release-prefix>1.2-</release-prefix>
     </properties>
 
     <dependencies>

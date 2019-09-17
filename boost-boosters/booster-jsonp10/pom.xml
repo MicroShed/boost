@@ -15,6 +15,7 @@
 
     <properties>
         <jsonp-api-version>1.0</jsonp-api-version>
+        <release-prefix>1.0-</release-prefix>
     </properties>
 
     <dependencies>

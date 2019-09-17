@@ -15,6 +15,7 @@
 
     <properties>
         <cdi-api-version>1.2</cdi-api-version>
+        <release-prefix>1.2-</release-prefix>
     </properties>
 
     <dependencies>

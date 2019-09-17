@@ -15,6 +15,7 @@
 
     <properties>
         <jaxrs-api-version>2.0</jaxrs-api-version>
+        <release-prefix>2.0-</release-prefix>
     </properties>
 
     <dependencies>

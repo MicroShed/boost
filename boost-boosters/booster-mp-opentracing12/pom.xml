@@ -15,6 +15,7 @@
 
     <properties>
         <mp-open-tracing-api-version>1.2</mp-open-tracing-api-version>
+        <release-prefix>1.2-</release-prefix>
     </properties>
 
 

@@ -15,6 +15,7 @@
 
     <properties>
         <beanvalidation-api-version>2.0.0.Final</beanvalidation-api-version>
+        <release-prefix>2.0-</release-prefix>
     </properties>
 
     <dependencies>
