@@ -41,7 +41,7 @@ public class MPRestClientBoosterTest {
 
     /**
      * Test that the mpRestClient-1.1 feature is added to server.xml when the
-     * MPRestClient booster version is set to 1.1-0.2.1
+     * MPRestClient booster version is set to 1.1-0.2.2-SNAPSHOT
      * 
      */
     @Test
@@ -51,7 +51,7 @@ public class MPRestClientBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.1-0.2.1");
+                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.1-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPRestClientBoosterConfig libMPOpenTracingConfig = new LibertyMPRestClientBoosterConfig(params, logger);
@@ -69,7 +69,7 @@ public class MPRestClientBoosterTest {
 
     /**
      * Test that the mpRestClient-1.2 feature is added to server.xml when the
-     * MPRestClient booster version is set to "1.2-0.2.1"
+     * MPRestClient booster version is set to "1.2-0.2.2-SNAPSHOT"
      * 
      */
     @Test
@@ -79,7 +79,7 @@ public class MPRestClientBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.2-0.2.1");
+                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.2-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPRestClientBoosterConfig libMPOpenTracingConfig = new LibertyMPRestClientBoosterConfig(params, logger);
@@ -97,7 +97,7 @@ public class MPRestClientBoosterTest {
 
     /**
      * Test that the mpRestClient-1.3 feature is added to server.xml when the
-     * MPRestClient booster version is set to "1.3-0.2.1".
+     * MPRestClient booster version is set to "1.3-0.2.2-SNAPSHOT".
      * 
      */
     @Test
@@ -107,7 +107,7 @@ public class MPRestClientBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.3-0.2.1");
+                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.3-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPRestClientBoosterConfig libMPOpenTracingConfig = new LibertyMPRestClientBoosterConfig(params, logger);

@@ -23,7 +23,7 @@
             <dependency>
                 <groupId>org.microshed.boost.boms</groupId>
                 <artifactId>mp30-bom</artifactId>
-                <version>0.2.1</version>
+                <version>0.2.2-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
