@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.microshed.boost</groupId>
         <artifactId>boost-runtimes</artifactId>
-        <version>0.2.1</version>
+        <version>0.2.2-SNAPSHOT</version>
     </parent>
 
     <groupId>org.microshed.boost.runtimes</groupId>
@@ -24,12 +24,12 @@
         <dependency>
             <groupId>org.microshed.boost</groupId>
             <artifactId>boost-common</artifactId>
-            <version>0.2.1</version>
+            <version>0.2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.microshed.boost</groupId>
             <artifactId>boost-maven-plugin</artifactId>
-            <version>0.2.1</version>
+            <version>0.2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>

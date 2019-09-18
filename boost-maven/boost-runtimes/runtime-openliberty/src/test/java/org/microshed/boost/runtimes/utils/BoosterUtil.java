@@ -28,6 +28,6 @@ public class BoosterUtil {
     }
 
     public static Map<String, String> getJDBCDependency() throws BoostException {
-        return BoosterUtil.createDependenciesWithBoosterAndVersion(JDBCBoosterConfig.class, "0.2.1");
+        return BoosterUtil.createDependenciesWithBoosterAndVersion(JDBCBoosterConfig.class, "0.2.2-SNAPSHOT");
     }
 }
