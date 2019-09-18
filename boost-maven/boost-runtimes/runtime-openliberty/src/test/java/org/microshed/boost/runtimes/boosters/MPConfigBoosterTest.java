@@ -51,7 +51,7 @@ public class MPConfigBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPConfigBoosterConfig.class, "1.3-0.2-SNAPSHOT");
+                .createDependenciesWithBoosterAndVersion(LibertyMPConfigBoosterConfig.class, "1.3-0.2.1");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPConfigBoosterConfig libMPConfigConfig = new LibertyMPConfigBoosterConfig(params, logger);

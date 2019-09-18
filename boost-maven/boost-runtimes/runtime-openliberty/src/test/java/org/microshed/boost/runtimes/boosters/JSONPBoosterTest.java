@@ -41,7 +41,7 @@ public class JSONPBoosterTest {
 
     /**
      * Test that the jsonp-1.0 feature is added to server.xml when the jsonp booster
-     * version is set to 0.2-SNAPSHOT
+     * version is set to 0.2.1
      * 
      */
     @Test
@@ -51,7 +51,7 @@ public class JSONPBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.0-0.2-SNAPSHOT");
+                .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.0-0.2.1");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyJSONPBoosterConfig libJSONPConfig = new LibertyJSONPBoosterConfig(params, logger);
@@ -78,7 +78,7 @@ public class JSONPBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.1-0.2-SNAPSHOT");
+                .createDependenciesWithBoosterAndVersion(LibertyJSONPBoosterConfig.class, "1.1-0.2.1");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyJSONPBoosterConfig libJSONPConfig = new LibertyJSONPBoosterConfig(params, logger);

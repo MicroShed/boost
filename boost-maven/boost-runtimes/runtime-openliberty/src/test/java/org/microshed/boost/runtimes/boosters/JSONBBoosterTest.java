@@ -41,7 +41,7 @@ public class JSONBBoosterTest {
 
     /**
      * Test that the jsonb-1.0 feature is added to server.xml when the jsonb booster
-     * version is set to 0.2-SNAPSHOT
+     * version is set to 0.2.1
      * 
      */
     @Test
@@ -51,7 +51,7 @@ public class JSONBBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyJSONBBoosterConfig.class, "1.0-0.2-SNAPSHOT");
+                .createDependenciesWithBoosterAndVersion(LibertyJSONBBoosterConfig.class, "1.0-0.2.1");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyJSONBBoosterConfig libJSONBConfig = new LibertyJSONBBoosterConfig(params, logger);

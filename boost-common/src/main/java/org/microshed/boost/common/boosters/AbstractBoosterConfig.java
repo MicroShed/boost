@@ -30,7 +30,7 @@ public abstract class AbstractBoosterConfig {
     // version string format:
     // <Major>.<Minor>-<boost version>-<Milestone>[-SNAPSHOT]
     public static final String milestone = "-M1";
-    public static final String boostVersion = "-0.2";
+    public static final String boostVersion = "-0.2.1";
     public static final String snapShot = "-SNAPSHOT";
     public static final String fullSnapshotString = milestone + snapShot;
     public static final String emptyString = "";
