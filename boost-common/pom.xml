@@ -10,7 +10,7 @@
 
     <groupId>org.microshed.boost</groupId>
     <artifactId>boost-common</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2.1</version>
 
     <url>https://github.com/OpenLiberty/boost</url>
 

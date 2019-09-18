@@ -7,12 +7,12 @@
     <parent>
         <groupId>org.microshed.boost</groupId>
         <artifactId>boost-boosters</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.2.1</version>
     </parent>
 
     <groupId>org.microshed.boost.boosters</groupId>
     <artifactId>mp-jwt</artifactId>
-    <version>1.1-0.2-SNAPSHOT</version>
+    <version>1.1-0.2.1</version>
 
     <properties>
         <jwt-version>1.1</jwt-version>

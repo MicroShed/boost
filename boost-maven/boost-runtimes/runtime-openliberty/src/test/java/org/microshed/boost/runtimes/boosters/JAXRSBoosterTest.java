@@ -51,7 +51,7 @@ public class JAXRSBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.0-0.2-SNAPSHOT");
+                .createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.0-0.2.1");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyJAXRSBoosterConfig libJAXRSConfig = new LibertyJAXRSBoosterConfig(params, logger);
@@ -78,7 +78,7 @@ public class JAXRSBoosterTest {
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.1-0.2-SNAPSHOT");
+                .createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.1-0.2.1");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyJAXRSBoosterConfig libJAXRSConfig = new LibertyJAXRSBoosterConfig(params, logger);
