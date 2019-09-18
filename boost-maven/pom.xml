@@ -24,15 +24,15 @@
     <licenses>
         <license>
             <name>Eclipse Public License 1.0 (EPL-1.0)</name>
-            <url>https://raw.github.com/OpenLiberty/boost/master/LICENSE</url>
+            <url>https://raw.github.com/MicroShed/boost/master/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:OpenLiberty/boost.git</connection>
-        <developerConnection>scm:git:git@github.com:OpenLiberty/boost.git</developerConnection>
-        <url>git@github.com:OpenLiberty/boost.git</url>
+        <connection>scm:git:git@github.com:MicroShed/boost.git</connection>
+        <developerConnection>scm:git:git@github.com:MicroShed/boost.git</developerConnection>
+        <url>git@github.com:MicroShed/boost.git</url>
         <tag>HEAD</tag>
     </scm>
 
