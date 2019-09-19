@@ -1,0 +1,24 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+        maven { url 'https://repo.spring.io/plugins-snapshot' }
+    }
+    dependencies {
+        classpath("io.openliberty.boost:boost-gradle-plugin:${boostVersion}")
+    }
+}
+
+apply plugin: 'boost'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    boostApp "test:app:1.0"
+}

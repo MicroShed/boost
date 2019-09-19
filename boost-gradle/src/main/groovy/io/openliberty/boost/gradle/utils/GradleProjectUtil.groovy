@@ -11,10 +11,12 @@
 package io.openliberty.boost.gradle.utils
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.ModuleVersionIdentifier
+import org.gradle.api.artifacts.UnknownConfigurationException
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
-import org.gradle.api.artifacts.ModuleVersionIdentifier
 
 import groovy.lang.MissingPropertyException
 
@@ -45,13 +47,36 @@ public class GradleProjectUtil {
         Map<String, String> dependencies = new HashMap<String, String>()
 		logger.debug("Processing project for dependencies.")
 
-        project.configurations.compileClasspath.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
+        try {
+            //Projects without the war/java plugin won't have this configuration
+            //compileClasspath is not a regular Configuration object so we have to go through without using getAllDependenciesFromConfiguration()
+            project.configurations.getByName('compileClasspath').resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
+                logger.debug("Found dependency while processing project: " + id.group.toString() + ":"
+                        + id.name.toString() + ":" + id.version.toString())
+                        
+                dependencies.put(id.group.toString() + ":" + id.name.toString(), id.version.toString())
+            }
+        } catch (UnknownConfigurationException ue) {
+            logger.debug("The compileClasspath configuration was not found.")
+        }
+
+        //Will always have the boostApp configuration since we create it in apply()
+        //Just pulling in the transitive booster dependencies for the apps
+        dependencies.putAll(getAllBoosterDependenciesFromConfiguration(project.configurations.boostApp, logger))
+
+        return dependencies
+    }
+
+    private static Map<String, String> getAllBoosterDependenciesFromConfiguration(Configuration configuration, BoostLogger logger) {
+        Map<String, String> dependencies = new HashMap<String, String>()
+        configuration.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { ModuleVersionIdentifier id ->
         	logger.debug("Found dependency while processing project: " + id.group.toString() + ":"
                     + id.name.toString() + ":" + id.version.toString())
                     
-            dependencies.put(id.group.toString() + ":" + id.name.toString(), id.version.toString())
+            if (id.group.toString().equals('io.openliberty.boosters')) {
+                dependencies.put(id.group.toString() + ":" + id.name.toString(), id.version.toString())
+            }
         }
-
         return dependencies
     }
 }
