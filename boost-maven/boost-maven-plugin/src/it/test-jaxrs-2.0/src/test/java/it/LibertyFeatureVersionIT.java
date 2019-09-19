@@ -23,17 +23,23 @@ public class LibertyFeatureVersionIT {
 
     private static final String JAXRS_20_FEATURE = "<feature>jaxrs-2.0</feature>";
     private static String SERVER_XML = "target/liberty/wlp/usr/servers/defaultServer/server.xml";
+    private static String MESSAGES_LOG = "target/liberty/wlp/usr/servers/defaultServer/logs/messages.log";
+    private static String runtimeVersion;
+    private static String defaultRunTimeVersion = "19.0.0.9";
 
     @BeforeClass
     public static void init() {
         String runtime = System.getProperty("boostRuntime");
         org.junit.Assume.assumeTrue("ol".equals(runtime) || "wlp".equals(runtime));
+        runtimeVersion = System.getProperty("boost_runtime_version");
     }
 
     @Test
     public void testLibertyFeatureVersion() throws Exception {
         File targetFile = new File(SERVER_XML);
         assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
+        if (runtimeVersion == null)
+            runtimeVersion = defaultRunTimeVersion;
 
         // Check contents of file for jaxrs feature
         boolean found = false;
@@ -55,5 +61,32 @@ public class LibertyFeatureVersionIT {
         }
 
         assertTrue("The " + JAXRS_20_FEATURE + " feature was not found in the server configuration", found);
+    }
+
+    @Test
+    public void testLibertyRuntimeVersion() throws Exception {
+        File targetFile = new File(MESSAGES_LOG);
+        assertTrue(targetFile.getCanonicalFile() + "does not exist.", targetFile.exists());
+
+        // Check contents of file for jaxrs feature
+        boolean found = false;
+        BufferedReader br = null;
+
+        try {
+            br = new BufferedReader(new FileReader(MESSAGES_LOG));
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.contains(runtimeVersion)) {
+                    found = true;
+                    break;
+                }
+            }
+        } finally {
+            if (br != null) {
+                br.close();
+            }
+        }
+
+        assertTrue("The run time version  " + runtimeVersion + "  was not found in the messages log", found);
     }
 }
