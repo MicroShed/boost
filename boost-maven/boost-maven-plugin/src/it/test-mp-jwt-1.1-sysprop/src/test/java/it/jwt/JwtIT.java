@@ -58,9 +58,6 @@ public class JwtIT {
         String mpPublicKeyLocation = System.getProperty("testcase.publickey.location");
         String mpIssuer = System.getProperty("testcase.issuer");
 
-        System.out.println("mp PublicKey location = " + mpPublicKeyLocation);
-        System.out.println("MPISSUER =" + mpIssuer);
-
         if (mpPublicKeyLocation != null)
             JwtBuilder.storePublicKey(mpPublicKeyLocation);
         else
@@ -85,24 +82,6 @@ public class JwtIT {
     public void testSuiteGetCustomClaimUnauthorized() {
         this.testJwtGetCustomClaim(false);
     }
-
-    /*
-     * public void testJwtGetIssuer(boolean userAuthorized) { String jwtUrl =
-     * baseUrl + INV_JWT + "/issuer"; System.out.println("jwtURL = " + jwtUrl);
-     * System.out.println("authHeader = " + authHeader); Response jwtResponse =
-     * TestUtils.processRequest(jwtUrl, "GET", null, authHeader);
-     * 
-     * assertEquals("HTTP response code should have been " +
-     * Status.OK.getStatusCode() + ".", Status.OK.getStatusCode(),
-     * jwtResponse.getStatus());
-     * 
-     * String responseIssuer = jwtResponse.readEntity(String.class);
-     * 
-     * assertEquals("The response and issuer should match", "openliberty.io",
-     * responseIssuer);
-     * 
-     * }
-     */
 
     public void testJwtGetName(boolean userAuthorized) {
         String jwtUrl = baseUrl + INV_JWT + "/username";

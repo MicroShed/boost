@@ -3,9 +3,14 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.microshed.boost</groupId>
+        <artifactId>boost-runtimes</artifactId>
+        <version>0.2.2-SNAPSHOT</version>
+    </parent>
+
     <groupId>org.microshed.boost.runtimes</groupId>
     <artifactId>tomee</artifactId>
-    <version>0.2</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -19,12 +24,12 @@
         <dependency>
             <groupId>org.microshed.boost</groupId>
             <artifactId>boost-common</artifactId>
-            <version>0.2</version>
+            <version>0.2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.microshed.boost</groupId>
             <artifactId>boost-maven-plugin</artifactId>
-            <version>0.2</version>
+            <version>0.2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>

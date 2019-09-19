@@ -9,7 +9,7 @@
 
     <groupId>org.microshed.boost</groupId>
     <artifactId>boost-maven-parent</artifactId>
-    <version>0.2</version>
+    <version>0.2.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>boost-maven-plugin Parent</name>
@@ -24,15 +24,15 @@
     <licenses>
         <license>
             <name>Eclipse Public License 1.0 (EPL-1.0)</name>
-            <url>https://raw.github.com/OpenLiberty/boost/master/LICENSE</url>
+            <url>https://raw.github.com/MicroShed/boost/master/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:OpenLiberty/boost.git</connection>
-        <developerConnection>scm:git:git@github.com:OpenLiberty/boost.git</developerConnection>
-        <url>git@github.com:OpenLiberty/boost.git</url>
+        <connection>scm:git:git@github.com:MicroShed/boost.git</connection>
+        <developerConnection>scm:git:git@github.com:MicroShed/boost.git</developerConnection>
+        <url>git@github.com:MicroShed/boost.git</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -61,4 +61,76 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.8</version>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                        <!-- Skip based on the maven.deploy.skip property -->
+                        <skipNexusStagingDeployMojo>${maven.deploy.skip}</skipNexusStagingDeployMojo>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>oss-release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

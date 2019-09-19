@@ -70,8 +70,6 @@ public class JwtVerifier {
     // The algorithm used to sign the JWT.
     private static final String JWT_ALGORITHM = "SHA256withRSA";
 
-    // private static final String JWT_ISSUER = System.getProperty("jwt.issuer",
-    // "http://openliberty.io");
     private static final String DEFAULT_JWT_ISSUER = "http://openliberty.io";
 
     private static final String JWT_ISSUER = System.getProperty("testcase.issuer", DEFAULT_JWT_ISSUER);
