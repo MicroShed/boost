@@ -16,15 +16,23 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -66,6 +74,8 @@ public class LibertyServerConfigGenerator {
 
     private Document variablesXml;
     private Element variablesRoot;
+
+    private static final String ENVIRONMENT_FILE = "/server.env";
 
     private Set<String> featuresAdded;
 
@@ -139,8 +149,7 @@ public class LibertyServerConfigGenerator {
     }
 
     /**
-     * Write the server.xml and bootstrap.properties to the server config
-     * directory
+     * Write the server.xml and bootstrap.properties to the server config directory
      *
      * @throws TransformerException
      * @throws IOException
@@ -372,4 +381,80 @@ public class LibertyServerConfigGenerator {
         serverRoot.appendChild(element);
     }
 
+    /*
+     * Set environment variables in the server.env file. Check to see if something
+     * is there first and merge the contents. No checks are made for collisions.
+     */
+    public void addEnvironemntVariables(Properties props) throws IOException {
+
+        logger.info("addEnvironemntVariables Begin");
+        Properties allProps = null;
+        InputStream bootstrapIn;
+        OutputStream bootstrapOut;
+        CustomProperties finalProps = null;
+
+        try {
+            bootstrapIn = new FileInputStream(serverPath + ENVIRONMENT_FILE);
+            allProps.load(bootstrapIn);
+            bootstrapIn.close();
+        } catch (Exception e) {
+            logger.info("addEnvironemntVariables .. No " + ENVIRONMENT_FILE + " found.");
+        }
+        if (allProps != null) {
+            props = mergeProperties(allProps, props);
+        }
+
+        logger.info("addEnvironemntVariables Writing " + ENVIRONMENT_FILE);
+        bootstrapOut = new FileOutputStream(serverPath + ENVIRONMENT_FILE);
+
+        finalProps = new CustomProperties();
+        for (Enumeration keys = props.keys(); keys.hasMoreElements();) {
+            Object key = keys.nextElement();
+            Object value = props.get(key);
+            finalProps.put(key, value);
+        }
+
+        finalProps.store(bootstrapOut, null);
+        bootstrapOut.close();
+
+    }
+
+    /*
+     * merge one or more properties files.
+     */
+    private Properties mergeProperties(Properties... properties) {
+        return Stream.of(properties).collect(Properties::new, Map::putAll, Map::putAll);
+    }
+
+    /*
+     * Need this class to allow storing of properties without escaping special
+     * characters. Normal properties.store(ouputStream) will escape ":" so if the
+     * property started as http://openliberty.io it will be stored i as
+     * http\://openliberty.io This will cause issuers not to match when the server
+     * runs...
+     */
+    private class CustomProperties extends Properties {
+        private static final long serialVersionUID = 1L;
+
+        /*
+         * private CustomProperties(Properties props) { super(props); }
+         */
+        @Override
+        public void store(OutputStream out, String comments) throws IOException {
+            customStore0(new BufferedWriter(new OutputStreamWriter(out)), comments, true);
+        }
+
+        private void customStore0(BufferedWriter bw, String comments, boolean escUnicode) throws IOException {
+            bw.newLine();
+            synchronized (this) {
+                for (Enumeration e = keys(); e.hasMoreElements();) {
+                    String key = (String) e.nextElement();
+                    String val = (String) get(key);
+                    bw.write(key + "=" + val);
+                    bw.newLine();
+                }
+            }
+            bw.flush();
+        }
+    }
 }

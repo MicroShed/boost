@@ -40,8 +40,8 @@ public class MPHealthBoosterTest {
     BoostLoggerI logger = CommonLogger.getInstance();
 
     /**
-     * Test that the mpHealth-1.0 feature is added to server.xml when the
-     * booster version is set to 1.0-0.2.2-SNAPSHOT
+     * Test that the mpHealth-1.0 feature is added to server.xml when the booster
+     * version is set to 1.0-0.2.2-SNAPSHOT
      * 
      */
     @Test
@@ -68,8 +68,8 @@ public class MPHealthBoosterTest {
     }
 
     /**
-     * Test that the mpHealth-2.0 feature is added to server.xml when the
-     * MPHealth booster version is set to 2.0-0.2.2-SNAPSHOT
+     * Test that the mpHealth-2.0 feature is added to server.xml when the MPHealth
+     * booster version is set to 2.0-0.2.2-SNAPSHOT
      * 
      */
     @Test

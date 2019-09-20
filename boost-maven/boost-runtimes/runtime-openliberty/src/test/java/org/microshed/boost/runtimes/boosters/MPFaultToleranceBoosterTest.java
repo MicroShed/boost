@@ -50,8 +50,8 @@ public class MPFaultToleranceBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, "1.1-0.2.2-SNAPSHOT");
+        Map<String, String> dependencies = BoosterUtil.createDependenciesWithBoosterAndVersion(
+                LibertyMPFaultToleranceBoosterConfig.class, "1.1-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(params, logger);
@@ -78,8 +78,8 @@ public class MPFaultToleranceBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, "2.0-0.2.2-SNAPSHOT");
+        Map<String, String> dependencies = BoosterUtil.createDependenciesWithBoosterAndVersion(
+                LibertyMPFaultToleranceBoosterConfig.class, "2.0-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(params, logger);

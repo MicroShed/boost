@@ -67,8 +67,7 @@ public class InventoryUtils {
      *            - port number.
      * @param path
      *            - Note that the path needs to start with a slash!!!
-     * @return String representation of the URI to the system properties
-     *         service.
+     * @return String representation of the URI to the system properties service.
      */
     // end::doc[]
     public static String buildUrl(String protocol, String host, int port, String path) {

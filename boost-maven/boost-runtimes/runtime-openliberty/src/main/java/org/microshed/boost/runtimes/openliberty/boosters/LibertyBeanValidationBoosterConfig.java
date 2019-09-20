@@ -21,8 +21,7 @@ import org.microshed.boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyBeanValidationBoosterConfig extends BeanValidationBoosterConfig implements LibertyBoosterI {
 
-    public LibertyBeanValidationBoosterConfig(BoosterConfigParams params, BoostLoggerI logger)
-            throws BoostException {
+    public LibertyBeanValidationBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
         super(params, logger);
     }
 

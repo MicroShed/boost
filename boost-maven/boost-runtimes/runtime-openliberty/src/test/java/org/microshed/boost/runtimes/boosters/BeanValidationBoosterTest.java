@@ -50,8 +50,8 @@ public class BeanValidationBoosterTest {
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyBeanValidationBoosterConfig.class, "2.0-0.2.2-SNAPSHOT");
+        Map<String, String> dependencies = BoosterUtil.createDependenciesWithBoosterAndVersion(
+                LibertyBeanValidationBoosterConfig.class, "2.0-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
 

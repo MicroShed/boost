@@ -40,8 +40,8 @@ public class MPMetricsBoosterTest {
     BoostLoggerI logger = CommonLogger.getInstance();
 
     /**
-     * Test that the mpMetrics-1.1 feature is added to server.xml when the
-     * MPMetrics booster version is set to 1.1-0.2.2-SNAPSHOT
+     * Test that the mpMetrics-1.1 feature is added to server.xml when the MPMetrics
+     * booster version is set to 1.1-0.2.2-SNAPSHOT
      * 
      */
     @Test
@@ -68,8 +68,8 @@ public class MPMetricsBoosterTest {
     }
 
     /**
-     * Test that the mpMetrics-2.0 feature is added to server.xml when the
-     * MPMetrics booster version is set to 2.0-0.2.2-SNAPSHOT
+     * Test that the mpMetrics-2.0 feature is added to server.xml when the MPMetrics
+     * booster version is set to 2.0-0.2.2-SNAPSHOT
      * 
      */
     @Test

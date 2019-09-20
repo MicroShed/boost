@@ -46,8 +46,8 @@ public class JDBCBoosterTest {
     BoostLoggerI logger = CommonLogger.getInstance();
 
     /**
-     * Test that the jdbc-4.1 feature is added as the default when the Java
-     * compiler target is set to less than 7 (1.6)
+     * Test that the jdbc-4.1 feature is added as the default when the Java compiler
+     * target is set to less than 7 (1.6)
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -71,7 +71,7 @@ public class JDBCBoosterTest {
 
         BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
         LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(params, logger);
-        
+
         serverConfig.addFeature(libJDBCConfig.getFeature());
         serverConfig.writeToServer();
 
@@ -83,8 +83,8 @@ public class JDBCBoosterTest {
     }
 
     /**
-     * Test that the jdbc-4.1 feature is added when the Java compiler target is
-     * 1.7 booster
+     * Test that the jdbc-4.1 feature is added when the Java compiler target is 1.7
+     * booster
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -101,7 +101,7 @@ public class JDBCBoosterTest {
 
         BoosterConfigParams params = new BoosterConfigParams(BoosterUtil.getJDBCDependency(), new Properties());
         LibertyJDBCBoosterConfig libJDBCConfig = new LibertyJDBCBoosterConfig(params, logger);
-        
+
         serverConfig.addFeature(libJDBCConfig.getFeature());
         serverConfig.writeToServer();
 
@@ -113,8 +113,8 @@ public class JDBCBoosterTest {
     }
 
     /**
-     * Test that the jdbc-4.1 feature is added when the Java compiler target is
-     * 7 booster
+     * Test that the jdbc-4.1 feature is added when the Java compiler target is 7
+     * booster
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -143,8 +143,8 @@ public class JDBCBoosterTest {
     }
 
     /**
-     * Test that the jdbc-4.2 feature is added when the Java compiler target is
-     * 1.8 booster
+     * Test that the jdbc-4.2 feature is added when the Java compiler target is 1.8
+     * booster
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -173,8 +173,8 @@ public class JDBCBoosterTest {
     }
 
     /**
-     * Test that the jdbc-4.2 feature is added when the Java compiler target is
-     * 8 booster
+     * Test that the jdbc-4.2 feature is added when the Java compiler target is 8
+     * booster
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -203,8 +203,8 @@ public class JDBCBoosterTest {
     }
 
     /**
-     * Test that the jdbc-4.2 feature is added when the Java compiler target is
-     * 9 booster
+     * Test that the jdbc-4.2 feature is added when the Java compiler target is 9
+     * booster
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -233,8 +233,8 @@ public class JDBCBoosterTest {
     }
 
     /**
-     * Test that the jdbc-4.3 feature is added when the Java compiler target is
-     * 11 booster
+     * Test that the jdbc-4.3 feature is added when the Java compiler target is 11
+     * booster
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException

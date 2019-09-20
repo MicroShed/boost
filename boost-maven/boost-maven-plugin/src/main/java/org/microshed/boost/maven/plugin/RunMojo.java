@@ -31,7 +31,7 @@ public class RunMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
-        
+
         try {
             this.getRuntimeInstance().doRun(clean);
         } catch (BoostException e) {

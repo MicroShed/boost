@@ -56,13 +56,13 @@ public class InventoryManager {
     Logger LOG = Logger.getLogger(InventoryManager.class.getName());
 
     /**
-     * This is the port we're going to use for the dynamically-build invocation
-     * of the system resource on the "back-end" port, so we don't want to
-     * confuse it with the HTTP port that this InventoryManager instance is
-     * running under, but rather use a totally new configuration property.
+     * This is the port we're going to use for the dynamically-build invocation of
+     * the system resource on the "back-end" port, so we don't want to confuse it
+     * with the HTTP port that this InventoryManager instance is running under, but
+     * rather use a totally new configuration property.
      * 
-     * This allows us to invoke the back-end service on a remote host, like we
-     * can with the MP RestClient invocation
+     * This allows us to invoke the back-end service on a remote host, like we can
+     * with the MP RestClient invocation
      */
     // private final String DEFAULT_PORT =
     // System.getProperty("default.http.port");

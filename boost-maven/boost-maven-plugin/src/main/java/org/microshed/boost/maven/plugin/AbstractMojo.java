@@ -93,8 +93,8 @@ public abstract class AbstractMojo extends MojoSupport {
             init();
             BoostLogger boostLogger = new BoostLogger(getLog());
             // TODO move this into getRuntimeInstance()
-            this.dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession, remoteRepos, boostLogger);
-                    
+            this.dependencies = MavenProjectUtil.getAllDependencies(project, repoSystem, repoSession, remoteRepos,
+                    boostLogger);
 
             List<File> compileClasspathJars = new ArrayList<File>();
 
@@ -107,9 +107,9 @@ public abstract class AbstractMojo extends MojoSupport {
             }
             URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);
             this.projectClassLoader = new URLClassLoader(urlsForClassLoader, this.getClass().getClassLoader());
-            
+
             boostProperties = BoostProperties.getConfiguredBoostProperties(project.getProperties(), boostLogger);
-            
+
             boosterConfigs = BoosterConfigurator.getBoosterConfigs(compileClasspathJars, projectClassLoader,
                     dependencies, boostProperties, boostLogger);
 
@@ -119,11 +119,11 @@ public abstract class AbstractMojo extends MojoSupport {
     }
 
     protected RuntimeI getRuntimeInstance() throws MojoExecutionException {
-        
+
         RuntimeI runtime = null;
-        
-        RuntimeParams params = new RuntimeParams(boosterConfigs, boostProperties, getExecutionEnvironment(), project, getLog(),
-                repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
+
+        RuntimeParams params = new RuntimeParams(boosterConfigs, boostProperties, getExecutionEnvironment(), project,
+                getLog(), repoSystem, repoSession, remoteRepos, getMavenDependencyPlugin());
         try {
             ServiceLoader<RuntimeI> runtimes = ServiceLoader.load(RuntimeI.class, projectClassLoader);
             if (!runtimes.iterator().hasNext()) {
@@ -141,7 +141,7 @@ public abstract class AbstractMojo extends MojoSupport {
                 | NoSuchMethodException e) {
             throw new MojoExecutionException("Error while looking for Boost runtime.");
         }
-        
+
         return runtime;
     }
 

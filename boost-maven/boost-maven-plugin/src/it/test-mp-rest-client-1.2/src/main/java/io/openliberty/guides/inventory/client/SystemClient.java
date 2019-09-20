@@ -25,7 +25,8 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 // tag::annotations[]
 @Dependent
-@RegisterRestClient(baseUri="http://localhost:9000/system")   // Doesn't fit well with using a "boost property", something to look at more.
+@RegisterRestClient(baseUri = "http://localhost:9000/system") // Doesn't fit well with using a "boost property",
+                                                              // something to look at more.
 @RegisterProvider(UnknownUrlExceptionMapper.class)
 @RegisterProvider(value = PropertiesReader.class, priority = 2000)
 @Path("/properties")

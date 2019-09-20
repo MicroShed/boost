@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.microshed.boost</groupId>
-  <artifactId>test-mpJwt-1.1-sysprop</artifactId>
+  <groupId>boost</groupId>
+  <artifactId>test-mpJwt-1.1</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
@@ -38,12 +38,12 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         	<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<mp.jwt.verify.publickey.location>${project.build.testOutputDirectory}/truststore/public.key</mp.jwt.verify.publickey.location>
-        <mp.jwt.verify.issuer>http://openliberty.io</mp.jwt.verify.issuer>
+        	<mp_jwt_verify_publickey_location>${project.build.testOutputDirectory}/truststore/public.key</mp_jwt_verify_publickey_location>
+        <mp_jwt_verify_issuer>http://openliberty.io</mp_jwt_verify_issuer>
      </properties>
     
     
-   <dependencyManagement>
+  <dependencyManagement>
       <dependencies>
           <dependency>
               <groupId>org.microshed.boost.boms</groupId>
@@ -54,6 +54,7 @@
           </dependency>
       </dependencies>
   </dependencyManagement>
+
 
 
 
@@ -79,6 +80,7 @@
        <groupId>org.microshed.boost.boosters</groupId>
        <artifactId>mp-jwt</artifactId>
     </dependency>
+    
         <!-- For testing -->
     <dependency>
         <groupId>org.glassfish</groupId>
@@ -133,6 +135,7 @@
                     <tasks>
                       <!-- Need a directory for the public key to be stored in.-->
                       <mkdir dir="${project.build.testOutputDirectory}/truststore"/>
+                      <mkdir dir="${project.basedir}/target/liberty/wlp/etc"/>
                     </tasks>
                   </configuration>
                   <goals>
@@ -141,25 +144,7 @@
                 </execution>
               </executions>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                           <goal>write-project-properties</goal>
-                        </goals>
-                        <!-- write the system properties into a config file to be saved in the war file -->
-                        <configuration>
-                          <outputFile>
-                             ${project.basedir}/src/main/webapp/META-INF/microprofile-config.properties
-                          </outputFile>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
             <plugin>
                 <groupId>org.microshed.boost</groupId>
                 <artifactId>boost-maven-plugin</artifactId>
@@ -202,12 +187,12 @@
                         <goals>
                             <goal>integration-test</goal>
                         </goals>
-                        <!-- Need to have save the public key location availlable for the Integration test environment to save the public key the jwt was
+                        <!-- Need to have save the public key location available for the Integration test environment to save the public key the jwt was
                              generated with. -->
                         <configuration>
                               <systemPropertyVariables>
-                                 <mp.jwt.verify.publickey.location>${project.build.testOutputDirectory}/truststore/public.key</mp.jwt.verify.publickey.location>
-                                 <mp.jwt.verify.issuer>http://openliberty.io</mp.jwt.verify.issuer>
+                                 <testcase.publickey.location>${mp_jwt_verify_publickey_location}</testcase.publickey.location>
+                                 <testcase.issuer>${mp_jwt_verify_issuer}</testcase.issuer>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
@@ -238,7 +223,7 @@
 				<dependency>
 					<groupId>org.microshed.boost.runtimes</groupId>
 					<artifactId>openliberty</artifactId>
-				</dependency>
+			    </dependency>
 			</dependencies>
 		</profile>
 		<profile>

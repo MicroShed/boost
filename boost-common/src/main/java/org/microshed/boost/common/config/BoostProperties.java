@@ -21,6 +21,7 @@ public final class BoostProperties {
 
     // Boost specific
     public static final String BOOST_PROP_PREFIX = "boost_";
+    public static final String BOOST_PROP_MP_PREFIX = "mp_";
 
     // HTTP Endpoint properties
     public static final String ENDPOINT_HOST = "boost_http_host";
@@ -64,10 +65,8 @@ public final class BoostProperties {
         // system properties (set at command line)
         for (Map.Entry<Object, Object> entry : projectProperties.entrySet()) {
 
-            if (entry.getKey().toString().startsWith(BOOST_PROP_PREFIX)) {
-
-                // logger.debug("Found boost property: " +
-                // entry.getKey() + ":" + entry.getValue());
+            if (entry.getKey().toString().startsWith(BOOST_PROP_PREFIX)
+                    || entry.getKey().toString().startsWith(BOOST_PROP_MP_PREFIX)) {
 
                 boostProperties.put(entry.getKey(), entry.getValue());
             }

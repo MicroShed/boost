@@ -79,8 +79,8 @@ public class LibertyServerConfigGeneratorTest {
     }
 
     /**
-     * Test that the server.xml and boostrap.properties are fully configured
-     * with the Derby datasource
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the Derby datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -165,8 +165,8 @@ public class LibertyServerConfigGeneratorTest {
     }
 
     /**
-     * Test that the server.xml and boostrap.properties are fully configured
-     * with the DB2 datasource
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the DB2 datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -251,8 +251,8 @@ public class LibertyServerConfigGeneratorTest {
     }
 
     /**
-     * Test that the server.xml and boostrap.properties are fully configured
-     * with the MySQL datasource
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the MySQL datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -336,8 +336,8 @@ public class LibertyServerConfigGeneratorTest {
     }
 
     /**
-     * Test that the server.xml and boostrap.properties are fully configured
-     * with the MySQL datasource
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the MySQL datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException

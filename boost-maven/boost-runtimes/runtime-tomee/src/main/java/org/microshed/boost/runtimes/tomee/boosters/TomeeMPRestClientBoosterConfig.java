@@ -31,4 +31,3 @@ public class TomeeMPRestClientBoosterConfig extends MPRestClientBoosterConfig {
         return deps;
     }
 }
-

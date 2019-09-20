@@ -15,18 +15,18 @@ import java.util.Properties;
 
 public class BoosterConfigParams {
 
-    Map<String, String> projectDependencies; 
+    Map<String, String> projectDependencies;
     Properties boostProperties;
 
     public BoosterConfigParams(Map<String, String> projectDependencies, Properties boostProperties) {
-    	this.projectDependencies = projectDependencies;
-    	this.boostProperties = boostProperties;
+        this.projectDependencies = projectDependencies;
+        this.boostProperties = boostProperties;
     }
-    
+
     public Map<String, String> getProjectDependencies() {
         return this.projectDependencies;
     }
-    
+
     public Properties getBoostProperties() {
         return this.boostProperties;
     }

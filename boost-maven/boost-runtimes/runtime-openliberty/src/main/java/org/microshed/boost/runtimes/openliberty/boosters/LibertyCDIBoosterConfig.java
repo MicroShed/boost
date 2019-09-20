@@ -31,13 +31,12 @@ public class LibertyCDIBoosterConfig extends CDIBoosterConfig implements Liberty
         }
         if (getVersion().startsWith(CDI_VERSION_12)) {
             return CDI_12;
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+
     }
 }

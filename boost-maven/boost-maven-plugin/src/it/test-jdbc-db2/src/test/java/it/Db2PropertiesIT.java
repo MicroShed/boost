@@ -48,6 +48,7 @@ public class Db2PropertiesIT implements BoostConstants {
 
         // AES hashed password changes so we're just going to look for the
         // aes flag.
+
         assertTrue("Incorrect boost_db_password found in generated config", LibertyConfigFileUtils
                 .findVariableInXml(variablesXml, DATASOURCE_PASSWORD).contains(AES_HASHED_PASSWORD_FLAG));
     }

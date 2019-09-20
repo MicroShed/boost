@@ -14,7 +14,7 @@ package org.microshed.boost.runtimes.utils;
 import org.microshed.boost.common.BoostLoggerI;
 
 public class CommonLogger implements BoostLoggerI {
-    
+
     private static CommonLogger logger = null;
 
     public static CommonLogger getInstance() {

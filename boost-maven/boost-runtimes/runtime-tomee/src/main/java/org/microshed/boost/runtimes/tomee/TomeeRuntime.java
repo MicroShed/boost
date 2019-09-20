@@ -58,7 +58,7 @@ public class TomeeRuntime implements RuntimeI {
     }
 
     public TomeeRuntime(RuntimeParams params) {
-        this.boosterConfigs = params.getBoosterConfigs(); 
+        this.boosterConfigs = params.getBoosterConfigs();
         this.boostProperties = params.getBoostProperties();
         this.env = params.getEnv();
 
@@ -96,7 +96,7 @@ public class TomeeRuntime implements RuntimeI {
     private void configureTomeeServer(List<AbstractBoosterConfig> boosterConfigurators) throws Exception {
         try {
             TomeeServerConfigGenerator tomeeConfig = new TomeeServerConfigGenerator(configDir,
-                BoostLogger.getSystemStreamLogger());
+                    BoostLogger.getSystemStreamLogger());
             tomeeConfig.addJarsDirToSharedLoader();
 
             // Configure HTTP endpoint

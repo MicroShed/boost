@@ -18,11 +18,11 @@ import org.microshed.boost.common.BoostLoggerI;
 public class BoostLogger implements BoostLoggerI {
 
     private org.apache.maven.plugin.logging.Log log;
-    
+
     public org.apache.maven.plugin.logging.Log getLog() {
         return log;
     }
-    
+
     public BoostLogger(org.apache.maven.plugin.logging.Log log) {
         this.log = log;
     }

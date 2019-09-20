@@ -14,7 +14,6 @@ package org.microshed.boost.runtimes.openliberty.boosters;
 import static org.microshed.boost.common.config.ConfigConstants.MPJWT_11;
 
 import java.util.Map;
-
 import org.microshed.boost.common.BoostException;
 import org.microshed.boost.common.BoostLoggerI;
 import org.microshed.boost.common.boosters.MPJWTBoosterConfig;
@@ -37,7 +36,15 @@ public class LibertyMPJWTBoosterConfig extends MPJWTBoosterConfig implements Lib
     }
 
     @Override
-    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
+    public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) throws BoostException {
+
+        try {
+            if (!!!boostMPProperties.isEmpty())
+                libertyServerConfigGenerator.addEnvironemntVariables(boostMPProperties);
+
+        } catch (Exception e) {
+            throw new BoostException("Error when configuring mp-jwt " + e.toString());
+        }
 
     }
 

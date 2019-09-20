@@ -23,7 +23,7 @@ import org.apache.maven.plugins.annotations.*;
  */
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class PackageMojo extends AbstractMojo {
-        
+
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();

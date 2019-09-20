@@ -29,8 +29,7 @@ public class LibertyJSONPBoosterConfig extends JSONPBoosterConfig implements Lib
     public String getFeature() {
         if (getVersion().startsWith(JSONP_VERSION_10)) {
             return JSONP_10;
-        }
-        else if (getVersion().startsWith(JSONP_VERSION_11)) {
+        } else if (getVersion().startsWith(JSONP_VERSION_11)) {
             return JSONP_11;
         }
         return null;

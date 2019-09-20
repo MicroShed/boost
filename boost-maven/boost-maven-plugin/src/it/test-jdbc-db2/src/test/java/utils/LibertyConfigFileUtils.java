@@ -28,23 +28,22 @@ import org.w3c.dom.Element;
 
 public class LibertyConfigFileUtils {
 
-    public static String findVariableInXml(String variablesXmlPath, String variableName)
-            throws Exception {
+    public static String findVariableInXml(String variablesXmlPath, String variableName) throws Exception {
 
         String variableValue = null;
-        
+
         File variablesXml = new File(variablesXmlPath);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(variablesXml);
 
         Element serverRoot = doc.getDocumentElement();
-        
+
         List<Element> variablesList = getDirectChildrenByTag(serverRoot, "variable");
         for (Element variable : variablesList) {
-        	if (variableName.equals(variable.getAttribute("name"))) {
-        		variableValue = variable.getAttribute("defaultValue");
-        	}
+            if (variableName.equals(variable.getAttribute("name"))) {
+                variableValue = variable.getAttribute("defaultValue");
+            }
         }
 
         return variableValue;

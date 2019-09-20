@@ -36,9 +36,9 @@ public class RuntimeParams {
     Plugin mavenDepPlugin;
     String projectBuildDir;
 
-    public RuntimeParams(List<AbstractBoosterConfig> boosterConfigs, Properties boostProperties, ExecutionEnvironment env, MavenProject project,
-            Log log, RepositorySystem repoSystem, RepositorySystemSession repoSession,
-            List<RemoteRepository> remoteRepos, Plugin mavenDepPlugin) {
+    public RuntimeParams(List<AbstractBoosterConfig> boosterConfigs, Properties boostProperties,
+            ExecutionEnvironment env, MavenProject project, Log log, RepositorySystem repoSystem,
+            RepositorySystemSession repoSession, List<RemoteRepository> remoteRepos, Plugin mavenDepPlugin) {
         this.log = log;
         this.boosterConfigs = boosterConfigs;
         this.boostProperties = boostProperties;
@@ -58,7 +58,7 @@ public class RuntimeParams {
     public List<AbstractBoosterConfig> getBoosterConfigs() {
         return this.boosterConfigs;
     }
-    
+
     public Properties getBoostProperties() {
         return this.boostProperties;
     }
