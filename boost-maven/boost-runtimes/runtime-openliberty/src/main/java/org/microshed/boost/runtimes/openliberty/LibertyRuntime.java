@@ -55,7 +55,7 @@ public class LibertyRuntime implements RuntimeI {
 
     private final String runtimeGroupId = "io.openliberty";
     private final String runtimeArtifactId = "openliberty-runtime";
-    private final String defaultRuntimeVersion = "19.0.0.9";
+    private final String defaultRuntimeVersion = "[19.0.0.6,)";
     private String runtimeVersion;
 
     private String libertyMavenPluginGroupId = "io.openliberty.tools";
@@ -81,7 +81,9 @@ public class LibertyRuntime implements RuntimeI {
         this.projectBuildDir = project.getBuild().getDirectory();
         this.libertyServerPath = projectBuildDir + "/liberty/wlp/usr/servers/" + serverName;
         this.mavenDepPlugin = runtimeParams.getMavenDepPlugin();
-        this.runtimeVersion = boostProperties.getProperty("boost_runtime_version", defaultRuntimeVersion);
+        this.runtimeVersion = boostProperties.getProperty("libertyRuntimeVersion", defaultRuntimeVersion);
+        BoostLogger log = BoostLogger.getSystemStreamLogger();
+        log.info("Liberty Runtime version selected = " + runtimeVersion);
     }
 
     private Plugin getPlugin() throws MojoExecutionException {

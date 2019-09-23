@@ -40,6 +40,7 @@ public final class BoostProperties {
     public static final String AES_ENCRYPTION_KEY = "boost_aes_key";
 
     public static final String INTERNAL_COMPILER_TARGET = "boost.internal.compiler.target";
+    public static final String LIBERTY_VERSION = "libertyRuntimeVersion";
 
     /**
      * Return a list of all properties that need to be encrypted
@@ -64,7 +65,8 @@ public final class BoostProperties {
         // system properties (set at command line)
         for (Map.Entry<Object, Object> entry : projectProperties.entrySet()) {
 
-            if (entry.getKey().toString().startsWith(BOOST_PROP_PREFIX)) {
+            if (entry.getKey().toString().startsWith(BOOST_PROP_PREFIX)
+                    || entry.getKey().toString().equals(LIBERTY_VERSION)) {
 
                 // logger.debug("Found boost property: " +
                 // entry.getKey() + ":" + entry.getValue());
@@ -75,7 +77,8 @@ public final class BoostProperties {
 
         for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
 
-            if (entry.getKey().toString().startsWith(BOOST_PROP_PREFIX)) {
+            if (entry.getKey().toString().startsWith(BOOST_PROP_PREFIX)
+                    || entry.getKey().toString().equals(LIBERTY_VERSION)) {
 
                 // logger.debug("Found boost property: " +
                 // entry.getKey() + ":" + entry.getValue());
