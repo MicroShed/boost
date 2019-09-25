@@ -20,6 +20,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -27,6 +28,7 @@ import java.util.Properties;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.microshed.boost.common.BoostException;
@@ -62,6 +64,8 @@ public class LibertyRuntime implements RuntimeI {
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
     private String libertyMavenPluginVersion = "3.0.1";
 
+    private BoostLogger log;
+
     public LibertyRuntime() {
         this.boosterConfigs = null;
         this.boostProperties = null;
@@ -71,9 +75,11 @@ public class LibertyRuntime implements RuntimeI {
         this.libertyServerPath = null;
         this.mavenDepPlugin = null;
         this.runtimeVersion = defaultRuntimeVersion;
+        this.log = null;
     }
 
     public LibertyRuntime(RuntimeParams runtimeParams) {
+    	this.log = BoostLogger.getSystemStreamLogger();
         this.boosterConfigs = runtimeParams.getBoosterConfigs();
         this.boostProperties = runtimeParams.getBoostProperties();
         this.env = runtimeParams.getEnv();
@@ -82,7 +88,6 @@ public class LibertyRuntime implements RuntimeI {
         this.libertyServerPath = projectBuildDir + "/liberty/wlp/usr/servers/" + serverName;
         this.mavenDepPlugin = runtimeParams.getMavenDepPlugin();
         this.runtimeVersion = boostProperties.getProperty("libertyRuntimeVersion", defaultRuntimeVersion);
-        BoostLogger log = BoostLogger.getSystemStreamLogger();
         log.info("Liberty Runtime version selected = " + runtimeVersion);
     }
 
@@ -131,8 +136,8 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     /**
-     * Get all booster dependencies and invoke the maven-dependency-plugin to copy
-     * them to the Liberty server.
+     * Get all booster dependencies and invoke the maven-dependency-plugin to
+     * copy them to the Liberty server.
      * 
      * @throws MojoExecutionException
      *
@@ -172,8 +177,13 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     /**
+<<<<<<< HEAD
      * Assumes a non-WAR packaging type (like JAR) has a WAR dependency. We assume
      * there's only 1 but don't check, just return the first one.
+=======
+     * Assumes a non-WAR packaging type (like JAR) has a WAR dependency. We
+     * assume there's only 1 but don't check, just return the first one.
+>>>>>>> add dev mode IT
      * 
      * @return
      * @throws BoostException
@@ -267,13 +277,22 @@ public class LibertyRuntime implements RuntimeI {
      */
     private void installApp(String installAppPackagesVal) throws MojoExecutionException {
 
-        Element deployPackages = element(name("deployPackages"), installAppPackagesVal);
-        Element serverNameElement = element(name("serverName"), serverName);
+        // Since the app is installed as a loose app, there is no need to
+        // re-install if
+        // the server is already running. If we do, the app will be deployed to
+        // dropins
+        // which is not what we want.
+        if (!isServerRunning()) {
+            Element deployPackages = element(name("deployPackages"), installAppPackagesVal);
+            Element serverNameElement = element(name("serverName"), serverName);
 
-        Xpp3Dom configuration = configuration(deployPackages, serverNameElement, getRuntimeArtifactElement());
-        configuration.addChild(element(name("appsDirectory"), "apps").toDom());
+            Xpp3Dom configuration = configuration(deployPackages, serverNameElement, getRuntimeArtifactElement());
+            configuration.addChild(element(name("appsDirectory"), "apps").toDom());
 
-        executeMojo(getPlugin(), goal("deploy"), configuration, env);
+            executeMojo(getPlugin(), goal("deploy"), configuration, env);
+        } else {
+            log.info("Server is running. Skipping app re-installation.");
+        }
     }
 
     private Element getRuntimeArtifactElement() {
@@ -283,8 +302,8 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     /**
-     * Invoke the liberty-maven-plugin to package the server into a runnable Liberty
-     * JAR
+     * Invoke the liberty-maven-plugin to package the server into a runnable
+     * Liberty JAR
      */
     private void createUberJar() throws MojoExecutionException {
         executeMojo(getPlugin(), goal("package"),
@@ -337,6 +356,10 @@ public class LibertyRuntime implements RuntimeI {
         } catch (MojoExecutionException e) {
             throw new BoostException("Error stopping Liberty server", e);
         }
+    }
+
+    private boolean isServerRunning() {
+        return new File(libertyServerPath + "/workarea/.sRunning").exists();
     }
 
 }
