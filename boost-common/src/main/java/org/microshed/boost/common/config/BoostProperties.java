@@ -68,9 +68,7 @@ public final class BoostProperties {
             if (entry.getKey().toString().startsWith(BOOST_PROP_PREFIX)
                     || entry.getKey().toString().equals(LIBERTY_VERSION)) {
 
-                // logger.debug("Found boost property: " +
-                // entry.getKey() + ":" + entry.getValue());
-
+                logger.debug("Found boost property: " + entry.getKey() + ":" + entry.getValue());
                 boostProperties.put(entry.getKey(), entry.getValue());
             }
         }
@@ -80,9 +78,7 @@ public final class BoostProperties {
             if (entry.getKey().toString().startsWith(BOOST_PROP_PREFIX)
                     || entry.getKey().toString().equals(LIBERTY_VERSION)) {
 
-                // logger.debug("Found boost property: " +
-                // entry.getKey() + ":" + entry.getValue());
-
+                logger.debug("Found boost property: " + entry.getKey() + ":" + entry.getValue());
                 boostProperties.put(entry.getKey(), entry.getValue());
             }
         }
