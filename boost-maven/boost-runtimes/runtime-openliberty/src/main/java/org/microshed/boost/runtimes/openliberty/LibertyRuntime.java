@@ -55,7 +55,8 @@ public class LibertyRuntime implements RuntimeI {
 
     private final String runtimeGroupId = "io.openliberty";
     private final String runtimeArtifactId = "openliberty-runtime";
-    private final String runtimeVersion = "19.0.0.9";
+    private final String defaultRuntimeVersion = "[19.0.0.6,)";
+    private String runtimeVersion;
 
     private String libertyMavenPluginGroupId = "io.openliberty.tools";
     private String libertyMavenPluginArtifactId = "liberty-maven-plugin";
@@ -69,6 +70,7 @@ public class LibertyRuntime implements RuntimeI {
         this.projectBuildDir = null;
         this.libertyServerPath = null;
         this.mavenDepPlugin = null;
+        this.runtimeVersion = defaultRuntimeVersion;
     }
 
     public LibertyRuntime(RuntimeParams runtimeParams) {
@@ -79,6 +81,9 @@ public class LibertyRuntime implements RuntimeI {
         this.projectBuildDir = project.getBuild().getDirectory();
         this.libertyServerPath = projectBuildDir + "/liberty/wlp/usr/servers/" + serverName;
         this.mavenDepPlugin = runtimeParams.getMavenDepPlugin();
+        this.runtimeVersion = boostProperties.getProperty("libertyRuntimeVersion", defaultRuntimeVersion);
+        BoostLogger log = BoostLogger.getSystemStreamLogger();
+        log.info("Liberty Runtime version selected = " + runtimeVersion);
     }
 
     private Plugin getPlugin() throws MojoExecutionException {
@@ -167,8 +172,9 @@ public class LibertyRuntime implements RuntimeI {
     }
 
     /**
-     * Assumes a non-WAR packaging type (like JAR) has a WAR dependency.
-     * We assume there's only 1 but don't check, just return the first one.
+     * Assumes a non-WAR packaging type (like JAR) has a WAR dependency. We assume
+     * there's only 1 but don't check, just return the first one.
+     * 
      * @return
      * @throws BoostException
      */
@@ -177,7 +183,7 @@ public class LibertyRuntime implements RuntimeI {
         String retVal = null;
         if (project.getPackaging().equals(ConfigConstants.WAR_PKG_TYPE)) {
             retVal = project.getBuild().getFinalName();
-        } else { 
+        } else {
             // JAR package "release", get WAR from dependency
             for (Artifact artifact : project.getArtifacts()) {
                 // first WAR
@@ -193,7 +199,7 @@ public class LibertyRuntime implements RuntimeI {
                 throw new BoostException(msg);
             }
         }
-        
+
         return retVal;
     }
 
@@ -218,7 +224,7 @@ public class LibertyRuntime implements RuntimeI {
 
         String httpsPort = (String) boostProperties.getOrDefault(BoostProperties.ENDPOINT_HTTPS_PORT, "9443");
         libertyConfig.addHttpsPort(httpsPort);
-        
+
         String warName = getWarName();
         libertyConfig.addApplication(warName);
 
