@@ -5,7 +5,7 @@
 
 Boost includes a Maven and Gradle plugin to make it easier to build your MicroProfile applications.
 
-There are two, separate active Boost projects. 
+There are two, separate active Boost projects.
 
 - Boost Maven Plugin, BOMs, and Boosters (`boost-maven`)
 - Boost Common Resources (`boost-common`)
@@ -21,11 +21,15 @@ To see an example of Boost in use in a maven application project, please see our
 
 If you are interested in contributing to Boost, read the [wiki](https://github.com/MicroShed/boost/wiki) for more information.
 
+All contributions require a DCO signoff, details of which can be found
+[here](CONTRIBUTING.md)
+
 If you are interested in the Boost runtime adapter SPI, it is described in greater detail in the [Boost Runtimes Adapter SPI](https://github.com/MicroShed/boost/wiki/Boost-Runtime-Adapter-SPI) page of the wiki.
-git 
+
+
 ### Building Boost
 
-You will need to build the `boost-common` project before building the `boost-maven` project. We provide some scripts below to simplify this process. 
+You will need to build the `boost-common` project before building the `boost-maven` project. We provide some scripts below to simplify this process.
 
 #### Boost Maven Plugin
 
@@ -42,4 +46,3 @@ To build the Boost Maven Plugin:
 ```
 ./boost-maven.sh
 ```
-
