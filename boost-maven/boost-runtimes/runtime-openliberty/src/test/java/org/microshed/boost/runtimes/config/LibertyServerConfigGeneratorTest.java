@@ -28,6 +28,7 @@ import javax.xml.transform.TransformerException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.microshed.boost.common.BoostException;
 import org.microshed.boost.common.BoostLoggerI;
 import org.microshed.boost.common.boosters.JDBCBoosterConfig;
 import org.microshed.boost.common.config.BoostProperties;
@@ -62,7 +63,8 @@ public class LibertyServerConfigGeneratorTest {
      * @throws IOException
      */
     @Test
-    public void testAddSpringFeature() throws ParserConfigurationException, TransformerException, IOException {
+    public void testAddSpringFeature()
+            throws ParserConfigurationException, TransformerException, IOException, BoostException {
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
@@ -79,8 +81,8 @@ public class LibertyServerConfigGeneratorTest {
     }
 
     /**
-     * Test that the server.xml and boostrap.properties are fully configured
-     * with the Derby datasource
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the Derby datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -165,8 +167,8 @@ public class LibertyServerConfigGeneratorTest {
     }
 
     /**
-     * Test that the server.xml and boostrap.properties are fully configured
-     * with the DB2 datasource
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the DB2 datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -251,8 +253,8 @@ public class LibertyServerConfigGeneratorTest {
     }
 
     /**
-     * Test that the server.xml and boostrap.properties are fully configured
-     * with the MySQL datasource
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the MySQL datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException
@@ -336,8 +338,8 @@ public class LibertyServerConfigGeneratorTest {
     }
 
     /**
-     * Test that the server.xml and boostrap.properties are fully configured
-     * with the MySQL datasource
+     * Test that the server.xml and boostrap.properties are fully configured with
+     * the MySQL datasource
      * 
      * @throws ParserConfigurationException
      * @throws TransformerException

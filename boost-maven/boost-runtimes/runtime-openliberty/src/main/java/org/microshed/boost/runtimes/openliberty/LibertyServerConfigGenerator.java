@@ -40,6 +40,7 @@ import org.microshed.boost.common.BoostLoggerI;
 import org.microshed.boost.common.boosters.JDBCBoosterConfig;
 import org.microshed.boost.common.config.BoostProperties;
 import org.microshed.boost.common.utils.BoostUtil;
+import org.microshed.boost.common.BoostException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -118,12 +119,16 @@ public class LibertyServerConfigGenerator {
      * Add a Liberty feature to the server configuration
      *
      */
-    public void addFeature(String featureName) {
-        if (!featuresAdded.contains(featureName)) {
-            Element feature = serverXml.createElement(FEATURE);
-            feature.appendChild(serverXml.createTextNode(featureName));
-            featureManager.appendChild(feature);
-            featuresAdded.add(featureName);
+    public void addFeature(String featureName) throws BoostException {
+        if (featureName != null) {
+            if (!featuresAdded.contains(featureName)) {
+                Element feature = serverXml.createElement(FEATURE);
+                feature.appendChild(serverXml.createTextNode(featureName));
+                featureManager.appendChild(feature);
+                featuresAdded.add(featureName);
+            }
+        } else {
+            throw new BoostException("Request to add feature failed");
         }
     }
 
@@ -131,7 +136,7 @@ public class LibertyServerConfigGenerator {
      * Add a list of features to the server configuration
      *
      */
-    public void addFeatures(List<String> features) {
+    public void addFeatures(List<String> features) throws BoostException {
 
         for (String featureName : features) {
             addFeature(featureName);
@@ -139,8 +144,7 @@ public class LibertyServerConfigGenerator {
     }
 
     /**
-     * Write the server.xml and bootstrap.properties to the server config
-     * directory
+     * Write the server.xml and bootstrap.properties to the server config directory
      *
      * @throws TransformerException
      * @throws IOException

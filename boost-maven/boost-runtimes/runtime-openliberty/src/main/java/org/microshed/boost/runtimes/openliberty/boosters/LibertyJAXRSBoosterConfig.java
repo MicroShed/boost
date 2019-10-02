@@ -27,13 +27,20 @@ public class LibertyJAXRSBoosterConfig extends JAXRSBoosterConfig implements Lib
     }
 
     @Override
-    public String getFeature() {
+    public String getFeature() throws BoostException {
+
+        String feature = null;
         if (getVersion().startsWith(JAXRS_VERSION_20)) {
-            return JAXRS_20;
+            feature = JAXRS_20;
         } else if (getVersion().startsWith(JAXRS_VERSION_21)) {
-            return JAXRS_21;
+            feature = JAXRS_21;
         }
-        return null;
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " returned. Expected " + JAXRS_VERSION_20 + " or "
+                    + JAXRS_VERSION_21;
+            throw new BoostException(msg);
+        }
+        return feature;
     }
 
     @Override

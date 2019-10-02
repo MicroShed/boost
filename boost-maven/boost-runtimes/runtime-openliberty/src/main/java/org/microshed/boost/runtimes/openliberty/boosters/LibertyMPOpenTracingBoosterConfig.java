@@ -26,16 +26,24 @@ public class LibertyMPOpenTracingBoosterConfig extends MPOpenTracingBoosterConfi
     }
 
     @Override
-    public String getFeature() {
+    public String getFeature() throws BoostException {
+        String feature = null;
         if (getVersion().startsWith(MP_OPENTRACING_VERSION_11)) {
-            return MPOPENTRACING_11;
+            feature = MPOPENTRACING_11;
         } else if (getVersion().startsWith(MP_OPENTRACING_VERSION_12)) {
-            return MPOPENTRACING_12;
+            feature = MPOPENTRACING_12;
         } else if (getVersion().startsWith(MP_OPENTRACING_VERSION_13)) {
-            return MPOPENTRACING_13;
+            feature = MPOPENTRACING_13;
         }
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " feature = ed. Expected " + MP_OPENTRACING_VERSION_11
+                    + ", " + MP_OPENTRACING_VERSION_12 + " or " + MP_OPENTRACING_VERSION_13
+                    + ".\n Unable to add feature " + MPOPENTRACING_11 + ", " + MPOPENTRACING_12 + " or "
+                    + MPOPENTRACING_13 + " to the server configuration";
+            throw new BoostException(msg);
+        }
+        return feature;
 
-        return null;
     }
 
     @Override

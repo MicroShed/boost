@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TemporaryFolder;
 import org.microshed.boost.common.BoostLoggerI;
+import org.microshed.boost.common.BoostException;
 import org.microshed.boost.common.config.BoosterConfigParams;
 import org.microshed.boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import org.microshed.boost.runtimes.openliberty.boosters.*;
@@ -39,6 +40,29 @@ public class MPFaultToleranceBoosterTest {
 
     BoostLoggerI logger = CommonLogger.getInstance();
 
+    private void testMPFaultToleranceBoosterFeature11(String version, String feature) throws Exception {
+
+        boolean featureFound = false;
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), null, logger);
+
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, version);
+
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+        LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(params, logger);
+        try {
+            serverConfig.addFeature(libMPFTConfig.getFeature());
+            serverConfig.writeToServer();
+
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + feature + "</feature>");
+        } catch (BoostException be) {
+        }
+        assertTrue("The " + feature + " feature was not found in the server configuration", featureFound);
+
+    }
+
     /**
      * Test that the mpFaultTolerance-1.1 feature is added to server.xml when the
      * MPFaultTolerance booster version is set to 1.1-0.2.2-SNAPSHOT
@@ -46,25 +70,7 @@ public class MPFaultToleranceBoosterTest {
      */
     @Test
     public void testMPFaultToleranceBoosterFeature11() throws Exception {
-
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), null, logger);
-
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, "1.1-0.2.2-SNAPSHOT");
-
-        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
-        LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(params, logger);
-
-        serverConfig.addFeature(libMPFTConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + MPFAULTTOLERANCE_11 + "</feature>");
-
-        assertTrue("The " + MPFAULTTOLERANCE_11 + " feature was not found in the server configuration", featureFound);
-
+        testMPFaultToleranceBoosterFeature11("1.1-0.2.2-SNAPSHOT", MPFAULTTOLERANCE_11);
     }
 
     /**
@@ -74,25 +80,37 @@ public class MPFaultToleranceBoosterTest {
      */
     @Test
     public void testMPFaultToleranceBoosterFeature20() throws Exception {
+        testMPFaultToleranceBoosterFeature11("2.0-0.2.2-SNAPSHOT", MPFAULTTOLERANCE_20);
+    }
 
+    /*
+     * Test with invalid version
+     */
+    @Test
+    public void testMPFaultToleranceBoosterFeature20_bad_version() throws Exception {
+
+        boolean featureFound = false;
+        boolean boostExceptionGenerated = false;
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPFaultToleranceBoosterConfig.class, "2.0-0.2.2-SNAPSHOT");
+        Map<String, String> dependencies = BoosterUtil.createDependenciesWithBoosterAndVersion(
+                LibertyMPFaultToleranceBoosterConfig.class, "2.x-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPFaultToleranceBoosterConfig libMPFTConfig = new LibertyMPFaultToleranceBoosterConfig(params, logger);
+        try {
+            serverConfig.addFeature(libMPFTConfig.getFeature());
+            serverConfig.writeToServer();
 
-        serverConfig.addFeature(libMPFTConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + MPFAULTTOLERANCE_20 + "</feature>");
-
-        assertTrue("The " + MPFAULTTOLERANCE_20 + " feature was not found in the server configuration", featureFound);
-
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
+                    "<feature>" + MPFAULTTOLERANCE_20 + "</feature>");
+        } catch (BoostException be) {
+            if (be.toString().indexOf("Invalid version") >= 0)
+                boostExceptionGenerated = true;
+        }
+        assertTrue("The " + MPFAULTTOLERANCE_20 + " feature was found in the server configuration", !featureFound);
+        assertTrue("No BoostException generated", boostExceptionGenerated);
     }
-
 }

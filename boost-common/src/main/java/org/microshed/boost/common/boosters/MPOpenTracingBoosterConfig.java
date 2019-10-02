@@ -22,7 +22,7 @@ import org.microshed.boost.common.config.BoosterConfigParams;
 public class MPOpenTracingBoosterConfig extends AbstractBoosterConfig {
 
     public MPOpenTracingBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
-        super(params.getProjectDependencies().get(getCoordinates(MPOpenTracingBoosterConfig.class)));
+        super(params.getProjectDependencies().get(getCoordinates(MPOpenTracingBoosterConfig.class)), logger);
     }
 
     @Override

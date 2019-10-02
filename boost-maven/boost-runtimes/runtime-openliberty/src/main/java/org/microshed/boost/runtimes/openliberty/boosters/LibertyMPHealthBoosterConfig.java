@@ -26,16 +26,22 @@ public class LibertyMPHealthBoosterConfig extends MPHealthBoosterConfig implemen
     }
 
     @Override
-    public String getFeature() {
+    public String getFeature() throws BoostException {
+        String feature = null;
         String version = getVersion();
 
         if (version.startsWith(MP_HEALTH_VERSION_10)) {
-            return MPHEALTH_10;
+            feature = MPHEALTH_10;
         } else if (version.startsWith(MP_HEALTH_VERSION_20)) {
-            return MPHEALTH_20;
+            feature = MPHEALTH_20;
         }
-
-        return null;
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + "returned. Expected " + MP_HEALTH_VERSION_10 + " or "
+                    + MP_HEALTH_VERSION_20 + ".\n Unable to add feature " + MPHEALTH_10 + " or " + MPHEALTH_20
+                    + " to the server configuration";
+            throw new BoostException(msg);
+        }
+        return feature;
     }
 
     @Override

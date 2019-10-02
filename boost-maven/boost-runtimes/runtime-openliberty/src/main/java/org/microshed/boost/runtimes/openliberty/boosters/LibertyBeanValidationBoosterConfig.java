@@ -21,17 +21,22 @@ import org.microshed.boost.runtimes.openliberty.boosters.LibertyBoosterI;
 
 public class LibertyBeanValidationBoosterConfig extends BeanValidationBoosterConfig implements LibertyBoosterI {
 
-    public LibertyBeanValidationBoosterConfig(BoosterConfigParams params, BoostLoggerI logger)
-            throws BoostException {
+    public LibertyBeanValidationBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
         super(params, logger);
     }
 
-    public String getFeature() {
+    public String getFeature() throws BoostException {
+
+        String feature = null;
         if (getVersion().startsWith(BEANVALIDATION_VERSION_20)) {
-            return BEANVALIDATION_20;
-        } else {
-            return null;
+            feature = BEANVALIDATION_20;
         }
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " returned. Expected " + BEANVALIDATION_VERSION_20
+                    + "\n Unable to add Feature " + BEANVALIDATION_20 + " to the server configuration";
+            throw new BoostException(msg);
+        }
+        return feature;
     }
 
     public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {

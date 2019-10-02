@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TemporaryFolder;
 import org.microshed.boost.common.BoostLoggerI;
+import org.microshed.boost.common.BoostException;
 import org.microshed.boost.common.config.BoosterConfigParams;
 import org.microshed.boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import org.microshed.boost.runtimes.openliberty.boosters.*;
@@ -39,60 +40,76 @@ public class MPMetricsBoosterTest {
 
     BoostLoggerI logger = CommonLogger.getInstance();
 
+    private void testMPMetricsBoosterFeature(String version, String feature) throws Exception {
+
+        boolean featureFound = false;
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), null, logger);
+
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, version);
+
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+        LibertyMPMetricsBoosterConfig libMPMetricsConfig = new LibertyMPMetricsBoosterConfig(params, logger);
+        try {
+            serverConfig.addFeature(libMPMetricsConfig.getFeature());
+            serverConfig.writeToServer();
+
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + feature + "</feature>");
+        } catch (BoostException be) {
+        }
+        assertTrue("The " + feature + " feature was not found in the server configuration", featureFound);
+
+    }
+
     /**
-     * Test that the mpMetrics-1.1 feature is added to server.xml when the
-     * MPMetrics booster version is set to 1.1-0.2.2-SNAPSHOT
+     * Test that the mpMetrics-1.1 feature is added to server.xml when the MPMetrics
+     * booster version is set to 1.1-0.2.2-SNAPSHOT
      * 
      */
     @Test
     public void testMPMetricsBoosterFeature11() throws Exception {
-
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), null, logger);
-
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "1.1-0.2.2-SNAPSHOT");
-
-        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
-        LibertyMPMetricsBoosterConfig libMPMetricsConfig = new LibertyMPMetricsBoosterConfig(params, logger);
-
-        serverConfig.addFeature(libMPMetricsConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + MPMETRICS_11 + "</feature>");
-
-        assertTrue("The " + MPMETRICS_11 + " feature was not found in the server configuration", featureFound);
-
+        testMPMetricsBoosterFeature("1.1-0.2.2-SNAPSHOT", MPMETRICS_11);
     }
 
     /**
-     * Test that the mpMetrics-2.0 feature is added to server.xml when the
-     * MPMetrics booster version is set to 2.0-0.2.2-SNAPSHOT
+     * Test that the mpMetrics-2.0 feature is added to server.xml when the MPMetrics
+     * booster version is set to 2.0-0.2.2-SNAPSHOT
      * 
      */
     @Test
     public void testMPMetricsBoosterFeature20() throws Exception {
+        testMPMetricsBoosterFeature("2.0-0.2.2-SNAPSHOT", MPMETRICS_20);
+    }
 
+    /*
+     * Test with invalid version
+     */
+    @Test
+    public void testMPMetricsBoosterFeature20_bad_version() throws Exception {
+
+        boolean featureFound = false;
+        boolean boostExceptionGenerated = false;
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "2.0-0.2.2-SNAPSHOT");
+                .createDependenciesWithBoosterAndVersion(LibertyMPMetricsBoosterConfig.class, "2.x-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPMetricsBoosterConfig libMPMetricsConfig = new LibertyMPMetricsBoosterConfig(params, logger);
+        try {
+            serverConfig.addFeature(libMPMetricsConfig.getFeature());
+            serverConfig.writeToServer();
 
-        serverConfig.addFeature(libMPMetricsConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + MPMETRICS_20 + "</feature>");
-
-        assertTrue("The " + MPMETRICS_20 + " feature was not found in the server configuration", featureFound);
-
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + MPMETRICS_20 + "</feature>");
+        } catch (BoostException be) {
+            if (be.toString().indexOf("Invalid version") >= 0)
+                boostExceptionGenerated = true;
+        }
+        assertTrue("The " + MPMETRICS_20 + " feature was found in the server configuration", !featureFound);
+        assertTrue("No BoostException generated", boostExceptionGenerated);
     }
-
 }

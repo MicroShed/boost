@@ -29,15 +29,22 @@ public class LibertyMPMetricsBoosterConfig extends MPMetricsBoosterConfig implem
     }
 
     @Override
-    public String getFeature() {
+    public String getFeature() throws BoostException {
         String version = getVersion();
+        String feature = null;
 
         if (version.startsWith(MP_METRICS_VERSION_11)) {
-            return MPMETRICS_11;
+            feature = MPMETRICS_11;
         } else if (version.startsWith(MP_METRICS_VERSION_20)) {
-            return MPMETRICS_20;
+            feature = MPMETRICS_20;
         }
-        return null;
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " returned. Expected " + MP_METRICS_VERSION_11 + " or "
+                    + MP_METRICS_VERSION_20 + ".\n Unable to add feature " + MPMETRICS_11 + " or " + MPMETRICS_20
+                    + " to the server configuration";
+            throw new BoostException(msg);
+        }
+        return feature;
     }
 
     @Override

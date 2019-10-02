@@ -21,6 +21,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TemporaryFolder;
+import org.microshed.boost.common.BoostException;
 import org.microshed.boost.common.BoostLoggerI;
 import org.microshed.boost.common.config.BoosterConfigParams;
 import org.microshed.boost.runtimes.openliberty.LibertyServerConfigGenerator;
@@ -39,6 +40,30 @@ public class MPOpenTracingBoosterTest {
 
     BoostLoggerI logger = CommonLogger.getInstance();
 
+    private void testMPOpenTracingBoosterFeature(String version, String feature) throws Exception {
+
+        boolean featureFound = false;
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), null, logger);
+
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class, version);
+
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+        LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(params,
+                logger);
+        try {
+            serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
+            serverConfig.writeToServer();
+
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + feature + "</feature>");
+        } catch (BoostException be) {
+        }
+        assertTrue("The " + feature + " feature was not found in the server configuration", featureFound);
+
+    }
+
     /**
      * Test that the mpOpenTracing-1.1 feature is added to server.xml when the
      * MPOpenTracing booster version is set to 1.1-M1-SNAPSHOT
@@ -46,26 +71,7 @@ public class MPOpenTracingBoosterTest {
      */
     @Test
     public void testMPOpenTracingBoosterFeature11() throws Exception {
-
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), null, logger);
-
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class, "1.1-0.2.2-SNAPSHOT");
-
-        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
-        LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(params,
-                logger);
-
-        serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + MPOPENTRACING_11 + "</feature>");
-
-        assertTrue("The " + MPOPENTRACING_11 + " feature was not found in the server configuration", featureFound);
-
+        testMPOpenTracingBoosterFeature("1.1-0.2.2-SNAPSHOT", MPOPENTRACING_11);
     }
 
     /**
@@ -75,26 +81,7 @@ public class MPOpenTracingBoosterTest {
      */
     @Test
     public void testMPOpenTracingBoosterFeature12() throws Exception {
-
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), null, logger);
-
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class, "1.2-0.2.2-SNAPSHOT");
-
-        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
-        LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(params,
-                logger);
-
-        serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + MPOPENTRACING_12 + "</feature>");
-
-        assertTrue("The " + MPOPENTRACING_12 + " feature was not found in the server configuration", featureFound);
-
+        testMPOpenTracingBoosterFeature("1.2-0.2.2-SNAPSHOT", MPOPENTRACING_12);
     }
 
     /**
@@ -104,26 +91,39 @@ public class MPOpenTracingBoosterTest {
      */
     @Test
     public void testMPOpenTracingBoosterFeature13() throws Exception {
+        testMPOpenTracingBoosterFeature("1.3-0.2.2-SNAPSHOT", MPOPENTRACING_13);
+    }
 
+    /*
+     * Test missing version
+     */
+    @Test
+    public void testMPOpenTracingBoosterFeature13_bbad_version() throws Exception {
+
+        boolean featureFound = false;
+        boolean boostExceptionGenerated = false;
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class, "1.3-0.2.2-SNAPSHOT");
+                .createDependenciesWithBoosterAndVersion(LibertyMPOpenTracingBoosterConfig.class, "1.x-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPOpenTracingBoosterConfig libMPOpenTracingConfig = new LibertyMPOpenTracingBoosterConfig(params,
                 logger);
+        try {
+            serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
+            serverConfig.writeToServer();
 
-        serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + MPOPENTRACING_13 + "</feature>");
-
-        assertTrue("The " + MPOPENTRACING_13 + " feature was not found in the server configuration", featureFound);
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
+                    "<feature>" + MPOPENTRACING_13 + "</feature>");
+        } catch (BoostException be) {
+            if (be.toString().indexOf("Invalid version") >= 0)
+                boostExceptionGenerated = true;
+        }
+        assertTrue("The " + MPOPENTRACING_13 + " feature was found in the server configuration", !featureFound);
+        assertTrue("No BoostException generated", boostExceptionGenerated);
 
     }
-
 }

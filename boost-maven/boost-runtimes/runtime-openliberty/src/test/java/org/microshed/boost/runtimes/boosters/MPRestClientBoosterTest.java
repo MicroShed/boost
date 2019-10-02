@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TemporaryFolder;
 import org.microshed.boost.common.BoostLoggerI;
+import org.microshed.boost.common.BoostException;
 import org.microshed.boost.common.config.BoosterConfigParams;
 import org.microshed.boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import org.microshed.boost.runtimes.openliberty.boosters.*;
@@ -39,6 +40,31 @@ public class MPRestClientBoosterTest {
 
     BoostLoggerI logger = CommonLogger.getInstance();
 
+    public void testMPRestClientBoosterFeature(String version, String feature) throws Exception {
+
+        boolean featureFound = false;
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), null, logger);
+
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, version);
+
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+        LibertyMPRestClientBoosterConfig libMPOpenTracingConfig = new LibertyMPRestClientBoosterConfig(params, logger);
+
+        try {
+            serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
+            serverConfig.writeToServer();
+
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + feature + "</feature>");
+        } catch (BoostException be) {
+        }
+
+        assertTrue("The " + feature + " feature was not found in the server configuration", featureFound);
+
+    }
+
     /**
      * Test that the mpRestClient-1.1 feature is added to server.xml when the
      * MPRestClient booster version is set to 1.1-0.2.2-SNAPSHOT
@@ -46,25 +72,7 @@ public class MPRestClientBoosterTest {
      */
     @Test
     public void testMPRestClientBoosterFeature11() throws Exception {
-
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), null, logger);
-
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.1-0.2.2-SNAPSHOT");
-
-        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
-        LibertyMPRestClientBoosterConfig libMPOpenTracingConfig = new LibertyMPRestClientBoosterConfig(params, logger);
-
-        serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + MPRESTCLIENT_11 + "</feature>");
-
-        assertTrue("The " + MPRESTCLIENT_11 + " feature was not found in the server configuration", featureFound);
-
+        testMPRestClientBoosterFeature("1.1-0.2.2-SNAPSHOT", MPRESTCLIENT_11);
     }
 
     /**
@@ -74,25 +82,7 @@ public class MPRestClientBoosterTest {
      */
     @Test
     public void testMPRestClientBoosterFeature12() throws Exception {
-
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), null, logger);
-
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.2-0.2.2-SNAPSHOT");
-
-        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
-        LibertyMPRestClientBoosterConfig libMPOpenTracingConfig = new LibertyMPRestClientBoosterConfig(params, logger);
-
-        serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + MPRESTCLIENT_12 + "</feature>");
-
-        assertTrue("The " + MPRESTCLIENT_12 + " feature was not found in the server configuration", featureFound);
-
+        testMPRestClientBoosterFeature("1.2-0.2.2-SNAPSHOT", MPRESTCLIENT_12);
     }
 
     /**
@@ -102,25 +92,40 @@ public class MPRestClientBoosterTest {
      */
     @Test
     public void testMPRestClientBoosterFeature13() throws Exception {
+        testMPRestClientBoosterFeature("1.3-0.2.2-SNAPSHOT", MPRESTCLIENT_13);
+    }
 
+    /*
+     * Test Missing version
+     */
+    @Test
+    public void testMPRestClientBoosterFeature13_bad_version() throws Exception {
+
+        boolean featureFound = false;
+        boolean boostExceptionGenerated = false;
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.3-0.2.2-SNAPSHOT");
+                .createDependenciesWithBoosterAndVersion(LibertyMPRestClientBoosterConfig.class, "1.x-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyMPRestClientBoosterConfig libMPOpenTracingConfig = new LibertyMPRestClientBoosterConfig(params, logger);
 
-        serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
-        serverConfig.writeToServer();
+        try {
+            serverConfig.addFeature(libMPOpenTracingConfig.getFeature());
+            serverConfig.writeToServer();
 
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + MPRESTCLIENT_13 + "</feature>");
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
+                    "<feature>" + MPRESTCLIENT_13 + "</feature>");
+        } catch (BoostException be) {
 
-        assertTrue("The " + MPRESTCLIENT_13 + " feature was not found in the server configuration", featureFound);
+            if (be.toString().indexOf("Invalid version") >= 0)
+                boostExceptionGenerated = true;
+        }
 
+        assertTrue("The " + MPRESTCLIENT_13 + " feature was found in the server configuration", !featureFound);
+        assertTrue("No BoostException generated", boostExceptionGenerated);
     }
-
 }

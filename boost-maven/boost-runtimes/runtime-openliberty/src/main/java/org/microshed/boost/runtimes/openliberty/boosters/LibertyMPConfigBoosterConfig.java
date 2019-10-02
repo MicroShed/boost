@@ -26,11 +26,18 @@ public class LibertyMPConfigBoosterConfig extends MPConfigBoosterConfig implemen
     }
 
     @Override
-    public String getFeature() {
+    public String getFeature() throws BoostException {
+
+        String feature = null;
         if (getVersion().startsWith(MP_CONFIG_VERSION_13)) {
-            return MPCONFIG_13;
+            feature = MPCONFIG_13;
         }
-        return null;
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " returned. Expected " + MP_CONFIG_VERSION_13
+                    + ".\n Unable to add feature " + MP_CONFIG_VERSION_13 + " to the server configuration";
+            throw new BoostException(msg);
+        }
+        return feature;
     }
 
     @Override

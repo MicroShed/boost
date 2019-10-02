@@ -26,14 +26,21 @@ public class LibertyMPFaultToleranceBoosterConfig extends MPFaultToleranceBooste
     }
 
     @Override
-    public String getFeature() {
-        if (getVersion().startsWith(MP_FAULTTOLERANCE_VERSION_11)) {
-            return MPFAULTTOLERANCE_11;
-        } else if (getVersion().startsWith(MP_FAULTTOLERANCE_VERSION_20)) {
-            return MPFAULTTOLERANCE_20;
-        }
+    public String getFeature() throws BoostException {
 
-        return null;
+        String feature = null;
+        if (getVersion().startsWith(MP_FAULTTOLERANCE_VERSION_11)) {
+            feature = MPFAULTTOLERANCE_11;
+        } else if (getVersion().startsWith(MP_FAULTTOLERANCE_VERSION_20)) {
+            feature = MPFAULTTOLERANCE_20;
+        }
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " returned. Expected " + MP_FAULTTOLERANCE_VERSION_11
+                    + " or " + MP_FAULTTOLERANCE_VERSION_20 + ".\n Unable to add feature " + MPFAULTTOLERANCE_11
+                    + " or " + MPFAULTTOLERANCE_20 + " to the server configuration";
+            throw new BoostException(msg);
+        }
+        return feature;
     }
 
     @Override

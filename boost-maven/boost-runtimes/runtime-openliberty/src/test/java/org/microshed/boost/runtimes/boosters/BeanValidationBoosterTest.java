@@ -21,6 +21,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TemporaryFolder;
+import org.microshed.boost.common.BoostException;
 import org.microshed.boost.common.BoostLoggerI;
 import org.microshed.boost.common.config.BoosterConfigParams;
 import org.microshed.boost.runtimes.openliberty.LibertyServerConfigGenerator;
@@ -39,6 +40,32 @@ public class BeanValidationBoosterTest {
 
     BoostLoggerI logger = CommonLogger.getInstance();
 
+    private void testBeanValidationBoosterFeature(String version, String feature) throws Exception {
+
+        boolean featureFound = false;
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), null, logger);
+
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyBeanValidationBoosterConfig.class, version);
+
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+
+        LibertyBeanValidationBoosterConfig libBeanValidationConfig = new LibertyBeanValidationBoosterConfig(params,
+                logger);
+        try {
+            serverConfig.addFeature(libBeanValidationConfig.getFeature());
+            serverConfig.writeToServer();
+
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + feature + "</feature>");
+        } catch (BoostException be) {
+
+        }
+        assertTrue("The " + feature + " feature was not found in the server configuration", featureFound);
+
+    }
+
     /**
      * Test that the cdi-1.2 feature is added to server.xml when the CDI booster
      * version is set to 1.2-M1-SNAPSHOT
@@ -46,54 +73,42 @@ public class BeanValidationBoosterTest {
      */
     @Test
     public void testBeanValidationBoosterFeature_20() throws Exception {
+        testBeanValidationBoosterFeature("2.0-0.2.2-SNAPSHOT", BEANVALIDATION_20);
+    }
 
+    /**
+     * Test running with a bad version
+     * 
+     */
+    @Test
+    public void testBeanValidationBoosterFeature_20_bad_version() throws Exception {
+
+        boolean boostExceptionGenerated = false;
+        boolean featureFound = false;
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyBeanValidationBoosterConfig.class, "2.0-0.2.2-SNAPSHOT");
+        Map<String, String> dependencies = BoosterUtil.createDependenciesWithBoosterAndVersion(
+                LibertyBeanValidationBoosterConfig.class, "1.x-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
 
         LibertyBeanValidationBoosterConfig libBeanValidationConfig = new LibertyBeanValidationBoosterConfig(params,
                 logger);
+        // Expect null pointer exception since the
+        try {
+            serverConfig.addFeature(libBeanValidationConfig.getFeature());
+            serverConfig.writeToServer();
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
+                    "<feature>" + BEANVALIDATION_20 + "</feature>");
+        } catch (BoostException be) {
+            if (be.toString().indexOf("Invalid version") >= 0)
+                boostExceptionGenerated = true;
+        }
 
-        serverConfig.addFeature(libBeanValidationConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML,
-                "<feature>" + BEANVALIDATION_20 + "</feature>");
-
-        assertTrue("The " + BEANVALIDATION_20 + " feature was not found in the server configuration", featureFound);
-
-    }
-
-    /**
-     * Test that the cdi-2.0 feature is added to server.xml when the CDI booster
-     * version is set to 2.0-M1-SNAPSHOT
-     * 
-     */
-    @Test
-    public void testCDIBoosterFeature_20() throws Exception {
-
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), null, logger);
-
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyCDIBoosterConfig.class, "2.0-0.2.2-SNAPSHOT");
-
-        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
-
-        LibertyCDIBoosterConfig libCDIConfig = new LibertyCDIBoosterConfig(params, logger);
-
-        serverConfig.addFeature(libCDIConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + CDI_20 + "</feature>");
-
-        assertTrue("The " + CDI_20 + " feature was not found in the server configuration", featureFound);
+        assertTrue("The " + BEANVALIDATION_20 + " feature was found in the server configuration", !featureFound);
+        assertTrue("No exception was generated while adding feature ", boostExceptionGenerated);
 
     }
 
