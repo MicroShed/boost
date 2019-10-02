@@ -54,7 +54,6 @@ public class LibertyServerConfigGenerator {
     public static final String CONFIG_DROPINS_DIR = "/configDropins/defaults";
 
     private final String serverPath;
-    // private final String srcCfgPath;
     private final String libertyInstallPath;
     private final String encryptionKey;
 
@@ -66,9 +65,7 @@ public class LibertyServerConfigGenerator {
     private Element httpEndpoint;
 
     private Document variablesXml;
-    // private Document connMgrXml;
     private Element variablesRoot;
-    // private Element connMgrRoot;
 
     private Set<String> featuresAdded;
 
@@ -79,14 +76,11 @@ public class LibertyServerConfigGenerator {
         this.libertyInstallPath = serverPath + "/../../.."; // Three directories
                                                             // back from
                                                             // 'wlp/usr/servers/defaultServer'
-
-        // this.srcCfgPath = this.libertyInstallPath + "/src/main/liberty/config";
         this.encryptionKey = encryptionKey;
         this.logger = logger;
 
         generateServerXml();
         generateVariablesXml();
-        // generateConnMgrXml();
 
         featuresAdded = new HashSet<String>();
     }
@@ -119,23 +113,6 @@ public class LibertyServerConfigGenerator {
         variablesRoot.setAttribute("description", "Boost variables");
         variablesXml.appendChild(variablesRoot);
     }
-
-    /*
-     * private void generateConnMgrXml() throws ParserConfigurationException {
-     * DocumentBuilder docBuilder =
-     * DocumentBuilderFactory.newInstance().newDocumentBuilder();
-     * 
-     * // Create top level server config element connMgrXml =
-     * docBuilder.newDocument(); connMgrRoot = connMgrXml.createElement("server");
-     * connMgrRoot.setAttribute("description",
-     * "Boost ConnectionManager configuration");
-     * connMgrXml.appendChild(connMgrRoot);
-     * 
-     * // add connection manager config stanza Element connMgr =
-     * connMgrXml.createElement(CONNECTION_MANAGEMENT); connMgr.setAttribute("id",
-     * BOOST_CONNECTION_MANAGEMENT_REF); connMgr.setAttribute("agedTimeout", "5s");
-     * connMgr.setAttribute("reapTime", "6s"); connMgrRoot.appendChild(connMgr); }
-     */
 
     /**
      * Add a Liberty feature to the server configuration
@@ -183,12 +160,6 @@ public class LibertyServerConfigGenerator {
         // Create configDropins/default path
         Path configDropins = Paths.get(serverPath + CONFIG_DROPINS_DIR);
         Files.createDirectories(configDropins);
-
-        // Write ConnectionManager config to ConfigDropins
-        // DOMSource connMgr = new DOMSource(connMgrXml);
-        // StreamResult connMgrResult = new StreamResult(new File(CONFIG_DROPINS_DIR +
-        // "/connectionManager.xml"));
-        // transformer.transform(connMgr, connMgrResult);
 
         // Write variables.xml to configDropins
         DOMSource variables = new DOMSource(variablesXml);
