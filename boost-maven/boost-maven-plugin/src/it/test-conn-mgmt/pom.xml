@@ -4,10 +4,10 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.openliberty.demo</groupId>
-	<artifactId>myservice</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<groupId>org.microshed.boost.test</groupId>
+	<artifactId>test-conn-mgmt</artifactId>
 	<packaging>war</packaging>
+	<version>@pom.version@</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -166,11 +166,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>3.0.0-M1</version>
+				<version>3.0.0-M3</version>
 				<executions>
 					<execution>
 						<phase>integration-test</phase>
-						<id>integration-test</id>
+						<id>integration-test1</id>
 						<goals>
 							<goal>integration-test</goal>
 						</goals>
@@ -183,6 +183,22 @@
 							</systemProperties>
 						</configuration>
 					</execution>
+					<execution>
+						<!-- <phase>integration-test</phase> -->
+						<id>integration-test2</id>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+						<configuration>
+							<trimStackTrace>false</trimStackTrace>
+							<systemProperties>
+								<microshed_hostname>localhost</microshed_hostname>
+								<microshed_http_port>9080</microshed_http_port>
+								<microshed_manual_env>true</microshed_manual_env>
+								<WLP_USR_DIR>${project.build.directory}/liberty/wlp/usr</WLP_USR_DIR>
+							</systemProperties>
+						</configuration>
+					</execution>					
 					<execution>
 						<id>verify-results</id>
 						<goals>
