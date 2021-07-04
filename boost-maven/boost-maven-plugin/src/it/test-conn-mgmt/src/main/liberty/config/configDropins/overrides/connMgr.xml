@@ -1,0 +1,3 @@
+<server>
+    <connectionManager id="boostConnectionManager" reapTime="6s" agedTimeout="5s" />
+</server>

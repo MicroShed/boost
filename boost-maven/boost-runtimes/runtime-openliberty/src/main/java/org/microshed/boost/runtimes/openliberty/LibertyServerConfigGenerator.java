@@ -139,8 +139,7 @@ public class LibertyServerConfigGenerator {
     }
 
     /**
-     * Write the server.xml and bootstrap.properties to the server config
-     * directory
+     * Write the server.xml and bootstrap.properties to the server config directory
      *
      * @throws TransformerException
      * @throws IOException
@@ -338,6 +337,7 @@ public class LibertyServerConfigGenerator {
         Element dataSource = serverXml.createElement(DATASOURCE);
         dataSource.setAttribute("id", DEFAULT_DATASOURCE);
         dataSource.setAttribute(JDBC_DRIVER_REF, JDBC_DRIVER_1);
+        dataSource.setAttribute("connectionManagerRef", BOOST_CONNECTION_MANAGEMENT_REF);
 
         // Add all configured datasource properties
         Element props = serverXml.createElement(datasourcePropertiesElement);

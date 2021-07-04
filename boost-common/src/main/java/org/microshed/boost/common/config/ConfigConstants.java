@@ -57,6 +57,8 @@ public final class ConfigConstants {
     public static final String PROPERTIES = "properties";
     public static final String CONTAINER_AUTH_DATA_REF = "containerAuthDataRef";
     public static final String URL = "url";
+    public static final String CONNECTION_MANAGEMENT = "connectionManager";
+    public static final String BOOST_CONNECTION_MANAGEMENT_REF = "boostConnectionManager";
 
     // Datasource configuration values
     public static final String DEFAULT_DATASOURCE = "DefaultDataSource";
