@@ -22,7 +22,7 @@ import org.microshed.boost.common.config.BoosterConfigParams;
 public class JSONPBoosterConfig extends AbstractBoosterConfig {
 
     public JSONPBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
-        super(params.getProjectDependencies().get(getCoordinates(JSONPBoosterConfig.class)));
+        super(params.getProjectDependencies().get(getCoordinates(JSONPBoosterConfig.class)), logger);
     }
 
     @Override

@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TemporaryFolder;
 import org.microshed.boost.common.BoostLoggerI;
+import org.microshed.boost.common.BoostException;
 import org.microshed.boost.common.config.BoosterConfigParams;
 import org.microshed.boost.runtimes.openliberty.LibertyServerConfigGenerator;
 import org.microshed.boost.runtimes.openliberty.boosters.*;
@@ -39,6 +40,30 @@ public class JAXRSBoosterTest {
 
     BoostLoggerI logger = CommonLogger.getInstance();
 
+    private void testJAXRSBoosterFeature(String version, String feature) throws Exception {
+
+        boolean featureFound = false;
+        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
+                outputDir.getRoot().getAbsolutePath(), null, logger);
+
+        Map<String, String> dependencies = BoosterUtil
+                .createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, version);
+
+        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
+        LibertyJAXRSBoosterConfig libJAXRSConfig = new LibertyJAXRSBoosterConfig(params, logger);
+        try {
+            serverConfig.addFeature(libJAXRSConfig.getFeature());
+            serverConfig.writeToServer();
+
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + feature + "</feature>");
+        } catch (BoostException be) {
+        }
+
+        assertTrue("The " + feature + " feature was not found in the server configuration", featureFound);
+
+    }
+
     /**
      * Test that the jaxrs-2.0 feature is added to server.xml when the jaxrs booster
      * version is set to 2.0-M1-SNAPSHOT
@@ -46,24 +71,7 @@ public class JAXRSBoosterTest {
      */
     @Test
     public void testJAXRSBoosterFeature20() throws Exception {
-
-        LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
-                outputDir.getRoot().getAbsolutePath(), null, logger);
-
-        Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.0-0.2.2-SNAPSHOT");
-
-        BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
-        LibertyJAXRSBoosterConfig libJAXRSConfig = new LibertyJAXRSBoosterConfig(params, logger);
-
-        serverConfig.addFeature(libJAXRSConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JAXRS_20 + "</feature>");
-
-        assertTrue("The " + JAXRS_20 + " feature was not found in the server configuration", featureFound);
-
+        testJAXRSBoosterFeature("2.0-0.2.2-SNAPSHOT", JAXRS_20);
     }
 
     /**
@@ -73,24 +81,37 @@ public class JAXRSBoosterTest {
      */
     @Test
     public void testJAXRSBoosterFeature21() throws Exception {
+        testJAXRSBoosterFeature("2.1-0.2.2-SNAPSHOT", JAXRS_21);
+    }
+
+    /*
+     * Test for failure when using incorrect version
+     */
+    @Test
+    public void testJAXRSBoosterFeature21_bad_version() throws Exception {
+        boolean featureFound = false;
+        boolean boostExceptionGenerated = false;
 
         LibertyServerConfigGenerator serverConfig = new LibertyServerConfigGenerator(
                 outputDir.getRoot().getAbsolutePath(), null, logger);
 
         Map<String, String> dependencies = BoosterUtil
-                .createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.1-0.2.2-SNAPSHOT");
+                .createDependenciesWithBoosterAndVersion(LibertyJAXRSBoosterConfig.class, "2.x-0.2.2-SNAPSHOT");
 
         BoosterConfigParams params = new BoosterConfigParams(dependencies, new Properties());
         LibertyJAXRSBoosterConfig libJAXRSConfig = new LibertyJAXRSBoosterConfig(params, logger);
+        try {
+            serverConfig.addFeature(libJAXRSConfig.getFeature());
+            serverConfig.writeToServer();
 
-        serverConfig.addFeature(libJAXRSConfig.getFeature());
-        serverConfig.writeToServer();
-
-        String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
-        boolean featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JAXRS_21 + "</feature>");
-
-        assertTrue("The " + JAXRS_21 + " feature was not found in the server configuration", featureFound);
+            String serverXML = outputDir.getRoot().getAbsolutePath() + "/server.xml";
+            featureFound = ConfigFileUtils.findStringInServerXml(serverXML, "<feature>" + JAXRS_21 + "</feature>");
+        } catch (BoostException be) {
+            if (be.toString().indexOf("Invalid version") >= 0)
+                boostExceptionGenerated = true;
+        }
+        assertTrue("The " + JAXRS_21 + " feature was found in the server configuration", !featureFound);
+        assertTrue("No BoostException generated", boostExceptionGenerated);
 
     }
-
 }

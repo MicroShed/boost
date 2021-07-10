@@ -19,6 +19,7 @@ import java.lang.annotation.Target;
 import java.util.List;
 
 import org.microshed.boost.common.BoostException;
+import org.microshed.boost.common.BoostLoggerI;
 
 /**
  * Interface to describe common function across all technology Booster Pack
@@ -62,6 +63,7 @@ public abstract class AbstractBoosterConfig {
     public static final String MP_RESTCLIENT_VERSION_11 = "1.1" + boostVersion + emptyString;
     public static final String MP_RESTCLIENT_VERSION_12 = "1.2" + boostVersion + emptyString;
     public static final String MP_RESTCLIENT_VERSION_13 = "1.3" + boostVersion + emptyString;
+    protected BoostLoggerI logger;
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
@@ -81,8 +83,10 @@ public abstract class AbstractBoosterConfig {
 
     private final String version;
 
-    protected AbstractBoosterConfig(String version) {
+    protected AbstractBoosterConfig(String version, BoostLoggerI logger) {
         this.version = version;
+        this.logger = logger;
+
     }
 
     /**

@@ -27,13 +27,22 @@ public class LibertyJPABoosterConfig extends JPABoosterConfig implements Liberty
     }
 
     @Override
-    public String getFeature() {
+    public String getFeature() throws BoostException {
+
+        String feature = null;
         if (getVersion().startsWith(JPA_VERSION_21)) {
-            return JPA_21;
+            feature = JPA_21;
         } else if (getVersion().startsWith(JPA_VERSION_22)) {
-            return JPA_22;
+            feature = JPA_22;
         }
-        return null;
+
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " returned. Expected " + JPA_VERSION_21 + " or "
+                    + JPA_VERSION_22 + ".\n Unable to add feature " + JPA_21 + " or " + JPA_22
+                    + " to the server configuration";
+            throw new BoostException(msg);
+        }
+        return feature;
     }
 
     @Override

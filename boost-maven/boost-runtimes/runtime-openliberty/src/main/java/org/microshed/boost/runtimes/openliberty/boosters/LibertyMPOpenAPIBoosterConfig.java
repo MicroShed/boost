@@ -26,14 +26,20 @@ public class LibertyMPOpenAPIBoosterConfig extends MPOpenAPIBoosterConfig implem
     }
 
     @Override
-    public String getFeature() {
+    public String getFeature() throws BoostException {
+        String feature = null;
         if (getVersion().startsWith(MP_OPENAPI_VERSION_10)) {
-            return MPOPENAPI_10;
+            feature = MPOPENAPI_10;
         } else if (getVersion().startsWith(MP_OPENAPI_VERSION_11)) {
-            return MPOPENAPI_11;
+            feature = MPOPENAPI_11;
         }
-
-        return null;
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " returned. Expected " + MP_OPENAPI_VERSION_10 + " or "
+                    + MP_OPENAPI_VERSION_11 + ".\n Unable to add feature " + MPOPENAPI_10 + " or " + MPOPENAPI_11
+                    + " to the server configuration";
+            throw new BoostException(msg);
+        }
+        return feature;
     }
 
     @Override

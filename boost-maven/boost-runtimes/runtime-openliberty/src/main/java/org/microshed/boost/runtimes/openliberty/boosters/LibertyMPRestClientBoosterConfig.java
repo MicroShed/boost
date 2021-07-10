@@ -26,16 +26,25 @@ public class LibertyMPRestClientBoosterConfig extends MPRestClientBoosterConfig 
     }
 
     @Override
-    public String getFeature() {
+    public String getFeature() throws BoostException {
+
+        String feature = null;
         if (getVersion().startsWith(MP_RESTCLIENT_VERSION_11)) {
-            return MPRESTCLIENT_11;
+            feature = MPRESTCLIENT_11;
         } else if (getVersion().startsWith(MP_RESTCLIENT_VERSION_12)) {
-            return MPRESTCLIENT_12;
+            feature = MPRESTCLIENT_12;
         } else if (getVersion().startsWith(MP_RESTCLIENT_VERSION_13)) {
-            return MPRESTCLIENT_13;
+            feature = MPRESTCLIENT_13;
+        }
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " returned. Expected " + MP_RESTCLIENT_VERSION_11 + ", "
+                    + MP_RESTCLIENT_VERSION_12 + " or " + MP_RESTCLIENT_VERSION_13 + ".\n Unable to add feature "
+                    + MPRESTCLIENT_11 + ", " + MPRESTCLIENT_12 + " or " + MPRESTCLIENT_13
+                    + " to the server configuration";
+            throw new BoostException(msg);
         }
 
-        return null;
+        return feature;
     }
 
     @Override

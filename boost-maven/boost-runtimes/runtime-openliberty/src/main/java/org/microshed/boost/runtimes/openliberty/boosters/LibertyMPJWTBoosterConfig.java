@@ -29,11 +29,18 @@ public class LibertyMPJWTBoosterConfig extends MPJWTBoosterConfig implements Lib
     }
 
     @Override
-    public String getFeature() {
+    public String getFeature() throws BoostException {
+
+        String feature = null;
         if (getVersion().startsWith(MP_JWT_VERSION_11)) {
-            return MPJWT_11;
+            feature = MPJWT_11;
         }
-        return null;
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " returned. Expected " + MP_JWT_VERSION_11
+                    + ".\n Unable to add feature " + MPJWT_11 + " to the server configuration";
+            throw new BoostException(msg);
+        }
+        return feature;
     }
 
     @Override

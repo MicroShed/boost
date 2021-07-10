@@ -22,7 +22,7 @@ import org.microshed.boost.common.config.BoosterConfigParams;
 public class BeanValidationBoosterConfig extends AbstractBoosterConfig {
 
     public BeanValidationBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
-        super(params.getProjectDependencies().get(getCoordinates(BeanValidationBoosterConfig.class)));
+        super(params.getProjectDependencies().get(getCoordinates(BeanValidationBoosterConfig.class)), logger);
     }
 
     @Override

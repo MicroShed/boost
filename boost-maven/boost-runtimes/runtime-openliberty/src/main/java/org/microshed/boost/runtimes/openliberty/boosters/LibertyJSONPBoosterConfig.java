@@ -26,14 +26,21 @@ public class LibertyJSONPBoosterConfig extends JSONPBoosterConfig implements Lib
     }
 
     @Override
-    public String getFeature() {
+    public String getFeature() throws BoostException {
+
+        String feature = null;
         if (getVersion().startsWith(JSONP_VERSION_10)) {
-            return JSONP_10;
+            feature = JSONP_10;
+        } else if (getVersion().startsWith(JSONP_VERSION_11)) {
+            feature = JSONP_11;
         }
-        else if (getVersion().startsWith(JSONP_VERSION_11)) {
-            return JSONP_11;
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " returned. Expected " + JSONP_VERSION_10 + " or "
+                    + JSONP_VERSION_11 + ".\n Unable to add feature " + JSONP_10 + " or " + JSONP_11
+                    + " to the server configuration";
+            throw new BoostException(msg);
         }
-        return null;
+        return feature;
     }
 
     @Override

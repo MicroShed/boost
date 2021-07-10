@@ -25,19 +25,23 @@ public class LibertyCDIBoosterConfig extends CDIBoosterConfig implements Liberty
         super(params, logger);
     }
 
-    public String getFeature() {
+    public String getFeature() throws BoostException {
+
+        String feature = null;
         if (getVersion().startsWith(CDI_VERSION_20)) {
-            return CDI_20;
+            feature = CDI_20;
+        } else if (getVersion().startsWith(CDI_VERSION_12)) {
+            feature = CDI_12;
         }
-        if (getVersion().startsWith(CDI_VERSION_12)) {
-            return CDI_12;
+        if (feature == null) {
+            String msg = "Invalid version " + getVersion() + " returned. Expected " + CDI_VERSION_20 + " or "
+                    + CDI_VERSION_12 + "\n Unable to add " + CDI_20 + " or " + CDI_12 + " to the server configuration";
+            throw new BoostException(msg);
         }
-        else {
-            return null;
-        }
+        return feature;
     }
 
     public void addServerConfig(LibertyServerConfigGenerator libertyServerConfigGenerator) {
-        
+
     }
 }

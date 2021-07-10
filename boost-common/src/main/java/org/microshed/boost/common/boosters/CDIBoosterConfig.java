@@ -22,7 +22,7 @@ import org.microshed.boost.common.config.BoosterConfigParams;
 public class CDIBoosterConfig extends AbstractBoosterConfig {
 
     public CDIBoosterConfig(BoosterConfigParams params, BoostLoggerI logger) throws BoostException {
-        super(params.getProjectDependencies().get(getCoordinates(CDIBoosterConfig.class)));
+        super(params.getProjectDependencies().get(getCoordinates(CDIBoosterConfig.class)), logger);
     }
 
     @Override
