@@ -17,21 +17,23 @@
 	<packaging>pom</packaging>
 	
 	<modules>
-	    <module>boost-ee7-apis-bom</module>
-	    <module>booster-ee7-bom</module>
-		<module>boost-ee8-apis-bom</module>
-		<module>booster-ee8-bom</module>
-		<module>booster-mp14-bom</module>
-		<module>booster-mp20-bom</module>
-		<module>booster-mp21-bom</module>
-		<module>booster-mp22-bom</module>
-        <module>booster-mp30-bom</module>
-		<module>boost-mp14-apis-bom</module>
-		<module>boost-mp20-apis-bom</module>
-		<module>boost-mp21-apis-bom</module>
-		<module>boost-mp22-apis-bom</module>
-        <module>boost-mp30-apis-bom</module>
-		<module>booster-runtimes-bom</module>
+            <module>boost-ee7-apis-bom</module>
+            <module>booster-ee7-bom</module>
+            <module>boost-ee8-apis-bom</module>
+            <module>booster-ee8-bom</module>
+            <module>booster-mp14-bom</module>
+            <module>booster-mp20-bom</module>
+            <module>booster-mp21-bom</module>
+            <module>booster-mp22-bom</module>
+            <module>booster-mp30-bom</module>
+            <module>boost-mp14-apis-bom</module>
+            <module>boost-mp20-apis-bom</module>
+            <module>boost-mp21-apis-bom</module>
+            <module>boost-mp22-apis-bom</module>
+            <module>boost-mp30-apis-bom</module>
+            <module>booster-runtimes-bom</module>
+            <module>booster-jakarta-ee8-bom</module>
+            <module>boost-jakarta-ee8-apis-bom</module>
 	</modules>
 
 </project>
